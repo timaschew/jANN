@@ -12,7 +12,7 @@ import org.apache.commons.lang.ArrayUtils;
  * Die innere Dimension (Anzahl der Neuronen) kann sich unterscheiden
  *
  */
-public class DataSet {
+public class DataPairSet {
 
 	/**
 	 * Eingaben für das KNN<br>
@@ -34,7 +34,7 @@ public class DataSet {
 	 * @param input
 	 * @param output
 	 */
-	public DataSet(Double[][] input, Double[][] output) {
+	public DataPairSet(Double[][] input, Double[][] output) {
 		if (isNotEmptyNested(input, output) && sameOuterSize(input, output)) {
 			this.input = input;
 			this.output = output;

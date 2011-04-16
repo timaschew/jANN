@@ -7,7 +7,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-public class DataSetTest {
+public class DataPairSetTest {
 
 	Double[][] input = new Double[][]{{1d,2d,3d},{4d,5d,6d},{7d,8d,9d}};
 	Double[][] output = new Double[][]{{11d,22d},{33d,44d},{55d,66d}};
@@ -17,7 +17,7 @@ public class DataSetTest {
 	
 	@Test
 	public void testAddingRows() {
-		DataSet dataSet = new DataSet(input, output);
+		DataPairSet dataSet = new DataPairSet(input, output);
 		Assert.assertEquals(new Integer(3), dataSet.getRows());
 		
 		dataSet.addRows(inputAdd, outputAdd);
