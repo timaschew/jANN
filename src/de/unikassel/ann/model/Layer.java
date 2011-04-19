@@ -13,11 +13,6 @@ public class Layer {
 		neurons = new ArrayList<Neuron>();
 	}
 	
-	public Layer(Integer index) {
-		this();
-		this.index = index;
-	}
-	
 	public void addNeuron(final Neuron n) {
 		n.setIndex(neurons.size());
 		neurons.add(n);

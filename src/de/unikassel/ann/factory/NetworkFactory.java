@@ -11,17 +11,17 @@ import de.unikassel.ann.model.Neuron;
 public class NetworkFactory {
 	
 	
-	public static Network createNetwork(int input, int[] hidden, int output, ActivationFunction standardFunc, boolean bias) {
+	public static Network createNetwork(int inputCount, int[] hiddenCount, int outputCount, ActivationFunction standardFunc, boolean bias) {
 		
 		Network net = new Network();
 		
-		Layer inputLayer = createLayer(input, standardFunc, bias);
+		Layer inputLayer = createLayer(inputCount, standardFunc, bias);
 		net.addLayer(inputLayer);
-		for (int i=0; i<hidden.length; i++) {
-			Layer currentHiddenLayer = createLayer(hidden[i], standardFunc, bias);
+		for (int i=0; i<hiddenCount.length; i++) {
+			Layer currentHiddenLayer = createLayer(hiddenCount[i], standardFunc, bias);
 			net.addLayer(currentHiddenLayer);
 		}
-		Layer outputLayer = createLayer(output, standardFunc, bias);
+		Layer outputLayer = createLayer(outputCount, standardFunc, bias);
 		net.addLayer(outputLayer);
 
 		net.finalizeStructure();
