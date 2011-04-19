@@ -26,18 +26,18 @@ public class DataPairSet {
 	 * Äußere Dimension entspricht einem Datensatz<br>
 	 * Innere Dimension entspricht einer Neuronenzuordnung
 	 */
-	private Double[][] output;
+	private Double[][] ideal;
 	
 	/**
 	 * Erzeugt eine neue Instanz von Datensätzen für Ein- und Ausgaben<br>
 	 * Arrrays müssen außen gleich lang und nicht nicht leer sein
 	 * @param input
-	 * @param output
+	 * @param ideal
 	 */
-	public DataPairSet(Double[][] input, Double[][] output) {
-		if (isNotEmptyNested(input, output) && sameOuterSize(input, output)) {
+	public DataPairSet(Double[][] input, Double[][] ideal) {
+		if (isNotEmptyNested(input, ideal) && sameOuterSize(input, ideal)) {
 			this.input = input;
-			this.output = output;
+			this.ideal = ideal;
 		} else {
 			System.err.println("could not set empty data");
 		}
@@ -48,23 +48,23 @@ public class DataPairSet {
 	 * Arrrays müssen außen gleich lang und nicht nicht leer sein<br>
 	 * 
 	 * @param inputRows
-	 * @param outputRows
+	 * @param idealRows
 	 */
-	public void addRows(Double[][] inputRows, Double[][] outputRows) {
-		if (sameOuterSize(inputRows, outputRows)) {
-			if (isNotEmptyNested(inputRows, outputRows)) {
-				if (sameSize(inputRows[0], outputRows[0])) {
+	public void addRows(Double[][] inputRows, Double[][] idealRows) {
+		if (sameOuterSize(inputRows, idealRows)) {
+			if (isNotEmptyNested(inputRows, idealRows)) {
+				if (sameSize(inputRows[0], idealRows[0])) {
 					input = (Double[][]) ArrayUtils.addAll(input, inputRows);
-					output = (Double[][]) ArrayUtils.addAll(output, outputRows);
+					ideal = (Double[][]) ArrayUtils.addAll(ideal, idealRows);
 				} else {
 					throw new IllegalArgumentException("inner array size does not match to");
 				}
 			} else {
 				input = inputRows;
-				output = outputRows;
+				ideal = idealRows;
 			}
 		} else {
-			throw new IllegalArgumentException("size of input and output must be equal");
+			throw new IllegalArgumentException("size of input and ideal must be equal");
 		}
 	}
 
@@ -72,12 +72,12 @@ public class DataPairSet {
 	/**
 	 * Fügt einzelnen Datensatz zu den bisherigen hinzu
 	 * @param inputRow
-	 * @param outputRow
+	 * @param idealRow
 	 */
-	public void addRow(Double[] inputRow, Double[] outputRow) {
-		if (sameSize(inputRow, outputRow)) {
+	public void addRow(Double[] inputRow, Double[] idealRow) {
+		if (sameSize(inputRow, idealRow)) {
 			input = (Double[][]) ArrayUtils.add(input, inputRow);
-			output = (Double[][]) ArrayUtils.add(output, outputRow);
+			ideal = (Double[][]) ArrayUtils.add(ideal, idealRow);
 		}
 		
 	}
@@ -85,48 +85,48 @@ public class DataPairSet {
 	/**
 	 * {@link #addRow(Double[], Double[])}
 	 */
-	public void addRow(List<Double> inputRow, List<Double> outputRow) {
+	public void addRow(List<Double> inputRow, List<Double> idealRow) {
 		Double[] in = new Double[0];
 		Double[] out = new Double[0];
-		addRow(inputRow.toArray(in), outputRow.toArray(out));
+		addRow(inputRow.toArray(in), idealRow.toArray(out));
 	}
 
 	/**
-	 * @return Äußere Länge von {@link #input} bzw. {@link #output}
+	 * @return Äußere Länge von {@link #input} bzw. {@link #ideal}
 	 */
 	public Integer getRows() {
-		if (input.length == output.length) {
+		if (input.length == ideal.length) {
 			return input.length;
 		}
-		throw new IllegalAccessError("input and output size is different");
+		throw new IllegalAccessError("input and ideal size is different");
 	}
 	
 	public Double[][] getInput() {
 		return input;
 	}
 	
-	public Double[][] getOutput() {
-		return output;
+	public Double[][] getIdeal() {
+		return ideal;
 	}
 	
 	public DataPair getPair(Integer index) {
-		return new DataPair(input[index], output[index]);
+		return new DataPair(input[index], ideal[index]);
 	}
 	
-	private boolean sameOuterSize(Double[][] inputRows, Double[][] outputRows) {
-		return inputRows.length == outputRows.length;
+	private boolean sameOuterSize(Double[][] inputRows, Double[][] idealRows) {
+		return inputRows.length == idealRows.length;
 	}
 	
 	/**
 	 * Prüfe ob die Arrays <b>nicht</b> miteinander gleich lang sind, 
 	 * sondern mit jeweils mit der inneren Länge von
-	 * {@link #input} und {@link #output}
+	 * {@link #input} und {@link #ideal}
 	 * @param inputRows
-	 * @param outputRows
+	 * @param idealRows
 	 * @return true wenn innere Länge gleich, sonst false
 	 */
-	private boolean sameSize(Double[] inputRows, Double[] outputRows) {
-		return inputRows.length == input[0].length && outputRows.length == output[0].length;
+	private boolean sameSize(Double[] inputRows, Double[] idealRows) {
+		return inputRows.length == input[0].length && idealRows.length == ideal[0].length;
 	}
 
 	/**
