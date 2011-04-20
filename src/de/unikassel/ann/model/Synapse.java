@@ -4,6 +4,8 @@ import java.util.Random;
 
 public class Synapse {
 	
+	private Double deltaWeight = 0.0d;
+	
 	private Double weight;
 	
 	private Neuron from;
@@ -51,6 +53,18 @@ public class Synapse {
 		sb.append(" weight = ");
 		sb.append(weight);
 		return sb.toString();
+	}
+
+	public Double getDeltaWeight() {
+		return deltaWeight;
+	}
+
+	public void setDeltaWeight(double delta) {
+		deltaWeight = delta;
+	}
+
+	public void setWeight(double d) {
+		weight = d;
 	}
 
 }

@@ -15,6 +15,8 @@ public class Neuron {
 	
 	private Double inputValue;
 	
+	private Double error;
+	
 	private List<Synapse> inputSynapses;
 	
 	private List<Synapse> outputSynapses;
@@ -59,6 +61,10 @@ public class Neuron {
 		if ((synapse.getToNeuron() != null && synapse.getToNeuron().equals(this)) == false) {
 			synapse.setToNeuron(this);
 		}
+	}
+	
+	public void setError(double error) {
+		this.error = error;
 	}
 
 	/**
@@ -112,4 +118,10 @@ public class Neuron {
 		sb.append("]");
 		return sb.toString();
 	}
+
+	public double getError() {
+		return error;
+	}
+
+
 }

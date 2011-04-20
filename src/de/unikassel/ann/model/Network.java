@@ -1,7 +1,10 @@
 package de.unikassel.ann.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import org.apache.commons.lang.ArrayUtils;
 
 public class Network {
 	
@@ -17,6 +20,9 @@ public class Network {
 	public void addLayer(Layer l) {
 		l.setIndex(layers.size());
 		layers.add(l);
+		if ((l.getNet() != null && l.getNet().equals(this)) == false) {
+			l.setNet(this);
+		}
 	}
 	
 	public void finalizeStructure() {
@@ -26,8 +32,6 @@ public class Network {
 				for (Neuron fromNeuron : previousLayer.getNeurons()) {
 					for (Neuron toNeuron : l.getNeurons()) {
 						Synapse s = new Synapse(fromNeuron, toNeuron);
-//						s.setFromNeuron(fromNeuron);
-//						s.setToNeuron(toNeuron);
 					}
 				}
 			}
@@ -53,7 +57,7 @@ public class Network {
 	 * Lenght of array must match to input layer neuron count!
 	 * @param input for whole layer
 	 */
-	public void setInputLayer(Double[] input) {
+	public void setInputLayerValues(Double[] input) {
 		Layer layer = getInputLayer();
 		List<Neuron> neuronList = layer.getNeurons();
 		if (input.length != neuronList.size()) {
@@ -81,6 +85,7 @@ public class Network {
 	}
 
 	public void printSynapses() {
+		System.out.println("synapse net");
 		for (Layer l : layers) {
 			for (Neuron n : l.getNeurons()) {
 				List<Synapse> synapses = n.getOutputSynapses();
@@ -89,5 +94,11 @@ public class Network {
 				}
 			}
 		}
+	}
+
+	public List<Layer> reverse() {
+		ArrayList<Layer> reversedLayers = new ArrayList<Layer>(layers);
+		Collections.reverse(reversedLayers);
+		return reversedLayers;
 	}
 }

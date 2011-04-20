@@ -1,5 +1,6 @@
 package de.unikassel.ann.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -42,7 +43,11 @@ public class DataPairSet {
 			System.err.println("could not set empty data");
 		}
 	}
+
 	
+	public DataPairSet() {
+	}
+
 	/**
 	 * Fügt zu den bestehenden Datensätzen neue hinzu<br>
 	 * Arrrays müssen außen gleich lang und nicht nicht leer sein<br>
@@ -113,6 +118,15 @@ public class DataPairSet {
 		return new DataPair(input[index], ideal[index]);
 	}
 	
+	public List<DataPair> getPairs() {
+		List<DataPair> list = new ArrayList<DataPair>();
+		for (int i=0; i<input.length; i++) {
+			list.add(getPair(i));
+		}
+		return list;
+	}
+	
+	
 	private boolean sameOuterSize(Double[][] inputRows, Double[][] idealRows) {
 		return inputRows.length == idealRows.length;
 	}
@@ -126,6 +140,9 @@ public class DataPairSet {
 	 * @return true wenn innere Länge gleich, sonst false
 	 */
 	private boolean sameSize(Double[] inputRows, Double[] idealRows) {
+		if (input == null && ideal == null) {
+			return true;
+		}
 		return inputRows.length == input[0].length && idealRows.length == ideal[0].length;
 	}
 
@@ -142,6 +159,12 @@ public class DataPairSet {
 		}
 		return result;
 	}
-	
+
+
+	public void addPair(DataPair pair) {
+		addRow(pair.getInput(), pair.getIdeal());
+	}
+
+
 	
 }

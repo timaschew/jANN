@@ -3,11 +3,15 @@ package de.unikassel.ann.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.sun.xml.internal.txw2.IllegalAnnotationException;
+
 public class Layer {
 	
 	private Integer index = -1;
 	
 	private List<Neuron> neurons;
+
+	private Network network;
 	
 	public Layer() {
 		neurons = new ArrayList<Neuron>();
@@ -49,5 +53,29 @@ public class Layer {
 	public Integer getIndex() {
 		return index;
 	}
+
+	public Layer getNextLayer() {
+		return network.getLayers().get(index+1);
+	}
+
+	public Layer getPrevLayer() {
+		if (index > 0) {
+			return network.getLayers().get(index-1);
+		}
+		return null;
+	}
+	
+	public void setNet(Network net) {
+		network = net;
+		if (net.getLayers().contains(this) == false) {
+			throw new IllegalAnnotationException("should use addLayer() in Network class");
+		}
+	}
+	
+	public Network getNet() {
+		return network;
+	}
+
+
 
 }
