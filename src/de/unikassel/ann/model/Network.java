@@ -31,7 +31,9 @@ public class Network {
 			if (previousLayer != null) {
 				for (Neuron fromNeuron : previousLayer.getNeurons()) {
 					for (Neuron toNeuron : l.getNeurons()) {
-						Synapse s = new Synapse(fromNeuron, toNeuron);
+						if (toNeuron.isBias() == false) {
+							new Synapse(fromNeuron, toNeuron);
+						}
 					}
 				}
 			}
@@ -60,11 +62,12 @@ public class Network {
 	public void setInputLayerValues(Double[] input) {
 		Layer layer = getInputLayer();
 		List<Neuron> neuronList = layer.getNeurons();
-		if (input.length != neuronList.size()) {
+		int biasOffset = layer.hasBias() ? 1 : 0;
+		if (input.length != neuronList.size()-biasOffset) {
 			throw new IllegalArgumentException("input layer count != input.lenght");
 		}
-		for (int i=0; i<neuronList.size(); i++) {
-			neuronList.get(i).setInputValue(input[i]);
+		for (int i=biasOffset; i<neuronList.size(); i++) {
+			neuronList.get(i).setInputValue(input[i-biasOffset]);
 		}
 	}
 
@@ -88,7 +91,7 @@ public class Network {
 		System.out.println("synapse net");
 		for (Layer l : layers) {
 			for (Neuron n : l.getNeurons()) {
-				List<Synapse> synapses = n.getOutputSynapses();
+				List<Synapse> synapses = n.getOutgoingSynapses();
 				for (Synapse s : synapses) {
 					System.out.println(s);
 				}

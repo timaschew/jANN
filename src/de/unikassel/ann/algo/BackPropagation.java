@@ -10,6 +10,11 @@ import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.Synapse;
 
 public class BackPropagation {
+
+	private final static Double LEARN_RATE = 0.15;
+	private final static Double MOMENTUM = 0.3;
+	private final static Integer PRINT_FREQ = 1000000;
+	private static Integer stepCounter = 0;
 	
 	public static void train(Network net, DataPairSet set) {
 		for (DataPair pair : set.getPairs()) {
@@ -22,10 +27,9 @@ public class BackPropagation {
 		forwardStep(net, pair);
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append("SOLL / IST\n");
 		int index = 0;
 		for (Neuron n : net.getOutputLayer().getNeurons()) {
-			sb.append(n.getActivationValue());
+			sb.append(n.getOutputValue());
 			sb.append( " / ");
 			sb.append(pair.getIdeal()[index]);
 			sb.append("\n");
@@ -44,14 +48,18 @@ public class BackPropagation {
 		for (Layer l : net.getLayers()) {
 			for (Neuron n : l.getNeurons()) {
 				// calculate netnput (not for input layer)
-				if (l.equals(net.getInputLayer()) == false) {
+				if (l.equals(net.getInputLayer())) {
+					continue;
+				} else {
 					// calculate netnput
-					List<Synapse> synapseList = n.getInputSynapses();
+					List<Synapse> synapseList = n.getIncomingSynapses();
 					Double sum = 0.0d;
 					for (Synapse s : synapseList) {
-						sum += s.getWeight() * s.getFromNeuron().getActivationValue();
+						sum += s.getWeight() * s.getFromNeuron().getOutputValue();
 					}
-					n.setInputValue(sum);
+					if (n.isBias() == false) {
+						n.setInputValue(sum);
+					}
 				} 
 				n.activate(); // activate neurons for all layers
 			}
@@ -60,9 +68,6 @@ public class BackPropagation {
 	
 
 
-	private final static Double LEARN_RATE = 0.350;
-	private final static Double MOMENTUM = 0.8;
-	
 	// learnRate * (delta rn) * s + momentum * w
 	// W(D)[2][1][1] = L * (D)[3][1] * N[2][1] + M * this(t-1)
 	
@@ -80,9 +85,10 @@ public class BackPropagation {
 				calculateError(l);
 			}
 			
-			if (net.getInputLayer().equals(l) == false) {
-				calculateWeightDeltaAndUpdateWeights(l);
+			if (net.getInputLayer().equals(l)) {
+				continue;
 			}
+			calculateWeightDeltaAndUpdateWeights(l);
 			
 		}
 	}
@@ -92,35 +98,36 @@ public class BackPropagation {
 		Double[] ideal = pair.getIdeal();
 		for (int i=0; i<ideal.length; i++) {
 			Neuron n = neuronList.get(i);
-			Double o = n.getActivationValue();
+			Double o = n.getOutputValue();
 			Double t = ideal[i];
 			// ((t - o) * o * (1 - o)
-			double error = (t-o) * o * (1-o);
-			n.setError(error);
+			double errorFactor = t-o;
+			double delta = o * (1-o) * errorFactor;
+			n.setDelta(delta);
+			if (stepCounter % PRINT_FREQ == 0) {
+				System.err.println(n.toString()+" error = "+delta);
+			}
+			stepCounter++;
 		}
 	}
 	
 	private static void calculateError(Layer currentLayer) {
-		double sum = 0.d;
 		for (Neuron n : currentLayer.getNeurons()) {
-			for (Synapse s : n.getOutputSynapses()) {
-				sum += s.getWeight() * s.getToNeuron().getError();
+			double errorFactor = 0.d;
+			for (Synapse s : n.getOutgoingSynapses()) {
+				errorFactor += (s.getWeight() * s.getToNeuron().getDelta());
 			}
-			Double o = n.getActivationValue();
-			double delta = o * ( 1 - o) * sum;
-			n.setError(delta);
+			Double o = n.getOutputValue();
+			double delta = o * ( 1 - o) * errorFactor;
+			n.setDelta(delta);
 		}
 	}
 
 	private static void calculateWeightDeltaAndUpdateWeights(Layer l) {
-		Layer prevLayer = l.getPrevLayer();
-		if (prevLayer == null) {
-			throw new NullPointerException("prev layer is null");
-		}
 		for (Neuron n : l.getNeurons()) {
-			for (Synapse s : n.getInputSynapses()) {
+			for (Synapse s : n.getIncomingSynapses()) {
 				Double oldDeltaWeight = s.getDeltaWeight();
-				double delta = LEARN_RATE * s.getToNeuron().getError() * s.getFromNeuron().getActivationValue() + MOMENTUM * oldDeltaWeight;
+				double delta = LEARN_RATE * s.getToNeuron().getDelta() * s.getFromNeuron().getOutputValue() + MOMENTUM * oldDeltaWeight;
 				s.setDeltaWeight(delta);
 				Double oldWeight = s.getWeight();
 				s.setWeight(oldWeight+delta);

@@ -14,7 +14,7 @@ public class BackPropagationTest {
 	@Test
 	public void testForwardPass() {
 		
-		Network net = NetworkFactory.createNetwork(2, new int[]{3}, 1, new SigmoidFunction(), false);
+		Network net = NetworkFactory.createNetwork(2, new int[]{2}, 1, new SigmoidFunction(), true);
 		
 		DataPair pair1 = new DataPair(new Double[] {0d,0d}, new Double[]{0d});
 		DataPair pair2 = new DataPair(new Double[] {0d,1d}, new Double[]{1d});
@@ -33,10 +33,11 @@ public class BackPropagationTest {
 		BackPropagation.backwardStep(net, pair1);
 		net.printSynapses();
 		
-		for (int i=0; i<10000; i++) {
+		for (int i=0; i<50000; i++) {
 			BackPropagation.train(net, set);
 		}
 		
+		System.out.println();
 		BackPropagation.printStep(net, pair1);
 		BackPropagation.printStep(net, pair2);
 		BackPropagation.printStep(net, pair3);

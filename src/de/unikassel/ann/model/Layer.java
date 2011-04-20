@@ -12,6 +12,8 @@ public class Layer {
 	private List<Neuron> neurons;
 
 	private Network network;
+
+	private boolean layerWithBias;
 	
 	public Layer() {
 		neurons = new ArrayList<Neuron>();
@@ -45,7 +47,7 @@ public class Layer {
 		sb.append("]");
 		sb.append(" ");
 		sb.append(neurons.size());
-		sb.append(" neurons");
+		sb.append(" neurons\n");
 		
 		return sb.toString();
 	}
@@ -74,6 +76,15 @@ public class Layer {
 	
 	public Network getNet() {
 		return network;
+	}
+
+	public boolean hasBias() {
+		return layerWithBias;
+	}
+
+	public void setBias(boolean bias) {
+		layerWithBias = bias;
+		
 	}
 
 

@@ -14,21 +14,21 @@ public class Synapse {
 	
 	
 	public Synapse(Neuron fromNeuron, Neuron toNeuron) {
-		weight = new Random().nextDouble();
+		weight = (2 * new Random().nextDouble()) -1;
 		setFromNeuron(fromNeuron);
 		setToNeuron(toNeuron);
 	}
 
 	public void setFromNeuron(Neuron n) {
 		this.from = n;
-		if ((n.getOutputSynapses() != null && n.getOutputSynapses().contains(this)) == false) {
-			n.addOutputSynapse(this);
+		if ((n.getOutgoingSynapses() != null && n.getOutgoingSynapses().contains(this)) == false) {
+			n.addOutgoingSynapse(this);
 		}
 	}
 	public void setToNeuron(Neuron n) {
 		this.to = n;
-		if ((n.getInputSynapses() != null && n.getInputSynapses().contains(this)) == false) {
-			n.addInputSynapse(this);
+		if ((n.getIncomingSynapses() != null && n.getIncomingSynapses().contains(this)) == false) {
+			n.addIncomingSynapse(this);
 		}
 	}
 	

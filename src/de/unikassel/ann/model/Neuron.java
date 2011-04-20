@@ -11,60 +11,76 @@ public class Neuron {
 	
 	private ActivationFunction function;
 
-	private Double activationValue;
+	private Double outputValue;
 	
 	private Double inputValue;
 	
-	private Double error;
+	private Double delta;
 	
-	private List<Synapse> inputSynapses;
+	private List<Synapse> incomingSynapses;
 	
-	private List<Synapse> outputSynapses;
-	
-	public Neuron(ActivationFunction function, Double inputValue) {
-		this.function = function;
-		this.inputValue = inputValue;
-		inputSynapses = new ArrayList<Synapse>();
-		outputSynapses = new ArrayList<Synapse>();
+	private List<Synapse> outgoingSynapses;
 
+	private boolean bias;
+	
+	public Neuron(ActivationFunction standardFunc, double val, boolean bias) {
+		this.inputValue = val;
+		this.bias = bias;
+		if (bias) {
+			inputValue = null;
+		}
+		this.function = standardFunc;
+		incomingSynapses = new ArrayList<Synapse>();
+		outgoingSynapses = new ArrayList<Synapse>();
 	}
 	
-	public Neuron(ActivationFunction function) {
-		this(function, -1d);
-	}
-
-	public List<Synapse> getInputSynapses() {
-		return inputSynapses;
-	}
+//	public Neuron(ActivationFunction function, Double inputValue) {
+//		this(function, inputValue, false);
+//	}
 	
-	public List<Synapse> getOutputSynapses() {
-		return outputSynapses;
-	}
-
-	public Double getActivationValue() {
-		return activationValue;
+	public Neuron(ActivationFunction function, boolean bias) {
+		this(function, 0.0d, bias);
 	}
 
-	public void setInputValue(Double value) {
-		inputValue = value;
+	public List<Synapse> getIncomingSynapses() {
+		return incomingSynapses;
 	}
 	
-	public void addOutputSynapse(Synapse synapse) {
-		outputSynapses.add(synapse);
+	public List<Synapse> getOutgoingSynapses() {
+		return outgoingSynapses;
+	}
+
+	public void setInputValue(Double val) {
+		if (bias) {
+			throw new IllegalAccessError("cannot set input value for bias neuron");
+		}
+		inputValue = val;
+	}
+	public Double getOutputValue() {
+		activate();
+		return outputValue;
+	}
+
+	public void addOutgoingSynapse(Synapse synapse) {
+		outgoingSynapses.add(synapse);
 		if ((synapse.getFromNeuron() != null && synapse.getFromNeuron().equals(this)) == false) {
 			synapse.setFromNeuron(this);
 		}
 	}
 	
-	public void addInputSynapse(Synapse synapse) {
-		inputSynapses.add(synapse);
+	public void addIncomingSynapse(Synapse synapse) {
+		incomingSynapses.add(synapse);
 		if ((synapse.getToNeuron() != null && synapse.getToNeuron().equals(this)) == false) {
 			synapse.setToNeuron(this);
 		}
 	}
 	
-	public void setError(double error) {
-		this.error = error;
+	/**
+	 * Sets the delta or error value
+	 * @param error
+	 */
+	public void setDelta(double error) {
+		this.delta = error;
 	}
 
 	/**
@@ -72,7 +88,11 @@ public class Neuron {
 	 * activatinoValue = activationFunction(value)
 	 */
 	public void activate() {
-		activationValue = function.calc(inputValue);
+		if (bias) {
+			outputValue = 1.0d;
+		} else {
+			outputValue = function.calc(inputValue);
+		}
 	}
 	
 
@@ -98,12 +118,13 @@ public class Neuron {
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append(getPosition());
-		sb.append(" inputValue=  ");
+		sb.append(bias ? " (b)" : "");
+		sb.append(" inputValue =  ");
 		
 		sb.append(inputValue == null ? "N/A" : inputValue);
 		sb.append(" / f(x) = ");
-		sb.append(activationValue == null ? "N/A" : activationValue);
-		
+		sb.append(outputValue == null ? "N/A" : outputValue);
+		sb.append("\n");
 		return sb.toString();
 	}
 	
@@ -119,8 +140,15 @@ public class Neuron {
 		return sb.toString();
 	}
 
-	public double getError() {
-		return error;
+	/**
+	 * @return the delta or error
+	 */
+	public double getDelta() {
+		return delta;
+	}
+
+	public boolean isBias() {
+		return bias;
 	}
 
 

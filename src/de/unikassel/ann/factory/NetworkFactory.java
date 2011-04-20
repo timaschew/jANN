@@ -21,7 +21,7 @@ public class NetworkFactory {
 			Layer currentHiddenLayer = createLayer(hiddenCount[i], standardFunc, bias);
 			net.addLayer(currentHiddenLayer);
 		}
-		Layer outputLayer = createLayer(outputCount, standardFunc, bias);
+		Layer outputLayer = createLayer(outputCount, standardFunc, false); // no bias for output layer
 		net.addLayer(outputLayer);
 
 		net.finalizeStructure();
@@ -31,8 +31,12 @@ public class NetworkFactory {
 	public static Layer createLayer(int neuronCount, ActivationFunction standardFunc, boolean bias) {
 		
 		Layer l = new Layer();
+		l.setBias(bias);
+		if (bias) {
+			l.addNeuron(new Neuron(standardFunc, bias));
+		}
 		for (int i=0; i<neuronCount; i++) {
-			Neuron n = new Neuron(standardFunc);
+			Neuron n = new Neuron(standardFunc, false);
 			l.addNeuron(n);
 		}
 		
