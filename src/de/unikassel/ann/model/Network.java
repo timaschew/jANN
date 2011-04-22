@@ -67,7 +67,7 @@ public class Network {
 			throw new IllegalArgumentException("input layer count != input.lenght");
 		}
 		for (int i=biasOffset; i<neuronList.size(); i++) {
-			neuronList.get(i).setInputValue(input[i-biasOffset]);
+			neuronList.get(i).setOutputValue(input[i-biasOffset]);
 		}
 	}
 

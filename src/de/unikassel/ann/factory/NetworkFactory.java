@@ -31,9 +31,8 @@ public class NetworkFactory {
 	public static Layer createLayer(int neuronCount, ActivationFunction standardFunc, boolean bias) {
 		
 		Layer l = new Layer();
-		l.setBias(bias);
 		if (bias) {
-			l.addNeuron(new Neuron(standardFunc, bias));
+			l.addNeuron(new Neuron(standardFunc, true));
 		}
 		for (int i=0; i<neuronCount; i++) {
 			Neuron n = new Neuron(standardFunc, false);

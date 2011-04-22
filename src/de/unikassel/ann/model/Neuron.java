@@ -12,9 +12,7 @@ public class Neuron {
 	private ActivationFunction function;
 
 	private Double outputValue;
-	
-	private Double inputValue;
-	
+		
 	private Double delta;
 	
 	private List<Synapse> incomingSynapses;
@@ -23,20 +21,16 @@ public class Neuron {
 
 	private boolean bias;
 	
-	public Neuron(ActivationFunction standardFunc, double val, boolean bias) {
-		this.inputValue = val;
+	public Neuron(ActivationFunction standardFunc, double outputValue, boolean bias) {
+		this.outputValue = outputValue;
 		this.bias = bias;
 		if (bias) {
-			inputValue = null;
+			outputValue = 1.0d;
 		}
 		this.function = standardFunc;
 		incomingSynapses = new ArrayList<Synapse>();
 		outgoingSynapses = new ArrayList<Synapse>();
 	}
-	
-//	public Neuron(ActivationFunction function, Double inputValue) {
-//		this(function, inputValue, false);
-//	}
 	
 	public Neuron(ActivationFunction function, boolean bias) {
 		this(function, 0.0d, bias);
@@ -50,14 +44,13 @@ public class Neuron {
 		return outgoingSynapses;
 	}
 
-	public void setInputValue(Double val) {
+	public void setOutputValue(Double val) {
 		if (bias) {
 			throw new IllegalAccessError("cannot set input value for bias neuron");
 		}
-		inputValue = val;
+		outputValue = val;
 	}
 	public Double getOutputValue() {
-		activate();
 		return outputValue;
 	}
 
@@ -84,14 +77,14 @@ public class Neuron {
 	}
 
 	/**
-	 * Calculates the activation function with the value and set activatinoValue<br>
-	 * activatinoValue = activationFunction(value)
+	 * Calculates the activation function with the value and set the result as outpuvalue<br>
+	 * f(val) = {@link #outputValue}
 	 */
-	public void activate() {
+	public void activate(Double val) {
 		if (bias) {
 			outputValue = 1.0d;
 		} else {
-			outputValue = function.calc(inputValue);
+			outputValue = function.calc(val);
 		}
 	}
 	
@@ -118,11 +111,9 @@ public class Neuron {
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append(getPosition());
-		sb.append(bias ? " (b)" : "");
-		sb.append(" inputValue =  ");
+		sb.append(bias ? " (B)" : "");
 		
-		sb.append(inputValue == null ? "N/A" : inputValue);
-		sb.append(" / f(x) = ");
+		sb.append("output = ");
 		sb.append(outputValue == null ? "N/A" : outputValue);
 		sb.append("\n");
 		return sb.toString();

@@ -11,8 +11,8 @@ import de.unikassel.ann.model.Synapse;
 
 public class BackPropagation {
 
-	private final static Double LEARN_RATE = 0.15;
-	private final static Double MOMENTUM = 0.3;
+	private final static Double LEARN_RATE = 0.35;
+	private final static Double MOMENTUM = 0.8;
 	private final static Integer PRINT_FREQ = 1000000;
 	private static Integer stepCounter = 0;
 	
@@ -55,13 +55,12 @@ public class BackPropagation {
 					List<Synapse> synapseList = n.getIncomingSynapses();
 					Double sum = 0.0d;
 					for (Synapse s : synapseList) {
-						sum += s.getWeight() * s.getFromNeuron().getOutputValue();
+						sum += (s.getWeight() * s.getFromNeuron().getOutputValue());
 					}
 					if (n.isBias() == false) {
-						n.setInputValue(sum);
+						n.activate(sum);
 					}
 				} 
-				n.activate(); // activate neurons for all layers
 			}
 		}
 	}
@@ -79,17 +78,15 @@ public class BackPropagation {
 	public static void backwardStep(Network net, DataPair pair) {
 		List<Layer> reversedLayers = net.reverse();
 		for (Layer l : reversedLayers) {
+			if (l.equals(net.getInputLayer())) {
+				break;
+			}
 			if (l.equals(net.getOutputLayer())) {
 				calculateOutputError(l, pair);
 			} else {
 				calculateError(l);
 			}
-			
-			if (net.getInputLayer().equals(l)) {
-				continue;
-			}
 			calculateWeightDeltaAndUpdateWeights(l);
-			
 		}
 	}
 	
@@ -126,11 +123,12 @@ public class BackPropagation {
 	private static void calculateWeightDeltaAndUpdateWeights(Layer l) {
 		for (Neuron n : l.getNeurons()) {
 			for (Synapse s : n.getIncomingSynapses()) {
+				// TODO: check calculation is in correct loop
 				Double oldDeltaWeight = s.getDeltaWeight();
 				double delta = LEARN_RATE * s.getToNeuron().getDelta() * s.getFromNeuron().getOutputValue() + MOMENTUM * oldDeltaWeight;
-				s.setDeltaWeight(delta);
 				Double oldWeight = s.getWeight();
 				s.setWeight(oldWeight+delta);
+				s.setDeltaWeight(delta);
 			}
 		}
 	}

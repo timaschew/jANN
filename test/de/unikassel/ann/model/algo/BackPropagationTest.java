@@ -22,18 +22,18 @@ public class BackPropagationTest {
 		DataPair pair4 = new DataPair(new Double[] {1d,1d}, new Double[]{0d});
 		
 		DataPairSet set = new DataPairSet();
-		set.addPair(pair1);
-		set.addPair(pair2);
-		set.addPair(pair3);
 		set.addPair(pair4);
+		set.addPair(pair3);
+		set.addPair(pair2);
+		set.addPair(pair1);
 		
-		BackPropagation.forwardStep(net, pair1);
+//		BackPropagation.forwardStep(net, pair1);
 		net.printSynapses();
+//		
+//		BackPropagation.backwardStep(net, pair1);
+//		net.printSynapses();
 		
-		BackPropagation.backwardStep(net, pair1);
-		net.printSynapses();
-		
-		for (int i=0; i<50000; i++) {
+		for (int i=0; i<1000; i++) {
 			BackPropagation.train(net, set);
 		}
 		

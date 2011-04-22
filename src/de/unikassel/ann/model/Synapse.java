@@ -14,7 +14,7 @@ public class Synapse {
 	
 	
 	public Synapse(Neuron fromNeuron, Neuron toNeuron) {
-		weight = (2 * new Random().nextDouble()) -1;
+		weight = (new Random().nextDouble() * 1) - 1;
 		setFromNeuron(fromNeuron);
 		setToNeuron(toNeuron);
 	}

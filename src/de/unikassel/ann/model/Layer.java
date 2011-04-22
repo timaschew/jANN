@@ -3,11 +3,13 @@ package de.unikassel.ann.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.text.Position.Bias;
+
 import com.sun.xml.internal.txw2.IllegalAnnotationException;
 
 public class Layer {
 	
-	private Integer index = -1;
+	private int index = -1;
 	
 	private List<Neuron> neurons;
 
@@ -20,10 +22,16 @@ public class Layer {
 	}
 	
 	public void addNeuron(final Neuron n) {
+		if (layerWithBias && n.isBias()) {
+			throw new IllegalArgumentException("second bias neuron not allowed");
+		}
 		n.setIndex(neurons.size());
 		neurons.add(n);
 		if ((n.getLayer() != null && n.getLayer().equals(this)) == false) {
 			n.setLayer(this);
+		}
+		if (n.isBias()) {
+			layerWithBias = true;
 		}
 	}
 	
@@ -45,6 +53,7 @@ public class Layer {
 		sb.append("[");
 		sb.append(index);
 		sb.append("]");
+		sb.append(layerWithBias ? " (B)" : "");
 		sb.append(" ");
 		sb.append(neurons.size());
 		sb.append(" neurons\n");
@@ -52,7 +61,7 @@ public class Layer {
 		return sb.toString();
 	}
 
-	public Integer getIndex() {
+	public int getIndex() {
 		return index;
 	}
 
