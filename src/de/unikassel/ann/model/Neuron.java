@@ -31,7 +31,7 @@ public class Neuron {
 		this.outputValue = outputValue;
 		this.bias = bias;
 		if (bias) {
-			outputValue = 1.0d;
+			this.outputValue = 1.0d;
 		}
 		this.function = standardFunc;
 		incomingSynapses = new ArrayList<Synapse>();

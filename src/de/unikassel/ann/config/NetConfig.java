@@ -103,7 +103,7 @@ public class NetConfig {
 	public void printStats() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("error = ");
-		NumberFormat fmt = new DecimalFormat("#0.00000");
+		NumberFormat fmt = new DecimalFormat("0.00000");
 		sb.append(fmt.format(trainingModule.getCurrentError()));
 		sb.append("\n");
 		sb.append("learnSteps = ");

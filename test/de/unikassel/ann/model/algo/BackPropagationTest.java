@@ -15,7 +15,7 @@ public class BackPropagationTest {
 	@Test
 	public void testForwardPass() {
 		
-		NetConfig netConfig = NetworkFactory.createXorNet(4*1000);
+		NetConfig netConfig = NetworkFactory.createXorNet(1000);
 		Network net = netConfig.getNetwork();
 		
 		DataPairSet trainSet = new DataPairSet();
