@@ -3,10 +3,6 @@ package de.unikassel.ann.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.text.Position.Bias;
-
-import com.sun.xml.internal.txw2.IllegalAnnotationException;
-
 public class Layer {
 	
 	private int index = -1;
@@ -79,7 +75,7 @@ public class Layer {
 	public void setNet(Network net) {
 		network = net;
 		if (net.getLayers().contains(this) == false) {
-			throw new IllegalAnnotationException("should use addLayer() in Network class");
+			throw new IllegalAccessError("should use addLayer() in Network class");
 		}
 	}
 	

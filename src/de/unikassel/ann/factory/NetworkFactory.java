@@ -1,45 +1,45 @@
 package de.unikassel.ann.factory;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import de.unikassel.ann.model.ActivationFunction;
-import de.unikassel.ann.model.Layer;
+import de.unikassel.ann.algo.BackPropagation;
+import de.unikassel.ann.config.NetConfig;
+import de.unikassel.ann.model.DataPair;
+import de.unikassel.ann.model.DataPairSet;
 import de.unikassel.ann.model.Network;
-import de.unikassel.ann.model.Neuron;
+import de.unikassel.ann.model.func.ActivationFunction;
+import de.unikassel.ann.model.func.SigmoidFunction;
+import de.unikassel.ann.strategy.MaxLearnIterationsStrategy;
+import de.unikassel.ann.strategy.MinErrorStrategy;
 
 public class NetworkFactory {
 	
-	
-	public static Network createNetwork(int inputCount, int[] hiddenCount, int outputCount, ActivationFunction standardFunc, boolean bias) {
-		
-		Network net = new Network();
-		
-		Layer inputLayer = createLayer(inputCount, standardFunc, bias);
-		net.addLayer(inputLayer);
-		for (int i=0; i<hiddenCount.length; i++) {
-			Layer currentHiddenLayer = createLayer(hiddenCount[i], standardFunc, bias);
-			net.addLayer(currentHiddenLayer);
-		}
-		Layer outputLayer = createLayer(outputCount, standardFunc, false); // no bias for output layer
-		net.addLayer(outputLayer);
-
-		net.finalizeStructure();
-		return net;
+	public static NetConfig createSimpleNet(int input, int hidden[], int output, boolean bias) {
+		return createSimpleNet(input, hidden, output, bias, new SigmoidFunction());
 	}
 	
-	public static Layer createLayer(int neuronCount, ActivationFunction standardFunc, boolean bias) {
+	public static NetConfig createSimpleNet(int input, int hidden[], int output, boolean bias, ActivationFunction func) {
+		NetConfig config = new NetConfig();
 		
-		Layer l = new Layer();
-		if (bias) {
-			l.addNeuron(new Neuron(standardFunc, true));
+		config.addLayer(input, bias, func); // input 
+		for (int i=0; i<hidden.length; i++) {
+			config.addLayer(hidden[i], bias, func); // hidden
 		}
-		for (int i=0; i<neuronCount; i++) {
-			Neuron n = new Neuron(standardFunc, false);
-			l.addNeuron(n);
-		}
+		config.addLayer(output, false, func); // output
 		
-		return l;
+		BackPropagation backProp = new BackPropagation();
+		config.addTrainingModule(backProp);
+		config.addWorkModule(backProp);
+		config.addOrUpdateExisting(new MaxLearnIterationsStrategy(1000));
+		
+		config.buildNetwork();
+		return config;
 	}
+	
+	public static NetConfig createXorNet(int iterations) {
+		
+		NetConfig config = createSimpleNet(2, new int[]{2}, 1, true, new SigmoidFunction());
+		config.addOrUpdateExisting(new MaxLearnIterationsStrategy(iterations));
+		return config;
+	}
+	
 
 }

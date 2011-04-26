@@ -1,4 +1,4 @@
-package de.unikassel.ann.model;
+package de.unikassel.ann.model.func;
 
 public interface ActivationFunction {
 	

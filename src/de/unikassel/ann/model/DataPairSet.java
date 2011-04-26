@@ -1,5 +1,7 @@
 package de.unikassel.ann.model;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +11,8 @@ import org.apache.commons.lang.ArrayUtils;
  * @author anton
  * 
  * Klasse um ein Datensatz von Ein- und Ausgaben für das KNN zu strukturieren.<br>
- * Anzahl an Eingab- und Ausgabedaten bzw. Datensätzen (äußere Dimension) muss gleich sein.<br>
+ * Kann sowohl für als Trainingdata set, als auch als Testdata set verwendet werden.<br>
+ * Anzahl an Eingabe- und Ausgabedaten bzw. Datensätzen (äußere Dimension) muss gleich sein.<br>
  * Die innere Dimension (Anzahl der Neuronen) kann sich unterscheiden
  *
  */
@@ -165,6 +168,23 @@ public class DataPairSet {
 		addRow(pair.getInput(), pair.getIdeal());
 	}
 
-
+	@Override
+	public String toString() {
+		NumberFormat fmt = new DecimalFormat("#.####");
+		StringBuilder sb = new StringBuilder();
+		for (DataPair p : getPairs()) {
+			for (Double d : p.getInput()) {
+				sb.append(fmt.format(d));
+				sb.append(" ");
+			}
+			sb.append(" --> ");
+			for (Double d : p.getIdeal()) {
+				sb.append(fmt.format(d));
+				sb.append(" ");
+			}
+			sb.append("\n");
+		}
+		return sb.toString();
+	}
 	
 }

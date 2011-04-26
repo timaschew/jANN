@@ -17,5 +17,7 @@ public class DataPair {
 	public Double[] getIdeal() {
 		return ideal;
 	}
+	
+	
 
 }

@@ -3,46 +3,72 @@ package de.unikassel.ann.model.algo;
 import org.junit.Test;
 
 import de.unikassel.ann.algo.BackPropagation;
+import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.factory.NetworkFactory;
 import de.unikassel.ann.model.DataPair;
 import de.unikassel.ann.model.DataPairSet;
 import de.unikassel.ann.model.Network;
-import de.unikassel.ann.model.SigmoidFunction;
+import de.unikassel.ann.model.func.SigmoidFunction;
 
 public class BackPropagationTest {
 	
 	@Test
 	public void testForwardPass() {
 		
-		Network net = NetworkFactory.createNetwork(2, new int[]{2}, 1, new SigmoidFunction(), true);
+		NetConfig netConfig = NetworkFactory.createXorNet(4*1000);
+		Network net = netConfig.getNetwork();
 		
-		DataPair pair1 = new DataPair(new Double[] {0d,0d}, new Double[]{0d});
-		DataPair pair2 = new DataPair(new Double[] {0d,1d}, new Double[]{1d});
-		DataPair pair3 = new DataPair(new Double[] {1d,0d}, new Double[]{1d});
-		DataPair pair4 = new DataPair(new Double[] {1d,1d}, new Double[]{0d});
+		DataPairSet trainSet = new DataPairSet();
+		trainSet.addPair(new DataPair(new Double[] {0.0, 0.0}, new Double[] {0.0}));
+		trainSet.addPair(new DataPair(new Double[] {0.0, 1.0}, new Double[] {1.0}));
+		trainSet.addPair(new DataPair(new Double[] {1.0, 0.0}, new Double[] {1.0}));
+		trainSet.addPair(new DataPair(new Double[] {1.0, 1.0}, new Double[] {0.0}));
 		
-		DataPairSet set = new DataPairSet();
-		set.addPair(pair4);
-		set.addPair(pair3);
-		set.addPair(pair2);
-		set.addPair(pair1);
+		netConfig.getTrainingModule().train(trainSet);
 		
-//		BackPropagation.forwardStep(net, pair1);
-		net.printSynapses();
-//		
-//		BackPropagation.backwardStep(net, pair1);
-//		net.printSynapses();
+		DataPairSet testSet = new DataPairSet();
+		testSet.addPair(new DataPair(new Double[] {0.0, 0.0}, new Double[] {Double.NaN}));
+		testSet.addPair(new DataPair(new Double[] {0.0, 1.0}, new Double[] {Double.NaN}));
+		testSet.addPair(new DataPair(new Double[] {1.0, 0.0}, new Double[] {Double.NaN}));
+		testSet.addPair(new DataPair(new Double[] {1.0, 1.0}, new Double[] {Double.NaN}));
 		
-		for (int i=0; i<1000; i++) {
-			BackPropagation.train(net, set);
-		}
+		netConfig.getWorkingModule().work(net, testSet);
 		
-		System.out.println();
-		BackPropagation.printStep(net, pair1);
-		BackPropagation.printStep(net, pair2);
-		BackPropagation.printStep(net, pair3);
-		BackPropagation.printStep(net, pair4);
+		netConfig.printStats();
+		System.out.println(testSet);
+
+	}
+	
+	@Test
+	public void testForwardStepWithSynapseWeights() {
 		
+		NetConfig netConfig = NetworkFactory.createSimpleNet(2, new int[] {2}, 1, true, new SigmoidFunction());
+		Network net = netConfig.getNetwork();
+		
+		Double[][][] x = new Double[3][3][3];
+		
+		x[0][0][1] = 6.145;
+		x[0][0][2] = 1.858;
+		x[0][1][1] = -4.171;
+		x[0][1][2] = -4.930;
+		x[0][2][1] = -4.187;
+		x[0][2][2] = -4.925;
+		x[1][0][0] = -3.078;
+		x[1][1][0] = 6.443;
+		x[1][2][0] = -7.144;
+		
+		net.setSynapseMatrix(x);
+		
+		DataPairSet testSet = new DataPairSet();
+		testSet.addPair(new DataPair(new Double[] {0.0, 0.0}, new Double[] {Double.NaN}));
+		testSet.addPair(new DataPair(new Double[] {0.0, 1.0}, new Double[] {Double.NaN}));
+		testSet.addPair(new DataPair(new Double[] {1.0, 0.0}, new Double[] {Double.NaN}));
+		testSet.addPair(new DataPair(new Double[] {1.0, 1.0}, new Double[] {Double.NaN}));
+		
+		netConfig.getWorkingModule().work(net, testSet);
+		
+		netConfig.printStats();
+		System.out.println(testSet);
 	}
 
 }

@@ -3,6 +3,12 @@ package de.unikassel.ann.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.unikassel.ann.model.func.ActivationFunction;
+
+/**
+ * @author anton
+ *
+ */
 public class Neuron {
 
 	private Layer layer;
@@ -78,7 +84,7 @@ public class Neuron {
 
 	/**
 	 * Calculates the activation function with the value and set the result as outpuvalue<br>
-	 * f(val) = {@link #outputValue}
+	 * {@link #outputValue} = f (val)
 	 */
 	public void activate(Double val) {
 		if (bias) {
@@ -104,7 +110,21 @@ public class Neuron {
 	public void setIndex(int size) {
 		index = size;
 	}
+	
+	public Integer getIndex() {
+		return index;
+	}
 
+	/**
+	 * @return the delta or error
+	 */
+	public double getDelta() {
+		return delta;
+	}
+
+	public boolean isBias() {
+		return bias;
+	}
 
 	@Override
 	public String toString() {
@@ -130,17 +150,5 @@ public class Neuron {
 		sb.append("]");
 		return sb.toString();
 	}
-
-	/**
-	 * @return the delta or error
-	 */
-	public double getDelta() {
-		return delta;
-	}
-
-	public boolean isBias() {
-		return bias;
-	}
-
 
 }
