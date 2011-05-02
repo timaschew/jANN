@@ -13,16 +13,29 @@ public class FrameRenderer {
 	 * @param cube cube with coordinates
 	 * @param w world coordinate
 	 */
-	public static void paint(Graphics2D g2d, Cube cube, int[] offset2D) {
+	public static void paint(Graphics2D g2d, Cube cube, int[] offset2D, Point3D eye) {
 		int wx = offset2D[0];
 		int wy = offset2D[1];
 		for (Point3D[] pa : cube.lineList) {
-			g2d.drawLine((int)pa[0].x + wx, (int)pa[0].y + wy,
-					(int)pa[1].x + wx, (int)pa[1].y + wy);
+			double fromZ = pa[0].z;
+			double toZ = pa[1].z;
+			int fromX = (int) (pa[0].x + wx);
+			int fromY = (int) (pa[0].y + wy);
+			int toX = (int) (pa[1].x + wx);
+			int toY = (int) (pa[1].y + wy);
+			if (eye != null && eye.z != 0) {
+				fromX = (int) ((fromX - eye.x) * (eye.z / fromZ));
+				fromY = (int) ((fromY - eye.y) * (eye.z / fromZ));
+				toX = (int) ((toX - eye.x) * (eye.z / toZ));
+				toY = (int) ((toY - eye.y) * (eye.z / toZ));
+			}
+			g2d.drawLine(fromX, fromY, toX, toY);
 		}       
+		// x = dx - ex * ez / dz
+		// y = dy - ey * ez / dz
 	}
 	
-	public static void paint(Graphics2D g2d, Plane plane, int[] offset2D) {
+	public static void paint(Graphics2D g2d, Plane plane, int[] offset2D, Point3D eye) {
 		int wx = offset2D[0];
 		int wy = offset2D[1];
 		for (Point3D[] pa : plane.lineList) {

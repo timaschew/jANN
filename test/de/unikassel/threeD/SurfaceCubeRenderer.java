@@ -13,7 +13,7 @@ public class SurfaceCubeRenderer {
 	final static int y = 2;
 	final static int z = 3;
 	
-	static Color bottomColor = Color.CYAN;
+	static Color bottomColor = Color.ORANGE;
 	static Color topColor = Color.YELLOW;
 	static Color frontColor = Color.GREEN;
 	static Color backColor = Color.GRAY;
