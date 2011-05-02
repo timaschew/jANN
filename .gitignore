@@ -1,3 +1,5 @@
 bin
 bin/*.*
 reports/*
+unusedLibs/*
+test/de/unikassel/threeD/misc/*
