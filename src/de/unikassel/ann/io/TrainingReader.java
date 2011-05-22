@@ -90,7 +90,7 @@ public class TrainingReader extends BasicCsvReader {
 				list.add(instance);
 			}
 		} catch (Exception e) {
-			checkEndOfFileAndMarkPosition(e, bufferedReader);
+			checkEndOfFile(e, bufferedReader);
 		}
 		return list;
 	}

@@ -1,7 +1,10 @@
-# config contains 3 parts
-# 1. topology-part
-# 2. synapses-part (weights)
-# 3. training-part (training data)
+# jann-csv format can contain multiple csv parts
+# starting with '#<' and ending with '#>'
+# * topology-part
+# * synapses-part (weights)
+# * training-part (training data)
+# lines starting only with # will be ignored
+# boolean values can be true/false or 1/0
 
 # id = global id in whole net
 # layer 
@@ -22,8 +25,6 @@
 
 # for random value use random class name, value can be empty
 # random class will be found over reflectio in .rand package
-# pass arguments if needed in parenthesis
-# example: SimpleRandomizer(-2,2)
 #<synapses
 "from";"to";"value";"random"
 "0";"4";;"1"

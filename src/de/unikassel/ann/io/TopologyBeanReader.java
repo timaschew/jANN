@@ -46,7 +46,7 @@ public class TopologyBeanReader extends BasicCsvReader {
 				list.add(bean);
 			}
 		} catch (Exception e) {
-			checkEndOfFileAndMarkPosition(e, bufferedReader);
+			checkEndOfFile(e, bufferedReader);
 		}
 		return list;
 	}

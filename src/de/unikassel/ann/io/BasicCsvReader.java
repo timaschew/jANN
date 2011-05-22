@@ -13,14 +13,9 @@ public class BasicCsvReader {
 
 	static protected CsvPreference pref = new CsvPreference('\"', ';', "\r\n");
 	
-	static public boolean checkEndOfFileAndMarkPosition(Exception e, BufferedReader bufferedReader) {
+	static public boolean checkEndOfFile(Exception e, BufferedReader bufferedReader) {
 		if (e instanceof SuperCSVException) {
 			if (((SuperCSVException)e).getCsvContext().lineSource.get(0).toString().equals("#>")) {
-//				try {
-//					bufferedReader.mark(1);
-//				} catch (IOException e1) {
-//					e1.printStackTrace();
-//				}
 				return true;
 			} else {
 				e.printStackTrace();
