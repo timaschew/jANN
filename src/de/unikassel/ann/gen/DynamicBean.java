@@ -6,8 +6,8 @@ package de.unikassel.ann.gen;
 //
 //public class DynamicBean implements TrainingBean {
 //	
-//	private static int outputSize;
-//	private static int inputSize;
+//	private static int outputSize = -1;
+//	private static int inputSize = -1;
 //	private Double[] input;
 //	private Double[] output;
 //	

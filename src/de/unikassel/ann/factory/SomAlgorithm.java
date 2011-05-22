@@ -12,4 +12,10 @@ public class SomAlgorithm implements WorkModule {
 		
 	}
 
+	@Override
+	public boolean validateDataSet(Network net, DataPairSet testData) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

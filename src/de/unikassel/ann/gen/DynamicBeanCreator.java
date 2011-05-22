@@ -36,6 +36,7 @@ public class DynamicBeanCreator implements Constants {
 
 	public void create(OutputStream out) throws IOException {
 		createFields();
+		createInitFieldsWithMinusOne();
 		createStaticSizeSetter();
 		createConstructor();
 		for (int i = 0; i < inputSize; i++) {
@@ -67,6 +68,22 @@ public class DynamicBeanCreator implements Constants {
 	    field = new FieldGen(ACC_PRIVATE, new ArrayType(new ObjectType("java.lang.Double"), 1), "output", _cp);
 	    _cg.addField(field.getField());
 	}
+	
+	private void createInitFieldsWithMinusOne() {
+	    InstructionList il = new InstructionList();
+	    MethodGen method = new MethodGen(ACC_STATIC, Type.VOID, Type.NO_ARGS, new String[] {  }, "<clinit>", className, il, _cp);
+
+	    il.append(new PUSH(_cp, -1));
+	    il.append(_factory.createFieldAccess(className, "outputSize", Type.INT, Constants.PUTSTATIC));
+	    il.append(new PUSH(_cp, -1));
+	    il.append(_factory.createFieldAccess(className, "inputSize", Type.INT, Constants.PUTSTATIC));
+	    il.append(InstructionFactory.createReturn(Type.VOID));
+	    method.setMaxStack();
+	    method.setMaxLocals();
+	    _cg.addMethod(method.getMethod());
+	    il.dispose();
+	}
+	
 
 	private void createConstructor() {
 	    InstructionList il = new InstructionList();
@@ -253,72 +270,72 @@ public class DynamicBeanCreator implements Constants {
 	    InstructionList il = new InstructionList();
 	    MethodGen method = new MethodGen(ACC_PUBLIC, Type.STRING, Type.NO_ARGS, new String[] {  }, "toString", className, il, _cp);
 
-	    InstructionHandle ih_0 = il.append(_factory.createNew("java.text.DecimalFormat"));
+	    il.append(_factory.createNew("java.text.DecimalFormat"));
 	    il.append(InstructionConstants.DUP);
 	    il.append(new PUSH(_cp, "\"#.######\""));
 	    il.append(_factory.createInvoke("java.text.DecimalFormat", "<init>", Type.VOID, new Type[] { Type.STRING }, Constants.INVOKESPECIAL));
-	    il.append(_factory.createStore(Type.OBJECT, 1));
-	    InstructionHandle ih_10 = il.append(_factory.createNew("java.lang.StringBuilder"));
+	    il.append(InstructionFactory.createStore(Type.OBJECT, 1));
+	    il.append(_factory.createNew("java.lang.StringBuilder"));
 	    il.append(InstructionConstants.DUP);
 	    il.append(_factory.createInvoke("java.lang.StringBuilder", "<init>", Type.VOID, Type.NO_ARGS, Constants.INVOKESPECIAL));
-	    il.append(_factory.createStore(Type.OBJECT, 2));
-	    InstructionHandle ih_18 = il.append(new PUSH(_cp, 0));
-	    il.append(_factory.createStore(Type.INT, 3));
-	    InstructionHandle ih_20;
-	    BranchInstruction goto_20 = _factory.createBranchInstruction(Constants.GOTO, null);
-	    ih_20 = il.append(goto_20);
-	    InstructionHandle ih_23 = il.append(_factory.createLoad(Type.OBJECT, 2));
-	    il.append(_factory.createLoad(Type.OBJECT, 1));
-	    il.append(_factory.createLoad(Type.OBJECT, 0));
+	    il.append(InstructionFactory.createStore(Type.OBJECT, 2));
+	    il.append(new PUSH(_cp, 0));
+	    il.append(InstructionFactory.createStore(Type.INT, 3));
+	    
+	    BranchInstruction goto_20 = InstructionFactory.createBranchInstruction(Constants.GOTO, null);
+	    il.append(goto_20);
+	    InstructionHandle ih_23 = il.append(InstructionFactory.createLoad(Type.OBJECT, 2));
+	    il.append(InstructionFactory.createLoad(Type.OBJECT, 1));
+	    il.append(InstructionFactory.createLoad(Type.OBJECT, 0));
 	    il.append(_factory.createFieldAccess(className, "input", new ArrayType(new ObjectType("java.lang.Double"), 1), Constants.GETFIELD));
-	    il.append(_factory.createLoad(Type.INT, 3));
+	    il.append(InstructionFactory.createLoad(Type.INT, 3));
 	    il.append(InstructionConstants.AALOAD);
 	    il.append(_factory.createInvoke("java.text.NumberFormat", "format", Type.STRING, new Type[] { Type.OBJECT }, Constants.INVOKEVIRTUAL));
 	    il.append(_factory.createInvoke("java.lang.StringBuilder", "append", new ObjectType("java.lang.StringBuilder"), new Type[] { Type.STRING }, Constants.INVOKEVIRTUAL));
 	    il.append(InstructionConstants.POP);
-	    InstructionHandle ih_38 = il.append(_factory.createLoad(Type.OBJECT, 2));
+	    il.append(InstructionFactory.createLoad(Type.OBJECT, 2));
 	    il.append(new PUSH(_cp, ";"));
 	    il.append(_factory.createInvoke("java.lang.StringBuilder", "append", new ObjectType("java.lang.StringBuilder"), new Type[] { Type.STRING }, Constants.INVOKEVIRTUAL));
 	    il.append(InstructionConstants.POP);
-	    InstructionHandle ih_45 = il.append(new IINC(3, 1));
-	    InstructionHandle ih_48 = il.append(_factory.createLoad(Type.INT, 3));
-	    il.append(_factory.createLoad(Type.OBJECT, 0));
+	    il.append(new IINC(3, 1));
+	    InstructionHandle ih_48 = il.append(InstructionFactory.createLoad(Type.INT, 3));
+	    il.append(InstructionFactory.createLoad(Type.OBJECT, 0));
 	    il.append(_factory.createFieldAccess(className, "input", new ArrayType(new ObjectType("java.lang.Double"), 1), Constants.GETFIELD));
 	    il.append(InstructionConstants.ARRAYLENGTH);
-	        BranchInstruction if_icmplt_54 = _factory.createBranchInstruction(Constants.IF_ICMPLT, ih_23);
+	        BranchInstruction if_icmplt_54 = InstructionFactory.createBranchInstruction(Constants.IF_ICMPLT, ih_23);
 	    il.append(if_icmplt_54);
-	    InstructionHandle ih_57 = il.append(new PUSH(_cp, 0));
-	    il.append(_factory.createStore(Type.INT, 3));
-	    InstructionHandle ih_59;
-	    BranchInstruction goto_59 = _factory.createBranchInstruction(Constants.GOTO, null);
-	    ih_59 = il.append(goto_59);
-	    InstructionHandle ih_62 = il.append(_factory.createLoad(Type.OBJECT, 2));
-	    il.append(_factory.createLoad(Type.OBJECT, 1));
-	    il.append(_factory.createLoad(Type.OBJECT, 0));
+	    il.append(new PUSH(_cp, 0));
+	    il.append(InstructionFactory.createStore(Type.INT, 3));
+
+	    BranchInstruction goto_59 = InstructionFactory.createBranchInstruction(Constants.GOTO, null);
+	    il.append(goto_59);
+	    InstructionHandle ih_62 = il.append(InstructionFactory.createLoad(Type.OBJECT, 2));
+	    il.append(InstructionFactory.createLoad(Type.OBJECT, 1));
+	    il.append(InstructionFactory.createLoad(Type.OBJECT, 0));
 	    il.append(_factory.createFieldAccess(className, "output", new ArrayType(new ObjectType("java.lang.Double"), 1), Constants.GETFIELD));
-	    il.append(_factory.createLoad(Type.INT, 3));
+	    il.append(InstructionFactory.createLoad(Type.INT, 3));
 	    il.append(InstructionConstants.AALOAD);
 	    il.append(_factory.createInvoke("java.text.NumberFormat", "format", Type.STRING, new Type[] { Type.OBJECT }, Constants.INVOKEVIRTUAL));
 	    il.append(_factory.createInvoke("java.lang.StringBuilder", "append", new ObjectType("java.lang.StringBuilder"), new Type[] { Type.STRING }, Constants.INVOKEVIRTUAL));
 	    il.append(InstructionConstants.POP);
-	    InstructionHandle ih_77 = il.append(_factory.createLoad(Type.OBJECT, 2));
+	    il.append(InstructionFactory.createLoad(Type.OBJECT, 2));
 	    il.append(new PUSH(_cp, ";"));
 	    il.append(_factory.createInvoke("java.lang.StringBuilder", "append", new ObjectType("java.lang.StringBuilder"), new Type[] { Type.STRING }, Constants.INVOKEVIRTUAL));
 	    il.append(InstructionConstants.POP);
-	    InstructionHandle ih_84 = il.append(new IINC(3, 1));
-	    InstructionHandle ih_87 = il.append(_factory.createLoad(Type.INT, 3));
-	    il.append(_factory.createLoad(Type.OBJECT, 0));
+	    il.append(new IINC(3, 1));
+	    InstructionHandle ih_87 = il.append(InstructionFactory.createLoad(Type.INT, 3));
+	    il.append(InstructionFactory.createLoad(Type.OBJECT, 0));
 	    il.append(_factory.createFieldAccess(className, "output", new ArrayType(new ObjectType("java.lang.Double"), 1), Constants.GETFIELD));
 	    il.append(InstructionConstants.ARRAYLENGTH);
 	    il.append(new PUSH(_cp, 1));
 	    il.append(InstructionConstants.ISUB);
-	        BranchInstruction if_icmplt_95 = _factory.createBranchInstruction(Constants.IF_ICMPLT, ih_62);
+	        BranchInstruction if_icmplt_95 = InstructionFactory.createBranchInstruction(Constants.IF_ICMPLT, ih_62);
 	    il.append(if_icmplt_95);
-	    InstructionHandle ih_98 = il.append(_factory.createLoad(Type.OBJECT, 2));
-	    il.append(_factory.createLoad(Type.OBJECT, 1));
-	    il.append(_factory.createLoad(Type.OBJECT, 0));
+	    il.append(InstructionFactory.createLoad(Type.OBJECT, 2));
+	    il.append(InstructionFactory.createLoad(Type.OBJECT, 1));
+	    il.append(InstructionFactory.createLoad(Type.OBJECT, 0));
 	    il.append(_factory.createFieldAccess(className, "output", new ArrayType(new ObjectType("java.lang.Double"), 1), Constants.GETFIELD));
-	    il.append(_factory.createLoad(Type.OBJECT, 0));
+	    il.append(InstructionFactory.createLoad(Type.OBJECT, 0));
 	    il.append(_factory.createFieldAccess(className, "output", new ArrayType(new ObjectType("java.lang.Double"), 1), Constants.GETFIELD));
 	    il.append(InstructionConstants.ARRAYLENGTH);
 	    il.append(new PUSH(_cp, 1));
@@ -327,13 +344,13 @@ public class DynamicBeanCreator implements Constants {
 	    il.append(_factory.createInvoke("java.text.NumberFormat", "format", Type.STRING, new Type[] { Type.OBJECT }, Constants.INVOKEVIRTUAL));
 	    il.append(_factory.createInvoke("java.lang.StringBuilder", "append", new ObjectType("java.lang.StringBuilder"), new Type[] { Type.STRING }, Constants.INVOKEVIRTUAL));
 	    il.append(InstructionConstants.POP);
-	    InstructionHandle ih_119 = il.append(_factory.createLoad(Type.OBJECT, 2));
+	    il.append(InstructionFactory.createLoad(Type.OBJECT, 2));
 	    il.append(new PUSH(_cp, "\n"));
 	    il.append(_factory.createInvoke("java.lang.StringBuilder", "append", new ObjectType("java.lang.StringBuilder"), new Type[] { Type.STRING }, Constants.INVOKEVIRTUAL));
 	    il.append(InstructionConstants.POP);
-	    InstructionHandle ih_126 = il.append(_factory.createLoad(Type.OBJECT, 2));
+	    il.append(InstructionFactory.createLoad(Type.OBJECT, 2));
 	    il.append(_factory.createInvoke("java.lang.StringBuilder", "toString", Type.STRING, Type.NO_ARGS, Constants.INVOKEVIRTUAL));
-	    InstructionHandle ih_130 = il.append(_factory.createReturn(Type.OBJECT));
+		il.append(InstructionFactory.createReturn(Type.OBJECT));
 	    goto_20.setTarget(ih_48);
 	    goto_59.setTarget(ih_87);
 	    method.setMaxStack();

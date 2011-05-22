@@ -36,6 +36,16 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 		}
 	}
 	
+	public boolean validateDataSet(Network net, DataPairSet testData) {
+		DataPair pair = testData.getPairs().get(0);
+		if (pair.getInput().length == net.getInputLayer().getNeurons().size() &&
+				pair.getIdeal().length == net.getOutputLayer().getNeurons().size()) {
+			return true;
+		} else {
+			throw new IllegalArgumentException("test dataset does not match for topology");
+		}
+	}
+	
 	private void forwardStep(Network net, DataPair pair) {
 		
 		if (net.isFinalized() == false) {
@@ -66,6 +76,7 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 	@Override
 	public void train(DataPairSet trainingData) {
 		Network net = config.getNetwork();
+		validateDataSet(net, trainingData);
 		while(true) {
 			
 			for (Strategy s : config.getStrategies()) {

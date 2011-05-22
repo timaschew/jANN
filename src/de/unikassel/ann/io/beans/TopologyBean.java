@@ -5,9 +5,9 @@ public class TopologyBean implements Comparable<TopologyBean> {
 	/* CSV */
 	/* "id";"layer";"bias";"function" */
 	
-	private int layer;
-	private boolean bias;
-	private String function;
+	private int layer = -666;
+	private boolean bias = false;
+	private String function = null;
 	
 	private int id;
 	/**

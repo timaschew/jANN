@@ -1,4 +1,4 @@
-# jann-csv format can contain multiple csv parts
+# jANN-csv format can contain multiple csv parts
 # starting with '#<' and ending with '#>'
 # * topology-part
 # * synapses-part (weights)
@@ -42,9 +42,9 @@
 # o = output
 # have to match with net topology, will be verified
 #<training
-"i";"i";"o"
-"0";"0";"0"
-"0";"1";"1"
-"1";"0";"1"
-"1";"1";"0"
+"i";"i";"o";"o"
+"0";"0";"0";"0"
+"0";"1";"1";"0"
+"1";"0";"1";"0"
+"1";"1";"0";"0"
 #>

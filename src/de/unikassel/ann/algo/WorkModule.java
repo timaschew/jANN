@@ -7,5 +7,7 @@ import de.unikassel.ann.model.Network;
 public interface WorkModule {
 	
 	abstract public void work(Network net, DataPairSet testData);
+	
+	public boolean validateDataSet(Network net, DataPairSet testData);
 
 }

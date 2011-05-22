@@ -1,6 +1,7 @@
 package de.unikassel.ann.algo;
 
 import de.unikassel.ann.config.NetConfig;
+import de.unikassel.ann.model.DataPair;
 import de.unikassel.ann.model.DataPairSet;
 import de.unikassel.ann.model.Network;
 
@@ -31,5 +32,6 @@ public abstract class TrainingModule {
 		this.config = config;
 		
 	}
+
 
 }

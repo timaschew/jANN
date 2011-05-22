@@ -8,9 +8,9 @@ public class SynapseBean {
 	/* CSV */
 	/* "from";"to";"value";"random" */
 	
-	private int to;
-	private double value;
-	private boolean random;
+	private int to = -1;
+	private double value = Double.NaN;
+	private boolean random = false;
 	
 	final static NumberFormat fmt = new DecimalFormat("#.######");
 	
