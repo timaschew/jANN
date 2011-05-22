@@ -1,0 +1,46 @@
+# config contains 3 parts
+# 1. topology-part
+# 2. synapses-part (weights)
+# 3. training-part (training data)
+# layer column is optional
+# synapses can be build wihtout layer info, using only the synapses-part
+# function will be found over reflection in .func package
+
+#<topology
+"id";"layer";"bias";"function"
+"1";"i";"1";"SigmoidFunction"
+"2";"i";"0";"SigmoidFunction"
+"3";"i";"0";"SigmoidFunction"
+"4";"h1";"1";"SigmoidFunction"
+"5";"h1";"0";"SigmoidFunction"
+"6";"h1";"0";"SigmoidFunction"
+"7";"o";"0";"SigmoidFunction"
+#>
+
+# for random value use random class name, value can be empty
+# random class will be found over reflectio in .rand package
+# pass arguments if needed in parenthesis
+# example: SimpleRandomizer(-2,2)
+#<synapses
+"from";"to";"value";"random"
+"0";"4";;"1"
+"0";"5";;"1"
+"1";"4";;"1"
+"1";"5";;"1"
+"2";"4";;"1"
+"2";"5";;"1"
+"3";"6";;"1"
+"4";"6";;"1"
+"5";"6";;"1"
+#>
+
+# i = input
+# o = output
+# have to match with net topology, will be verified
+#<training
+"i";"i";"o"
+"0";"0";"0"
+"0";"1";"1"
+"1";"0";"1"
+"1";"1";"0"
+#>

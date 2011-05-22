@@ -1,0 +1,10 @@
+# i = input
+# o = output
+# have to match with net topology, will be verified
+#<training
+i;i;i;o;o
+"0";"0";"0";"0";"0"
+"0";"1";"1";"0";"0"
+"1";"0";"1";"0";"0"
+"1";"1";"0";"0";"0"
+#>
