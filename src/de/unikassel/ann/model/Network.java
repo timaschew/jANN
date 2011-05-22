@@ -7,6 +7,8 @@ import java.util.List;
 import org.apache.commons.lang.ArrayUtils;
 
 import de.unikassel.ann.config.NetConfig;
+import de.unikassel.ann.config.Topology;
+import de.unikassel.ann.io.beans.SynapseBean;
 
 /**
  * The network is a container for the layers.<br>
@@ -20,9 +22,15 @@ public class Network {
 	private List<Layer> layers;
 	private Boolean finalyzed;
 	private NetConfig config;
+	private List<Neuron> flatNet;
+	private FlatSynapses flatSynpases;
+	private int biggestLayer = -1;
+	private Topology topo;
 	
 	public Network() {
+		topo = new Topology();
 		layers = new ArrayList<Layer>();
+		flatNet = new ArrayList<Neuron>();
 		finalyzed = false;
 	}
 	
@@ -44,17 +52,40 @@ public class Network {
 	public void finalizeStructure() {
 		Layer previousLayer = null;
 		for (Layer l : layers) {
-			if (previousLayer != null) {
-				for (Neuron fromNeuron : previousLayer.getNeurons()) {
-					for (Neuron toNeuron : l.getNeurons()) {
-						if (toNeuron.isBias() == false) {
-							new Synapse(fromNeuron, toNeuron);
+			biggestLayer = Math.max(biggestLayer, l.getNeurons().size());
+			// set flat net
+			for (Neuron n : l.getNeurons()) {
+				n.setId(flatNet.size());
+				flatNet.add(n);
+			}
+		}
+		flatSynpases = new FlatSynapses(flatNet.size(), flatNet.size());
+		
+		if (topo.isStrictFF()) {
+			// set synapses (strict forward feedback)
+			for (Layer l : layers) {
+				if (previousLayer != null) {
+					for (Neuron fromNeuron : previousLayer.getNeurons()) {
+						for (Neuron toNeuron : l.getNeurons()) {
+							if (toNeuron.isBias() == false) {
+								Synapse s = new Synapse(fromNeuron, toNeuron);
+								flatSynpases.addSynapse(fromNeuron.getId(), toNeuron.getId(), s);
+							}
 						}
 					}
 				}
+				previousLayer = l;
 			}
-			previousLayer = l;
+		} else {
+			List<SynapseBean> snypseBeanList = new ArrayList<SynapseBean>(); // getSynapseBean()
+			for (SynapseBean b : snypseBeanList) {
+				Neuron fromNeuron = flatNet.get(b.getFrom());
+				Neuron toNeuron = flatNet.get(b.getTo());
+				Synapse s = new Synapse(fromNeuron, toNeuron);
+				flatSynpases.addSynapse(fromNeuron.getId(), toNeuron.getId(), s);
+			}
 		}
+		
 		finalyzed = true;
 	}
 	
@@ -68,6 +99,10 @@ public class Network {
 	
 	public List<Layer> getLayers() {
 		return layers;
+	}
+	
+	public Layer getLayer(Integer i) {
+		return layers.get(i);
 	}
 
 	/**
@@ -117,28 +152,68 @@ public class Network {
 		}
 	}
 	
-	public void setSynapseMatrix(Double[][][] matrix) {
-		for (Layer l : layers) {
-			for (Neuron n : l.getNeurons()) {
-				List<Synapse> synapses = n.getOutgoingSynapses();
-				for (Synapse s : synapses) {
-					s.setWeight(matrix[l.getIndex()][s.getFromNeuron().getIndex()][s.getToNeuron().getIndex()]);
+	/**
+	 * 
+	 * @param matrix
+	 */
+	public void setSynapseFlatMatrix(Double[][] matrix) {
+		for (int from=0; from<matrix.length; from++) {
+			for (int to=0; to<matrix[from].length; to++) {
+				if (matrix[from][to] != null && matrix[from][to] != Double.NaN) {
+					flatSynpases.setSynapseWeight(from, to, matrix[from][to]);
 				}
 			}
 		}
 	}
 	
-	public Double[][][] getSynapseMatrix() {
-		Double[][][] matrix = new Double[3][3][3];
-		for (Layer l : layers) {
-			for (Neuron n : l.getNeurons()) {
-				List<Synapse> synapses = n.getOutgoingSynapses();
-				for (Synapse s : synapses) {
-					matrix[l.getIndex()][s.getFromNeuron().getIndex()][s.getToNeuron().getIndex()] = s.getWeight();
+	public Double[][] getSynapseFlatMatrix() {
+		Double[][] matrix = new Double[flatNet.size()][flatNet.size()];
+		for (int from=0; from<flatNet.size(); from++) {
+			for (int to=0; to<flatNet.size(); to++) {
+				matrix[from][to] = flatSynpases.getSynapseWeight(from, to);
+			}
+		}
+		return matrix;
+	}
+	
+	public Double[][][][] getSynapseBigMatrix() {
+		Double[][][][] matrix = new Double[layers.size()][biggestLayer][layers.size()][biggestLayer];
+		for (int from=0; from<flatNet.size(); from++) {
+			for (int to=0; to<flatNet.size(); to++) {
+				Synapse s = flatSynpases.getSynapse(from, to);
+				if (s != null) {
+					int fromLayer = s.getFromNeuron().getLayer().getIndex();
+					int fromNeuron = s.getFromNeuron().getIndex();
+					int toLayer = s.getToNeuron().getLayer().getIndex();
+					int toNeuron = s.getToNeuron().getIndex();
+					matrix[fromLayer][fromNeuron][toLayer][toNeuron] = s.getWeight();
 				}
 			}
 		}
 		return matrix;
+	}
+	
+	public void setSynapseBigMatrix(Double[][][][] m) {
+		for (int fromLayer=0; fromLayer<m.length; fromLayer++) {
+			if (fromLayer == getOutputLayer().getIndex()) {
+				continue;
+			}
+			for (int fromNeuron=0; fromNeuron<m[fromLayer].length; fromNeuron++) {
+				for (int toLayer=0; toLayer<m[fromLayer][fromNeuron].length; toLayer++) {
+					for (int toNeuron=0; toNeuron<m[fromLayer][fromNeuron][toLayer].length; toNeuron++) {
+						
+						Neuron from = getLayer(fromLayer).getNeuron(fromNeuron);
+						Neuron to = getLayer(toLayer).getNeuron(toNeuron);
+						if (from != null && to != null) {
+							Synapse s = flatSynpases.getSynapse(from.getId(), to.getId());
+							if (s != null) {
+								s.setWeight(m[fromLayer][fromNeuron][toLayer][toNeuron]);
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	/**

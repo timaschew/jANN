@@ -34,10 +34,22 @@ public class NetworkFactory {
 		return config;
 	}
 	
-	public static NetConfig createXorNet(int iterations) {
-		
-		NetConfig config = createSimpleNet(2, new int[]{2}, 1, true, new SigmoidFunction());
+	public static NetConfig createXorNet(int iterations, boolean bias) {
+		NetConfig config = createSimpleNet(2, new int[]{2}, 1, bias, new SigmoidFunction());
 		config.addOrUpdateExisting(new MaxLearnIterationsStrategy(iterations));
+		return config;
+	}
+
+	public static NetConfig createSOM(int input, int outputN, int outputM) {
+		
+		NetConfig config = new NetConfig();
+		config.addLayer(input, false, new SigmoidFunction());
+		config.addLayer(outputN*outputM, false, new SigmoidFunction());
+		SomAlgorithm somAlgo = new SomAlgorithm();
+		config.addWorkModule(somAlgo);
+		
+		config.buildNetwork();
+		
 		return config;
 	}
 	

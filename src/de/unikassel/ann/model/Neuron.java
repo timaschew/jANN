@@ -13,7 +13,9 @@ public class Neuron {
 
 	private Layer layer;
 	
-	private Integer index = -1;
+	private Integer index = -1; // local for its layer
+	
+	private Integer id = -1; // global for whole network
 	
 	private ActivationFunction function;
 
@@ -148,7 +150,20 @@ public class Neuron {
 		sb.append("[");
 		sb.append(index);
 		sb.append("]");
+		
+		sb.append("{");
+		sb.append(id);
+		sb.append("}");
 		return sb.toString();
+	}
+
+	public void setId(int identifier) {
+		this.id = identifier;
+		
+	}
+
+	public Integer getId() {
+		return id;
 	}
 
 }

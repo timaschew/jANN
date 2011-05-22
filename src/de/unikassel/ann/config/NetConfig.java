@@ -26,6 +26,7 @@ public class NetConfig {
 	TrainingModule trainingModule;
 	Randomizer randomizer;
 	List<ErrorLog> errorLogs;
+
 	
 	public NetConfig() {
 		network = new Network();

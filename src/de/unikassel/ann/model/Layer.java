@@ -2,8 +2,11 @@ package de.unikassel.ann.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class Layer {
+	
+	Logger log = Logger.getAnonymousLogger();
 	
 	private int index = -1;
 	
@@ -36,7 +39,12 @@ public class Layer {
 	}
 	
 	public Neuron getNeuron(Integer i) {
-		return neurons.get(i);
+		try {
+			return neurons.get(i);
+		} catch (IndexOutOfBoundsException e) {
+			log.fine("no neuron at ["+getIndex()+"]["+i+"]");
+			return null;
+		}
 	}
 
 	public void setIndex(int size) {

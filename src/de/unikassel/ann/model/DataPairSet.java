@@ -157,8 +157,8 @@ public class DataPairSet {
 	private boolean isNotEmptyNested(Double[][]... rows) {
 		boolean result = true;
 		for (Double[][] row : rows) {
-			result = result && ArrayUtils.isNotEmpty(row);
-			result = result && ArrayUtils.isNotEmpty(row[0]);
+			result = result && ArrayUtils.isEmpty(row) == false;
+			result = result && ArrayUtils.isEmpty(row[0]) == false;
 		}
 		return result;
 	}
