@@ -13,12 +13,19 @@ public class SurfaceCubeRenderer {
 	final static int y = 2;
 	final static int z = 3;
 	
-	static Color bottomColor = Color.ORANGE;
-	static Color topColor = Color.YELLOW;
-	static Color frontColor = Color.GREEN;
-	static Color backColor = Color.GRAY;
-	static Color leftColor = Color.BLUE;
-	static Color rightColor = Color.RED;
+//	static Color bottomColor = Color.ORANGE;
+//	static Color topColor = Color.YELLOW;
+//	static Color frontColor = Color.GREEN;
+//	static Color backColor = Color.GRAY;
+//	static Color leftColor = Color.BLUE;
+//	static Color rightColor = Color.RED;
+	
+	static Color bottomColor = Color.BLACK;
+	static Color topColor = Color.BLACK;
+	static Color frontColor = Color.BLACK;
+	static Color backColor = Color.BLACK;
+	static Color leftColor = Color.BLACK;
+	static Color rightColor = Color.BLACK;
 	
 	
 	/**
@@ -81,7 +88,7 @@ public class SurfaceCubeRenderer {
                                  (int)(p[3][y]*c[3])+wy,(int)(p[4][y]*c[4])+wy};
 
             g.setColor(bottomColor);
-            g.fillPolygon(new Polygon(xCoords1234,yCoords1234,4));
+            g.drawPolygon(new Polygon(xCoords1234,yCoords1234,4));
         }
         // top
         else if((p[7][x]*c[7]-p[6][x]*c[6])*(p[5][y]*c[5]-p[6][y]*c[6])
@@ -94,7 +101,7 @@ public class SurfaceCubeRenderer {
                                  (int)(p[7][y]*c[7])+wy,(int)(p[8][y]*c[8])+wy};
 
             g.setColor(topColor);
-            g.fillPolygon(new Polygon(xCoords5678,yCoords5678,4));
+            g.drawPolygon(new Polygon(xCoords5678,yCoords5678,4));
         }
         // front
         if((p[6][x]*c[6]-p[2][x]*c[2])*(p[1][y]*c[1]-p[2][y]*c[2])
@@ -107,7 +114,7 @@ public class SurfaceCubeRenderer {
                                  (int)(p[6][y]*c[6])+wy,(int)(p[5][y]*c[5])+wy};
 
             g.setColor(frontColor);
-            g.fillPolygon(new Polygon(xCoords1265,yCoords1265,4));
+            g.drawPolygon(new Polygon(xCoords1265,yCoords1265,4));
         }
         // back
         else if((p[4][x]*c[4]-p[3][x]*c[3])*(p[7][y]*c[7]-p[3][y]*c[3])
@@ -120,7 +127,7 @@ public class SurfaceCubeRenderer {
                                  (int)(p[7][y]*c[7])+wy,(int)(p[8][y]*c[8])+wy};
 
             g.setColor(backColor);
-            g.fillPolygon(new Polygon(xCoords4378,yCoords4378,4));
+            g.drawPolygon(new Polygon(xCoords4378,yCoords4378,4));
         }
         // right
         if((p[3][x]*c[3]-p[2][x]*c[2])*(p[6][y]*c[6]-p[2][y]*c[2])-(p[3][y]*c[3]
@@ -133,7 +140,7 @@ public class SurfaceCubeRenderer {
                                  (int)(p[7][y]*c[7])+wy,(int)(p[6][y]*c[6])+wy};
 
             g.setColor(rightColor);
-            g.fillPolygon(new Polygon(xCoords2376,yCoords2376,4));
+            g.drawPolygon(new Polygon(xCoords2376,yCoords2376,4));
         }
         // left
         else if((p[5][x]*c[5]-p[1][x]*c[1])*(p[4][y]*c[4]-p[1][y]*c[1])
@@ -146,7 +153,7 @@ public class SurfaceCubeRenderer {
                                  (int)(p[8][y]*c[8])+wy,(int)(p[5][y]*c[5])+wy};
             
             g.setColor(leftColor);
-            g.fillPolygon(new Polygon(xCoords1485,yCoords1485,4));
+            g.drawPolygon(new Polygon(xCoords1485,yCoords1485,4));
         }
 
 	}

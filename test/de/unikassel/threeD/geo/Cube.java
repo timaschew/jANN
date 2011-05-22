@@ -112,6 +112,10 @@ public class Cube {
 		xDist = xDistance;
 		yDist = yDistance;
 		zDist = zDistance;
+		setPointsWithDistance();
+	}
+	
+	public void setPointsWithDistance() {
 		set(new Point3D(-xDist, -yDist, -zDist), 
 				new Point3D(+xDist, -yDist,	-zDist), 
 				new Point3D(+xDist, -yDist, +zDist), 

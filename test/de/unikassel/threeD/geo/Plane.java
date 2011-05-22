@@ -39,9 +39,9 @@ public class Plane {
 	}
 
 	
-	private void init() {
-		
+	public void init() {		
 		lineList.clear();
+		points.points.clear();
 		Random rand = new Random();
 		
 		for (int r=0; r<rows; r++) {
