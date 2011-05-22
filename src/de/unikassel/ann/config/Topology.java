@@ -28,6 +28,10 @@ public class Topology {
 	public boolean isStrictFF() {
 		return strictForwardFeedback;
 	}
+
+	public FlatSynapses getSynapses() {
+		return synapses;
+	}
 	
 
 }

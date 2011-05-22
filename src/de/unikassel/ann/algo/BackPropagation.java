@@ -27,9 +27,12 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 
 	@Override
 	public void work(Network net, DataPairSet testData) {
+		if (net == null) {
+			net = config.getNetwork();
+		}
 		for(DataPair p : testData.getPairs()) {
 			forwardStep(net, p);
-			net.setOutput(p.getIdeal());
+			net.setOutputToPair(p.getIdeal());
 		}
 	}
 	

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.unikassel.ann.model.func.ActivationFunction;
+import de.unikassel.ann.model.func.SigmoidFunction;
 
 /**
  * @author anton
@@ -29,7 +30,19 @@ public class Neuron {
 
 	private boolean bias;
 	
+	private static String functionPackage = SigmoidFunction.class.getPackage().getName();
+	
 	public Neuron(ActivationFunction standardFunc, double outputValue, boolean bias) {
+		set(standardFunc, outputValue, bias);
+	}
+
+	/**
+	 * @param standardFunc
+	 * @param outputValue
+	 * @param bias
+	 */
+	private void set(ActivationFunction standardFunc, double outputValue,
+			boolean bias) {
 		this.outputValue = outputValue;
 		this.bias = bias;
 		if (bias) {
@@ -42,6 +55,20 @@ public class Neuron {
 	
 	public Neuron(ActivationFunction function, boolean bias) {
 		this(function, 0.0d, bias);
+	}
+
+	public Neuron(String function, boolean bias) {
+		try {
+			Class<?> clazz = Class.forName(functionPackage+"."+function);
+			ActivationFunction functinonInstance = (ActivationFunction) clazz.newInstance();
+			set(functinonInstance, 0.0d, bias);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public List<Synapse> getIncomingSynapses() {
@@ -164,6 +191,10 @@ public class Neuron {
 
 	public Integer getId() {
 		return id;
+	}
+
+	public String getFunctionName() {
+		return function.getClass().getSimpleName();
 	}
 
 }

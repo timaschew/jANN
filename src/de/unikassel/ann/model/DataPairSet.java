@@ -3,6 +3,7 @@ package de.unikassel.ann.model;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -49,6 +50,21 @@ public class DataPairSet {
 
 	
 	public DataPairSet() {
+	}
+	
+	public DataPairSet(DataPairSet copy) {
+		input = new Double[copy.input.length][copy.input[0].length];
+		ideal = new Double[copy.ideal.length][copy.ideal[0].length];
+		for (int i=0; i<copy.input.length; i++) {
+			for (int j=0; j<copy.input[i].length; j++) {
+				input[i][j] = copy.input[i][j];
+			}
+		}
+		for (int i=0; i<copy.ideal.length; i++) {
+			for (int j=0; j<copy.ideal[i].length; j++) {
+				ideal[i][j] = copy.ideal[i][j];
+			}
+		}
 	}
 
 	/**
@@ -166,6 +182,17 @@ public class DataPairSet {
 
 	public void addPair(DataPair pair) {
 		addRow(pair.getInput(), pair.getIdeal());
+	}
+	
+	/**
+	 * Resets every ideal value in the set to Double.NaN 
+	 */
+	public void resetIdeal() {
+		for (int i=0; i<ideal.length; i++) {
+			for (int j=0; j<ideal[i].length; j++) {
+				ideal[i][j] = Double.NaN;
+			}
+		}
 	}
 
 	@Override

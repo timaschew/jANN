@@ -1,5 +1,8 @@
 package de.unikassel.ann.io.beans;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 public class SynapseBean {
 	
 	/* CSV */
@@ -8,6 +11,8 @@ public class SynapseBean {
 	private int to;
 	private double value;
 	private boolean random;
+	
+	final static NumberFormat fmt = new DecimalFormat("#.######");
 	
 	private int from;
 	/**
@@ -57,6 +62,28 @@ public class SynapseBean {
 	 */
 	public void setRandom(boolean random) {
 		this.random = random;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append('"');
+		sb.append(from);
+		sb.append('"');
+		sb.append(';');
+		sb.append('"');
+		sb.append(to);
+		sb.append('"');
+		sb.append(';');
+		sb.append('"');
+		sb.append(fmt.format(value));
+		sb.append('"');
+		sb.append(';');
+		sb.append('"');
+		sb.append(random);
+		sb.append('"');
+		sb.append('\n');
+		return sb.toString();
 	}
 
 }

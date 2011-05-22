@@ -14,7 +14,7 @@ public class SynapseTest {
 
 	@Test
 	public void randomTest() {
-		Neuron n = new Neuron(null, false);
+		Neuron n = new Neuron("SigmoidFunction", false);
 		List<Double> list = new ArrayList<Double>();
 		for (int i = 0; i < 20; i++) {
 			Synapse s = new Synapse(n, n);

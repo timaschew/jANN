@@ -8,26 +8,21 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.supercsv.cellprocessor.ParseDouble;
 import org.supercsv.cellprocessor.ift.CellProcessor;
-import org.supercsv.exception.SuperCSVException;
 import org.supercsv.io.CsvBeanReader;
 import org.supercsv.io.ICsvBeanReader;
-import org.supercsv.prefs.CsvPreference;
 
 import de.unikassel.ann.gen.DynamicBeanCreator;
 import de.unikassel.ann.io.beans.TrainingBean;
+import de.unikassel.ann.model.DataPairSet;
 
-public class TrainingReader {
+public class TrainingReader extends BasicCsvReader {
 
-	static Logger log = Logger.getAnonymousLogger();
-
-	static CsvPreference pref = new CsvPreference('\"', ';', "\r\n");
 	static String[] header2beanMapping;
 	static CellProcessor[] processor;
-
+	
 	public static Class<?> generateBean(int inputSize, int outputSize) {
 		String className = null;
 		try {
@@ -84,7 +79,7 @@ public class TrainingReader {
 		}
 		processor = new CellProcessor[inputSize+outputSize];
 		for (int i=0; i<inputSize+outputSize; i++) {
-			processor[i] = new ParseDouble();
+			processor[i] = new ParseDoubleUni();
 		}
 	
 		Class<?> loadedClass = generateBean(inputSize, outputSize);
@@ -95,18 +90,10 @@ public class TrainingReader {
 				list.add(instance);
 			}
 		} catch (Exception e) {
-			if (e instanceof SuperCSVException) {
-				if (((SuperCSVException)e).getCsvContext().lineSource.get(0).toString().equals("#>")) {
-					// everything ok, current part finished
-				} else {
-					e.printStackTrace();
-				}
-			} else {
-				e.printStackTrace();
-			}
-			
+			checkEndOfFileAndMarkPosition(e, bufferedReader);
 		}
 		return list;
 	}
 	
+
 }

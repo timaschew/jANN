@@ -6,5 +6,7 @@ public interface TrainingBean {
 	public Double getOutput(int index);
 	public int getInputSize();
 	public int getOutputSize();
+	public Double[] getInput();
+	public Double[] getOutput();
 
 }

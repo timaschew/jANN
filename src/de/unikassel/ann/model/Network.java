@@ -9,6 +9,7 @@ import org.apache.commons.lang.ArrayUtils;
 import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.config.Topology;
 import de.unikassel.ann.io.beans.SynapseBean;
+import de.unikassel.ann.io.beans.TopologyBean;
 
 /**
  * The network is a container for the layers.<br>
@@ -46,10 +47,91 @@ public class Network {
 		}
 	}
 	
+	public void finalizeFromFlatNet(List<TopologyBean> topoBeanList, List<SynapseBean> synapsesBanList) {
+		if (finalyzed) {
+			return;
+		}
+		
+		int maxHiddenIndex = 0;
+		for (TopologyBean b : topoBeanList) {
+			maxHiddenIndex = Math.max(maxHiddenIndex, b.getLayer());
+		}
+		Layer[] hiddenLayer = new Layer[maxHiddenIndex+1];
+		// add layers to net
+		Layer inputLayer = new Layer();
+		addLayer(inputLayer);
+		for (int i=0; i<maxHiddenIndex+1; i++) {
+			hiddenLayer[i] = new Layer();
+			addLayer(hiddenLayer[i]);
+		}
+		Layer outputLayer = new Layer();
+		addLayer(outputLayer);
+		
+		// creating neurons and adding it to flatNet and layers
+		for (TopologyBean b : topoBeanList) {
+			Neuron n = new Neuron(b.getFunction(), b.isBias());
+			n.setId(b.getId());
+			flatNet.add(n);
+			if (b.getLayer() == -1) {
+				inputLayer.addNeuron(n);
+			} else if (b.getLayer() == -2) {
+				outputLayer.addNeuron(n);
+			} else {
+				hiddenLayer[b.getLayer()].addNeuron(n);
+			}
+		}
+		
+		flatSynpases = new FlatSynapses(flatNet.size(), flatNet.size());
+		
+		setFlatSynapses(synapsesBanList);
+		
+		finalyzed = true;
+	}
+	
+
+	public void setFlatSynapses(List<SynapseBean> synapsesBanList) {
+		// connect neurons / create synapses
+		for (SynapseBean b : synapsesBanList) {
+			synapseRangeCheck(b);
+			Neuron fromNeuron = flatNet.get(b.getFrom());
+			Neuron toNeuron = flatNet.get(b.getTo());
+			Synapse s = new Synapse(fromNeuron, toNeuron);
+			if (b.isRandom() == false) {
+				s.setWeight(b.getValue());
+			}
+			neuronRangeCheck(fromNeuron, toNeuron);
+			flatSynpases.addSynapse(fromNeuron.getId(), toNeuron.getId(), s);
+		}
+
+
+	}
+
+	private void neuronRangeCheck(Neuron fromNeuron, Neuron toNeuron) {
+		if (fromNeuron.getId() < 0) {
+			throw new IllegalArgumentException("invalid neuron id, negative value not permitted\n"+fromNeuron);
+		} else if (toNeuron.getId() >= flatSynpases.getSynapsesArray().length) {
+			throw new IllegalArgumentException("invalid neuron id, don't fit into flat synapse array \n"+toNeuron);
+		}
+		
+	}
+
+	private void synapseRangeCheck(SynapseBean b) {
+		if (b.getFrom() < flatNet.get(0).getId()) {
+			throw new IllegalArgumentException("synapse connections does not match with neuron ids, 1st id is too small\n"+b);
+		} else if (b.getTo() > flatNet.get(flatNet.size()-1).getId()) { 
+			throw new IllegalArgumentException("synapse connections does not match with neuron ids, 2nd id is too high\n"+b);
+		}
+		
+	}
+
 	/**
 	 * Creates the synapses between all neurons. After this call you can train the network.
 	 */
 	public void finalizeStructure() {
+		if (finalyzed) {
+			return;
+		}
+
 		Layer previousLayer = null;
 		for (Layer l : layers) {
 			biggestLayer = Math.max(biggestLayer, l.getNeurons().size());
@@ -77,12 +159,10 @@ public class Network {
 				previousLayer = l;
 			}
 		} else {
-			List<SynapseBean> snypseBeanList = new ArrayList<SynapseBean>(); // getSynapseBean()
-			for (SynapseBean b : snypseBeanList) {
-				Neuron fromNeuron = flatNet.get(b.getFrom());
-				Neuron toNeuron = flatNet.get(b.getTo());
-				Synapse s = new Synapse(fromNeuron, toNeuron);
-				flatSynpases.addSynapse(fromNeuron.getId(), toNeuron.getId(), s);
+			
+			if (topo.getSynapses().isNotEmpty()) {
+				FlatSynapses synapses = topo.getSynapses();
+				// TODO: what now ?
 			}
 		}
 		
@@ -122,7 +202,7 @@ public class Network {
 		}
 	}
 	
-	public void setOutput(Double[] output) {
+	public void setOutputToPair(Double[] output) {
 		Layer layer = getOutputLayer();
 		List<Neuron> neuronList = layer.getNeurons();
 		if (output.length != neuronList.size()) {
@@ -160,7 +240,11 @@ public class Network {
 		for (int from=0; from<matrix.length; from++) {
 			for (int to=0; to<matrix[from].length; to++) {
 				if (matrix[from][to] != null && matrix[from][to] != Double.NaN) {
-					flatSynpases.setSynapseWeight(from, to, matrix[from][to]);
+					Double setValue = matrix[from][to];
+					boolean result = flatSynpases.setSynapseWeight(from, to, setValue);
+					if (result == false && setValue != null && setValue != Double.NaN) {
+						throw new IllegalArgumentException("could not set value "+setValue+" on ["+from+"]["+to+"]");
+					}
 				}
 			}
 		}
@@ -242,6 +326,13 @@ public class Network {
 	}
 	public NetConfig getConfig() {
 		return config;
+	}
+
+	public List<Neuron> asFlatNet() {
+		return flatNet;	
+	}
+	public FlatSynapses asFlatSynapses() {
+		return flatSynpases;
 	}
 
 }
