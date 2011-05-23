@@ -1,0 +1,42 @@
+# xor dataset
+#<training
+i;i;o
+0.0;0.0;0.0
+0.0;1.0;1.0
+1.0;0.0;1.0
+1.0;1.0;0.0
+#>
+
+# xor network config
+#<topology
+id;layer;bias;function
+0;-1;true;SigmoidFunction
+1;-1;false;SigmoidFunction
+2;-1;false;SigmoidFunction
+3;0;true;SigmoidFunction
+4;0;false;SigmoidFunction
+5;0;false;SigmoidFunction
+6;-2;false;SigmoidFunction
+#>
+#<synapses
+from;to;value;random
+0;4;-2.6343673120974445;false
+0;5;-3.6678564701043883;false
+1;4;-5.1465977588858935;false
+1;5;6.2565683403799754;false
+2;4;4.7835317667911275;false
+2;5;-6.015254835324599;false
+3;6;-3.783586263852072;false
+4;6;7.77309833709046;false
+5;6;7.572469634921535;false
+#>
+
+# result
+#<dataset
+i;i;o
+0.0;0.0;0.04416781090536966
+0.0;1.0;0.9600132925418683
+1.0;0.0;0.9631392758578887
+1.0;1.0;0.04009103470613127
+#>
+

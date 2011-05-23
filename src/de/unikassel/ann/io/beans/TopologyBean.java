@@ -37,7 +37,7 @@ public class TopologyBean implements Comparable<TopologyBean> {
 	/**
 	 * @return the bias
 	 */
-	public boolean isBias() {
+	public boolean getBias() {
 		return bias;
 	}
 	/**
@@ -62,21 +62,13 @@ public class TopologyBean implements Comparable<TopologyBean> {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append('"');
 		sb.append(id);
-		sb.append('"');
-		sb.append(';');
-		sb.append('"');
+		sb.append(' ');
 		sb.append(layer);
-		sb.append('"');
-		sb.append(';');
-		sb.append('"');
+		sb.append(' ');
 		sb.append(bias);
-		sb.append('"');
-		sb.append(';');
-		sb.append('"');
+		sb.append(' ');
 		sb.append(function);
-		sb.append('"');
 		sb.append('\n');
 		return sb.toString();
 	}

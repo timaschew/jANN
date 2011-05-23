@@ -14,7 +14,9 @@ import de.unikassel.ann.model.DataPairSet;
 public class NetIOTest {
 	
 	@Test
-	public void testImportExport() throws IOException, ClassNotFoundException {
+	public void testImportAndExportConfig() throws IOException, ClassNotFoundException {
+		
+		TrainingRW.WRITE_INDEX_IN_HEADER = false;
 		
 //		File f = new File("/Users/anton/Develop/Projekte/ANNtool/test/xor.csv");
 		File f = new File("/Users/anton/Develop/Projekte/ANNtool/test/net_cfg.csv");
@@ -30,16 +32,16 @@ public class NetIOTest {
 			e.printStackTrace();
 		}
 		
-		NetIO reader = new NetIO();
-		reader.readConfigFile(f);
+		NetIO netIO = new NetIO();
+		netIO.readConfigFile(f);
 		
-		NetConfig netConfig = reader.generateNetwork();
-		DataPairSet dataSet = reader.getTrainingSet();
+		NetConfig netConfig = netIO.generateNetwork();
+		DataPairSet dataSet = netIO.getTrainingSet();
 		
 		netConfig.getTrainingModule().train(dataSet);
 		
 		
-		reader.writeDataSet(file, "training", true);
+		netIO.writeDataSet(file, "xor dataset", true, dataSet);
 		dataSet.resetIdeal();
 		netConfig.getWorkingModule().work(null, dataSet);
 		
@@ -47,14 +49,14 @@ public class NetIOTest {
 		System.out.println(dataSet);
 		
 		
-		reader.writeNet(file, "xor network config", netConfig);
-		reader.writeDataSet(file, "result", false);
+		netIO.writeNet(file, "xor network config", netConfig);
+		netIO.writeDataSet(file, "result", false, dataSet);
 		
 	}
 	
 	
 	@Test
-	public void testImport() throws IOException, ClassNotFoundException {
+	public void testImportExportedConfig() throws IOException, ClassNotFoundException {
 		
 		File f = new File("/Users/anton/Develop/Projekte/ANNtool/test/net_export.csv");
 		

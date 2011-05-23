@@ -69,7 +69,7 @@ public class Network {
 		
 		// creating neurons and adding it to flatNet and layers
 		for (TopologyBean b : topoBeanList) {
-			Neuron n = new Neuron(b.getFunction(), b.isBias());
+			Neuron n = new Neuron(b.getFunction(), b.getBias());
 			n.setId(b.getId());
 			flatNet.add(n);
 			if (b.getLayer() == -1) {
@@ -96,7 +96,7 @@ public class Network {
 			Neuron fromNeuron = flatNet.get(b.getFrom());
 			Neuron toNeuron = flatNet.get(b.getTo());
 			Synapse s = new Synapse(fromNeuron, toNeuron);
-			if (b.isRandom() == false) {
+			if (b.getRandom() == false) {
 				s.setWeight(b.getValue());
 			}
 			neuronRangeCheck(fromNeuron, toNeuron);
@@ -333,6 +333,15 @@ public class Network {
 	}
 	public FlatSynapses asFlatSynapses() {
 		return flatSynpases;
+	}
+
+	public int getInputSize() {
+		int biasOffset = getInputLayer().hasBias() ? 1 : 0;
+		return getInputLayer().getNeurons().size() - biasOffset;
+	}
+	public int getOutputSize() {
+		int biasOffset = getOutputLayer().hasBias() ? 1 : 0;
+		return getOutputLayer().getNeurons().size() - biasOffset;
 	}
 
 }

@@ -38,8 +38,9 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 	
 	public boolean validateDataSet(Network net, DataPairSet testData) {
 		DataPair pair = testData.getPairs().get(0);
-		if (pair.getInput().length == net.getInputLayer().getNeurons().size() &&
-				pair.getIdeal().length == net.getOutputLayer().getNeurons().size()) {
+		int inputSize = net.getInputSize();
+		int outputSize = net.getOutputSize();
+		if (pair.getInput().length == inputSize && pair.getIdeal().length == outputSize) {
 			return true;
 		} else {
 			throw new IllegalArgumentException("test dataset does not match for topology");

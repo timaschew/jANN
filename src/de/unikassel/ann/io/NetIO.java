@@ -42,12 +42,18 @@ import de.unikassel.ann.model.Network;
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.strategy.MaxLearnIterationsStrategy;
 
-
 public class NetIO {
 	
+	public final static String OPEN_TAG = "#<";
+	public final static String CLOSE_TAG = "#>";
+	public final static String TOPOLOGY_TAG = "topology";
+	public final static String SYNAPSE_TAG = "synapses";
+	public final static String TRAINING_TAG = "training";
+	public final static String DATASET = "dataset";
 	static Logger log = Logger.getAnonymousLogger();
 	
 	static final int MAX_BUFFER_SIZE = 1024*1024;
+	
 
 	static CsvPreference pref = new CsvPreference('\"', ';', "\r\n");
 	static String[] header2beanMapping;
@@ -78,21 +84,21 @@ public class NetIO {
 		String line;
 
 		while ((line = bufferedReader.readLine()) != null) {
-			if (line != null && line.startsWith("#<training")) {
+			if (line != null && line.startsWith(OPEN_TAG+TRAINING_TAG)) {
 				bufferedReader.mark(MAX_BUFFER_SIZE);
-				trainigBeanList = TrainingReader.readData(bufferedReader);
+				trainigBeanList = TrainingRW.readData(bufferedReader);
 				bufferedReader.reset();
-			} else if (line != null && line.startsWith("#<topology")) {
+			} else if (line != null && line.startsWith(OPEN_TAG+TOPOLOGY_TAG)) {
 				bufferedReader.mark(MAX_BUFFER_SIZE);
-				topoBeanList = TopologyBeanReader.readData(bufferedReader);
+				topoBeanList = TopologyBeanRW.readData(bufferedReader);
 				bufferedReader.reset();
-			} else if (line != null && line.startsWith("#<synapses")) {
+			} else if (line != null && line.startsWith(OPEN_TAG+SYNAPSE_TAG)) {
 				bufferedReader.mark(MAX_BUFFER_SIZE);
-				synapsesBanList = SynapseBeanReader.readData(bufferedReader);
+				synapsesBanList = SynapseBeanRW.readData(bufferedReader);
 				bufferedReader.reset();
 			} 
 		}
-		
+		bufferedReader.close();
 		
 		if (CollectionUtils.isNotEmpty(topoBeanList)) {
 			Collections.sort(topoBeanList);
@@ -127,8 +133,6 @@ public class NetIO {
 			
 		}
 		return null;
-			
-		
 	}
 
 	public DataPairSet getTrainingSet() {
@@ -143,127 +147,15 @@ public class NetIO {
 		return null;
 	}
 
-	public void writeDataSet(File file, String string, boolean training) {
-		
-//		resultTrainigBeanList = createTraining(dataSet);
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append('#');
-		sb.append(string);
-		sb.append('\n');
-		if (training) {
-			sb.append("#<training\n");
-		} else {
-			sb.append("#<dataset\n");
-		}
-		TrainingBean firstBean = trainigBeanList.get(0);
-		for (int i=0; i<firstBean.getInputSize(); i++) {
-			sb.append("\"i\";");
-		}
-		for (int i=0; i<firstBean.getOutputSize()-1; i++) {
-			sb.append("\"o\";");
-		}
-		sb.append("\"o\"\n");
-		
-		for (TrainingBean b : trainigBeanList) {
-			sb.append(b.toString());
-		}
-		sb.append("#>\n\n");
-		
-		writeToFile(file, sb);
+	public void writeDataSet(File file, String title, boolean training, DataPairSet dataSet) {
+		TrainingRW.writeData(dataSet, file, title, training);
 	}
 	
-	public void writeNet(File file, String string, NetConfig netConfig) {
-		
-		List<TopologyBean> resultTopologyList = createTopology(netConfig);
-		List<SynapseBean> resultSynapseList = createSynapses(netConfig);
-		
-		StringBuilder sb = new StringBuilder();
-		// topology
-		sb.append('#');
-		sb.append(string);
-		sb.append('\n');
-		sb.append("#<topology\n");
-
-		sb.append("\"id\";\"layer\";\"bias\";\"function\"\n");
-		for (TopologyBean b : resultTopologyList) {
-			sb.append(b.toString());
-		}
-		sb.append("#>\n\n");
-		
-		// synapses
-		sb.append("#<synapses\n");
-
-		sb.append("\"from\";\"to\";\"value\";\"random\"\n");
-		for (SynapseBean b : resultSynapseList) {
-			sb.append(b.toString());
-		}
-		sb.append("#>\n\n");
-		writeToFile(file, sb);
+	public void writeNet(File file, String title, NetConfig netConfig) {
+		TopologyBeanRW.writeData(netConfig, file, title);
+		SynapseBeanRW.writeData(netConfig, file);
 		
 	}
 
-	private List<TopologyBean> createTopology(NetConfig netConfig) {
-		List<TopologyBean> list = new ArrayList<TopologyBean>();
-		Network net = netConfig.getNetwork();
-		List<Neuron> flatNet = net.asFlatNet();
-		for (Neuron n : flatNet) {
-			TopologyBean b = new TopologyBean();
-			b.setBias(n.isBias());
-			b.setFunction(n.getFunctionName());
-			b.setId(n.getId());
-			Layer layer = n.getLayer();
-			if (layer.equals(net.getInputLayer())) {
-				b.setLayer(-1);
-			} else if (layer.equals(net.getOutputLayer())) {
-				b.setLayer(-2);
-			} else {
-				// start hidden layer index with 0 (ignore input)
-				b.setLayer(layer.getIndex()-1); 
-			}
-			list.add(b);
-		}
-		return list;
-	}
-	
-	private List<SynapseBean> createSynapses(NetConfig netConfig) {
-		List<SynapseBean> list = new ArrayList<SynapseBean>();
-		Network net = netConfig.getNetwork();
-		
-		Double[][] fs = net.getSynapseFlatMatrix();
-		for (int i=0; i<fs.length; i++) {
-			for (int j=0; j<fs[i].length; j++) {
-				Double val = fs[i][j];
-				if (val != null) {
-					SynapseBean b = new SynapseBean();
-					b.setFrom(i);
-					b.setTo(j);
-					b.setRandom(false);
-					b.setValue(val);
-					list.add(b);
-				}
-			}
-		}
-		return list;
-	}
-
-
-	private void writeToFile(File file, StringBuilder sb) {
-		FileWriter writer = null;
-		try {
-			writer = new FileWriter(file, true);
-			writer.write(sb.toString());
-			writer.flush();
-			writer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	
-
-	
-	
-	
 
 }

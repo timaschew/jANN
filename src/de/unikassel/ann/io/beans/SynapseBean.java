@@ -54,7 +54,7 @@ public class SynapseBean {
 	/**
 	 * @return the random
 	 */
-	public boolean isRandom() {
+	public boolean getRandom() {
 		return random;
 	}
 	/**
@@ -66,23 +66,15 @@ public class SynapseBean {
 	
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append('"');
+		StringBuilder sb = new StringBuilder();	
 		sb.append(from);
-		sb.append('"');
-		sb.append(';');
-		sb.append('"');
+		sb.append(" -> ");
 		sb.append(to);
-		sb.append('"');
-		sb.append(';');
-		sb.append('"');
+		sb.append(" = ");
 		sb.append(fmt.format(value));
-		sb.append('"');
-		sb.append(';');
-		sb.append('"');
+		sb.append(" (");
 		sb.append(random);
-		sb.append('"');
-		sb.append('\n');
+		sb.append(")\n");
 		return sb.toString();
 	}
 
