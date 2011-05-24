@@ -93,7 +93,7 @@ public class TopologyBeanRW extends BasicCsvReader {
 	private static List<TopologyBean> convertToBeanList(NetConfig netConfig) {
 		List<TopologyBean> list = new ArrayList<TopologyBean>();
 		Network net = netConfig.getNetwork();
-		List<Neuron> flatNet = net.asFlatNet();
+		List<Neuron> flatNet = net.getFlatNet();
 		for (Neuron n : flatNet) {
 			TopologyBean b = new TopologyBean();
 			b.setBias(n.isBias());

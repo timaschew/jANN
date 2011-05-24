@@ -1,12 +1,12 @@
 package de.unikassel.ann.config;
 
-import de.unikassel.ann.model.FlatSynapses;
+import de.unikassel.ann.model.SynapseMatrix;
 
 public class Topology {
 	
 	private Boolean strictForwardFeedback;
 	
-	private FlatSynapses synapses;
+	private SynapseMatrix synapses;
 	
 	public Topology() {
 		this(true);
@@ -20,7 +20,7 @@ public class Topology {
 	 * Disbales strict forward feebback topology!
 	 * @param s
 	 */
-	public void setSynapses(FlatSynapses s) {
+	public void setSynapses(SynapseMatrix s) {
 		strictForwardFeedback = false;
 		synapses = s;
 	}
@@ -29,7 +29,7 @@ public class Topology {
 		return strictForwardFeedback;
 	}
 
-	public FlatSynapses getSynapses() {
+	public SynapseMatrix getSynapses() {
 		return synapses;
 	}
 	

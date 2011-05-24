@@ -23,6 +23,8 @@ import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.io.beans.SynapseBean;
 import de.unikassel.ann.io.beans.TopologyBean;
 import de.unikassel.ann.model.Network;
+import de.unikassel.ann.model.Synapse;
+import de.unikassel.ann.model.SynapseMatrix;
 
 
 public class SynapseBeanRW extends BasicCsvReader {
@@ -95,16 +97,17 @@ public class SynapseBeanRW extends BasicCsvReader {
 		List<SynapseBean> list = new ArrayList<SynapseBean>();
 		Network net = netConfig.getNetwork();
 		
-		Double[][] fs = net.getSynapseFlatMatrix();
+		SynapseMatrix sm = net.getSynapseMatrix();
+		Synapse[][] fs = sm.getSynapses();
 		for (int i=0; i<fs.length; i++) {
 			for (int j=0; j<fs[i].length; j++) {
-				Double val = fs[i][j];
-				if (val != null) {
+				Synapse s = fs[i][j];
+				if (s != null) {
 					SynapseBean b = new SynapseBean();
 					b.setFrom(i);
 					b.setTo(j);
 					b.setRandom(false);
-					b.setValue(val);
+					b.setValue(s.getWeight());
 					list.add(b);
 				}
 			}

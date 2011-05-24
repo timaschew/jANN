@@ -36,7 +36,7 @@ import de.unikassel.ann.io.beans.TopologyBean;
 import de.unikassel.ann.io.beans.TrainingBean;
 import de.unikassel.ann.model.DataPair;
 import de.unikassel.ann.model.DataPairSet;
-import de.unikassel.ann.model.FlatSynapses;
+import de.unikassel.ann.model.SynapseMatrix;
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.Network;
 import de.unikassel.ann.model.Neuron;

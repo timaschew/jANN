@@ -14,6 +14,7 @@ public class SynapseTest {
 
 	@Test
 	public void randomTest() {
+		// no sense
 		Neuron n = new Neuron("SigmoidFunction", false);
 		List<Double> list = new ArrayList<Double>();
 		for (int i = 0; i < 20; i++) {
@@ -27,15 +28,36 @@ public class SynapseTest {
 		}
 	}
 
+	/**
+	 * Synapse connections (matrix) looks like this<br>
+	 * for connection 00 -> 12 / 0 -> 4  there is no space remaining
+	 * 
+	 * <pre>
+	 * 00 01 02
+	 *   \| X |
+	 * 10 11 12
+	 *   \| /
+	 *    20
+	 * </pre>
+	 * or
+	 * <pre>
+	 * 0 1 2
+	 *  \|X|
+	 * 3 4 5
+	 *  \|/
+	 *   6
+	 * </pre>
+	 */
 	@Test
-	public void synapseAsMatrixTest() {
+	public void testBigSynapseMatrix() {
 
-		NetConfig netConfig = NetworkFactory.createSimpleNet(2,
-				new int[] { 2 }, 1, true, new SigmoidFunction());
+		NetConfig netConfig = NetworkFactory.createSimpleNet(2,	new int[] { 2 }, 1, true, new SigmoidFunction());
 		Network net = netConfig.getNetwork();
 
+
 		System.out.println("synapse matrix before (random)");
-		System.out.println(buildMatrix(net.getSynapseBigMatrix()));
+		Double[][][][] randomMatrix = net.getSynapseMatrix().getBigWeightMatrix();
+		System.out.println(buildBigMatrix(randomMatrix));
 
 		// new matrix
 		Double[][][][] x = new Double[3][3][3][3];
@@ -49,14 +71,35 @@ public class SynapseTest {
 		x[1][1][2][0] = 8.0;
 		x[1][2][2][0] = 9.0;
 
-		net.setSynapseBigMatrix(x);
+		net.getSynapseMatrix().setBigWeightMatrix(x);
 
-		System.out.println("synapse matrix after");
-		System.out.println(buildMatrix(net.getSynapseBigMatrix()));
+		System.out.println("synapse matrix sorted asc");
+		Double[][][][] sortedMatrix = net.getSynapseMatrix().getBigWeightMatrix();
+		System.out.println(buildBigMatrix(sortedMatrix));
+		
+		Double[][] m = new Double[7][7];
+		m[0][4] = 9.0;
+		m[0][5] = 8.0;
+		m[1][4] = 7.0;
+		m[1][5] = 6.0;
+		m[2][4] = 5.0;
+		m[2][5] = 4.0;
+		m[3][6] = 3.0;
+		m[4][6] = 2.0;
+		m[5][6] = 1.0;
+		
+		net.getSynapseMatrix().setWeightMatrix(m);
 
+		System.out.println("synapse matrix sorted desc");
+
+		System.out.println(buildBigMatrix(net.getSynapseMatrix().getBigWeightMatrix()));
+		System.out.println(buildSmallMatrix(net.getSynapseMatrix().getSynapses()));
+		
+		net.printSynapses();
+		
 	}
 
-	private String buildMatrix(Double[][][][] m) {
+	private String buildBigMatrix(Double[][][][] m) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < m.length; i++) {
 			for (int j = 0; j < m[i].length; j++) {
@@ -68,7 +111,7 @@ public class SynapseTest {
 							sb.append("]");
 							sb.append("[");
 							sb.append(j);
-							sb.append("]");
+							sb.append("] -> ");
 							sb.append("[");
 							sb.append(k);
 							sb.append("]");
@@ -86,4 +129,25 @@ public class SynapseTest {
 		return sb.toString();
 	}
 
+	private String buildSmallMatrix(Synapse[][] m) {
+		StringBuilder sb = new StringBuilder();
+		for (int from = 0; from < m.length; from++) {
+			for (int to = 0; to < m[from].length; to++) {
+				if (m[from][to] != null) {
+					Double weight = m[from][to].getWeight();
+					sb.append("{");
+					sb.append(from);
+					sb.append("} -> ");
+					sb.append("{");
+					sb.append(to);
+					sb.append("}");
+					sb.append(" = ");
+					sb.append(weight);
+					sb.append("\n");
+				}
+			}
+		}
+		return sb.toString();
+	}
+	
 }

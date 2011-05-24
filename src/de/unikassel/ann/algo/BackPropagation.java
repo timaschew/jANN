@@ -38,7 +38,7 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 	
 	public boolean validateDataSet(Network net, DataPairSet testData) {
 		DataPair pair = testData.getPairs().get(0);
-		int inputSize = net.getInputSize();
+		int inputSize = net.getInputSizeIgnoringBias();
 		int outputSize = net.getOutputSize();
 		if (pair.getInput().length == inputSize && pair.getIdeal().length == outputSize) {
 			return true;

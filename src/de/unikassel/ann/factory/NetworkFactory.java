@@ -12,10 +12,23 @@ import de.unikassel.ann.strategy.MinErrorStrategy;
 
 public class NetworkFactory {
 	
+	/**
+	 * Creates a network with SigmoidFunction
+	 * @see #createSimpleNet()
+	 */
 	public static NetConfig createSimpleNet(int input, int hidden[], int output, boolean bias) {
 		return createSimpleNet(input, hidden, output, bias, new SigmoidFunction());
 	}
 	
+	/**
+	 * Creates a network with backpropagation algorithm, stopping after 1000 iterations
+	 * @param input size
+	 * @param hidden array with neuron size for each element
+	 * @param output size
+	 * @param bias flag
+	 * @param func activation function
+	 * @return
+	 */
 	public static NetConfig createSimpleNet(int input, int hidden[], int output, boolean bias, ActivationFunction func) {
 		NetConfig config = new NetConfig();
 		
@@ -34,6 +47,14 @@ public class NetworkFactory {
 		return config;
 	}
 	
+	/**
+	 * Creates a 3x3x1 network with bias<br>
+	 * Same result for:
+	 * <pre>createSimpleNet(2, new int[]{2}, 1, true, new SigmoidFunction());</pre>
+	 * @param iterations
+	 * @param bias
+	 * @return
+	 */
 	public static NetConfig createXorNet(int iterations, boolean bias) {
 		NetConfig config = createSimpleNet(2, new int[]{2}, 1, bias, new SigmoidFunction());
 		config.addOrUpdateExisting(new MaxLearnIterationsStrategy(iterations));

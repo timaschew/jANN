@@ -19,9 +19,63 @@ public class NetIOTest {
 		TrainingRW.WRITE_INDEX_IN_HEADER = false;
 		
 //		File f = new File("/Users/anton/Develop/Projekte/ANNtool/test/xor.csv");
-		File f = new File("/Users/anton/Develop/Projekte/ANNtool/test/net_cfg.csv");
-		File file = new File("/Users/anton/Develop/Projekte/ANNtool/test/net_export.csv");
+		File file = new File("/Users/anton/Develop/Projekte/ANNtool/test/net_cfg.csv");
+		File antoherFile = new File("/Users/anton/Develop/Projekte/ANNtool/test/net_export.csv");
 		
+		deleteFile(file);
+		
+		NetIO netIO = new NetIO();
+		netIO.readConfigFile(file); // read and parse file
+		
+		// create network (topology and synapses)
+		NetConfig netConfig = netIO.generateNetwork();
+		// create dataset
+		DataPairSet dataSet = netIO.getTrainingSet();
+		
+		DataPairSet copyDataSet = new DataPairSet(dataSet);
+		// start training
+		netConfig.getTrainingModule().train(copyDataSet);
+		
+		// reset output
+		copyDataSet.resetIdeal();
+		// let ann work on input
+		netConfig.getWorkingModule().work(null, copyDataSet);
+		
+		// print output result of work
+		System.out.println(dataSet);
+		
+		// write everything to new file
+		netIO.writeNet(antoherFile, "xor network", netConfig);
+		netIO.writeDataSet(antoherFile, "xor training", true, dataSet);
+		netIO.writeDataSet(antoherFile, "xor result", false, copyDataSet);
+		
+	}
+	
+	@Test
+	public void testImportExportedConfig() throws IOException, ClassNotFoundException {
+		
+		File f = new File("/Users/anton/Develop/Projekte/ANNtool/test/net_export.csv");
+		
+		NetIO netIO = new NetIO();
+		netIO.readConfigFile(f); // read and parse file
+		
+		// create network (topology and synapses)
+		NetConfig netConfig = netIO.generateNetwork();
+		// create dataset
+		DataPairSet dataSet = netIO.getTrainingSet();
+		
+		// reset output
+		dataSet.resetIdeal();
+		// let ann work on input
+		netConfig.getWorkingModule().work(null, dataSet);
+		
+		// print output result of work
+		System.out.println(dataSet);
+		
+	}
+	
+	
+	private void deleteFile(File file) {
 		FileWriter writer = null;
 		try {
 			writer = new FileWriter(file, false);
@@ -31,50 +85,5 @@ public class NetIOTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		NetIO netIO = new NetIO();
-		netIO.readConfigFile(f);
-		
-		NetConfig netConfig = netIO.generateNetwork();
-		DataPairSet dataSet = netIO.getTrainingSet();
-		
-		netConfig.getTrainingModule().train(dataSet);
-		
-		
-		netIO.writeDataSet(file, "xor dataset", true, dataSet);
-		dataSet.resetIdeal();
-		netConfig.getWorkingModule().work(null, dataSet);
-		
-		netConfig.printStats();
-		System.out.println(dataSet);
-		
-		
-		netIO.writeNet(file, "xor network config", netConfig);
-		netIO.writeDataSet(file, "result", false, dataSet);
-		
-	}
-	
-	
-	@Test
-	public void testImportExportedConfig() throws IOException, ClassNotFoundException {
-		
-		File f = new File("/Users/anton/Develop/Projekte/ANNtool/test/net_export.csv");
-		
-		NetIO reader = new NetIO();
-		reader.readConfigFile(f);
-		
-		NetConfig netConfig = reader.generateNetwork();
-		DataPairSet dataSet = reader.getTrainingSet();
-		
-		dataSet.resetIdeal();
-		netConfig.getWorkingModule().work(null, dataSet);
-		
-		netConfig.printStats();
-		System.out.println(dataSet);
-		
-
-		
-		
-		
 	}
 }
