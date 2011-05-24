@@ -30,7 +30,7 @@ public class SynapseTest {
 
 	/**
 	 * Synapse connections (matrix) looks like this<br>
-	 * for connection 00 -> 12 / 0 -> 4  there is no space remaining
+	 * for connection 00 -> 12 / 0 -> 5  there is no space remaining
 	 * 
 	 * <pre>
 	 * 00 01 02
@@ -61,15 +61,15 @@ public class SynapseTest {
 
 		// new matrix
 		Double[][][][] x = new Double[3][3][3][3];
-		x[0][0][1][1] = 1.0;
-		x[0][0][1][2] = 2.0;
-		x[0][1][1][1] = 3.0;
-		x[0][1][1][2] = 4.0;
-		x[0][2][1][1] = 5.0;
-		x[0][2][1][2] = 6.0;
-		x[1][0][2][0] = 7.0;
-		x[1][1][2][0] = 8.0;
-		x[1][2][2][0] = 9.0;
+		x[0][0] [1][1] = 1.0;
+		x[0][0] [1][2] = 2.0;
+		x[0][1] [1][1] = 3.0;
+		x[0][1] [1][2] = 4.0;
+		x[0][2] [1][1] = 5.0;
+		x[0][2] [1][2] = 6.0;
+		x[1][0] [2][0] = 7.0;
+		x[1][1] [2][0] = 8.0;
+		x[1][2] [2][0] = 9.0;
 
 		net.getSynapseMatrix().setBigWeightMatrix(x);
 

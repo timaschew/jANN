@@ -74,7 +74,7 @@ public class BackPropagationTest {
 	/**
 	 * Matrix is equals to {@link #testForwardPassWithAlreadyTrainedSynapsesBigMatrix()}<br>
 	 * Synapse connections (matrix) looks like this<br>
-	 * for connection 0 -> 4 there is no space remaining
+	 * for connection 0 -> 5 there is no space remaining
 	 * <pre>
 	 * 0 1 2
 	 *  \|X|
