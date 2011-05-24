@@ -7,7 +7,6 @@ import java.util.List;
 import org.apache.commons.lang.ArrayUtils;
 
 import de.unikassel.ann.config.NetConfig;
-import de.unikassel.ann.config.Topology;
 import de.unikassel.ann.io.beans.SynapseBean;
 import de.unikassel.ann.io.beans.TopologyBean;
 
@@ -25,10 +24,8 @@ public class Network {
 	private NetConfig config;
 	private List<Neuron> flatNet;
 	private SynapseMatrix synapseMatrix;
-	private Topology topo;
 	
 	public Network() {
-		topo = new Topology();
 		layers = new ArrayList<Layer>();
 		flatNet = new ArrayList<Neuron>();
 		synapseMatrix = new SynapseMatrix(this, null, null);
@@ -143,29 +140,22 @@ public class Network {
 		}
 		synapseMatrix.setSize(flatNet.size(), flatNet.size());
 		
-		if (topo.isStrictFF()) {
-			// set synapses (strict forward feedback)
-			for (Layer l : layers) {
-				if (previousLayer != null) {
-					for (Neuron fromNeuron : previousLayer.getNeurons()) {
-						for (Neuron toNeuron : l.getNeurons()) {
-							if (toNeuron.isBias() == false) {
-								Synapse s = new Synapse(fromNeuron, toNeuron);
-								synapseMatrix.addOrUpdateSynapse(fromNeuron.getId(), toNeuron.getId(), s);
-							}
+
+		// set synapses (strict forward feedback)
+		for (Layer l : layers) {
+			if (previousLayer != null) {
+				for (Neuron fromNeuron : previousLayer.getNeurons()) {
+					for (Neuron toNeuron : l.getNeurons()) {
+						if (toNeuron.isBias() == false) {
+							Synapse s = new Synapse(fromNeuron, toNeuron);
+							synapseMatrix.addOrUpdateSynapse(fromNeuron.getId(), toNeuron.getId(), s);
 						}
 					}
 				}
-				previousLayer = l;
 			}
-		} else {
-			
-			if (topo.getSynapses().isNotEmpty()) {
-				SynapseMatrix synapses = topo.getSynapses();
-				// TODO: what now ?
-			}
+			previousLayer = l;
 		}
-		
+
 		finalyzed = true;
 	}
 	

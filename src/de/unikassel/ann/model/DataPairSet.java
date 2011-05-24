@@ -53,6 +53,10 @@ public class DataPairSet {
 	}
 	
 	public DataPairSet(DataPairSet copy) {
+		if (copy == null || ArrayUtils.isEmpty(copy.ideal)||
+				ArrayUtils.isEmpty(copy.input)) {
+			throw new NullPointerException("dataset cannot be null");
+		}
 		input = new Double[copy.input.length][copy.input[0].length];
 		ideal = new Double[copy.ideal.length][copy.ideal[0].length];
 		for (int i=0; i<copy.input.length; i++) {

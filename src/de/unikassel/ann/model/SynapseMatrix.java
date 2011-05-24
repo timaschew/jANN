@@ -1,5 +1,14 @@
 package de.unikassel.ann.model;
 
+/**
+ * Containts all synapses of a network<br>
+ * Matrix is has a NxN size<br>
+ * First index = fromNeuron, second index = toNeuron<br>
+ * Its possible that each neuron have connection to every neuron<br>
+ * Access for synapses or weights can used with index. 
+ * null will be returned if synapse or weight does not exist.
+ *
+ */
 public class SynapseMatrix {
 	
 	private Synapse[][] matrix;
@@ -16,8 +25,21 @@ public class SynapseMatrix {
 		matrix = new Synapse[fromSize][toSize];
 	}
 	
-	public void addOrUpdateSynapse(Integer from, Integer to, Synapse s) {
+	/**
+	 * After adding synapse, you have to finalize the whole net<br>
+	 * @param from
+	 * @param to
+	 * @param s
+	 * @see Network#finalizeStructure()
+	 * @see Network#finalizeFromFlatNet(java.util.List, java.util.List)
+	 */
+	public boolean addOrUpdateSynapse(Integer from, Integer to, Synapse s) {
+		boolean updated = false;
+		if (matrix[from][to] != null) {
+			updated = true;
+		}
 		matrix[from][to] = s;
+		return updated;
 	}
 	
 	public Synapse getSynapse(Integer from, Integer to) {
@@ -59,6 +81,12 @@ public class SynapseMatrix {
 		return matrix;
 	}
 	
+	/**
+	 * Updates the weights of the existing synapses<br>
+	 * You can not pass weights for not existing synapses, 
+	 * it will throw an IllegalArgumentException!
+	 * @param x
+	 */
 	public void setWeightMatrix(Double[][] x) {
 		if (matrix.length == x.length &&
 				matrix[0].length == x[0].length) {
@@ -73,7 +101,6 @@ public class SynapseMatrix {
 					} else {
 						throw new IllegalArgumentException("could not set matrix element at: ["+i+"]["+j+"]");
 					}
-					
 				}
 			}
 		}
@@ -99,6 +126,12 @@ public class SynapseMatrix {
 		return bigMatrix;
 	}
 	
+	/**
+	 * Updates the weights of the existing synapses<br>
+	 * You can not pass weights for not existing synapses, 
+	 * it will throw an IllegalArgumentException!
+	 * @param x
+	 */
 	public void setBigWeightMatrix(Double[][][][] m) {
 		for (int fromLayer=0; fromLayer<m.length; fromLayer++) {
 			if (fromLayer == network.getOutputLayer().getIndex()) {

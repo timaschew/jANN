@@ -18,21 +18,20 @@ public class NetIOTest {
 		
 		TrainingRW.WRITE_INDEX_IN_HEADER = false;
 		
-//		File f = new File("/Users/anton/Develop/Projekte/ANNtool/test/xor.csv");
-		File file = new File("/Users/anton/Develop/Projekte/ANNtool/test/net_cfg.csv");
-		File antoherFile = new File("/Users/anton/Develop/Projekte/ANNtool/test/net_export.csv");
+		File importFile = new File("/Users/anton/Develop/Projekte/ANNtool/test/net_cfg.csv");
+		File exportFile = new File("/Users/anton/Develop/Projekte/ANNtool/test/net_export.csv");
 		
-		deleteFile(file);
+		deleteFile(exportFile);
 		
 		NetIO netIO = new NetIO();
-		netIO.readConfigFile(file); // read and parse file
+		netIO.readConfigFile(importFile); // read and parse file
 		
 		// create network (topology and synapses)
 		NetConfig netConfig = netIO.generateNetwork();
 		// create dataset
-		DataPairSet dataSet = netIO.getTrainingSet();
+		DataPairSet originalDataSet = netIO.getTrainingSet();
 		
-		DataPairSet copyDataSet = new DataPairSet(dataSet);
+		DataPairSet copyDataSet = new DataPairSet(originalDataSet);
 		// start training
 		netConfig.getTrainingModule().train(copyDataSet);
 		
@@ -42,12 +41,12 @@ public class NetIOTest {
 		netConfig.getWorkingModule().work(null, copyDataSet);
 		
 		// print output result of work
-		System.out.println(dataSet);
+		System.out.println(originalDataSet);
 		
 		// write everything to new file
-		netIO.writeNet(antoherFile, "xor network", netConfig);
-		netIO.writeDataSet(antoherFile, "xor training", true, dataSet);
-		netIO.writeDataSet(antoherFile, "xor result", false, copyDataSet);
+		netIO.writeNet(exportFile, "xor network", netConfig);
+		netIO.writeDataSet(exportFile, "xor training", true, originalDataSet);
+		netIO.writeDataSet(exportFile, "xor result", false, copyDataSet);
 		
 	}
 	

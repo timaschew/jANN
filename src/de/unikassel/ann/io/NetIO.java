@@ -136,7 +136,7 @@ public class NetIO {
 	}
 
 	public DataPairSet getTrainingSet() {
-		if (ArrayUtils.isEmpty(trainigBeanList.toArray()) == false) {
+		if (CollectionUtils.isNotEmpty(trainigBeanList)) {
 			DataPairSet set = new DataPairSet();
 			for (TrainingBean b : trainigBeanList) {
 				DataPair pair = new DataPair(b.getInput(), b.getOutput());
