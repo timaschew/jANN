@@ -8,7 +8,7 @@ import java.util.List;
 import de.unikassel.ann.algo.BackPropagation;
 import de.unikassel.ann.algo.TrainingModule;
 import de.unikassel.ann.algo.WorkModule;
-import de.unikassel.ann.model.ErrorLog;
+import de.unikassel.ann.model.NetError;
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.Network;
 import de.unikassel.ann.model.Neuron;
@@ -25,14 +25,14 @@ public class NetConfig {
 	WorkModule workModule;
 	TrainingModule trainingModule;
 	Randomizer randomizer;
-	List<ErrorLog> errorLogs;
+	List<NetError> errorLogs;
 
 	
 	public NetConfig() {
 		network = new Network();
 		network.setConfig(this);
 		strategies = new ArrayList<Strategy>();
-		errorLogs = new ArrayList<ErrorLog>();
+		errorLogs = new ArrayList<NetError>();
 	}
 	
 	public boolean stopTraining() {
@@ -106,6 +106,8 @@ public class NetConfig {
 		sb.append("error = ");
 		NumberFormat fmt = new DecimalFormat("0.00000");
 		sb.append(fmt.format(trainingModule.getCurrentError()));
+//		sb.append(" / ");
+//		sb.append(fmt.format(trainingModule.getCurrentSingleError()));
 		sb.append("\n");
 		sb.append("learnSteps = ");
 		sb.append(trainingModule.getCurrentStep());

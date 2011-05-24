@@ -1,6 +1,5 @@
 package de.unikassel.ann.algo;
 
-import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.model.DataPairSet;
 import de.unikassel.ann.model.Network;
 

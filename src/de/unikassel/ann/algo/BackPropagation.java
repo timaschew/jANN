@@ -6,6 +6,7 @@ import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.model.DataPair;
 import de.unikassel.ann.model.DataPairSet;
 import de.unikassel.ann.model.Layer;
+import de.unikassel.ann.model.NetError;
 import de.unikassel.ann.model.Network;
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.Synapse;
@@ -76,6 +77,7 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 
 	@Override
 	public void train(DataPairSet trainingData) {
+		netError = new NetError(this, trainingData);
 		Network net = config.getNetwork();
 		validateDataSet(net, trainingData);
 		while(true) {
@@ -92,6 +94,9 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 				}
 				currentStep++;
 			}
+			currentError = netError.calculateRMS();
+//			currentSingleError = netError.calculateSingleRMS();
+			netError.reset();
 			currentIteration++;
 			
 			for (Strategy s : config.getStrategies()) {
@@ -107,8 +112,7 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 				break;
 			}
 			if (l.equals(net.getOutputLayer())) {
-				Double rmseError = calculateOutputError(l, pair);
-				currentError = rmseError;
+				calculateOutputError(l, pair);
 			} else {
 				calculateError(l);
 			}
@@ -116,7 +120,7 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 		}
 	}
 	
-	private Double calculateOutputError(Layer outputLayer, DataPair pair) {
+	private void calculateOutputError(Layer outputLayer, DataPair pair) {
 		List<Neuron> neuronList = outputLayer.getNeurons();
 		Double[] ideal = pair.getIdeal();
 		Double rmseError = 0.0;
@@ -128,9 +132,9 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 			double errorFactor = t-o;
 			double delta = o * (1-o) * errorFactor;
 			n.setDelta(delta);
-			rmseError += (0.5 * Math.pow(errorFactor, 2));
+			netError.updateError(t, o);
+			rmseError += Math.pow(errorFactor, 2);
 		}
-		return rmseError;
 	}
 	
 	private void calculateError(Layer currentLayer) {

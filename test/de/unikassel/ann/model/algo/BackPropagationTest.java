@@ -1,5 +1,11 @@
 package de.unikassel.ann.model.algo;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.junit.Test;
 
 import de.unikassel.ann.algo.BackPropagation;
@@ -13,10 +19,10 @@ import de.unikassel.ann.model.func.SigmoidFunction;
 public class BackPropagationTest {
 	
 	@Test
-	public void testForwardPass() {
+	public void testForwardAndBackwardPass4XOR() {
 		// 2x2x1 topology with bias -> 3x3x1
 		// backpropagation and stop after 1000 iterations
-		NetConfig netConfig = NetworkFactory.createXorNet(1000, true);
+		NetConfig netConfig = NetworkFactory.createXorNet(500, true);
 		Network net = netConfig.getNetwork();
 		
 		// XOR training data
@@ -44,7 +50,7 @@ public class BackPropagationTest {
 	}
 	
 	@Test
-	public void xorWithoutBias() {
+	public void testForwardAndBackward4XORwithOutBias() {
 		// net without bias (without treshold values) don't perform a good training
 		// sometimes the result is realy bad (every result is 0.5)
 		
