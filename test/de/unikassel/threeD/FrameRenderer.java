@@ -8,6 +8,8 @@ import de.unikassel.threeD.geo.Point3D;
 
 public class FrameRenderer {
 	
+	final static double PERSPECTIVE_FACTOR = 1000;
+	
 	/**
 	 * @param g2d graphics 
 	 * @param cube cube with coordinates
@@ -20,10 +22,14 @@ public class FrameRenderer {
 		for (Point3D[] pa : cube.lineList) {
 			double fromZ = pa[0].z;
 			double toZ = pa[1].z;
-			int fromX = (int) (pa[0].x + wx * (1+pa[0].z/1000));
-			int fromY = (int) (pa[0].y + wy* (1+pa[0].z/1000));
-			int toX = (int) (pa[1].x + wx * (1+pa[1].z/1000));
-			int toY = (int) (pa[1].y + wy * (1+pa[1].z/1000));
+//			int fromX = (int) (wx + (pa[0].x));
+//			int fromY = (int) (wy + (pa[0].y));
+//			int toX = (int) (wx + (pa[1].x));
+//			int toY = (int) (wy + (pa[1].y));
+			int fromX = (int) (wx + (pa[0].x) * (1+pa[0].z/PERSPECTIVE_FACTOR));
+			int fromY = (int) (wy + (pa[0].y) * (1+pa[0].z/PERSPECTIVE_FACTOR));
+			int toX = (int) (wx + (pa[1].x) * (1+pa[1].z/PERSPECTIVE_FACTOR));
+			int toY = (int) (wy + (pa[1].y) * (1+pa[1].z/PERSPECTIVE_FACTOR));
 //			if (eye != null && eye.z != 0) {
 //				fromX = (int) ((fromX - eye.x) * (eye.z / fromZ));
 //				fromY = (int) ((fromY - eye.y) * (eye.z / fromZ));

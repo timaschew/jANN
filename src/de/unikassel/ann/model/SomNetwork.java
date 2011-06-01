@@ -19,10 +19,16 @@ public class SomNetwork extends BasicNetwork {
 //	SynapseMatrix synapseMatrix;
 
 	private int neuronIdCounter;
+
+private int inputLayerSize;
 	
 	public SomNetwork(int inputSize, int... outputDimension) {
 		super();
+//		if (inputSize != outputDimension.length) {
+//			throw new IllegalArgumentException("input size != dimension size");
+//		}
 		neuronIdCounter = 0;
+		inputLayerSize = inputSize;
 		dimension = outputDimension;
 		inputLayer = new Layer();
 		addLayer(inputLayer);
@@ -149,9 +155,9 @@ public class SomNetwork extends BasicNetwork {
 	}
 
 	private double[] createRandomVector(double min, double max) {
-		double[] randomVector = new double[dimension.length];
+		double[] randomVector = new double[inputLayerSize];
 		Random r = new Random();
-		for (int i=0; i<dimension.length; i++) {
+		for (int i=0; i<inputLayerSize; i++) {
 			randomVector[i] = r.nextDouble() * (max - min) - min;
 		}
 		return randomVector;
