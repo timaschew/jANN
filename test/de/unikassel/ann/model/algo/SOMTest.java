@@ -5,14 +5,17 @@ import org.junit.Test;
 import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.factory.NetworkFactory;
 import de.unikassel.ann.model.Network;
+import de.unikassel.ann.model.SomNetwork;
+import de.unikassel.mdda.MDDAPseudo;
 
 public class SOMTest {
 	
 	@Test
 	public void testSOM() {
 		
-		NetConfig netConfig = NetworkFactory.createSOM(2, 5, 5);
-		Network net = netConfig.getNetwork();
+		SomNetwork som = new SomNetwork(2, 8,8);
+		
+		som.train();
 		
 	}
 

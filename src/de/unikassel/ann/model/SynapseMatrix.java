@@ -12,9 +12,9 @@ package de.unikassel.ann.model;
 public class SynapseMatrix {
 	
 	private Synapse[][] matrix;
-	private Network network;
+	private BasicNetwork network;
 	
-	public SynapseMatrix(Network network, Integer fromSize, Integer toSize) {
+	public SynapseMatrix(BasicNetwork network, Integer fromSize, Integer toSize) {
 		this.network = network;
 		if (fromSize != null && toSize != null) {
 			setSize(fromSize, toSize);
@@ -33,7 +33,12 @@ public class SynapseMatrix {
 	 * @see Network#finalizeStructure()
 	 * @see Network#finalizeFromFlatNet(java.util.List, java.util.List)
 	 */
-	public boolean addOrUpdateSynapse(Integer from, Integer to, Synapse s) {
+	public boolean addOrUpdateSynapse(Synapse s) {
+		Integer from = s.getFromNeuron().getId();
+		Integer to = s.getToNeuron().getId();
+		if (from == null || to == null) {
+			throw new IllegalAccessError("neurons using synapse matrix, but have no id!");
+		}
 		boolean updated = false;
 		if (matrix[from][to] != null) {
 			updated = true;

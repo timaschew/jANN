@@ -61,18 +61,5 @@ public class NetworkFactory {
 		return config;
 	}
 
-	public static NetConfig createSOM(int input, int outputN, int outputM) {
-		
-		NetConfig config = new NetConfig();
-		config.addLayer(input, false, new SigmoidFunction());
-		config.addLayer(outputN*outputM, false, new SigmoidFunction());
-		SomAlgorithm somAlgo = new SomAlgorithm();
-		config.addWorkModule(somAlgo);
-		
-		config.buildNetwork();
-		
-		return config;
-	}
-	
 
 }

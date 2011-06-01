@@ -27,9 +27,6 @@ import de.unikassel.ann.model.DataPair;
 import de.unikassel.ann.model.DataPairSet;
 
 public class TrainingRW extends BasicCsvReader {
-
-//	static String[] header2beanMapping;
-//	static CellProcessor[] processor;
 	
 	/**
 	 * header will looks like this if true: <pre>i0,i1,i2,o0,o1</pre><br>

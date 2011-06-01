@@ -17,32 +17,21 @@ import de.unikassel.ann.io.beans.TopologyBean;
  *  you need to call {@link #finalizeStructure()} for linking the neurons (set synapses).<br>
  *
  */
-public class Network {
+public class Network extends BasicNetwork {
 	
-	private List<Layer> layers;
 	private Boolean finalyzed;
 	private NetConfig config;
 	private List<Neuron> flatNet;
 	private SynapseMatrix synapseMatrix;
 	
 	public Network() {
-		layers = new ArrayList<Layer>();
+		super();
 		flatNet = new ArrayList<Neuron>();
 		synapseMatrix = new SynapseMatrix(this, null, null);
 		finalyzed = false;
 	}
 	
-	/**
-	 * Adds a layer and creates a backlink from the layer to this net
-	 * @param layer
-	 */
-	public void addLayer(Layer l) {
-		l.setIndex(layers.size());
-		layers.add(l);
-		if ((l.getNet() != null && l.getNet().equals(this)) == false) {
-			l.setNet(this);
-		}
-	}
+
 	
 	public void finalizeFromFlatNet(List<TopologyBean> topoBeanList, List<SynapseBean> synapsesBanList) {
 		if (finalyzed) {
@@ -97,7 +86,7 @@ public class Network {
 				s.setWeight(b.getValue());
 			}
 			neuronRangeCheck(fromNeuron, toNeuron);
-			synapseMatrix.addOrUpdateSynapse(fromNeuron.getId(), toNeuron.getId(), s);
+			synapseMatrix.addOrUpdateSynapse(s);
 		}
 
 
@@ -148,7 +137,7 @@ public class Network {
 					for (Neuron toNeuron : l.getNeurons()) {
 						if (toNeuron.isBias() == false) {
 							Synapse s = new Synapse(fromNeuron, toNeuron);
-							synapseMatrix.addOrUpdateSynapse(fromNeuron.getId(), toNeuron.getId(), s);
+							synapseMatrix.addOrUpdateSynapse(s);
 						}
 					}
 				}
@@ -157,22 +146,6 @@ public class Network {
 		}
 
 		finalyzed = true;
-	}
-	
-	public Layer getInputLayer() {
-		return layers.get(0);
-	}
-	
-	public Layer getOutputLayer() {
-		return layers.get(layers.size()-1);
-	}
-	
-	public List<Layer> getLayers() {
-		return layers;
-	}
-	
-	public Layer getLayer(Integer i) {
-		return layers.get(i);
 	}
 
 	/**
@@ -239,16 +212,7 @@ public class Network {
 	}
 	public int getOutputSize() {
 		return getOutputLayer().getNeurons().size();
-	}
-	
-	public Integer getBiggestLayer() {
-		int tempSize = -1;
-		for (Layer l : layers) {
-			tempSize = Math.max(tempSize, l.getNeurons().size());
-		}
-		return tempSize;
-	}
-	
+	}	
 	
 	@Override
 	public String toString() {

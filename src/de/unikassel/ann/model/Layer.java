@@ -12,7 +12,7 @@ public class Layer {
 	
 	private List<Neuron> neurons;
 
-	private Network network;
+	private BasicNetwork network;
 
 	private boolean layerWithBias;
 	
@@ -80,14 +80,14 @@ public class Layer {
 		return null;
 	}
 	
-	public void setNet(Network net) {
+	public void setNet(BasicNetwork net) {
 		network = net;
 		if (net.getLayers().contains(this) == false) {
 			throw new IllegalAccessError("should use addLayer() in Network class");
 		}
 	}
 	
-	public Network getNet() {
+	public BasicNetwork getNet() {
 		return network;
 	}
 
