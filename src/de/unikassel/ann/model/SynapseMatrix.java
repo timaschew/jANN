@@ -33,9 +33,7 @@ public class SynapseMatrix {
 	 * @see Network#finalizeStructure()
 	 * @see Network#finalizeFromFlatNet(java.util.List, java.util.List)
 	 */
-	public boolean addOrUpdateSynapse(Synapse s) {
-		Integer from = s.getFromNeuron().getId();
-		Integer to = s.getToNeuron().getId();
+	public boolean addOrUpdateSynapse(Synapse s, Integer from, Integer to) {
 		if (from == null || to == null) {
 			throw new IllegalAccessError("neurons using synapse matrix, but have no id!");
 		}

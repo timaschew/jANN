@@ -19,7 +19,7 @@ public class SomNetwork extends BasicNetwork {
 	
 	private Layer outputLayer;
 	
-//	SynapseMatrix synapseMatrix;
+	SynapseMatrix synapseMatrix;
 
 	private int neuronIdCounter;
 
@@ -47,18 +47,22 @@ private Board3D listener;
 		}
 		
 		
-		
+		// set and init synapses, add to multi array
 		neuronArrayWrapper = new MDDAPseudo<Neuron>(outputDimension);
 		Object[] multiDimArray = (Object[]) neuronArrayWrapper.getArray();
-//		synapseMatrix = new SynapseMatrix(this, inputSize, multiDimArray.length+inputSize);
+		synapseMatrix = new SynapseMatrix(this, inputSize, multiDimArray.length);
 		for (int i=0; i<multiDimArray.length; i++) {
 			Neuron n = new Neuron(new SigmoidFunction(), false);
 			n.setId(neuronIdCounter++);
 			outputLayer.addNeuron(n);
+			if (i != n.getIndex()) {
+				throw new IllegalArgumentException("multi dim array index != neuron index");
+			}
 			multiDimArray[i] = n;
 			for (Neuron fromNeuron : inputLayer.getNeurons()) {
 				Synapse s = new Synapse(fromNeuron, n);
-//				synapseMatrix.addOrUpdateSynapse(s);
+				// for som DO NOT use glaobel id, only the index of the layer
+				synapseMatrix.addOrUpdateSynapse(s, fromNeuron.getIndex(), n.getIndex());
 			}
 		}
 	}
@@ -137,44 +141,40 @@ private Board3D listener;
 
 		Object[] multiDimArray = (Object[]) neuronArrayWrapper.getArray();
 		for (int i=0; i<multiDimArray.length; i++) {
-			
-			Neuron neuron = neuronArrayWrapper.getPseudo(i);
-			List<Synapse> synapseList = neuron.getIncomingSynapses();
-			for (Synapse inputSynapse : synapseList) {
-				int index = inputSynapse.getFromNeuron().getId();
-				min += Math.pow(inputVector[index] - inputSynapse.getWeight(), 2.0D);
+			for (int j=0; j<inputLayerSize; j++) {
+				Synapse synapse = synapseMatrix.getSynapse(j, i);
+				if (synapse == null) {
+					throw new IllegalArgumentException("synapse is null at ["+j+"]->["+i+"]");
+				}
+				min += Math.pow(inputVector[j] - synapse.getWeight(), 2);
 			}
-//				Synapse synapse = synapseMatrix.getSynapse(j, i);
 			// euclidic distance ?!?
 				
-			
-	
 			// für jedes output neuron, ermittele gewinner neuron
-			// und speichere indizes (x,y)
+			// und speichere index (pseudo multi dim indizes)
 			if (min < max) {
 				winnerOneDimIndex = i;
 				max = min;
 			}
 			min = 0.0;
 		}
-		int[] indices = neuronArrayWrapper.getMultiDimIndices(winnerOneDimIndex);
 		
+		int[] indices = neuronArrayWrapper.getMultiDimIndices(winnerOneDimIndex);
 
 		List<Integer> neighborIndices = neuronArrayWrapper.getNeighborForAllDims(neighborRadius, indices);
 
 		for (int neighbor : neighborIndices) {
-			Neuron neuron = neuronArrayWrapper.getPseudo(neighbor);
-			List<Synapse> synapseList = neuron.getIncomingSynapses();
-			for (Synapse inputSynapse : synapseList) {
-				int index = inputSynapse.getFromNeuron().getId();
-				inputSynapse.setWeight(factor * (inputVector[index]-inputSynapse.getWeight()));
-//				listener.update(neighbor, index, inputSynapse.getWeight());
+			for (int j=0; j<inputLayerSize; j++) {
+				Synapse synapse = synapseMatrix.getSynapse(j, neighbor);
+				if (synapse == null) {
+					throw new IllegalArgumentException("synapse is null at ["+j+"]->["+neighbor+"]");
+				}
+				synapse.setWeight(factor * (inputVector[j]-synapse.getWeight()));
 			}
-//				Synapse synapse = synapseMatrix.getSynapse(j, neighbor);			
 		}
+		
 		if (listener != null) {
 			listener.update();
-
 		}
 		
 	}

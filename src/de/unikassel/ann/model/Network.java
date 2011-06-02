@@ -86,7 +86,8 @@ public class Network extends BasicNetwork {
 				s.setWeight(b.getValue());
 			}
 			neuronRangeCheck(fromNeuron, toNeuron);
-			synapseMatrix.addOrUpdateSynapse(s);
+			// in this type of network use global ids for synapse matrix
+			synapseMatrix.addOrUpdateSynapse(s, fromNeuron.getId(), toNeuron.getId());
 		}
 
 
@@ -137,7 +138,8 @@ public class Network extends BasicNetwork {
 					for (Neuron toNeuron : l.getNeurons()) {
 						if (toNeuron.isBias() == false) {
 							Synapse s = new Synapse(fromNeuron, toNeuron);
-							synapseMatrix.addOrUpdateSynapse(s);
+							// in this type of network use global ids for synapse matrix
+							synapseMatrix.addOrUpdateSynapse(s, fromNeuron.getId(), toNeuron.getId());
 						}
 					}
 				}
