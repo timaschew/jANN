@@ -3,20 +3,24 @@ package de.unikassel.threeD;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import de.unikassel.ann.model.Neuron;
+import de.unikassel.ann.model.SomNetwork;
+import de.unikassel.ann.model.Synapse;
 import de.unikassel.threeD.geo.Cube;
 import de.unikassel.threeD.geo.Geom3D;
 import de.unikassel.threeD.geo.Plane;
@@ -39,21 +43,71 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 	private double camX = 0;
 	private double camY = 0;
 	private double camZ = 0;
+	private double eyeX = 10;
+	private double eyeY = 1;
+	private double eyeZ = 1000;
 	private BufferedImage bufferImgLeft;
 	private BufferedImage bufferImgRight;
+	private SomNetwork som;
+	private TrainingThread thread;
+	
+	private class TrainingThread extends Thread {
+		TrainingThread(Board3D board) {
+			start();
+		}
+		public void run() {
+			som.train();
+		}
+	}
 	
 	public static Board3D instance;
 	
 	public Board3D() {
 		instance = this;
+		
+
+		som = new SomNetwork(3, 10,10);
+		som.addChangeListener(this);
+		
+		
 		quader = new Cube(100, 100, 200);
 		cube = new Cube(100, 100, 100);
 		plane = new Plane(10, 10, 200, 200, 20);
+		updatePoints();
 		
 		prevPaintTime = System.currentTimeMillis();
         setBackground(Color.WHITE);
         setDoubleBuffered(true);
         
+	}
+
+	private void updatePoints() {
+		Point3D[][] m = plane.pointMatrix;
+		for (int i=0; i<m.length; i++) {
+			for (int j=0; j<m[i].length; j++) {
+				Neuron neuron = som.getMultiArray().get(i,j);
+				List<Synapse> synapses = neuron.getIncomingSynapses();
+				double x = synapses.get(0).getWeight();
+				double y = synapses.get(1).getWeight();
+				double z = synapses.get(2).getWeight();
+				
+				double scaleX = 2.0D / getWidth();
+				double scaleY = 2.0D / getHeight();
+				
+				
+				double centerOffset = 1.0D; // for centering on the grid
+				
+//				m[i][j].x = x / scaleX + centerOffset;
+//				m[i][j].y = y / scaleY + centerOffset;
+//				m[i][j].z = z / scaleX + centerOffset;
+				
+				m[i][j].x = x * 100;// / scaleX + centerOffset;
+				m[i][j].y = y * 100;// / scaleY + centerOffset;
+				m[i][j].z = z * 100;// / scaleX + centerOffset;
+				
+			}
+		}
+		
 	}
 
 	public void addNotify() {
@@ -82,7 +136,7 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 		
 		int[] quaderOffset = new int[]{200, 300};
 		int[] cubeOffset = new int[]{600, 200};
-		int[] planeOffset = new int[]{400, 350};
+		int[] planeOffset = new int[]{200, 200};
 
 		if (anaglyph) {
 
@@ -90,9 +144,9 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 			
 		} else {
 			g2d.setColor(Color.BLACK);
-			 FrameRenderer.paint(g2d, quader, quaderOffset);
-			 FrameRenderer.paint(g2d, cube, cubeOffset);
-			 FrameRenderer.paint(g2d, plane, planeOffset);
+//			 FrameRenderer.paint(g2d, quader, quaderOffset, null);
+//			 FrameRenderer.paint(g2d, cube, cubeOffset, null);
+			 FrameRenderer.paint(g2d, plane, planeOffset);;
 		}
 
 		
@@ -116,9 +170,7 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 	 */
 	private void drawAnaglyph(Graphics2D g2d, int height, int width,
 			int[] offset) {
-		Rectangle clipRect = g2d.getClipBounds();
-		clipRect.toString();
-		
+				
 		if (bufferImgLeft == null || bufferImgLeft.getWidth() != width
 				|| bufferImgLeft.getHeight() != height) {
 			bufferImgLeft = (BufferedImage) createImage(width, height);
@@ -134,13 +186,13 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 		g2ld.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		super.paint(g2ld);
-		FrameRenderer.paint(g2ld, quader, offset);
+		FrameRenderer.paint(g2ld, quader, offset, new Point3D(eyeX, eyeY, eyeZ));
 		g2ld.dispose();
 		// bufferImgLeft ready
 
 		// switch cam and recalculate
-		camX *= -1;
-		updateViewPort(quader.getPoints());
+		eyeX *= -1;
+//		updateViewPort(quader.getPoints());
 
 		Graphics2D g2rd = bufferImgRight.createGraphics();
 		g2rd.setBackground(getBackground());
@@ -148,7 +200,7 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		super.paint(g2rd);
 
-		FrameRenderer.paint(g2rd, quader, offset);
+		FrameRenderer.paint(g2rd, quader, offset, new Point3D(eyeX, eyeY, eyeZ));
 
 		g2rd.dispose();
 		// bufferImgRight ready
@@ -158,8 +210,8 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 
 		g2d.drawImage(bufferImgRight, 0, 0, null);
 
-		camX *= -1;
-		updateViewPort(quader.getPoints());
+		eyeX *= -1;
+//		updateViewPort(quader.getPoints());
 	}
 
 
@@ -245,7 +297,7 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 		transform3DTo2D(geo,0, 0, 0, camX, camY, camZ);
 	}
 	
-	/**
+	/*
 	 * Calculates the 3D to 2D transformation with an rotation
 	 * <pre>
 	 * 
@@ -267,42 +319,46 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 	 * @param thetaY
 	 * @param thetaZ
 	 */
+	
+	/**
+	 * @param geo list of points / coordinates to transform / project
+	 * @param thetaX orientation x axis
+	 * @param thetaY orientation y axis
+	 * @param thetaZ orientation z axis
+	 * @param camX x position of camera
+	 * @param camY y position of camera
+	 * @param camZ z position of camera
+	 */
 	public void transform3DTo2D(Geom3D geo, double thetaX, double thetaY,
-			double thetaZ, double cX, double cY, double cZ) {
+			double thetaZ, double camX, double camY, double camZ) {
 		double aX, aY, aZ; // temp point
 
 		for (Point3D p : geo.points) {
-
 			aX = p.x;
 			aY = p.y;
 			aZ = p.z;
 
 			// 3D -> 2D transformation matrix calculation with rotation 
 			// and camera coordinate parameters
-			
 			aY = p.y;
 			aZ = p.z;
-
             // Rotation um x-Achse
             //p[i][x] = px;
-            p.y = (aY-cY)*Math.cos(thetaX)-(aZ-cZ)*Math.sin(thetaX);
-            p.z = (aY-cY)*Math.sin(thetaX)+(aZ-cZ)*Math.cos(thetaX);
+            p.y = (aY-camY)*Math.cos(thetaX)-(aZ-camZ)*Math.sin(thetaX);
+            p.z = (aY-camY)*Math.sin(thetaX)+(aZ-camZ)*Math.cos(thetaX);
 
             aX = p.x;
             aZ = p.z;
-            
             // Rotation um y-Achse
-            p.x = (aX-cX)*Math.cos(thetaY)+(aZ-cZ)*Math.sin(thetaY);
+            p.x = (aX-camX)*Math.cos(thetaY)+(aZ-camZ)*Math.sin(thetaY);
             //p[i][y]= py;
-            p.z =-(aX-cX)*Math.sin(thetaY)+(aZ-cZ)*Math.cos(thetaY);
+            p.z =-(aX-camX)*Math.sin(thetaY)+(aZ-camZ)*Math.cos(thetaY);
 
             aY = p.y;
             aX = p.x;
-
             // Rotation um z-Achse
-            p.x = (aX-cX)*Math.cos(thetaZ)-(aY-cY)*Math.sin(thetaZ);
-            p.y = (aY-cY)*Math.cos(thetaZ)+(aX-cX)*Math.sin(thetaZ);
-            
+            p.x = (aX-camX)*Math.cos(thetaZ)-(aY-camY)*Math.sin(thetaZ);
+            p.y = (aY-camY)*Math.cos(thetaZ)+(aX-camX)*Math.sin(thetaZ);
 		}
 	}
 
@@ -338,7 +394,12 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 			anaglyph = !anaglyph;
 			repaint();
 			System.out.println("anaglpyh: "+anaglyph);
-		}
+		} else if (arg0.getSource() instanceof JButton) {
+			JButton b = (JButton) arg0.getSource();
+			if (b.getName().equals("train")) {
+				thread = new TrainingThread(this);
+			}
+		} 
 		else {
 			System.err.println("oops: "+arg0.getSource());
 		}
@@ -359,19 +420,30 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 		} else if (arg0.getSource() instanceof JSpinner) {
 			JSpinner s = (JSpinner)arg0.getSource();
 			String name = s.getName();
+			int val = (Integer) s.getValue();
 			if (name.equals("camXspinner")) {
-				int val = (Integer) s.getValue();
+				
 				if (camX < 0) {
 					camX = -val;
 				} else {
 					camX = val;
 				}
 				
-				repaint();
+			} else if (name.equals("eyeX")) {
+				eyeX = val;
+			} else if (name.equals("eyeY")) {
+				eyeY = val;
+			} else if (name.equals("eyeZ")) {
+				eyeZ = val;
 			}
+			repaint();
 		} else {
 			System.err.println("ooops "+arg0.getSource());
 		}
+	}
+
+	public void update() {
+		updatePoints();
 	}
 
 }

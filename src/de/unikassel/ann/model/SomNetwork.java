@@ -5,8 +5,11 @@ import java.util.Random;
 
 import de.unikassel.ann.model.func.SigmoidFunction;
 import de.unikassel.mdda.MDDAPseudo;
+import de.unikassel.threeD.Board3D;
 
 public class SomNetwork extends BasicNetwork {
+	
+	public static long WAIT = 20; 
 	
 	private int[] dimension;
 	
@@ -21,6 +24,8 @@ public class SomNetwork extends BasicNetwork {
 	private int neuronIdCounter;
 
 private int inputLayerSize;
+
+private Board3D listener;
 	
 	public SomNetwork(int inputSize, int... outputDimension) {
 		super();
@@ -63,7 +68,9 @@ private int inputLayerSize;
 		trainStep2();
 	}
 	
-
+	public MDDAPseudo<Neuron> getMultiArray() {
+		return neuronArrayWrapper;
+	}
 	
 	private void trainStep1() {
 		double factorDecrementor = 0.0032; // = 0.0032
@@ -83,6 +90,12 @@ private int inputLayerSize;
 
 //			paramKohonenPanel.setPhaseInfo(1, i);
 //			paramKohonenPanel.repaint();
+			try {
+				Thread.sleep(WAIT);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -101,6 +114,12 @@ private int inputLayerSize;
 
 //			paramKohonenPanel.setPhaseInfo(2, i);
 //			paramKohonenPanel.repaint();
+			try {
+				Thread.sleep(WAIT);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -149,18 +168,28 @@ private int inputLayerSize;
 			for (Synapse inputSynapse : synapseList) {
 				int index = inputSynapse.getFromNeuron().getId();
 				inputSynapse.setWeight(factor * (inputVector[index]-inputSynapse.getWeight()));
+//				listener.update(neighbor, index, inputSynapse.getWeight());
 			}
 //				Synapse synapse = synapseMatrix.getSynapse(j, neighbor);			
 		}
+		if (listener != null) {
+			listener.update();
+
+		}
+		
 	}
 
 	private double[] createRandomVector(double min, double max) {
 		double[] randomVector = new double[inputLayerSize];
 		Random r = new Random();
 		for (int i=0; i<inputLayerSize; i++) {
-			randomVector[i] = r.nextDouble() * (max - min) - min;
+			randomVector[i] = r.nextDouble() * (max - min) + min;
 		}
 		return randomVector;
+	}
+
+	public void addChangeListener(Board3D board) {
+		listener = board;
 	}
 	
 }

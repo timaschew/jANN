@@ -13,9 +13,13 @@ public class SOMTest {
 	@Test
 	public void testSOM() {
 		
-		SomNetwork som = new SomNetwork(3, 8,8);
+		SomNetwork som = new SomNetwork(2, 8,8);
+		
+		som.printSynapses();
 		
 		som.train();
+		
+		som.printSynapses();
 		
 	}
 

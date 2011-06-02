@@ -226,16 +226,6 @@ public class Network extends BasicNetwork {
 	}
 	
 
-	public void printSynapses() {
-		System.out.println("synapse net");
-		for (Layer l : layers) {
-			for (Neuron n : l.getNeurons()) {
-				List<Synapse> synapses = n.getOutgoingSynapses();
-				for (Synapse s : synapses) {
-					System.out.println(s);
-				}
-			}
-		}
-	}
+	
 
 }

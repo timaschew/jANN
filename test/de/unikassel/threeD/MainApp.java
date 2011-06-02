@@ -13,7 +13,7 @@ import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.SwingConstants;
 
-public class MainFrame extends JFrame {
+public class MainApp extends JFrame {
 
 	private static final long serialVersionUID = -6640029182568522067L;
 
@@ -24,7 +24,7 @@ public class MainFrame extends JFrame {
 			public void run() {
 				
 				
-				MainFrame m = new MainFrame();
+				MainApp m = new MainApp();
 				m.setLayout(new BorderLayout(5, 10));
 //				m.add(new Board());
 				m.add(new Board3D(), BorderLayout.CENTER);
@@ -45,25 +45,29 @@ public class MainFrame extends JFrame {
 
 			private JPanel buildBottomPanel() {
 				JPanel p = new JPanel();
-				JSlider eyeSliderX = new JSlider(SwingConstants.HORIZONTAL, -100, 100, 0);
-				JSlider eyeSliderY = new JSlider(SwingConstants.HORIZONTAL, -100, 100, 0);
-				JSlider eyeSliderZ = new JSlider(SwingConstants.HORIZONTAL, -100, 100, 0);
+				
+				JSpinner eyeSliderX = new JSpinner();
+				JSpinner eyeSliderY = new JSpinner();
+				JSpinner eyeSliderZ = new JSpinner();
 				eyeSliderX.setName("eyeX");
 				eyeSliderY.setName("eyeY");
 				eyeSliderZ.setName("eyeZ");
+				eyeSliderX.setPreferredSize(new Dimension(80, 20));
+				eyeSliderY.setPreferredSize(new Dimension(80, 20));
+				eyeSliderZ.setPreferredSize(new Dimension(80, 20));
 				eyeSliderX.addChangeListener(Board3D.instance);
 				eyeSliderY.addChangeListener(Board3D.instance);
 				eyeSliderZ.addChangeListener(Board3D.instance);
 				
-//				p.add(eyeSliderX);
-//				p.add(eyeSliderY);
-//				p.add(eyeSliderZ);
+				p.add(eyeSliderX);
+				p.add(eyeSliderY);
+				p.add(eyeSliderZ);
 				
 				JSpinner camXSpinner = new JSpinner();
 				camXSpinner.setPreferredSize(new Dimension(80, 20));
 				camXSpinner.setName("camXspinner");
 				camXSpinner.addChangeListener(Board3D.instance);
-				p.add(new JLabel("eye distance"));
+				p.add(new JLabel("cam distance"));
 				p.add(camXSpinner);
 				JButton eyeSwitch = new JButton("switch");
 				eyeSwitch.setActionCommand("eyeSwitch");
@@ -94,17 +98,24 @@ public class MainFrame extends JFrame {
 				JButton refresh = new JButton("refresh");
 				refresh.setActionCommand("refresh");
 				refresh.addActionListener(Board3D.instance);
+		
+				JButton trainButton = new JButton("train");
+				trainButton.setName("train");
+				trainButton.addActionListener(Board3D.instance);
+				p.add(trainButton);
+				
+				
 //				p.add(refresh);
 				
-				JSlider camSliderX = new JSlider(SwingConstants.HORIZONTAL, -20, 20, 0);
-				JSlider camSliderY = new JSlider(SwingConstants.HORIZONTAL, -20, 20, 0);
-				JSlider camSliderZ = new JSlider(SwingConstants.HORIZONTAL, -20, 20, 0);
-				camSliderX.setName("camX");
-				camSliderY.setName("camY");
-				camSliderZ.setName("camZ");
-				camSliderX.addChangeListener(Board3D.instance);
-				camSliderY.addChangeListener(Board3D.instance);
-				camSliderZ.addChangeListener(Board3D.instance);
+//				JSlider camSliderX = new JSlider(SwingConstants.HORIZONTAL, -20, 20, 0);
+//				JSlider camSliderY = new JSlider(SwingConstants.HORIZONTAL, -20, 20, 0);
+//				JSlider camSliderZ = new JSlider(SwingConstants.HORIZONTAL, -20, 20, 0);
+//				camSliderX.setName("camX");
+//				camSliderY.setName("camY");
+//				camSliderZ.setName("camZ");
+//				camSliderX.addChangeListener(Board3D.instance);
+//				camSliderY.addChangeListener(Board3D.instance);
+//				camSliderZ.addChangeListener(Board3D.instance);
 				
 //				p.add(camSliderX);
 //				p.add(camSliderY);
