@@ -19,7 +19,7 @@ public class Plane {
 
 	public Geom3D points;
 	public Point3D[][] pointMatrix;
-	public List<Point3D[]> lineList;
+	public List<Line> lineList;
 	private int maxHeight;
 	private int maxWidth;
 	private int maxDepth;
@@ -28,7 +28,7 @@ public class Plane {
 
 	public Plane(int rows, int cols, int maxWidth, int maxHeight, int maxDepth) {
 		pointMatrix = new Point3D[rows][cols];
-		lineList = new ArrayList<Point3D[]>();
+		lineList = new ArrayList<Line>();
 		points = new Geom3D();
 		this.cols = cols;
 		this.rows = rows;
@@ -57,21 +57,21 @@ public class Plane {
 		// center
 		for (int r=1; r<rows; r++) {
 			for (int c=1; c<cols; c++) {
-				Point3D[] up = new Point3D[]{pointMatrix[r][c], pointMatrix[r-1][c]};
-				Point3D[] left = new Point3D[]{pointMatrix[r][c], pointMatrix[r][c-1]};
+				Line up = new Line(pointMatrix[r][c], pointMatrix[r-1][c]);
+				Line left = new Line(pointMatrix[r][c], pointMatrix[r][c-1]);
 				lineList.add(up);
 				lineList.add(left);
 			}
 		}
 		// top side
 		for (int c=1; c<cols; c++) {
-			Point3D[] left = new Point3D[]{pointMatrix[0][c], pointMatrix[0][c-1]};
+			Line left = new Line(pointMatrix[0][c], pointMatrix[0][c-1]);
 			lineList.add(left);
 		}
 		
 		// left side
 		for (int r=1; r<rows; r++) {
-			Point3D[] up = new Point3D[]{pointMatrix[r][0], pointMatrix[r-1][0]};
+			Line up = new Line(pointMatrix[r][0], pointMatrix[r-1][0]);
 			lineList.add(up);
 		}
 

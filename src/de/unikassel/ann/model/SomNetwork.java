@@ -18,8 +18,6 @@ public class SomNetwork extends BasicNetwork {
 	private MDDAPseudo<Neuron> neuronArrayWrapper;
 	
 	private Layer outputLayer;
-	
-	SynapseMatrix synapseMatrix;
 
 	private int neuronIdCounter;
 
@@ -69,7 +67,7 @@ private Board3D listener;
 	
 	public void train() {
 		trainStep1();
-		trainStep2();
+//		trainStep2();
 	}
 	
 	public MDDAPseudo<Neuron> getMultiArray() {

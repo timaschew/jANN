@@ -5,10 +5,16 @@ import java.util.List;
 
 public abstract class BasicNetwork {
 	
+	protected SynapseMatrix synapseMatrix;
+	
 	protected List<Layer> layers;
 	
 	public BasicNetwork() {
 		layers = new ArrayList<Layer>();
+	}
+	
+	public SynapseMatrix getSynapseMatrix() {
+		return synapseMatrix;
 	}
 	
 	/**

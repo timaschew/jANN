@@ -3,6 +3,7 @@ package de.unikassel.threeD;
 import java.awt.Graphics2D;
 
 import de.unikassel.threeD.geo.Cube;
+import de.unikassel.threeD.geo.Line;
 import de.unikassel.threeD.geo.Plane;
 import de.unikassel.threeD.geo.Point3D;
 
@@ -24,14 +25,14 @@ public class FrameRenderer {
 		int wx = offset2D[0];
 		int wy = offset2D[1];
             
-		for (Point3D[] pa : cube.lineList) {
-			double fromZ = pa[0].z;
-			double toZ = pa[1].z;
+		for (Line line : cube.lineList) {
+			double fromZ = line.from.z;
+			double toZ = line.to.z;
 			
-			int fromX = (int) (pa[0].x);
-			int fromY = (int) (pa[0].y);
-			int toX = (int) (pa[1].x);
-			int toY = (int) (pa[1].y);
+			int fromX = (int) (line.from.x);
+			int fromY = (int) (line.from.y);
+			int toX = (int) (line.to.x);
+			int toY = (int) (line.to.y);
 			
 			// b_x = (d_x - e_x) (e_z / d_z)
 			// b_y = (d_y - e_y) (e_z / d_z)
@@ -58,9 +59,9 @@ public class FrameRenderer {
 	public static void paint(Graphics2D g2d, Plane plane, int[] offset2D) {
 		int wx = offset2D[0];
 		int wy = offset2D[1];
-		for (Point3D[] pa : plane.lineList) {
-			g2d.drawLine((int)pa[0].x + wx, (int)pa[0].y + wy,
-					(int)pa[1].x + wx, (int)pa[1].y + wy);
+		for (Line line : plane.lineList) {
+			g2d.drawLine((int)line.from.x + wx, (int)line.from.y + wy,
+					(int)line.to.x + wx, (int)line.to.y + wy);
 		}       
 	}
 }

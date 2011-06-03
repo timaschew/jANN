@@ -62,17 +62,22 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 	
 	public static Board3D instance;
 	
+	public int dim1 = 20;
+	public int dim2 = 20;
+//	public int dim3 = 10;
+	public int inputSize = 2;
+	
 	public Board3D() {
 		instance = this;
 		
-
-		som = new SomNetwork(3, 10,10);
+		
+		som = new SomNetwork(inputSize, dim1, dim2);
 		som.addChangeListener(this);
 		
 		
 		quader = new Cube(100, 100, 200);
 		cube = new Cube(100, 100, 100);
-		plane = new Plane(10, 10, 200, 200, 20);
+		plane = new Plane(dim1, dim2, 200, 200, 20);
 		updatePoints();
 		
 		prevPaintTime = System.currentTimeMillis();
@@ -82,30 +87,34 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 	}
 
 	private void updatePoints() {
+		
+		double scaleX = 2.0D / getWidth();
+		double scaleY = 2.0D / getHeight();
+
+		double centerOffset = 1.0D; // for centering on the grid
+		
 		Point3D[][] m = plane.pointMatrix;
-		for (int i=0; i<m.length; i++) {
-			for (int j=0; j<m[i].length; j++) {
-				Neuron neuron = som.getMultiArray().get(i,j);
-				List<Synapse> synapses = neuron.getIncomingSynapses();
-				double x = synapses.get(0).getWeight();
-				double y = synapses.get(1).getWeight();
-				double z = synapses.get(2).getWeight();
+		Object[] multiDimArray = (Object[]) som.getMultiArray().getArray();
+		for (int i=0; i<multiDimArray.length; i++) {
+			
+			int[] indices = som.getMultiArray().getMultiDimIndices(i);
+			dim1 = indices[0];
+			dim2 = indices[1];
+			
+			double x = som.getSynapseMatrix().getSynapse(0,i).getWeight();
+			double y = som.getSynapseMatrix().getSynapse(1,i).getWeight();
+//			double z = som.getSynapseMatrix().getSynapse(2,i).getWeight();
+			
+			int scaleFactor = 200;
+			m[dim1][dim2].x = x / scaleX + centerOffset;
+			m[dim1][dim2].y = y / scaleY + centerOffset;
+//			m[dim1][dim2].z = z / scaleX + centerOffset;
+			
+//				m[dim1][dim2].x = (x + centerOffset) * scaleX;
+//				m[dim1][dim2].y = (y + centerOffset) * scaleY;
+//				m[dim1][dim2].z = (z + centerOffset) * scaleFactor;
 				
-				double scaleX = 2.0D / getWidth();
-				double scaleY = 2.0D / getHeight();
-				
-				
-				double centerOffset = 1.0D; // for centering on the grid
-				
-//				m[i][j].x = x / scaleX + centerOffset;
-//				m[i][j].y = y / scaleY + centerOffset;
-//				m[i][j].z = z / scaleX + centerOffset;
-				
-				m[i][j].x = x * 100;// / scaleX + centerOffset;
-				m[i][j].y = y * 100;// / scaleY + centerOffset;
-				m[i][j].z = z * 100;// / scaleX + centerOffset;
-				
-			}
+			
 		}
 		
 	}
@@ -261,9 +270,13 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 			synchronized (this) {
 				while (threadActivated) {
 
-					double angle_x = 0.01;
-					double angle_y = 0.0075;
-					double angle_z = 0.005;
+//					double angle_x = 0.01;
+//					double angle_y = 0.0075;
+//					double angle_z = 0.005;
+					
+					double angle_x = 0.0;
+					double angle_y = 0.0;
+					double angle_z = 0.0;
 					
 					rotate(cube.getPoints(), angle_x, angle_y, angle_z);
 					rotate(quader.getPoints(), angle_x, angle_y, angle_z);

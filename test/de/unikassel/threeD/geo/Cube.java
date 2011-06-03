@@ -32,11 +32,11 @@ public class Cube {
 	public int zDist = 100;
 
 	public Geom3D pointList;
-	public List<Point3D[]> lineList;
+	public List<Line> lineList;
 
 	public Cube() {
 		pointList = new Geom3D();
-		lineList = new ArrayList<Point3D[]>();
+		lineList = new ArrayList<Line>();
 	}
 
 	/**
@@ -81,20 +81,20 @@ public class Cube {
 		pointList.add(p8);
 		
 		// bottom lines
-		lineList.add(new Point3D[] {p1,p2});
-		lineList.add(new Point3D[] {p2,p3});
-		lineList.add(new Point3D[] {p3,p4});
-		lineList.add(new Point3D[] {p4,p1});
+		lineList.add(new Line(p1,p2));
+		lineList.add(new Line(p2,p3));
+		lineList.add(new Line(p3,p4));
+		lineList.add(new Line(p4,p1));
 		// top lines
-		lineList.add(new Point3D[] {p5,p6});
-		lineList.add(new Point3D[] {p6,p7});
-		lineList.add(new Point3D[] {p7,p8});
-		lineList.add(new Point3D[] {p8,p5});
+		lineList.add(new Line(p5,p6));
+		lineList.add(new Line(p6,p7));
+		lineList.add(new Line(p7,p8));
+		lineList.add(new Line(p8,p5));
 		// vertical lines
-		lineList.add(new Point3D[] {p5,p1});
-		lineList.add(new Point3D[] {p6,p2});
-		lineList.add(new Point3D[] {p7,p3});
-		lineList.add(new Point3D[] {p8,p4});
+		lineList.add(new Line(p5,p1));
+		lineList.add(new Line(p6,p2));
+		lineList.add(new Line(p7,p3));
+		lineList.add(new Line(p8,p4));
 		
 		flipYAxis();
 
