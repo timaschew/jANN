@@ -169,7 +169,8 @@ private Board3D listener;
 				if (synapse == null) {
 					throw new IllegalArgumentException("synapse is null at ["+j+"]->["+neighbor+"]");
 				}
-				synapse.setWeight(factor * (inputVector[j]-synapse.getWeight()));
+				Double oldValue = synapse.getWeight();
+				synapse.setWeight(oldValue+(factor * (inputVector[j]-oldValue)));
 			}
 		}
 		

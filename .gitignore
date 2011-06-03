@@ -5,3 +5,4 @@ bin/*.*
 reports/*
 unusedLibs/*
 test/de/unikassel/threeD/misc/*
+test/org/generation5/*
