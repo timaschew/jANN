@@ -2,6 +2,7 @@ package de.unikassel.ann.model;
 
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import de.unikassel.ann.model.func.SigmoidFunction;
 import de.unikassel.mdda.MDDAPseudo;
@@ -25,6 +26,7 @@ private int inputLayerSize;
 
 private Board3D listener;
 	
+// TODO: ignore inputSizie, remove parameter, calc from dimension size
 	public SomNetwork(int inputSize, int... outputDimension) {
 		super();
 //		if (inputSize != outputDimension.length) {
@@ -67,7 +69,10 @@ private Board3D listener;
 	
 	public void train() {
 		trainStep1();
-//		trainStep2();
+		System.err.println("finished part 1");
+		trainStep2();
+		System.err.println("finished part 2");
+
 	}
 	
 	public MDDAPseudo<Neuron> getMultiArray() {
@@ -80,7 +85,6 @@ private Board3D listener;
 		double factor = 0.9D;
 
 		for (int i = 0; i < 250; i++) {
-//			neighborRadius = 6;
 			for (int k = 0; k < 50; k++) {
 				double[] inputVector = createRandomVector(-1, 1);
 				run(inputVector, factor, neighborRadius);
@@ -90,8 +94,6 @@ private Board3D listener;
 			
 			neighborRadius--;
 
-//			paramKohonenPanel.setPhaseInfo(1, i);
-//			paramKohonenPanel.repaint();
 			try {
 				Thread.sleep(WAIT);
 			} catch (InterruptedException e) {
@@ -103,19 +105,16 @@ private Board3D listener;
 	
 	private void trainStep2() {
 		double factor = 0.1; 
-		double factorDecrementor = 0.08; // 0.08
+		double factorDecrementor = 0.001; // 0.08
 
 		for (int i = 0; i < 100; i++) {
 			for (int k = 0; k < 75; k++) {
 				double[] inputVector = createRandomVector(-1, 1);
 				run(inputVector, factor, 1);
-				
 			}
 
 			factor -= factorDecrementor;
 
-//			paramKohonenPanel.setPhaseInfo(2, i);
-//			paramKohonenPanel.repaint();
 			try {
 				Thread.sleep(WAIT);
 			} catch (InterruptedException e) {
@@ -139,28 +138,35 @@ private Board3D listener;
 
 		Object[] multiDimArray = (Object[]) neuronArrayWrapper.getArray();
 		for (int i=0; i<multiDimArray.length; i++) {
+			double sum = 0;
 			for (int j=0; j<inputLayerSize; j++) {
 				Synapse synapse = synapseMatrix.getSynapse(j, i);
 				if (synapse == null) {
 					throw new IllegalArgumentException("synapse is null at ["+j+"]->["+i+"]");
 				}
-				min += Math.pow(inputVector[j] - synapse.getWeight(), 2);
-			}
-			// euclidic distance ?!?
+				sum += Math.pow(inputVector[j] - synapse.getWeight(), 2);
 				
-			// für jedes output neuron, ermittele gewinner neuron
-			// und speichere index (pseudo multi dim indizes)
+				
+			}
+			min = Math.sqrt(sum);
 			if (min < max) {
 				winnerOneDimIndex = i;
 				max = min;
 			}
 			min = 0.0;
+			
+			// euclidic distance ?!?
+				
+			// für jedes output neuron, ermittele gewinner neuron
+			// und speichere index (pseudo multi dim indizes)
+			
 		}
 		
 		int[] indices = neuronArrayWrapper.getMultiDimIndices(winnerOneDimIndex);
 
-		List<Integer> neighborIndices = neuronArrayWrapper.getNeighborForAllDims(neighborRadius, indices);
-
+		Set<Integer> neighborIndices = neuronArrayWrapper.getNeighborForAllDims(neighborRadius, indices);
+		neighborIndices.add(winnerOneDimIndex);
+		
 		for (int neighbor : neighborIndices) {
 			for (int j=0; j<inputLayerSize; j++) {
 				Synapse synapse = synapseMatrix.getSynapse(j, neighbor);
