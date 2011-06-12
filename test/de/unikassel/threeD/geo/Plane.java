@@ -11,15 +11,13 @@ import java.util.Random;
  *       |     |     |
  *       4 - - 5 - - 6
  *       |     |     |
- *       7 - - 8 - - 3
+ *       7 - - 8 - - 9
  * </pre>
  * 
  */
-public class Plane {
+public class Plane extends LineGeom {
 
-	public Geom3D points;
 	public Point3D[][] pointMatrix;
-	public List<Line> lineList;
 	private int maxHeight;
 	private int maxWidth;
 	private int maxDepth;
@@ -44,6 +42,7 @@ public class Plane {
 		points.points.clear();
 		Random rand = new Random();
 		
+		// points
 		for (int r=0; r<rows; r++) {
 			for (int c=0; c<cols; c++) {
 //				pointMatrix[r][c] = new Point3D(rand.nextDouble()*maxWidth,
@@ -54,32 +53,18 @@ public class Plane {
 			}
 		}
 		
-		// center
-		for (int r=1; r<rows; r++) {
-			for (int c=1; c<cols; c++) {
-				Line up = new Line(pointMatrix[r][c], pointMatrix[r-1][c]);
-				Line left = new Line(pointMatrix[r][c], pointMatrix[r][c-1]);
-				lineList.add(up);
-				lineList.add(left);
+		for (int r=0; r<rows; r++) {
+			for (int c=0; c<cols; c++) {
+				if (r>0) {
+					Line up = new Line(pointMatrix[r][c], pointMatrix[r-1][c]);
+					lineList.add(up);
+				}
+				if (c>0) {
+					Line left = new Line(pointMatrix[r][c], pointMatrix[r][c-1]);
+					lineList.add(left);
+				}
 			}
 		}
-		// top side
-		for (int c=1; c<cols; c++) {
-			Line left = new Line(pointMatrix[0][c], pointMatrix[0][c-1]);
-			lineList.add(left);
-		}
-		
-		// left side
-		for (int r=1; r<rows; r++) {
-			Line up = new Line(pointMatrix[r][0], pointMatrix[r-1][0]);
-			lineList.add(up);
-		}
-
-	}
-
-
-	public Geom3D getPoints() {
-		return points;
 	}
 
 }

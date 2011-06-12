@@ -3,6 +3,8 @@ target/*
 bin
 bin/*.*
 reports/*
+resources/*
 unusedLibs/*
 test/de/unikassel/threeD/misc/*
 test/org/generation5/*
+test/wireframe/*

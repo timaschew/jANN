@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 
 import de.unikassel.threeD.geo.Cube;
 import de.unikassel.threeD.geo.Line;
+import de.unikassel.threeD.geo.LineGeom;
 import de.unikassel.threeD.geo.Plane;
 import de.unikassel.threeD.geo.Point3D;
 
@@ -36,18 +37,23 @@ public class FrameRenderer {
 			
 			// b_x = (d_x - e_x) (e_z / d_z)
 			// b_y = (d_y - e_y) (e_z / d_z)
-			if (eye != null && eye.z != 0) {
-				fromX = (int) ((fromX - eye.x) * (eye.z / fromZ));
-				fromY = (int) ((fromY - eye.y) * (eye.z / fromZ));
-				toX = (int) ((toX - eye.x) * (eye.z / toZ));
-				toY = (int) ((toY - eye.y) * (eye.z / toZ));
-			} else {
-				fromX = (int) (fromX * (1+fromZ/PERSPECTIVE_FACTOR));
-				fromY = (int) (fromY * (1+fromZ/PERSPECTIVE_FACTOR));
-				toX = (int) (toX * (1+toZ/PERSPECTIVE_FACTOR));
-				toY = (int) (toY * (1+toZ/PERSPECTIVE_FACTOR));
-			}
+//			if (eye != null && eye.z != 0) {
+//				fromX = (int) ((fromX - eye.x) * (eye.z / fromZ));
+//				fromY = (int) ((fromY - eye.y) * (eye.z / fromZ));
+//				toX = (int) ((toX - eye.x) * (eye.z / toZ));
+//				toY = (int) ((toY - eye.y) * (eye.z / toZ));
+//			} else {
+//				fromX = (int) (fromX * (1+fromZ/PERSPECTIVE_FACTOR));
+//				fromY = (int) (fromY * (1+fromZ/PERSPECTIVE_FACTOR));
+//				toX = (int) (toX * (1+toZ/PERSPECTIVE_FACTOR));
+//				toY = (int) (toY * (1+toZ/PERSPECTIVE_FACTOR));
+//			}
+			fromX = (int) (fromX * (1+fromZ/PERSPECTIVE_FACTOR));
+			fromY = (int) (fromY * (1+fromZ/PERSPECTIVE_FACTOR));
+			toX = (int) (toX * (1+toZ/PERSPECTIVE_FACTOR));
+			toY = (int) (toY * (1+toZ/PERSPECTIVE_FACTOR));
 			
+//			
 			fromX = (int) (wx + fromX);
 			fromY = (int) (wy + fromY);
 			toX = (int) (wx + toX);
@@ -56,7 +62,7 @@ public class FrameRenderer {
 		}       
 	}
 	
-	public static void paint(Graphics2D g2d, Plane plane, int[] offset2D) {
+	public static void paint(Graphics2D g2d, LineGeom plane, int[] offset2D) {
 		int wx = offset2D[0];
 		int wy = offset2D[1];
 		for (Line line : plane.lineList) {

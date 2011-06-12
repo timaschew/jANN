@@ -23,10 +23,10 @@ import de.unikassel.ann.model.SomNetwork;
 import de.unikassel.ann.model.Synapse;
 import de.unikassel.threeD.geo.Cube;
 import de.unikassel.threeD.geo.Geom3D;
+import de.unikassel.threeD.geo.GridCube;
+import de.unikassel.threeD.geo.LineGeom;
 import de.unikassel.threeD.geo.Plane;
 import de.unikassel.threeD.geo.Point3D;
-
-// http://en.wikipedia.org/wiki/3D_projection
 
 public class Board3D extends JPanel implements Runnable, ActionListener, ChangeListener {
 	
@@ -62,9 +62,9 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 	
 	public static Board3D instance;
 	
-	public int dim1 = 20;
-	public int dim2 = 20;
-//	public int dim3 = 10;
+	public int dim1 = 12;
+	public int dim2 = 12;
+	public int dim3 = 12;
 	public int inputSize = 2;
 	
 	public Board3D() {
@@ -77,7 +77,8 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 		
 		quader = new Cube(100, 100, 200);
 		cube = new Cube(100, 100, 100);
-		plane = new Plane(dim1, dim2, 200, 200, 20);
+		plane = new Plane(dim1, dim2, 150, 150, 0);
+//		plane = new GridCube(5, 5, 5, 300, 300, 300);
 		updatePoints();
 		
 		prevPaintTime = System.currentTimeMillis();
@@ -91,28 +92,31 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 		double scaleX = 2.0D / getWidth();
 		double scaleY = 2.0D / getHeight();
 
-		double centerOffset = 1.0D; // for centering on the grid
+		double centerOffset = 0.5; // for centering on the grid
 		
 		Point3D[][] m = plane.pointMatrix;
 		Object[] multiDimArray = (Object[]) som.getMultiArray().getArray();
 		for (int i=0; i<multiDimArray.length; i++) {
 			
 			int[] indices = som.getMultiArray().getMultiDimIndices(i);
-			dim1 = indices[0];
-			dim2 = indices[1];
+			int d1 = indices[0];
+			int d2 = indices[1];
 			
+			// TODO: catch null pointer?!
 			double x = som.getSynapseMatrix().getSynapse(0,i).getWeight();
 			double y = som.getSynapseMatrix().getSynapse(1,i).getWeight();
 //			double z = som.getSynapseMatrix().getSynapse(2,i).getWeight();
 			
-			int scaleFactor = 200;
-			m[dim1][dim2].x = x / scaleX + centerOffset;
-			m[dim1][dim2].y = y / scaleY + centerOffset;
-//			m[dim1][dim2].z = z / scaleX + centerOffset;
+//			int scaleFactor = 200;
+//			m[dim1][dim2].x = x / scaleX + centerOffset;
+//			m[dim1][dim2].y = y / scaleY + centerOffset;
+//			m[dim1][dim2].z = z / scaleFactor + centerOffset;
 			
-//				m[dim1][dim2].x = (x + centerOffset) * scaleX;
-//				m[dim1][dim2].y = (y + centerOffset) * scaleY;
-//				m[dim1][dim2].z = (z + centerOffset) * scaleFactor;
+			//TODO: wrong scaling factor
+			// disable network 2 plane mapping
+			m[d1][d2].x = (x + centerOffset) / scaleX;
+			m[d1][d2].y = (y + centerOffset) / scaleY;
+//			m[d2][d2].z = (z + centerOffset) / scaleX;
 				
 			
 		}
@@ -155,7 +159,7 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 			g2d.setColor(Color.BLACK);
 //			 FrameRenderer.paint(g2d, quader, quaderOffset, null);
 //			 FrameRenderer.paint(g2d, cube, cubeOffset, null);
-			 FrameRenderer.paint(g2d, plane, planeOffset);;
+			 FrameRenderer.paint(g2d, plane, planeOffset);
 		}
 
 		
@@ -200,8 +204,8 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 		// bufferImgLeft ready
 
 		// switch cam and recalculate
-		eyeX *= -1;
-//		updateViewPort(quader.getPoints());
+		camX *= -1;
+		updateViewPort(quader.getPoints());
 
 		Graphics2D g2rd = bufferImgRight.createGraphics();
 		g2rd.setBackground(getBackground());
@@ -219,8 +223,8 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 
 		g2d.drawImage(bufferImgRight, 0, 0, null);
 
-		eyeX *= -1;
-//		updateViewPort(quader.getPoints());
+		camX *= -1;
+		updateViewPort(quader.getPoints());
 	}
 
 
@@ -270,13 +274,13 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 			synchronized (this) {
 				while (threadActivated) {
 
-//					double angle_x = 0.01;
-//					double angle_y = 0.0075;
-//					double angle_z = 0.005;
+					double angle_x = 0.01;
+					double angle_y = 0.0075;
+					double angle_z = 0.005;
 					
-					double angle_x = 0.0;
-					double angle_y = 0.0;
-					double angle_z = 0.0;
+//					double angle_x = 0.0;
+//					double angle_y = 0.0;
+//					double angle_z = 0.0;
 					
 					rotate(cube.getPoints(), angle_x, angle_y, angle_z);
 					rotate(quader.getPoints(), angle_x, angle_y, angle_z);
