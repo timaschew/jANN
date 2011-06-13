@@ -11,14 +11,25 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
 public class MainApp extends JFrame {
 
 	private static final long serialVersionUID = -6640029182568522067L;
-
+	
+	private static SpinnerNumberModel createDoubleModel() {
+		return createDoubleModel(0.0, -360.0, 360.0, 1.0);
+	}
+	
+	private static SpinnerNumberModel createDoubleModel(Double init, Double min, Double max, Double step) {
+		return new SpinnerNumberModel(init, min, max, step);
+	}
+	
 	public static void main(String[] args) {
 
+		
+		
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -46,9 +57,9 @@ public class MainApp extends JFrame {
 			private JPanel buildBottomPanel() {
 				JPanel p = new JPanel();
 				
-				JSpinner eyeSliderX = new JSpinner();
-				JSpinner eyeSliderY = new JSpinner();
-				JSpinner eyeSliderZ = new JSpinner();
+				JSpinner eyeSliderX = new JSpinner(createDoubleModel());
+				JSpinner eyeSliderY = new JSpinner(createDoubleModel());
+				JSpinner eyeSliderZ = new JSpinner(createDoubleModel());
 				eyeSliderX.setName("eyeX");
 				eyeSliderY.setName("eyeY");
 				eyeSliderZ.setName("eyeZ");
@@ -63,7 +74,7 @@ public class MainApp extends JFrame {
 				p.add(eyeSliderY);
 				p.add(eyeSliderZ);
 				
-				JSpinner camXSpinner = new JSpinner();
+				JSpinner camXSpinner = new JSpinner(createDoubleModel());
 				camXSpinner.setPreferredSize(new Dimension(80, 20));
 				camXSpinner.setName("camXspinner");
 				camXSpinner.addChangeListener(Board3D.instance);
@@ -90,36 +101,41 @@ public class MainApp extends JFrame {
 				startStopButton.addActionListener(Board3D.instance);
 				p.add(startStopButton);
 				
-				JButton reset = new JButton("reset");
-				reset.setActionCommand("reset");
-				reset.addActionListener(Board3D.instance);
-				p.add(reset);
+				JButton restart = new JButton("restart");
+				restart.setActionCommand("restart");
+				restart.addActionListener(Board3D.instance);
+				p.add(restart);
 				
-				JButton refresh = new JButton("refresh");
-				refresh.setActionCommand("refresh");
-				refresh.addActionListener(Board3D.instance);
-		
+				JButton resetView = new JButton("reset view");
+				resetView.setActionCommand("resetview");
+				resetView.addActionListener(Board3D.instance);
+				p.add(resetView);
+				
+				JButton applyRot = new JButton("setRot");
+				applyRot.setActionCommand("setrot");
+				applyRot.addActionListener(Board3D.instance);
+				p.add(applyRot);
+				
 				JButton trainButton = new JButton("train");
 				trainButton.setName("train");
 				trainButton.addActionListener(Board3D.instance);
 				p.add(trainButton);
 				
-				
-//				p.add(refresh);
-				
-//				JSlider camSliderX = new JSlider(SwingConstants.HORIZONTAL, -20, 20, 0);
-//				JSlider camSliderY = new JSlider(SwingConstants.HORIZONTAL, -20, 20, 0);
-//				JSlider camSliderZ = new JSlider(SwingConstants.HORIZONTAL, -20, 20, 0);
-//				camSliderX.setName("camX");
-//				camSliderY.setName("camY");
-//				camSliderZ.setName("camZ");
-//				camSliderX.addChangeListener(Board3D.instance);
-//				camSliderY.addChangeListener(Board3D.instance);
-//				camSliderZ.addChangeListener(Board3D.instance);
-				
-//				p.add(camSliderX);
-//				p.add(camSliderY);
-//				p.add(camSliderZ);
+				JSpinner rotSpinnerX = new JSpinner(createDoubleModel());
+				JSpinner rotSpinnerY = new JSpinner(createDoubleModel());
+				JSpinner rotSpinnerZ = new JSpinner(createDoubleModel());
+				rotSpinnerX.setPreferredSize(new Dimension(80, 20));
+				rotSpinnerY.setPreferredSize(new Dimension(80, 20));
+				rotSpinnerZ.setPreferredSize(new Dimension(80, 20));
+				rotSpinnerX.setName("rotX");
+				rotSpinnerY.setName("rotY");
+				rotSpinnerZ.setName("rotZ");
+				rotSpinnerX.addChangeListener(Board3D.instance);
+				rotSpinnerY.addChangeListener(Board3D.instance);
+				rotSpinnerZ.addChangeListener(Board3D.instance);
+				p.add(rotSpinnerX);
+				p.add(rotSpinnerY);
+				p.add(rotSpinnerZ);
 
 				
 				return p;

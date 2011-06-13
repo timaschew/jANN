@@ -24,9 +24,11 @@ import de.unikassel.ann.model.Synapse;
 import de.unikassel.threeD.geo.Cube;
 import de.unikassel.threeD.geo.Geom3D;
 import de.unikassel.threeD.geo.GridCube;
+import de.unikassel.threeD.geo.GridHyperCube;
 import de.unikassel.threeD.geo.LineGeom;
 import de.unikassel.threeD.geo.Plane;
 import de.unikassel.threeD.geo.Point3D;
+import de.unikassel.threeD.geo.SimpleLine;
 
 public class Board3D extends JPanel implements Runnable, ActionListener, ChangeListener {
 	
@@ -37,9 +39,12 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 	private boolean anaglyph = false;
 	
 	private long prevPaintTime;
-	private Plane plane;
+	private LineGeom somVisualisation;
 	private boolean threadActivated = true;
 	private Cube cube;
+	private double rotX = 0;
+	private double rotY = 0;
+	private double rotZ = 0;
 	private double camX = 0;
 	private double camY = 0;
 	private double camZ = 0;
@@ -62,23 +67,25 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 	
 	public static Board3D instance;
 	
-	public int dim1 = 12;
-	public int dim2 = 12;
-	public int dim3 = 12;
-	public int inputSize = 2;
+	public int dim1 = 3;
+	public int dim2 = 3;
+	public int dim3 = 3;
+	public int dim4 = 2;
+	public int inputSize = 3;
 	
 	public Board3D() {
 		instance = this;
 		
-		
-		som = new SomNetwork(inputSize, dim1, dim2);
+		som = new SomNetwork(inputSize, dim1, dim2, dim3);
 		som.addChangeListener(this);
-		
 		
 		quader = new Cube(100, 100, 200);
 		cube = new Cube(100, 100, 100);
-		plane = new Plane(dim1, dim2, 150, 150, 0);
-//		plane = new GridCube(5, 5, 5, 300, 300, 300);
+//		somVisualisation = new GridHyperCube(dim1, dim2, dim3, dim4, 100, 100, 100);
+		somVisualisation = new GridCube(dim1, dim2, dim3, 200, 200, 200);
+//		somVisualisation = new Plane(dim1, dim2, 100, 100, 100);
+//		somVisualisation = new SimpleLine(dim1, 50, 50, 50);
+
 		updatePoints();
 		
 		prevPaintTime = System.currentTimeMillis();
@@ -94,17 +101,16 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 
 		double centerOffset = 0.5; // for centering on the grid
 		
-		Point3D[][] m = plane.pointMatrix;
 		Object[] multiDimArray = (Object[]) som.getMultiArray().getArray();
 		for (int i=0; i<multiDimArray.length; i++) {
 			
-			int[] indices = som.getMultiArray().getMultiDimIndices(i);
-			int d1 = indices[0];
-			int d2 = indices[1];
-			
-			// TODO: catch null pointer?!
-			double x = som.getSynapseMatrix().getSynapse(0,i).getWeight();
-			double y = som.getSynapseMatrix().getSynapse(1,i).getWeight();
+			double[] coord = new double[inputSize];
+			for (int c=0; c<inputSize; c++) {
+				Synapse synapse = som.getSynapseMatrix().getSynapse(c,i);
+				coord[c] = synapse.getWeight();
+			}
+//			double x = som.getSynapseMatrix().getSynapse(0,i).getWeight();
+//			double y = som.getSynapseMatrix().getSynapse(1,i).getWeight();
 //			double z = som.getSynapseMatrix().getSynapse(2,i).getWeight();
 			
 //			int scaleFactor = 200;
@@ -113,10 +119,36 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 //			m[dim1][dim2].z = z / scaleFactor + centerOffset;
 			
 			//TODO: wrong scaling factor
+			
 			// disable network 2 plane mapping
-			m[d1][d2].x = (x + centerOffset) / scaleX;
-			m[d1][d2].y = (y + centerOffset) / scaleY;
+//			m[d1][d2].x = (x + centerOffset) / scaleX;
+//			m[d1][d2].y = (y + centerOffset) / scaleY;
 //			m[d2][d2].z = (z + centerOffset) / scaleX;
+			
+			int[] indices = som.getMultiArray().getMultiDimIndices(i);
+			Point3D point = somVisualisation.pointMatrix.get(indices);
+			
+			for (int c=0; c<coord.length; c++) {
+				switch(c) {
+				case 0:
+					point.x = (coord[0] + centerOffset) / scaleX;
+					break;
+				case 1:
+					point.y = (coord[1] + centerOffset) / scaleY;
+					break;
+				case 2:
+					point.z = (coord[2] + centerOffset) / scaleX;
+					break;
+				default:
+					System.err.println("could not visualize fourth dimension");
+					break;
+				}
+			}
+			
+//			point.x = (x + centerOffset) / scaleX;
+//			point.y = (y + centerOffset) / scaleY;
+//			point.z = (z + centerOffset) / scaleX;
+
 				
 			
 		}
@@ -159,7 +191,7 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 			g2d.setColor(Color.BLACK);
 //			 FrameRenderer.paint(g2d, quader, quaderOffset, null);
 //			 FrameRenderer.paint(g2d, cube, cubeOffset, null);
-			 FrameRenderer.paint(g2d, plane, planeOffset);
+			 FrameRenderer.paint(g2d, somVisualisation, planeOffset);
 		}
 
 		
@@ -284,7 +316,7 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 					
 					rotate(cube.getPoints(), angle_x, angle_y, angle_z);
 					rotate(quader.getPoints(), angle_x, angle_y, angle_z);
-					rotate(plane.getPoints(), angle_x, angle_y, angle_z);
+					rotate(somVisualisation.getPoints(), angle_x, angle_y, angle_z);
 					
 					repaint();
 
@@ -385,38 +417,40 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 			synchronized (animator) {
 				threadActivated = !threadActivated;
 			}
-		} else if (arg0.getActionCommand().equals("reset")) {
-
+		} else if (arg0.getActionCommand().equals("restart")) {
 			camY = 0;
 			camZ = 0;
 			quader.setPointsWithDistance();
 			cube.setPointsWithDistance();
-			plane.init();
 			rotate(cube.getPoints(), 0, 0, 0);
 			rotate(quader.getPoints(), 0, 0, 0);
-			rotate(plane.getPoints(), 0, 0, 0);
+			rotate(somVisualisation.getPoints(), 0, 0, 0);
 			repaint();
-		} else if (arg0.getActionCommand().equals("refresh")) {
+		} else if (arg0.getActionCommand().equals("resetview")) {
+			quader.setPointsWithDistance();
 			rotate(cube.getPoints(), 0, 0, 0);
 			rotate(quader.getPoints(), 0, 0, 0);
-			rotate(plane.getPoints(), 0, 0, 0);
+			rotate(somVisualisation.getPoints(), 0, 0, 0);
+			updatePoints();
 			repaint();
 		} else if (arg0.getActionCommand().equals("eyeSwitch")) {
 			camX *= -1;
 			updateViewPort(cube.getPoints());
 			updateViewPort(quader.getPoints());
-			updateViewPort(plane.getPoints());
+			updateViewPort(somVisualisation.getPoints());
 			repaint();
 		} else if (arg0.getActionCommand().equals("anaglyph")) {
 			anaglyph = !anaglyph;
 			repaint();
 			System.out.println("anaglpyh: "+anaglyph);
-		} else if (arg0.getSource() instanceof JButton) {
-			JButton b = (JButton) arg0.getSource();
-			if (b.getName().equals("train")) {
-				thread = new TrainingThread(this);
-			}
-		} 
+		} else if (arg0.getActionCommand().equals("train")) {
+			thread = new TrainingThread(this);
+		} else if(arg0.getActionCommand().equals("setrot")) {
+			rotate(somVisualisation.getPoints(), rotX, rotY, rotZ);
+//			updatePoints();
+			repaint();
+			System.out.println("updated rotation: "+rotX+", "+rotY+", "+rotZ);
+		}
 		else {
 			System.err.println("oops: "+arg0.getSource());
 		}
@@ -437,7 +471,7 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 		} else if (arg0.getSource() instanceof JSpinner) {
 			JSpinner s = (JSpinner)arg0.getSource();
 			String name = s.getName();
-			int val = (Integer) s.getValue();
+			double val = (Double) (s.getValue());
 			if (name.equals("camXspinner")) {
 				
 				if (camX < 0) {
@@ -452,6 +486,15 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 				eyeY = val;
 			} else if (name.equals("eyeZ")) {
 				eyeZ = val;
+			} else if (name.equals("rotX")) {
+				rotX = val;
+				System.out.println("rotX = "+rotX);
+			} else if (name.equals("rotY")) {
+				rotY = val;
+				System.out.println("rotY = "+rotY);
+			} else if (name.equals("rotZ")) {
+				rotZ = val;
+				System.out.println("rotZ = "+rotZ);
 			}
 			repaint();
 		} else {

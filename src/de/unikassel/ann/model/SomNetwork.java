@@ -11,9 +11,7 @@ import de.unikassel.threeD.Board3D;
 public class SomNetwork extends BasicNetwork {
 	
 	public static long WAIT = 20; 
-	
-	private int[] dimension;
-	
+		
 	private Layer inputLayer;
 	
 	private MDDAPseudo<Neuron> neuronArrayWrapper;
@@ -26,15 +24,22 @@ private int inputLayerSize;
 
 private Board3D listener;
 	
-// TODO: ignore inputSizie, remove parameter, calc from dimension size
+	/**
+	 * Creates a som with a grid neighborhood relation.<br>
+	 * Input size can be used for visualisation: 2 inputs -> x,y coordinates,<br>
+	 * 3 inputs -> x,y,z coordinates<br>
+	 * The outputDimension influence the view of the som:<br>
+	 * 1 dimension -> lines, 2 dimensions -> gridded plane<br>
+	 * 3 dimension -> gridded cube, 4 dimensions -> gridded hypercube*<br>
+	 * Each size of a dimension configure the grid size.<br>
+	 * * its not easy to visualise a hypercube with 3 dimensions!
+	 * @param inputSize
+	 * @param outputDimension
+	 */
 	public SomNetwork(int inputSize, int... outputDimension) {
 		super();
-//		if (inputSize != outputDimension.length) {
-//			throw new IllegalArgumentException("input size != dimension size");
-//		}
 		neuronIdCounter = 0;
 		inputLayerSize = inputSize;
-		dimension = outputDimension;
 		inputLayer = new Layer();
 		addLayer(inputLayer);
 		outputLayer = new Layer();

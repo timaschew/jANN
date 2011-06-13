@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import de.unikassel.mdda.MDDAPseudo;
+
 /**
  * 2dim plane with 3d coordinates
  * <pre>
@@ -17,7 +19,6 @@ import java.util.Random;
  */
 public class Plane extends LineGeom {
 
-	public Point3D[][] pointMatrix;
 	private int maxHeight;
 	private int maxWidth;
 	private int maxDepth;
@@ -25,7 +26,9 @@ public class Plane extends LineGeom {
 	private int rows;
 
 	public Plane(int rows, int cols, int maxWidth, int maxHeight, int maxDepth) {
-		pointMatrix = new Point3D[rows][cols];
+		
+		pointMatrix = new MDDAPseudo<Point3D>(rows, cols);
+//		pointMatrix = new Point3D[rows][cols];
 		lineList = new ArrayList<Line>();
 		points = new Geom3D();
 		this.cols = cols;
@@ -41,26 +44,27 @@ public class Plane extends LineGeom {
 		lineList.clear();
 		points.points.clear();
 		Random rand = new Random();
-		
+				
 		// points
 		for (int r=0; r<rows; r++) {
 			for (int c=0; c<cols; c++) {
 //				pointMatrix[r][c] = new Point3D(rand.nextDouble()*maxWidth,
 //						rand.nextDouble()*maxHeight, rand.nextDouble()*maxDepth);
-				pointMatrix[r][c] = new Point3D(r*maxWidth/rows,
+				Point3D p = new Point3D(r*maxWidth/rows,
 						c*maxHeight/cols, rand.nextDouble()*maxDepth);
-				points.add(pointMatrix[r][c]);
+				pointMatrix.set(p, r,c);
+				points.add(p);
 			}
 		}
 		
 		for (int r=0; r<rows; r++) {
 			for (int c=0; c<cols; c++) {
 				if (r>0) {
-					Line up = new Line(pointMatrix[r][c], pointMatrix[r-1][c]);
+					Line up = new Line(pointMatrix.get(r,c), pointMatrix.get(r-1,c));
 					lineList.add(up);
 				}
 				if (c>0) {
-					Line left = new Line(pointMatrix[r][c], pointMatrix[r][c-1]);
+					Line left = new Line(pointMatrix.get(r,c), pointMatrix.get(r,c-1));
 					lineList.add(left);
 				}
 			}
