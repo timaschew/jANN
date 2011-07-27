@@ -8,3 +8,4 @@ unusedLibs/*
 test/de/unikassel/threeD/misc/*
 test/org/generation5/*
 test/wireframe/*
+.classpath
