@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import de.unikassel.mdda.MDDAPseudo;
+import de.unikassel.mdda.MDDA;
 
 /**
  * 3dim plane with 3d coordinates
@@ -48,7 +48,7 @@ public class GridCube extends LineGeom {
 
 	public GridCube(int rows, int cols, int layers, int maxWidth, int maxHeight, int maxDepth) {
 //		pointMatrix = new Point3D[layers][rows][cols];
-		pointMatrix = new MDDAPseudo<Point3D>(rows, cols, layers);
+		pointMatrix = new MDDA<Point3D>(rows, cols, layers);
 		lineList = new ArrayList<Line>();
 		points = new Geom3D();
 		this.cols = cols;

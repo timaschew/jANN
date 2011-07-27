@@ -69,7 +69,29 @@ public class Network extends BasicNetwork {
 		
 		synapseMatrix.setSize(flatNet.size(), flatNet.size());
 		
-		setFlatSynapses(synapsesBanList);
+		if (synapsesBanList != null) {
+			setFlatSynapses(synapsesBanList);
+		} else {
+			
+			//TODO: extract
+			Layer previousLayer = null;
+			// set synapses (strict forward feedback)
+			for (Layer l : layers) {
+				if (previousLayer != null) {
+					for (Neuron fromNeuron : previousLayer.getNeurons()) {
+						for (Neuron toNeuron : l.getNeurons()) {
+							if (toNeuron.isBias() == false) {
+								Synapse s = new Synapse(fromNeuron, toNeuron);
+								// in this type of network use global ids for synapse matrix
+								synapseMatrix.addOrUpdateSynapse(s, fromNeuron.getId(), toNeuron.getId());
+							}
+						}
+					}
+				}
+				previousLayer = l;
+			}
+		}
+		
 		
 		finalyzed = true;
 	}
@@ -130,6 +152,7 @@ public class Network extends BasicNetwork {
 		}
 		synapseMatrix.setSize(flatNet.size(), flatNet.size());
 		
+		//TODO: extract
 
 		// set synapses (strict forward feedback)
 		for (Layer l : layers) {

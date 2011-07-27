@@ -118,8 +118,7 @@ public class NetIO {
 	}
 
 	public NetConfig generateNetwork() {
-		if (CollectionUtils.isNotEmpty(topoBeanList) && 
-				CollectionUtils.isNotEmpty(synapsesBanList)) {
+		if (CollectionUtils.isNotEmpty(topoBeanList)) {
 					
 			NetConfig config = new NetConfig();
 			config.getNetwork().finalizeFromFlatNet(topoBeanList, synapsesBanList);
@@ -127,7 +126,7 @@ public class NetIO {
 			BackPropagation backProp = new BackPropagation();
 			config.addTrainingModule(backProp);
 			config.addWorkModule(backProp);
-			config.addOrUpdateExisting(new MaxLearnIterationsStrategy(1000));
+			config.addOrUpdateExisting(new MaxLearnIterationsStrategy(100000));
 			
 			return config;
 			
@@ -135,16 +134,44 @@ public class NetIO {
 		return null;
 	}
 
-	public DataPairSet getTrainingSet() {
+	public DataPairSet getTrainingSet(Double normalisation, boolean negative) {
 		if (CollectionUtils.isNotEmpty(trainigBeanList)) {
 			DataPairSet set = new DataPairSet();
 			for (TrainingBean b : trainigBeanList) {
-				DataPair pair = new DataPair(b.getInput(), b.getOutput());
+				DataPair pair;
+				if (normalisation != null) {
+					// normalisation
+					Double[] outputVector = b.getOutput();
+					for (int i=0;i<outputVector.length; i++) {
+//						if (negative) {
+//							outputVector[i] = (outputVector[i] * normalisation + 1) / 2;
+//						} else {
+//							outputVector[i] = outputVector[i] * normalisation;
+//						}
+						outputVector[i] = outputVector[i] * normalisation;
+					}
+					Double[] inputVector = b.getInput();
+					for (int i=0;i<inputVector.length; i++) {
+						if (negative) {
+							inputVector[i] = (inputVector[i] * 0.1 + 1) / 2;
+						} else {
+							inputVector[i] = inputVector[i] * 0.1;
+						}
+					}
+					pair = new DataPair(inputVector, outputVector);
+				} else {
+					pair = new DataPair(b.getInput(), b.getOutput());
+
+				}
 				set.addPair(pair);
 			}
 			return set;
 		}
 		return null;
+	}
+	
+	public DataPairSet getTrainingSet() {
+		return getTrainingSet(null, false);
 	}
 
 	public void writeDataSet(File file, String title, boolean training, DataPairSet dataSet) {

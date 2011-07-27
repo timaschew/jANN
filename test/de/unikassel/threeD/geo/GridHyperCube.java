@@ -1,10 +1,9 @@
 package de.unikassel.threeD.geo;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
-import de.unikassel.mdda.MDDAPseudo;
+import de.unikassel.mdda.MDDA;
 
 /**
  * 4dim plane with 3d coordinates
@@ -26,7 +25,7 @@ public class GridHyperCube extends LineGeom {
 
 	public GridHyperCube(int rows, int cols, int layers, int hyperLayers, int maxWidth, int maxHeight, int maxDepth) {
 //		pointMatrix = new Point3D[layers][rows][cols];
-		pointMatrix = new MDDAPseudo<Point3D>(rows, cols, layers, hyperLayers);
+		pointMatrix = new MDDA<Point3D>(rows, cols, layers, hyperLayers);
 		lineList = new ArrayList<Line>();
 		points = new Geom3D();
 		this.cols = cols;

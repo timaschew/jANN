@@ -6,7 +6,7 @@ import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.factory.NetworkFactory;
 import de.unikassel.ann.model.Network;
 import de.unikassel.ann.model.SomNetwork;
-import de.unikassel.mdda.MDDAPseudo;
+import de.unikassel.mdda.MDDA;
 
 public class SOMTest {
 	

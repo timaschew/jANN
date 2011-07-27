@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import de.unikassel.mdda.MDDAPseudo;
+import de.unikassel.mdda.MDDA;
 
 /**
  * a line with points in 3d space
@@ -23,7 +23,7 @@ public class SimpleLine extends LineGeom {
 
 	public SimpleLine(int length, int maxWidth, int maxHeight, int maxDepth) {
 
-		pointMatrix = new MDDAPseudo<Point3D>(length);
+		pointMatrix = new MDDA<Point3D>(length);
 		lineList = new ArrayList<Line>();
 		points = new Geom3D();
 		this.length = length;

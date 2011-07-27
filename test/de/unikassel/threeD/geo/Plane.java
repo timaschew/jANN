@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import de.unikassel.mdda.MDDAPseudo;
+import de.unikassel.mdda.MDDA;
 
 /**
  * 2dim plane with 3d coordinates
@@ -27,7 +27,7 @@ public class Plane extends LineGeom {
 
 	public Plane(int rows, int cols, int maxWidth, int maxHeight, int maxDepth) {
 		
-		pointMatrix = new MDDAPseudo<Point3D>(rows, cols);
+		pointMatrix = new MDDA<Point3D>(rows, cols);
 //		pointMatrix = new Point3D[rows][cols];
 		lineList = new ArrayList<Line>();
 		points = new Geom3D();

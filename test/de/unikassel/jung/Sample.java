@@ -12,5 +12,6 @@ public class Sample {
 		PluggableRendererDemo.main(null);
 		UnicodeLabelDemo.main(null);
 		GraphEditorDemo.main(null);
+		
 	}
 }

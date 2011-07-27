@@ -2,11 +2,11 @@ package de.unikassel.threeD.geo;
 
 import java.util.List;
 
-import de.unikassel.mdda.MDDAPseudo;
+import de.unikassel.mdda.MDDA;
 
 public abstract class LineGeom {
 	
-	public MDDAPseudo<Point3D> pointMatrix;
+	public MDDA<Point3D> pointMatrix;
 	
 	public Geom3D points;
 	

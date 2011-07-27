@@ -9,7 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.io.File;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -67,24 +69,25 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 	
 	public static Board3D instance;
 	
-	public int dim1 = 3;
-	public int dim2 = 3;
-	public int dim3 = 3;
+	public int dim1 = 100;
+	public int dim2 = 5;
+	public int dim3 = 2;
 	public int dim4 = 2;
-	public int inputSize = 3;
+	public int inputSize = 2;
 	
 	public Board3D() {
+		
 		instance = this;
 		
-		som = new SomNetwork(inputSize, dim1, dim2, dim3);
+		som = new SomNetwork(inputSize, dim1);
 		som.addChangeListener(this);
 		
 		quader = new Cube(100, 100, 200);
 		cube = new Cube(100, 100, 100);
 //		somVisualisation = new GridHyperCube(dim1, dim2, dim3, dim4, 100, 100, 100);
-		somVisualisation = new GridCube(dim1, dim2, dim3, 200, 200, 200);
+//		somVisualisation = new GridCube(dim1, dim2, dim3, 200, 200, 200);
 //		somVisualisation = new Plane(dim1, dim2, 100, 100, 100);
-//		somVisualisation = new SimpleLine(dim1, 50, 50, 50);
+		somVisualisation = new SimpleLine(dim1, 50, 50, 50);
 
 		updatePoints();
 		
@@ -140,7 +143,7 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 					point.z = (coord[2] + centerOffset) / scaleX;
 					break;
 				default:
-					System.err.println("could not visualize fourth dimension");
+//					System.err.println("could not visualize fourth dimension");
 					break;
 				}
 			}

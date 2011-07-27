@@ -1,11 +1,10 @@
 package de.unikassel.ann.model;
 
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
 import de.unikassel.ann.model.func.SigmoidFunction;
-import de.unikassel.mdda.MDDAPseudo;
+import de.unikassel.mdda.MDDA;
 import de.unikassel.threeD.Board3D;
 
 public class SomNetwork extends BasicNetwork {
@@ -14,7 +13,7 @@ public class SomNetwork extends BasicNetwork {
 		
 	private Layer inputLayer;
 	
-	private MDDAPseudo<Neuron> neuronArrayWrapper;
+	private MDDA<Neuron> neuronArrayWrapper;
 	
 	private Layer outputLayer;
 
@@ -53,7 +52,7 @@ private Board3D listener;
 		
 		
 		// set and init synapses, add to multi array
-		neuronArrayWrapper = new MDDAPseudo<Neuron>(outputDimension);
+		neuronArrayWrapper = new MDDA<Neuron>(outputDimension);
 		Object[] multiDimArray = (Object[]) neuronArrayWrapper.getArray();
 		synapseMatrix = new SynapseMatrix(this, inputSize, multiDimArray.length);
 		for (int i=0; i<multiDimArray.length; i++) {
@@ -80,7 +79,7 @@ private Board3D listener;
 
 	}
 	
-	public MDDAPseudo<Neuron> getMultiArray() {
+	public MDDA<Neuron> getMultiArray() {
 		return neuronArrayWrapper;
 	}
 	
@@ -112,14 +111,17 @@ private Board3D listener;
 		double factor = 0.1; 
 		double factorDecrementor = 0.001; // 0.08
 
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 200; i++) {
 			for (int k = 0; k < 75; k++) {
 				double[] inputVector = createRandomVector(-1, 1);
 				run(inputVector, factor, 1);
+			
 			}
-
+			System.out.println("factor: "+factor);
 			factor -= factorDecrementor;
-
+			if (factor < 0) {
+				factor = 0.0000000001;
+			}
 			try {
 				Thread.sleep(WAIT);
 			} catch (InterruptedException e) {
