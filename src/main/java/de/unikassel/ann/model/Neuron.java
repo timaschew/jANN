@@ -20,7 +20,7 @@ public class Neuron {
 	
 	private ActivationFunction function;
 
-	private Double outputValue;
+	private Double value; // TODO: name
 		
 	private Double delta;
 	
@@ -43,10 +43,10 @@ public class Neuron {
 	 */
 	private void set(ActivationFunction standardFunc, double outputValue,
 			boolean bias) {
-		this.outputValue = outputValue;
+		this.value = outputValue;
 		this.bias = bias;
 		if (bias) {
-			this.outputValue = 1.0d;
+			this.value = 1.0d;
 		}
 		this.function = standardFunc;
 		incomingSynapses = new ArrayList<Synapse>();
@@ -83,10 +83,10 @@ public class Neuron {
 		if (bias) {
 			throw new IllegalAccessError("cannot set input value for bias neuron");
 		}
-		outputValue = val;
+		value = val;
 	}
 	public Double getOutputValue() {
-		return outputValue;
+		return value;
 	}
 
 	public void addOutgoingSynapse(Synapse synapse) {
@@ -113,13 +113,13 @@ public class Neuron {
 
 	/**
 	 * Calculates the activation function with the value and set the result as outpuvalue<br>
-	 * {@link #outputValue} = f (val)
+	 * {@link #value} = f (val)
 	 */
 	public void activate(Double val) {
 		if (bias) {
-			outputValue = 1.0d;
+			value = 1.0d;
 		} else {
-			outputValue = function.calc(val);
+			value = function.calc(val);
 		}
 	}
 	
@@ -163,7 +163,7 @@ public class Neuron {
 		sb.append(bias ? " (B)" : "");
 		
 		sb.append("output = ");
-		sb.append(outputValue == null ? "N/A" : outputValue);
+		sb.append(value == null ? "N/A" : value);
 		sb.append("\n");
 		return sb.toString();
 	}

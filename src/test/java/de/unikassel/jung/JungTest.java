@@ -4,8 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.awt.image.VolatileImage;
 import java.awt.print.PrinterJob;
 import java.io.File;
 import java.util.HashMap;
@@ -26,6 +33,7 @@ import edu.uci.ics.jung.algorithms.layout.StaticLayout;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.SparseMultigraph;
 import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
+import edu.uci.ics.jung.visualization.Layer;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.annotations.AnnotationControls;
 import edu.uci.ics.jung.visualization.control.CrossoverScalingControl;
@@ -100,7 +108,39 @@ public class JungTest extends JFrame {
         vv =  new VisualizationViewer<Number,Number>(layout);
         vv.setBackground(Color.white);
 
+		
         
+        vv.addPreRenderPaintable(new VisualizationViewer.Paintable(){
+            public void paint(Graphics g) {
+            	final  int height = vv.getHeight();
+                final int width = vv.getWidth();
+                System.out.println("height="+height+"/nwidth="+width);
+//            	Graphics2D g2d = (Graphics2D)g;
+//            	AffineTransform oldXform = g2d.getTransform();
+//                AffineTransform lat = 
+//                	vv.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.LAYOUT).getTransform();
+//                AffineTransform vat = 
+//                	vv.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.VIEW).getTransform();
+//                AffineTransform at = new AffineTransform();
+//                at.concatenate(g2d.getTransform());
+//                at.concatenate(vat);
+//                at.concatenate(lat);
+//                g2d.setTransform(at);
+              
+                
+            	 g.setColor(new Color(255, 0, 0, 100));
+                 g.fillRect(0, 0, width, height/3);
+                 g.setColor(new Color(0, 255, 0, 100));
+                 g.fillRect(0, height/3+1, width, (height/3)*2);
+                 g.setColor(new Color(0, 0, 255, 100));
+                 g.fillRect(0, (height/3)*2+1, width, height);
+                 
+//                 g2d.setTransform(oldXform);
+            }
+            public boolean useTransform() { return false; }
+        });
+        
+       
         
         vv.getRenderContext().setVertexLabelTransformer(MapTransformer.<Number,String>getInstance(
         		LazyMap.<Number,String>decorate(new HashMap<Number,String>(), new ToStringLabeller<Number>())));
@@ -160,6 +200,9 @@ public class JungTest extends JFrame {
         controls.add(annotationControls.getAnnotationsToolBar());
         controls.add(help);
         content.add(controls, BorderLayout.SOUTH);
+        
+        
+
     }
 
 	class VertexFactory implements Factory<Number> {
