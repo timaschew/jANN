@@ -3,21 +3,22 @@ package de.unikassel.ann.io;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import de.unikassel.ann.config.NetConfig;
-import de.unikassel.ann.io.beans.TrainingBean;
 import de.unikassel.ann.model.DataPairSet;
 
 public class NetIOTest {
+		
+	private static final ClassLoader CL = NetIOTest.class.getClassLoader();
+	private static final String PATH = CL.getResource("").getFile();
 	
 	@Test
 	public void testWerner() throws IOException, ClassNotFoundException {
 		
-		File importFile = new File("/Users/anton/Develop/Projekte/ANNtool/test/werner.csv");
+		
+		File importFile = new File(PATH+"werner.csv");
 
 		NetIO netIO = new NetIO();
 		netIO.readConfigFile(importFile); // read and parse file
@@ -52,7 +53,7 @@ public class NetIOTest {
 		
 		netConfig.printStats();
 		
-		File exportFile = new File("/Users/anton/Develop/Projekte/ANNtool/test/werner_export1.csv");
+		File exportFile = new File(PATH+"werner_export1.csv");
 
 		netIO.writeNet(exportFile, "xor network", netConfig);
 		netIO.writeDataSet(exportFile, "xor training", true, trainDataSet);
@@ -64,7 +65,7 @@ public class NetIOTest {
 	@Test
 	public void testWaldemar() throws IOException, ClassNotFoundException {
 		
-		File importFile = new File("/Users/anton/Develop/Projekte/ANNtool/test/waldemar.csv");
+		File importFile = new File(PATH+"waldemar.csv");
 
 		NetIO netIO = new NetIO();
 		netIO.readConfigFile(importFile); // read and parse file
@@ -100,8 +101,8 @@ public class NetIOTest {
 		
 		TrainingRW.WRITE_INDEX_IN_HEADER = false;
 		
-		File importFile = new File("/Users/anton/Develop/Projekte/ANNtool/test/net_cfg.csv");
-		File exportFile = new File("/Users/anton/Develop/Projekte/ANNtool/test/net_export.csv");
+		File importFile = new File(PATH+"test/net_cfg.csv");
+		File exportFile = new File(PATH+"net_export.csv");
 		
 		deleteFile(exportFile);
 		
@@ -135,7 +136,7 @@ public class NetIOTest {
 	@Test
 	public void testImportExportedConfig() throws IOException, ClassNotFoundException {
 		
-		File f = new File("/Users/anton/Develop/Projekte/ANNtool/test/net_export.csv");
+		File f = new File(PATH+"net_export.csv");
 		
 		NetIO netIO = new NetIO();
 		netIO.readConfigFile(f); // read and parse file
