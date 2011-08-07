@@ -14,7 +14,7 @@ import de.unikassel.mdda.MDDA;
  * </pre>
  * 
  */
-public class SimpleLine extends LineGeom {
+public class SimpleLine extends WireframeGeometry {
 
 	private int maxHeight;
 	private int maxWidth;
@@ -25,7 +25,7 @@ public class SimpleLine extends LineGeom {
 
 		pointMatrix = new MDDA<Point3D>(length);
 		lineList = new ArrayList<Line>();
-		points = new Geom3D();
+		points = new GeometryObject3D();
 		this.length = length;
 		this.maxWidth = maxWidth;
 		this.maxHeight = maxHeight;

@@ -36,9 +36,9 @@ import de.unikassel.mdda.MDDA;
  * </pre>
  * 
  */
-public class GridCube extends LineGeom {
+public class GridCube extends WireframeGeometry {
 
-	public Geom3D points;
+	public GeometryObject3D points;
 	private int maxHeight;
 	private int maxWidth;
 	private int maxDepth;
@@ -47,10 +47,9 @@ public class GridCube extends LineGeom {
 	private int layers;
 
 	public GridCube(int rows, int cols, int layers, int maxWidth, int maxHeight, int maxDepth) {
-//		pointMatrix = new Point3D[layers][rows][cols];
 		pointMatrix = new MDDA<Point3D>(rows, cols, layers);
 		lineList = new ArrayList<Line>();
-		points = new Geom3D();
+		points = new GeometryObject3D();
 		this.cols = cols;
 		this.rows = rows;
 		this.layers = layers;
@@ -70,15 +69,12 @@ public class GridCube extends LineGeom {
 		for (int l=0; l<layers; l++) {
 			for (int r=0; r<rows; r++) {
 				for (int c=0; c<cols; c++) {
-//					pointMatrix[r][c] = new Point3D(rand.nextDouble()*maxWidth,
-//							rand.nextDouble()*maxHeight, rand.nextDouble()*maxDepth);
 					Point3D p = new Point3D(r*maxWidth/rows, c*maxHeight/cols, l*maxDepth/layers);
 					pointMatrix.set(p, r,c,l);
 					points.add(p);
 				}
 			}
 		}
-		
 		
 		// grid cube
 		for (int l=0; l<layers; l++) {
@@ -102,7 +98,7 @@ public class GridCube extends LineGeom {
 	}
 
 
-	public Geom3D getPoints() {
+	public GeometryObject3D getPoints() {
 		return points;
 	}
 

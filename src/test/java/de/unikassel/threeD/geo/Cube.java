@@ -31,11 +31,11 @@ public class Cube {
 	public int yDist = 100;
 	public int zDist = 100;
 
-	public Geom3D pointList;
+	public GeometryObject3D pointList;
 	public List<Line> lineList;
 
 	public Cube() {
-		pointList = new Geom3D();
+		pointList = new GeometryObject3D();
 		lineList = new ArrayList<Line>();
 	}
 
@@ -133,7 +133,7 @@ public class Cube {
         }
 	}
 	
-	public Geom3D getPoints() {
+	public GeometryObject3D getPoints() {
 		return pointList;
 	}
 

@@ -24,10 +24,10 @@ import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.SomNetwork;
 import de.unikassel.ann.model.Synapse;
 import de.unikassel.threeD.geo.Cube;
-import de.unikassel.threeD.geo.Geom3D;
+import de.unikassel.threeD.geo.GeometryObject3D;
 import de.unikassel.threeD.geo.GridCube;
 import de.unikassel.threeD.geo.GridHyperCube;
-import de.unikassel.threeD.geo.LineGeom;
+import de.unikassel.threeD.geo.WireframeGeometry;
 import de.unikassel.threeD.geo.Plane;
 import de.unikassel.threeD.geo.Point3D;
 import de.unikassel.threeD.geo.SimpleLine;
@@ -41,7 +41,7 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 	private boolean anaglyph = false;
 	
 	private long prevPaintTime;
-	private LineGeom somVisualisation;
+	private WireframeGeometry somVisualisation;
 	private boolean threadActivated = true;
 	private Cube cube;
 	private double rotX = 0;
@@ -69,25 +69,25 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 	
 	public static Board3D instance;
 	
-	public int dim1 = 100;
-	public int dim2 = 5;
-	public int dim3 = 2;
+	public int dim1 = 3;
+	public int dim2 = 3;
+	public int dim3 = 3;
 	public int dim4 = 2;
-	public int inputSize = 2;
+	public int inputSize = 3;
 	
 	public Board3D() {
 		
 		instance = this;
 		
-		som = new SomNetwork(inputSize, dim1);
+		som = new SomNetwork(inputSize, dim1, dim2, dim3);
 		som.addChangeListener(this);
 		
 		quader = new Cube(100, 100, 200);
 		cube = new Cube(100, 100, 100);
 //		somVisualisation = new GridHyperCube(dim1, dim2, dim3, dim4, 100, 100, 100);
-//		somVisualisation = new GridCube(dim1, dim2, dim3, 200, 200, 200);
+		somVisualisation = new GridCube(dim1, dim2, dim3, 200, 200, 200);
 //		somVisualisation = new Plane(dim1, dim2, 100, 100, 100);
-		somVisualisation = new SimpleLine(dim1, 50, 50, 50);
+//		somVisualisation = new SimpleLine(dim1, 50, 50, 50);
 
 		updatePoints();
 		
@@ -342,10 +342,10 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 
 	}
 	
-	public void rotate(Geom3D geo, double x, double y, double z) {
+	public void rotate(GeometryObject3D geo, double x, double y, double z) {
 		transform3DTo2D(geo, x, y, z, 0, 0, 0);
 	}
-	public void updateViewPort(Geom3D geo) {
+	public void updateViewPort(GeometryObject3D geo) {
 		transform3DTo2D(geo,0, 0, 0, camX, camY, camZ);
 	}
 	
@@ -381,7 +381,7 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 	 * @param camY y position of camera
 	 * @param camZ z position of camera
 	 */
-	public void transform3DTo2D(Geom3D geo, double thetaX, double thetaY,
+	public void transform3DTo2D(GeometryObject3D geo, double thetaX, double thetaY,
 			double thetaZ, double camX, double camY, double camZ) {
 		double aX, aY, aZ; // temp point
 

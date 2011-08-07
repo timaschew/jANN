@@ -17,7 +17,7 @@ import de.unikassel.mdda.MDDA;
  * </pre>
  * 
  */
-public class Plane extends LineGeom {
+public class Plane extends WireframeGeometry {
 
 	private int maxHeight;
 	private int maxWidth;
@@ -30,7 +30,7 @@ public class Plane extends LineGeom {
 		pointMatrix = new MDDA<Point3D>(rows, cols);
 //		pointMatrix = new Point3D[rows][cols];
 		lineList = new ArrayList<Line>();
-		points = new Geom3D();
+		points = new GeometryObject3D();
 		this.cols = cols;
 		this.rows = rows;
 		this.maxWidth = maxWidth;

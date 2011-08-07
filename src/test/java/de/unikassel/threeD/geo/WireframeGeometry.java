@@ -4,15 +4,15 @@ import java.util.List;
 
 import de.unikassel.mdda.MDDA;
 
-public abstract class LineGeom {
+public abstract class WireframeGeometry {
 	
 	public MDDA<Point3D> pointMatrix;
 	
-	public Geom3D points;
+	public GeometryObject3D points;
 	
 	public List<Line> lineList;
 	
-	public Geom3D getPoints() {
+	public GeometryObject3D getPoints() {
 		return points;
 	}
 	

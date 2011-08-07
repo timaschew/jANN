@@ -12,9 +12,9 @@ import de.unikassel.mdda.MDDA;
  * </pre>
  * 
  */
-public class GridHyperCube extends LineGeom {
+public class GridHyperCube extends WireframeGeometry {
 
-	public Geom3D points;
+	public GeometryObject3D points;
 	private int maxHeight;
 	private int maxWidth;
 	private int maxDepth;
@@ -27,7 +27,7 @@ public class GridHyperCube extends LineGeom {
 //		pointMatrix = new Point3D[layers][rows][cols];
 		pointMatrix = new MDDA<Point3D>(rows, cols, layers, hyperLayers);
 		lineList = new ArrayList<Line>();
-		points = new Geom3D();
+		points = new GeometryObject3D();
 		this.cols = cols;
 		this.rows = rows;
 		this.layers = layers;
@@ -89,7 +89,7 @@ public class GridHyperCube extends LineGeom {
 	}
 
 
-	public Geom3D getPoints() {
+	public GeometryObject3D getPoints() {
 		return points;
 	}
 

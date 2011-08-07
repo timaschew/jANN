@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 
 import de.unikassel.threeD.geo.Cube;
 import de.unikassel.threeD.geo.Line;
-import de.unikassel.threeD.geo.LineGeom;
+import de.unikassel.threeD.geo.WireframeGeometry;
 import de.unikassel.threeD.geo.Plane;
 import de.unikassel.threeD.geo.Point3D;
 
@@ -62,12 +62,28 @@ public class FrameRenderer {
 		}       
 	}
 	
-	public static void paint(Graphics2D g2d, LineGeom plane, int[] offset2D) {
+	/*
+	 *  float Z = distance + z;
+            p = new Point((int) (distance * this.x / Z), (int) (distance * this.y / Z));
+	 */
+	
+	private static double DISTANCE = 10;
+	
+	public static void paint(Graphics2D g2d, WireframeGeometry plane, int[] offset2D) {
 		int wx = offset2D[0];
 		int wy = offset2D[1];
 		for (Line line : plane.lineList) {
-			g2d.drawLine((int)line.from.x + wx, (int)line.from.y + wy,
-					(int)line.to.x + wx, (int)line.to.y + wy);
+			double zFrom = line.from.z;
+			double zTo = line.to.z;
+			
+			int x1 = (int)((DISTANCE * line.from.x / -zFrom));
+			int y1 = (int)((DISTANCE * line.from.y / -zFrom));
+			int x2 = (int)((DISTANCE * line.to.x / -zTo));
+			int y2 = (int)((DISTANCE * line.to.y / -zTo));
+			
+			g2d.drawLine(x1+wx, y1+wy, x2+wx, y2+wy);
+//			g2d.drawLine((int)line.from.x + wx, (int)line.from.y + wy,
+//					(int)line.to.x + wx, (int)line.to.y + wy);
 		}       
 	}
 }
