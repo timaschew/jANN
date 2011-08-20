@@ -9,6 +9,8 @@ public abstract class TrainingModule {
 	
 	protected Double currentError = Double.NaN;
 	
+	protected Double currentImprovement = Double.NaN;
+	
 //	protected Double currentSingleError = Double.NaN;
 	
 	protected NetError netError;
@@ -34,6 +36,17 @@ public abstract class TrainingModule {
 
 	public Double getCurrentError() {
 		return currentError;
+	}
+
+	public Double getCurrentImprovement() {
+		return currentImprovement;
+	}
+	
+	public void reset() {
+		currentError = Double.NaN;
+		currentImprovement = Double.NaN;
+		currentIteration = 0;
+		currentStep = 0;
 	}
 
 //	public Double getCurrentSingleError() {

@@ -71,6 +71,7 @@ public class NetIO {
 		  fis = new FileInputStream(file);
 		} catch (final FileNotFoundException e) {
 		  log.warning("could not open file "+file);
+		  throw e;
 		}
 		final InputStream fileInputStream = new BufferedInputStream(fis);
 

@@ -28,8 +28,6 @@ import javax.swing.JSplitPane;
 import javax.swing.JLabel;
 import javax.swing.SpinnerNumberModel;
 
-
-
 public class SideBar extends JFrame implements PropertyChangeListener {
 	private static final Dimension jspinnerDimension = new Dimension(55, 22);
 	private JSplitPane splitPane;
@@ -159,7 +157,9 @@ public class SideBar extends JFrame implements PropertyChangeListener {
 					
 					hiddenCheckBoxPanel.removeAll();
 					hiddenCheckBoxPanel.add(hiddenBiasCB[i]);
-					hiddenCheckBoxPanel.updateUI();
+//					hiddenCheckBoxPanel.updateUI();
+					hiddenCheckBoxPanel.validate();
+					hiddenCheckBoxPanel.repaint();
 				}
 			}
 		});
@@ -280,14 +280,12 @@ public class SideBar extends JFrame implements PropertyChangeListener {
 				hiddenNeuronSpinner[0].setEnabled(false);
 				hiddenModeSpinner.setEnabled(false);
 				hiddenBiasCB[0].setEnabled(false);
-//				hiddenCheckBoxPanel.updateUI();
 			} else {
 				hiddenLayerDropdown.setEnabled(true);
 				hiddenModeSpinner.setEnabled(true);
 				hiddenNeuronSpinner[0].setEnabled(true);
 				hiddenCheckBoxPanel.removeAll();
 				hiddenBiasCB[0].setEnabled(true);
-//				hiddenCheckBoxPanel.updateUI();
 				
 				Integer[] comboBoxModel = new Integer[hiddenLayerCount];
 				for (Integer i=1; i<= hiddenLayerCount; i++) {
@@ -314,18 +312,9 @@ public class SideBar extends JFrame implements PropertyChangeListener {
 				}
 				hiddenModeSpinner.setSelectedIndex(oldMouseIndex);
 			}
-
-			
-//			if (((Number)evt.getOldValue()).intValue() > ((Number)evt.getNewValue()).intValue()) {
-//				hiddenNeuronSpinner[i].revalidate();
-//			}
-			
 		} else if (spinner.getName().startsWith("hidden")) {
 			String layer = spinner.getName().split("_")[0];
 			System.out.println("hidden layer "+layer+" : "+evt.getNewValue());
 		} 
-		
 	}
-	
-
 }

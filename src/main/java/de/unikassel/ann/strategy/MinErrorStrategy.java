@@ -6,7 +6,6 @@ public class MinErrorStrategy extends Strategy {
 
 	public MinErrorStrategy(Double minimalError) {
 		this.minerror = minimalError;
-		stopTraining = false;
 	}
 
 	@Override

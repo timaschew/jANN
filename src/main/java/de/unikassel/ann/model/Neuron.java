@@ -18,7 +18,7 @@ public class Neuron {
 	
 	private Integer id = -1; // global for whole network
 	
-	private ActivationFunction function;
+	private ActivationFunction activationFunction;
 
 	private Double value; // TODO: name
 		
@@ -48,7 +48,7 @@ public class Neuron {
 		if (bias) {
 			this.value = 1.0d;
 		}
-		this.function = standardFunc;
+		this.activationFunction = standardFunc;
 		incomingSynapses = new ArrayList<Synapse>();
 		outgoingSynapses = new ArrayList<Synapse>();
 	}
@@ -119,7 +119,7 @@ public class Neuron {
 		if (bias) {
 			value = 1.0d;
 		} else {
-			value = function.calc(val);
+			value = activationFunction.activate(val);
 		}
 	}
 	
@@ -194,7 +194,12 @@ public class Neuron {
 	}
 
 	public String getFunctionName() {
-		return function.getClass().getSimpleName();
+		return activationFunction.getClass().getSimpleName();
 	}
+
+	public ActivationFunction getActivationFunction() {
+		return activationFunction;
+	}
+
 
 }

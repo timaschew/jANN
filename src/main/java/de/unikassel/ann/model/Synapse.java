@@ -42,7 +42,7 @@ public class Synapse {
 	 * @param toNeuron
 	 */
 	public Synapse(Neuron fromNeuron, Neuron toNeuron) {
-		weight = (new Random().nextDouble() * 2) - 1;
+		weight = null;
 		setFromNeuron(fromNeuron);
 		setToNeuron(toNeuron);
 	}

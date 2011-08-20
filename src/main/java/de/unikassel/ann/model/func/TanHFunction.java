@@ -3,10 +3,13 @@ package de.unikassel.ann.model.func;
 public class TanHFunction implements ActivationFunction {
 
 	@Override
-	public Double calc(Double x) {
-		// 1 / 1 + e^-x
-		return 1 / (1 + Math.pow(Math.E, -x));
-//		return Math.tanh(x);
+	public Double activate(Double x) {
+		return Math.tanh(x);
+	}
+
+	@Override
+	public Double derivate(Double x) {
+		return (1.0 - x * x);
 	}
 	
 }

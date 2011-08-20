@@ -77,10 +77,19 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 
 	@Override
 	public void train(DataPairSet trainingData) {
+		config.initWeights(); // TODO: do it in finalyze!!!!
 		netError = new NetError(this, trainingData);
 		Network net = config.getNetwork();
 		validateDataSet(net, trainingData);
 		while(true) {
+			
+			if (config.shouldRestartTraining()) {
+				train(trainingData); // restar training
+				return;
+			}
+			if (config.shouldStopTraining()) {
+				return;
+			}
 			
 			for (Strategy s : config.getStrategies()) {
 				s.preIteration();
@@ -89,12 +98,11 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 			for (DataPair pair : trainingData.getPairs()) {
 				forwardStep(net, pair);
 				backwardStep(net, pair);
-				if (config.stopTraining()) {
-					return;
-				}
 				currentStep++;
 			}
-			currentError = netError.calculateRMS();
+			double tmpError = netError.calculateRMS();
+			currentImprovement = currentError - tmpError;
+			currentError = tmpError;
 //			currentSingleError = netError.calculateSingleRMS();
 			netError.reset();
 			currentIteration++;
@@ -129,22 +137,26 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 			Double o = n.getOutputValue();
 			Double t = ideal[i];
 			// ((t - o) * o * (1 - o)
-			double errorFactor = t-o;
-			double delta = o * (1-o) * errorFactor;
+			double diff = t-o;
+//			double delta = o * (1-o) * errorFactor;
+			// derivate:= (1.0 - o * o)
+			double delta = n.getActivationFunction().derivate(o) * diff;
 			n.setDelta(delta);
 			netError.updateError(t, o);
-			rmseError += Math.pow(errorFactor, 2);
+			rmseError += Math.pow(diff, 2);
 		}
 	}
 	
 	private void calculateError(Layer currentLayer) {
 		for (Neuron n : currentLayer.getNeurons()) {
-			double errorFactor = 0.d;
+			double diffSum = 0.d;
 			for (Synapse s : n.getOutgoingSynapses()) {
-				errorFactor += (s.getWeight() * s.getToNeuron().getDelta());
+				diffSum += (s.getWeight() * s.getToNeuron().getDelta());
 			}
 			Double o = n.getOutputValue();
-			double delta = o * ( 1 - o) * errorFactor;
+			// derivate:= (1.0 - o * o)
+			double delta = n.getActivationFunction().derivate(o) * diffSum;
+//			double delta = o * ( 1 - o) * errorFactor;
 			n.setDelta(delta);
 		}
 	}

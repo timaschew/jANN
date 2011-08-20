@@ -101,7 +101,7 @@ public class NetIOTest {
 		
 		TrainingRW.WRITE_INDEX_IN_HEADER = false;
 		
-		File importFile = new File(PATH+"test/net_cfg.csv");
+		File importFile = new File(PATH+"net_cfg.csv");
 		File exportFile = new File(PATH+"net_export.csv");
 		
 		deleteFile(exportFile);

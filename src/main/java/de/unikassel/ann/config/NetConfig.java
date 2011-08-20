@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import de.unikassel.ann.algo.BackPropagation;
 import de.unikassel.ann.algo.TrainingModule;
@@ -12,6 +13,7 @@ import de.unikassel.ann.model.NetError;
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.Network;
 import de.unikassel.ann.model.Neuron;
+import de.unikassel.ann.model.Synapse;
 import de.unikassel.ann.model.func.ActivationFunction;
 import de.unikassel.ann.model.func.SigmoidFunction;
 import de.unikassel.ann.rand.Randomizer;
@@ -26,6 +28,7 @@ public class NetConfig {
 	TrainingModule trainingModule;
 	Randomizer randomizer;
 	List<NetError> errorLogs;
+	private int restartAmount = 0;
 
 	
 	public NetConfig() {
@@ -35,13 +38,39 @@ public class NetConfig {
 		errorLogs = new ArrayList<NetError>();
 	}
 	
-	public boolean stopTraining() {
+	public boolean shouldStopTraining() {
 		for (Strategy s : strategies) {
-			if (s.stop()) {
+			if (s.shouldStop()) {
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	public boolean shouldRestartTraining() {
+		for (Strategy s : strategies) {
+			if (s.shouldRestart()) {
+				initWeights();
+				restartAmount++;
+				reset();
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private void reset() {
+		for (Strategy s : strategies) {
+			s.reset();
+		}
+		trainingModule.reset();
+	}
+
+	public void initWeights() {
+		Random r = new Random();
+		for (Synapse s : network.getSynapseSet()) {
+			s.setWeight((r.nextDouble() * 2) - 1);
+		}
 	}
 	
 	/**
@@ -115,6 +144,9 @@ public class NetConfig {
 		sb.append("iterations = ");
 		sb.append(trainingModule.getCurrentIteration());
 		sb.append("\n");
+		if (restartAmount > 0) {
+			sb.append("restarted "+restartAmount+" times\n");
+		}
 		System.out.println(sb.toString());
 		
 	}

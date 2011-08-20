@@ -2,7 +2,11 @@ package de.unikassel.ann.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.lang.ArrayUtils;
 
@@ -22,10 +26,12 @@ public class Network extends BasicNetwork {
 	private Boolean finalyzed;
 	private NetConfig config;
 	private List<Neuron> flatNet;
+	private Set<Synapse> synapseSet;
 	private SynapseMatrix synapseMatrix;
 	
 	public Network() {
 		super();
+		synapseSet = new HashSet<Synapse>();
 		flatNet = new ArrayList<Neuron>();
 		synapseMatrix = new SynapseMatrix(this, null, null);
 		finalyzed = false;
@@ -82,6 +88,7 @@ public class Network extends BasicNetwork {
 						for (Neuron toNeuron : l.getNeurons()) {
 							if (toNeuron.isBias() == false) {
 								Synapse s = new Synapse(fromNeuron, toNeuron);
+								synapseSet.add(s);
 								// in this type of network use global ids for synapse matrix
 								synapseMatrix.addOrUpdateSynapse(s, fromNeuron.getId(), toNeuron.getId());
 							}
@@ -108,6 +115,7 @@ public class Network extends BasicNetwork {
 				s.setWeight(b.getValue());
 			}
 			neuronRangeCheck(fromNeuron, toNeuron);
+			synapseSet.add(s);
 			// in this type of network use global ids for synapse matrix
 			synapseMatrix.addOrUpdateSynapse(s, fromNeuron.getId(), toNeuron.getId());
 		}
@@ -161,6 +169,7 @@ public class Network extends BasicNetwork {
 					for (Neuron toNeuron : l.getNeurons()) {
 						if (toNeuron.isBias() == false) {
 							Synapse s = new Synapse(fromNeuron, toNeuron);
+							synapseSet.add(s);
 							// in this type of network use global ids for synapse matrix
 							synapseMatrix.addOrUpdateSynapse(s, fromNeuron.getId(), toNeuron.getId());
 						}
@@ -230,6 +239,9 @@ public class Network extends BasicNetwork {
 	public SynapseMatrix getSynapseMatrix() {
 		return synapseMatrix;
 	}
+	public Set<Synapse> getSynapseSet() {
+		return synapseSet;
+	}
 
 	public int getInputSizeIgnoringBias() {
 		int biasOffset = getInputLayer().hasBias() ? 1 : 0;
@@ -249,8 +261,9 @@ public class Network extends BasicNetwork {
 		sb.append(" layers");
 		return sb.toString();
 	}
-	
 
-	
+
+
+
 
 }

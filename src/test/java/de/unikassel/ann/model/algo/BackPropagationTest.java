@@ -1,22 +1,107 @@
 package de.unikassel.ann.model.algo;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import org.junit.Test;
 
-import de.unikassel.ann.algo.BackPropagation;
 import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.factory.NetworkFactory;
 import de.unikassel.ann.model.DataPair;
 import de.unikassel.ann.model.DataPairSet;
 import de.unikassel.ann.model.Network;
 import de.unikassel.ann.model.func.SigmoidFunction;
+import de.unikassel.ann.model.func.TanHFunction;
+import de.unikassel.ann.strategy.MaxLearnIterationsStrategy;
+import de.unikassel.ann.strategy.MinErrorStrategy;
+import de.unikassel.ann.strategy.RestartErrorStrategy;
+import de.unikassel.ann.strategy.RestartImprovementStrategy;
 
 public class BackPropagationTest {
+	
+
+	@Test
+	public void testImproveStrategy() {
+		NetConfig netConfig = NetworkFactory.createSimpleNet(2, new int[]{2}, 1, true, new SigmoidFunction());
+		netConfig.addOrUpdateExisting(new RestartImprovementStrategy(0.00001, 50));
+		Network net = netConfig.getNetwork();
+		
+		DataPairSet trainSet = getXorTrainSet();
+		netConfig.getTrainingModule().train(trainSet);
+		netConfig.printStats();
+		
+		
+		DataPairSet testSet = getXorTestSet();
+		netConfig.getWorkingModule().work(net, testSet);
+		System.out.println(testSet);
+	}
+	
+	@Test
+	public void testStrategies() {
+		NetConfig netConfig = NetworkFactory.createSimpleNet(2, new int[]{2}, 1, true, new SigmoidFunction());
+		netConfig.addOrUpdateExisting(new MaxLearnIterationsStrategy(500));
+		netConfig.addOrUpdateExisting(new MinErrorStrategy(0.1));
+		netConfig.addOrUpdateExisting(new RestartErrorStrategy(0.3, 500));
+		Network net = netConfig.getNetwork();
+		
+		DataPairSet trainSet = getXorTrainSet();
+		netConfig.getTrainingModule().train(trainSet);
+		netConfig.printStats();
+		
+		
+		DataPairSet testSet = getXorTestSet();
+		netConfig.getWorkingModule().work(net, testSet);
+		System.out.println(testSet);
+	}
+	
+	@Test
+	public void testTanHFunctionWithZeroOne() {
+		NetConfig netConfig = NetworkFactory.createSimpleNet(2, new int[]{2}, 1, true, new TanHFunction());
+		netConfig.addOrUpdateExisting(new MaxLearnIterationsStrategy(500));
+		Network net = netConfig.getNetwork();
+		
+		// XOR training data
+		DataPairSet trainSet = getXorTrainSet();
+		// start training
+		netConfig.getTrainingModule().train(trainSet);
+		// print training results
+		netConfig.printStats();
+		
+		// XOR test / test data
+		DataPairSet testSet = getXorTestSet();
+		// start working phase
+		netConfig.getWorkingModule().work(net, testSet);
+		
+		// print test data result
+		System.out.println(testSet);
+	}
+	
+	@Test
+	public void testTanHFunctionWithNegativePositiveOnes() {
+		NetConfig netConfig = NetworkFactory.createSimpleNet(2, new int[]{2}, 1, true, new TanHFunction());
+		netConfig.addOrUpdateExisting(new MaxLearnIterationsStrategy(500));
+		Network net = netConfig.getNetwork();
+		
+		// XOR training data
+		DataPairSet trainSet = new DataPairSet();
+		trainSet.addPair(new DataPair(new Double[] {-1.0, -1.0}, new Double[] {-1.0}));
+		trainSet.addPair(new DataPair(new Double[] {-1.0, 1.0}, new Double[] {1.0}));
+		trainSet.addPair(new DataPair(new Double[] {1.0, -1.0}, new Double[] {1.0}));
+		trainSet.addPair(new DataPair(new Double[] {1.0, 1.0}, new Double[] {-1.0}));
+		// start training
+		netConfig.getTrainingModule().train(trainSet);
+		// print training results
+		netConfig.printStats();
+		
+		// XOR test / test data
+		DataPairSet testSet = new DataPairSet();
+		testSet.addPair(new DataPair(new Double[] {-1.0, -1.0}, new Double[] {Double.NaN}));
+		testSet.addPair(new DataPair(new Double[] {-1.0, 1.0}, new Double[] {Double.NaN}));
+		testSet.addPair(new DataPair(new Double[] {1.0, -1.0}, new Double[] {Double.NaN}));
+		testSet.addPair(new DataPair(new Double[] {1.0, 1.0}, new Double[] {Double.NaN}));
+		// start working phase
+		netConfig.getWorkingModule().work(net, testSet);
+		
+		// print test data result
+		System.out.println(testSet);
+	}
 	
 	@Test
 	public void testForwardAndBackwardPass4XOR() {
@@ -26,22 +111,13 @@ public class BackPropagationTest {
 		Network net = netConfig.getNetwork();
 		
 		// XOR training data
-		DataPairSet trainSet = new DataPairSet();
-		trainSet.addPair(new DataPair(new Double[] {0.0, 0.0}, new Double[] {0.0}));
-		trainSet.addPair(new DataPair(new Double[] {0.0, 1.0}, new Double[] {1.0}));
-		trainSet.addPair(new DataPair(new Double[] {1.0, 0.0}, new Double[] {1.0}));
-		trainSet.addPair(new DataPair(new Double[] {1.0, 1.0}, new Double[] {0.0}));
-		// start training
+		DataPairSet trainSet = getXorTrainSet();
 		netConfig.getTrainingModule().train(trainSet);
 		// print training results
 		netConfig.printStats();
 		
-		// XOR test / wor data
-		DataPairSet testSet = new DataPairSet();
-		testSet.addPair(new DataPair(new Double[] {0.0, 0.0}, new Double[] {Double.NaN}));
-		testSet.addPair(new DataPair(new Double[] {0.0, 1.0}, new Double[] {Double.NaN}));
-		testSet.addPair(new DataPair(new Double[] {1.0, 0.0}, new Double[] {Double.NaN}));
-		testSet.addPair(new DataPair(new Double[] {1.0, 1.0}, new Double[] {Double.NaN}));
+		// XOR test / test data
+		DataPairSet testSet = getXorTestSet();
 		// start working phase
 		netConfig.getWorkingModule().work(net, testSet);
 		
@@ -57,20 +133,11 @@ public class BackPropagationTest {
 		NetConfig netConfig = NetworkFactory.createXorNet(5000, false);
 		Network net = netConfig.getNetwork();
 		
-		DataPairSet trainSet = new DataPairSet();
-		trainSet.addPair(new DataPair(new Double[] {0.0, 0.0}, new Double[] {0.0}));
-		trainSet.addPair(new DataPair(new Double[] {0.0, 1.0}, new Double[] {1.0}));
-		trainSet.addPair(new DataPair(new Double[] {1.0, 0.0}, new Double[] {1.0}));
-		trainSet.addPair(new DataPair(new Double[] {1.0, 1.0}, new Double[] {0.0}));
+		DataPairSet trainSet = getXorTrainSet();
 		
 		netConfig.getTrainingModule().train(trainSet);
 		
-		DataPairSet testSet = new DataPairSet();
-		testSet.addPair(new DataPair(new Double[] {0.0, 0.0}, new Double[] {Double.NaN}));
-		testSet.addPair(new DataPair(new Double[] {0.0, 1.0}, new Double[] {Double.NaN}));
-		testSet.addPair(new DataPair(new Double[] {1.0, 0.0}, new Double[] {Double.NaN}));
-		testSet.addPair(new DataPair(new Double[] {1.0, 1.0}, new Double[] {Double.NaN}));
-		
+		DataPairSet testSet = getXorTestSet();
 		netConfig.getWorkingModule().work(net, testSet);
 		
 		netConfig.printStats();
@@ -113,11 +180,7 @@ public class BackPropagationTest {
 		net.getSynapseMatrix().setWeightMatrix(synapseMatrix);
 		
 		// XOR training data
-		DataPairSet testSet = new DataPairSet();
-		testSet.addPair(new DataPair(new Double[] {0.0, 0.0}, new Double[] {Double.NaN}));
-		testSet.addPair(new DataPair(new Double[] {0.0, 1.0}, new Double[] {Double.NaN}));
-		testSet.addPair(new DataPair(new Double[] {1.0, 0.0}, new Double[] {Double.NaN}));
-		testSet.addPair(new DataPair(new Double[] {1.0, 1.0}, new Double[] {Double.NaN}));
+		DataPairSet testSet = getXorTestSet();
 		
 		// let work
 		netConfig.getWorkingModule().work(net, testSet);
@@ -161,16 +224,32 @@ public class BackPropagationTest {
 		
 		net.getSynapseMatrix().setBigWeightMatrix(x);
 		
-		DataPairSet testSet = new DataPairSet();
-		testSet.addPair(new DataPair(new Double[] {0.0, 0.0}, new Double[] {Double.NaN}));
-		testSet.addPair(new DataPair(new Double[] {0.0, 1.0}, new Double[] {Double.NaN}));
-		testSet.addPair(new DataPair(new Double[] {1.0, 0.0}, new Double[] {Double.NaN}));
-		testSet.addPair(new DataPair(new Double[] {1.0, 1.0}, new Double[] {Double.NaN}));
+		DataPairSet testSet = getXorTestSet();
 		
 		netConfig.getWorkingModule().work(net, testSet);
 		
 		netConfig.printStats();
 		System.out.println(testSet);
+	}
+	
+	public static DataPairSet getXorTrainSet() {
+		// XOR training data
+		DataPairSet trainSet = new DataPairSet();
+		trainSet.addPair(new DataPair(new Double[] {0.0, 0.0}, new Double[] {0.0}));
+		trainSet.addPair(new DataPair(new Double[] {0.0, 1.0}, new Double[] {1.0}));
+		trainSet.addPair(new DataPair(new Double[] {1.0, 0.0}, new Double[] {1.0}));
+		trainSet.addPair(new DataPair(new Double[] {1.0, 1.0}, new Double[] {0.0}));
+		return trainSet;
+	}
+	
+	public static DataPairSet getXorTestSet() {
+		// XOR test data
+		DataPairSet testSet = new DataPairSet();
+		testSet.addPair(new DataPair(new Double[] {0.0, 0.0}, new Double[] {Double.NaN}));
+		testSet.addPair(new DataPair(new Double[] {0.0, 1.0}, new Double[] {Double.NaN}));
+		testSet.addPair(new DataPair(new Double[] {1.0, 0.0}, new Double[] {Double.NaN}));
+		testSet.addPair(new DataPair(new Double[] {1.0, 1.0}, new Double[] {Double.NaN}));
+		return testSet;
 	}
 
 }
