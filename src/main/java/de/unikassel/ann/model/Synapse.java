@@ -35,6 +35,8 @@ public class Synapse {
 	private Neuron fromNeuron;
 	
 	private Neuron toNeuron;
+
+	private double batchDelta = 0;
 	
 	/**
 	 * Creates a synapse between the two neurons.
@@ -121,6 +123,17 @@ public class Synapse {
 		sb.append(" weight = ");
 		sb.append(weight);
 		return sb.toString();
+	}
+
+	public void updateBatchDelta(double delta) {
+		batchDelta += delta;
+	}
+	public void resetBatchDelta() {
+		batchDelta = 0;
+	}
+	
+	public Double getBatchDelta() {
+		return batchDelta;
 	}
 
 }

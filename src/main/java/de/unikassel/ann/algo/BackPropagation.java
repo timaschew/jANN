@@ -14,6 +14,7 @@ import de.unikassel.ann.strategy.Strategy;
 
 public class BackPropagation extends TrainingModule implements WorkModule {
 	
+	private static boolean BATCH_LEARNING = true;
 	private Double momentum;
 	private Double learnRate;
 	
@@ -97,9 +98,13 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 			
 			for (DataPair pair : trainingData.getPairs()) {
 				forwardStep(net, pair);
-				backwardStep(net, pair);
+				calculateDeltaAndUpdateWeights(net, pair);
 				currentStep++;
 			}
+			if (BATCH_LEARNING) {
+				updateWeights(net); // offline training
+			}
+			
 			double tmpError = netError.calculateRMS();
 			currentImprovement = currentError - tmpError;
 			currentError = tmpError;
@@ -113,7 +118,7 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 		}
 	}
 	
-	private void backwardStep(Network net, DataPair pair) {
+	private void calculateDeltaAndUpdateWeights(Network net, DataPair pair) {
 		List<Layer> reversedLayers = net.reverse();
 		for (Layer l : reversedLayers) {
 			if (l.equals(net.getInputLayer())) {
@@ -124,7 +129,17 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 			} else {
 				calculateError(l);
 			}
-			calculateWeightDeltaAndUpdateWeights(l);
+			calculateWeightDelta(l); // for offline learning
+			if (BATCH_LEARNING == false) {
+				updateWeights(l); // online training
+			}
+		}
+	}
+	
+	private void updateWeights(Network net) {
+		List<Layer> reversedLayers = net.reverse();
+		for (Layer l : reversedLayers) {
+			updateWeights(l);
 		}
 	}
 	
@@ -161,11 +176,26 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 		}
 	}
 	
-	private void calculateWeightDeltaAndUpdateWeights(Layer l) {
+	private void calculateWeightDelta(Layer l) {
+		for (Neuron n : l.getNeurons()) {
+			for (Synapse s : n.getIncomingSynapses()) {
+				double offlineDelta = s.getToNeuron().getDelta()*s.getFromNeuron().getOutputValue();
+				s.updateBatchDelta(offlineDelta);
+			}
+		}
+	}
+	
+	private void updateWeights(Layer l) {
 		for (Neuron n : l.getNeurons()) {
 			for (Synapse s : n.getIncomingSynapses()) {
 				Double oldDeltaWeight = s.getDeltaWeight();
-				double delta = learnRate * s.getToNeuron().getDelta() * s.getFromNeuron().getOutputValue() + momentum * oldDeltaWeight;
+				Double delta = null;
+				if (BATCH_LEARNING) {
+					delta = learnRate * s.getBatchDelta() + momentum * oldDeltaWeight;
+					s.resetBatchDelta();
+				} else {
+					delta = learnRate * s.getToNeuron().getDelta()*s.getFromNeuron().getOutputValue() + momentum * oldDeltaWeight;
+				}
 				Double oldWeight = s.getWeight();
 				s.setWeight(oldWeight+delta);
 				s.setDeltaWeight(delta);

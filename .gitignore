@@ -11,3 +11,4 @@ test/wireframe/*
 .classpath
 .settings
 .settings/*
+src/test/resources/net_export.csv

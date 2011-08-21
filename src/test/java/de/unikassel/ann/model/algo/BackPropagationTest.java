@@ -106,7 +106,6 @@ public class BackPropagationTest {
 	@Test
 	public void testForwardAndBackwardPass4XOR() {
 		// 2x2x1 topology with bias -> 3x3x1
-		// backpropagation and stop after 1000 iterations
 		NetConfig netConfig = NetworkFactory.createXorNet(500, true);
 		Network net = netConfig.getNetwork();
 		
