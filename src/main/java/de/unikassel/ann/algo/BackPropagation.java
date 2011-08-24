@@ -2,6 +2,8 @@ package de.unikassel.ann.algo;
 
 import java.util.List;
 
+import javax.swing.SwingWorker;
+
 import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.model.DataPair;
 import de.unikassel.ann.model.DataPairSet;
@@ -14,7 +16,7 @@ import de.unikassel.ann.strategy.Strategy;
 
 public class BackPropagation extends TrainingModule implements WorkModule {
 	
-	private static boolean BATCH_LEARNING = true;
+	private static boolean BATCH_LEARNING = false;
 	private Double momentum;
 	private Double learnRate;
 	
@@ -83,12 +85,20 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 		Network net = config.getNetwork();
 		validateDataSet(net, trainingData);
 		while(true) {
-			
+//			try {
+//				Thread.sleep(1);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+			trainNow = true;
 			if (config.shouldRestartTraining()) {
 				train(trainingData); // restar training
+				trainNow = false;
 				return;
 			}
 			if (config.shouldStopTraining()) {
+				trainNow = false;
 				return;
 			}
 			
@@ -108,6 +118,7 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 			double tmpError = netError.calculateRMS();
 			currentImprovement = currentError - tmpError;
 			currentError = tmpError;
+			config.notifyError(currentError);
 //			currentSingleError = netError.calculateSingleRMS();
 			netError.reset();
 			currentIteration++;
@@ -116,6 +127,7 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 				s.postIteration();
 			}
 		}
+		
 	}
 	
 	private void calculateDeltaAndUpdateWeights(Network net, DataPair pair) {

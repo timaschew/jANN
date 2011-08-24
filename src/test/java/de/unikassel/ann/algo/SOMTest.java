@@ -1,4 +1,4 @@
-package de.unikassel.ann.model.algo;
+package de.unikassel.ann.algo;
 
 import org.junit.Test;
 

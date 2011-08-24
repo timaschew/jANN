@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javax.swing.SwingWorker;
+
 import de.unikassel.ann.algo.BackPropagation;
 import de.unikassel.ann.algo.TrainingModule;
 import de.unikassel.ann.algo.WorkModule;
@@ -19,6 +21,8 @@ import de.unikassel.ann.model.func.SigmoidFunction;
 import de.unikassel.ann.rand.Randomizer;
 import de.unikassel.ann.strategy.Strategy;
 import de.unikassel.ann.strategy.Strategy;
+import de.unikassel.ann.vis.TrainErrorListener;
+import de.unikassel.ann.vis.TrainErrorPlot;
 
 public class NetConfig {
 	
@@ -29,13 +33,14 @@ public class NetConfig {
 	Randomizer randomizer;
 	List<NetError> errorLogs;
 	private int restartAmount = 0;
-
+	List<TrainErrorListener> trainErrorListener;
 	
 	public NetConfig() {
 		network = new Network();
 		network.setConfig(this);
 		strategies = new ArrayList<Strategy>();
 		errorLogs = new ArrayList<NetError>();
+		trainErrorListener = new ArrayList<TrainErrorListener>();
 	}
 	
 	public boolean shouldStopTraining() {
@@ -149,5 +154,43 @@ public class NetConfig {
 		}
 		System.out.println(sb.toString());
 		
+	}
+	
+//	private class TrainErrorThread extends Thread {
+//		TrainErrorThread() {
+//			start();
+//		}
+//		public void run() {
+//			while (getTrainingModule().isTrainingNow()) {
+////				trainErrorListener.get(0).addError(getTrainingModule().getCurrentIteration(), getTrainingModule().getCurrentError());
+//				trainErrorListener.get(0).updateUI();
+//			}
+//		}
+//	}
+//	
+//	private class MyWorker extends SwingWorker<Void, Void> {
+//		
+//		public MyWorker() {
+//			execute();
+//		}
+//		@Override
+//	    public Void doInBackground() {
+//			while (getTrainingModule().isTrainingNow()) {
+////				trainErrorListener.get(0).addError(getTrainingModule().getCurrentIteration(), getTrainingModule().getCurrentError());
+//				trainErrorListener.get(0).updateUI();
+//			}
+//			return null;
+//	    }
+//	}
+
+	public void addTrainErrorListener(TrainErrorListener tel) {
+		trainErrorListener.add(tel);
+	}
+
+	public void notifyError(Double currentError) {
+		for (TrainErrorListener tel: trainErrorListener) {
+			tel.addError(getTrainingModule().getCurrentIteration(), currentError);
+			
+		}
 	}
 }

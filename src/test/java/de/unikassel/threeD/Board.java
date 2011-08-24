@@ -8,7 +8,6 @@ import java.awt.Toolkit;
 
 import javax.swing.JPanel;
 
-
 public class Board extends JPanel implements Runnable {
 
     private Thread animator;

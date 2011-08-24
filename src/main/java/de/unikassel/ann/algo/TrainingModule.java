@@ -7,6 +7,8 @@ import de.unikassel.ann.model.NetError;
 
 public abstract class TrainingModule {
 	
+	protected boolean trainNow = false;
+	
 	protected Double currentError = Double.NaN;
 	
 	protected Double currentImprovement = Double.NaN;
@@ -47,6 +49,10 @@ public abstract class TrainingModule {
 		currentImprovement = Double.NaN;
 		currentIteration = 0;
 		currentStep = 0;
+	}
+
+	public boolean isTrainingNow() {
+		return trainNow;
 	}
 
 //	public Double getCurrentSingleError() {
