@@ -1,7 +1,10 @@
 package de.unikassel.ann.vis;
 
 import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Graphics;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -17,9 +20,12 @@ import javax.swing.UnsupportedLookAndFeelException;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.HashMap;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -33,10 +39,31 @@ import javax.swing.text.StyleContext;
 import javax.swing.text.StyleContext.NamedStyle;
 import javax.swing.text.StyledDocument;
 
+import org.apache.commons.collections15.Factory;
+import org.apache.commons.collections15.functors.MapTransformer;
+import org.apache.commons.collections15.map.LazyMap;
+
+import edu.uci.ics.jung.algorithms.layout.AbstractLayout;
+import edu.uci.ics.jung.algorithms.layout.StaticLayout;
+import edu.uci.ics.jung.graph.DirectedGraph;
+import edu.uci.ics.jung.graph.DirectedSparseGraph;
+import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
+import edu.uci.ics.jung.visualization.VisualizationViewer;
+import edu.uci.ics.jung.visualization.control.EditingModalGraphMouse;
+import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
+import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
+
 public class Main {
 
 	private JFrame frame;
 	private JTextPane textPane;
+	
+	/**
+	 * Graph, Layout and Viewer
+	 */
+	private DirectedGraph<Number, Number> graph;
+	private AbstractLayout<Number, Number> layout;
+	private VisualizationViewer<Number, Number> viewer;
 
 	/**
 	 * Launch the application.
@@ -115,7 +142,6 @@ public class Main {
 		//
 		// Panes
 		//
-		
 		JSplitPane mainSplitPane = new JSplitPane();
 		frame.getContentPane().add(mainSplitPane, BorderLayout.CENTER);
 		
@@ -146,6 +172,53 @@ public class Main {
 		jungConsoleSplitPane.setDividerLocation(400);
 		jungConsoleSplitPane.setBorder(BorderFactory.createEmptyBorder());
 		
+		//
+		// (Simple) Graph
+		//
+		graph = new DirectedSparseGraph<Number, Number>();
+		this.layout = new StaticLayout<Number, Number>(graph, new Dimension(600-16, 400-16));
+		// The Dimension is given by the DividerLocation of the mainSplitPane and the jungConsoleSplitPane minus the scrollbar size 
+		
+		viewer = new VisualizationViewer<Number, Number>(layout);
+		viewer.setBackground(Color.white);
+		viewer.addPreRenderPaintable(new VisualizationViewer.Paintable(){
+			public void paint(Graphics g) {
+				final int height = viewer.getHeight();
+				final int width = viewer.getWidth();
+			}
+			public boolean useTransform() { return false; }
+		});
+		
+        viewer.getRenderContext().setVertexLabelTransformer(MapTransformer.<Number,String>getInstance(
+        		LazyMap.<Number,String>decorate(new HashMap<Number,String>(), new ToStringLabeller<Number>())));
+        
+        viewer.getRenderContext().setEdgeLabelTransformer(MapTransformer.<Number,String>getInstance(
+        		LazyMap.<Number,String>decorate(new HashMap<Number,String>(), new ToStringLabeller<Number>())));
+
+        viewer.setVertexToolTipTransformer(viewer.getRenderContext().getVertexLabelTransformer());
+        
+        Container content = jungPanel;
+        final GraphZoomScrollPane panel = new GraphZoomScrollPane(viewer);
+        content.add(panel);
+        Factory<Number> vertexFactory = new VertexFactory();
+        Factory<Number> edgeFactory = new EdgeFactory();
+        
+        final EditingModalGraphMouse<Number,Number> graphMouse = 
+        	new EditingModalGraphMouse<Number,Number>(viewer.getRenderContext(), vertexFactory, edgeFactory);
+        
+        viewer.setGraphMouse(graphMouse);
+        viewer.addKeyListener(graphMouse.getModeKeyListener());
+        viewer.addMouseWheelListener(new MouseWheelListener() {
+			
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+        
+        graphMouse.setMode(ModalGraphMouse.Mode.EDITING);
+        graphMouse.setZoomAtMouse(false);
 	}
 
 	private JMenu getDateiMenu() {
@@ -340,4 +413,21 @@ public class Main {
 		
 	}
 
+	class VertexFactory implements Factory<Number> {
+		
+		int i=0;
+	
+		public Number create() {
+			return i++;
+		}
+	}
+	
+	class EdgeFactory implements Factory<Number> {
+	
+		int i=0;
+		
+		public Number create() {
+			return i++;
+		}
+	}
 }
