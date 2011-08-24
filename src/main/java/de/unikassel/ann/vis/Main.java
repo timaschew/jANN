@@ -2,7 +2,10 @@ package de.unikassel.ann.vis;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Graphics;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -16,13 +19,19 @@ import javax.swing.JTextArea;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.HashMap;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -42,10 +51,31 @@ import de.unikassel.ann.model.DataPair;
 import de.unikassel.ann.model.DataPairSet;
 import de.unikassel.ann.model.Network;
 
+import org.apache.commons.collections15.Factory;
+import org.apache.commons.collections15.functors.MapTransformer;
+import org.apache.commons.collections15.map.LazyMap;
+
+import edu.uci.ics.jung.algorithms.layout.AbstractLayout;
+import edu.uci.ics.jung.algorithms.layout.StaticLayout;
+import edu.uci.ics.jung.graph.DirectedGraph;
+import edu.uci.ics.jung.graph.DirectedSparseGraph;
+import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
+import edu.uci.ics.jung.visualization.VisualizationViewer;
+import edu.uci.ics.jung.visualization.control.EditingModalGraphMouse;
+import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
+import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
+
 public class Main {
 
 	private JFrame frame;
 	private JTextPane textPane;
+	
+	/**
+	 * Graph, Layout and Viewer
+	 */
+	private DirectedGraph<Number, Number> graph;
+	private AbstractLayout<Number, Number> layout;
+	private VisualizationViewer<Number, Number> viewer;
 
 	private static Main instance;
 	
@@ -78,40 +108,35 @@ public class Main {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		//
+		// Frame
+		//
 		frame = new JFrame();
 		frame.setBounds(100, 100, 800, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		//
+		// MenuBar
+		//
 		JMenuBar menuBar = new JMenuBar();
-		frame.setJMenuBar(menuBar);
 		
-		JMenu mnDatei = new JMenu("Datei");
+		JMenu mnDatei = getDateiMenu();
 		menuBar.add(mnDatei);
-		
-		JMenuItem mntmNeu = new JMenuItem("Neu");
-		mnDatei.add(mntmNeu);
-		
-		JMenuItem mntmffnen = new JMenuItem("Öffnen");
-		mnDatei.add(mntmffnen);
-		
-		JMenuItem mntmSpeichern = new JMenuItem("Speichern");
-		mnDatei.add(mntmSpeichern);
-		
-		JMenu mnBearbeiten = new JMenu("Bearbeiten");
+
+		JMenu mnBearbeiten = getBearbeitenMenu();
 		menuBar.add(mnBearbeiten);
 		
-		JMenu mnAnsicht = new JMenu("Ansicht");
+		JMenu mnAnsicht = getAnsichtMenu();
 		menuBar.add(mnAnsicht);
 		
-		JMenuItem mntmDatenvisualisierung = new JMenuItem("Daten-Visualisierung");
-		mnAnsicht.add(mntmDatenvisualisierung);
-		
-		JMenuItem mntmTrainingfehlerverlauf = new JMenuItem("Training-Fehler-Verlauf");
-		mnAnsicht.add(mntmTrainingfehlerverlauf);
-		
-		JMenu mnHilfe = new JMenu("Hilfe");
+		JMenu mnHilfe = getHilfeMenu();
 		menuBar.add(mnHilfe);
 		
+		frame.setJMenuBar(menuBar);
+		
+		//
+		// Panes
+		//
 		JSplitPane mainSplitPane = new JSplitPane();
 		frame.getContentPane().add(mainSplitPane, BorderLayout.CENTER);
 		
@@ -190,7 +215,7 @@ public class Main {
 				
 			}
 		});
-		jungPanel.add(prototypeButton);
+		sideBar.add(prototypeButton);
 		
 		JPanel consolePanel = new JPanel(new BorderLayout());
 		jungConsoleSplitPane.setRightComponent(consolePanel);
@@ -209,6 +234,99 @@ public class Main {
 		jungConsoleSplitPane.setDividerLocation(400);
 		jungConsoleSplitPane.setBorder(BorderFactory.createEmptyBorder());
 		
+		//
+		// (Simple) Graph
+		//
+		graph = new DirectedSparseGraph<Number, Number>();
+		this.layout = new StaticLayout<Number, Number>(graph, new Dimension(600-16, 400-16));
+		// The Dimension is given by the DividerLocation of the mainSplitPane and the jungConsoleSplitPane minus the scrollbar size 
+		
+		viewer = new VisualizationViewer<Number, Number>(layout);
+		viewer.setBackground(Color.white);
+		viewer.addPreRenderPaintable(new VisualizationViewer.Paintable(){
+			public void paint(Graphics g) {
+				final int height = viewer.getHeight();
+				final int width = viewer.getWidth();
+			}
+			public boolean useTransform() { return false; }
+		});
+		
+        viewer.getRenderContext().setVertexLabelTransformer(MapTransformer.<Number,String>getInstance(
+        		LazyMap.<Number,String>decorate(new HashMap<Number,String>(), new ToStringLabeller<Number>())));
+        
+        viewer.getRenderContext().setEdgeLabelTransformer(MapTransformer.<Number,String>getInstance(
+        		LazyMap.<Number,String>decorate(new HashMap<Number,String>(), new ToStringLabeller<Number>())));
+
+        viewer.setVertexToolTipTransformer(viewer.getRenderContext().getVertexLabelTransformer());
+        
+        Container content = jungPanel;
+        final GraphZoomScrollPane panel = new GraphZoomScrollPane(viewer);
+        content.add(panel);
+        Factory<Number> vertexFactory = new VertexFactory();
+        Factory<Number> edgeFactory = new EdgeFactory();
+        
+        final EditingModalGraphMouse<Number,Number> graphMouse = 
+        	new EditingModalGraphMouse<Number,Number>(viewer.getRenderContext(), vertexFactory, edgeFactory);
+        
+        viewer.setGraphMouse(graphMouse);
+        viewer.addKeyListener(graphMouse.getModeKeyListener());
+        viewer.addMouseWheelListener(new MouseWheelListener() {
+			
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+        
+        graphMouse.setMode(ModalGraphMouse.Mode.EDITING);
+        graphMouse.setZoomAtMouse(false);
+	}
+
+	private JMenu getDateiMenu() {
+		JMenu mnDatei = new JMenu("Datei");
+		
+		JMenuItem mntmNeu = new ActionMenuItem("Neu", Action.NEW);
+		mnDatei.add(mntmNeu);
+		
+		JMenuItem mntmOeffnen = new ActionMenuItem("\u00D6ffnen", Action.OPEN);
+		mnDatei.add(mntmOeffnen);
+		
+		JMenuItem mntmSpeichern = new ActionMenuItem("Speichern", Action.SAVE);
+		mnDatei.add(mntmSpeichern);
+
+		mnDatei.addSeparator();
+		
+		JMenuItem mntmBeenden = new ActionMenuItem("Beenden", Action.EXIT);
+		mnDatei.add(mntmBeenden);
+		
+		return mnDatei;
+	}
+
+	private JMenu getBearbeitenMenu() {
+		JMenu mnBearbeiten = new JMenu("Bearbeiten");
+		return mnBearbeiten;
+	}
+
+	private JMenu getAnsichtMenu() {
+		JMenu mnAnsicht = new JMenu("Ansicht");
+		
+		JMenuItem mntmDatenvisualisierung = new ActionMenuItem("Daten-Visualisierung", Action.VIEW_DATA);
+		mnAnsicht.add(mntmDatenvisualisierung);
+		
+		JMenuItem mntmTrainingfehlerverlauf = new ActionMenuItem("Training-Fehler-Verlauf", Action.VIEW_TRAINING);
+		mnAnsicht.add(mntmTrainingfehlerverlauf);
+
+		return mnAnsicht;
+	}
+	
+	private JMenu getHilfeMenu() {
+		JMenu mnHilfe = new JMenu("Hilfe");
+		
+		JMenuItem mntmUeber = new ActionMenuItem("\u00DCber", Action.ABOUT);
+		mnHilfe.add(mntmUeber);
+		
+		return mnHilfe;
 	}
 	
 	private void updateTextArea(final String text) {
@@ -300,4 +418,78 @@ public class Main {
 //		System.setErr(new PrintStream(errorOut, true));
 	}
 
+	private enum Action {
+		NONE,
+		NEW,
+		OPEN,
+		SAVE,
+		EXIT,
+		VIEW_DATA,
+		VIEW_TRAINING,
+		ABOUT
+	}
+	
+	private class ActionMenuItem extends JMenuItem implements ActionListener {
+		Action action;
+		
+		public ActionMenuItem(String text) {
+			this(text, Action.NONE);
+		}
+		
+		public ActionMenuItem(String text, Action action) {
+			super(text);
+			this.action = action;
+			addActionListener(this);
+		}
+		
+		public void actionPerformed(ActionEvent e) {
+			System.out.println(action);
+			switch(action) {
+			case NEW:
+				// TODO
+				break;
+			case OPEN:
+				// TODO
+				break;
+			case SAVE:
+				// TODO
+				break;
+			case VIEW_DATA:
+				// TODO
+				break;
+			case VIEW_TRAINING:
+				// TODO
+				break;
+			case ABOUT:
+				// TODO
+				break;
+			case EXIT:
+				System.exit(e.getID());
+				break;
+			case NONE:
+			default:
+				System.out.println("Unknown command: " + action);
+				break;
+			}
+		}
+		
+	}
+
+	class VertexFactory implements Factory<Number> {
+		
+		int i=0;
+	
+		public Number create() {
+			return i++;
+		}
+	}
+	
+	class EdgeFactory implements Factory<Number> {
+	
+		int i=0;
+		
+		public Number create() {
+			return i++;
+		}
+	}
 }
