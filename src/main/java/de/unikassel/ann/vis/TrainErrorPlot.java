@@ -44,7 +44,7 @@ public class TrainErrorPlot implements TrainErrorListener {
 		DataSetPlot dataSetPlot = new DataSetPlot(numberSet);
 		dataSetPlot.set("with", "lines");
 		dataSetPlot.setTitle("run no #"+run);
-		JavaPlot javaPlot = new JavaPlot(false);
+		JavaPlot javaPlot = new JavaPlot("C:\\cygwin\\bin\\gnuplot.exe", false);
 		javaPlot.setTitle("Trainingsfehler");
 		plot = new JPlot(javaPlot);
 		p = plot.getJavaPlot();
