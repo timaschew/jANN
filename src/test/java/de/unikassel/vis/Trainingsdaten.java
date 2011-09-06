@@ -18,7 +18,7 @@ import javax.swing.SwingConstants;
 import java.awt.Dialog.ModalExclusionType;
 
 
-public class Trainingsdaten extends JFrame {
+public class Trainingsdaten extends JPanel {
 
 	private JPanel contentPane;
 
@@ -29,7 +29,10 @@ public class Trainingsdaten extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Trainingsdaten frame = new Trainingsdaten();
+					Trainingsdaten panel = new Trainingsdaten();
+					
+					JFrame frame = new JFrame();
+					frame.setContentPane(panel);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -42,16 +45,16 @@ public class Trainingsdaten extends JFrame {
 	 * Create the frame.
 	 */
 	public Trainingsdaten() {
-		setTitle("Trainingsdaten normalisieren\r\n");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 321, 281);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
-		setContentPane(contentPane);
+//		setTitle("Trainingsdaten normalisieren\r\n");
+////		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		setBounds(100, 100, 321, 281);
+//		contentPane = new JPanel();
+		setBorder(new EmptyBorder(5, 5, 5, 5));
+//		contentPane.setLayout(new BorderLayout(0, 0));
+//		setContentPane(contentPane);
 		
-		JPanel panel = new JPanel();
-		contentPane.add(panel, BorderLayout.CENTER);
+//		JPanel panel = new JPanel();
+//		contentPane.add(panel, BorderLayout.CENTER);
 		
 		JLabel lblWas = new JLabel("Was");
 		
@@ -89,7 +92,7 @@ public class Trainingsdaten extends JFrame {
 		JButton btnVorschau = new JButton("Vorschau");
 		
 		JButton btnAnwenden = new JButton("Anwenden");
-		GroupLayout gl_panel = new GroupLayout(panel);
+		GroupLayout gl_panel = new GroupLayout(this);
 		gl_panel.setHorizontalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel.createSequentialGroup()
@@ -119,20 +122,20 @@ public class Trainingsdaten extends JFrame {
 									.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
 										.addComponent(rdbtnJa, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE)
 										.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
-											.addComponent(spinner_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-											.addComponent(spinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+											.addComponent(spinner_2, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
+											.addComponent(spinner, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
 											.addComponent(lblVon)))
 									.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
 										.addGroup(gl_panel.createSequentialGroup()
 											.addGap(14)
 											.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-												.addComponent(spinner_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+												.addComponent(spinner_1, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
 												.addComponent(lblBis)
-												.addComponent(spinner_3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+												.addComponent(spinner_3, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)))
 										.addGroup(gl_panel.createSequentialGroup()
 											.addPreferredGap(ComponentPlacement.UNRELATED)
 											.addComponent(rdbtnNein)))))))
-					.addContainerGap(157, Short.MAX_VALUE))
+					.addContainerGap(205, Short.MAX_VALUE))
 		);
 		gl_panel.setVerticalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
@@ -169,9 +172,9 @@ public class Trainingsdaten extends JFrame {
 					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
 						.addComponent(btnVorschau)
 						.addComponent(btnAnwenden))
-					.addContainerGap(32, Short.MAX_VALUE))
+					.addContainerGap(90, Short.MAX_VALUE))
 		);
-		panel.setLayout(gl_panel);
+		setLayout(gl_panel);
 	}
 
 }
