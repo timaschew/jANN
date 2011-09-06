@@ -16,9 +16,10 @@ import javax.swing.BoxLayout;
 import javax.swing.JSpinner;
 import javax.swing.JRadioButton;
 import java.awt.Component;
+import javax.swing.JCheckBox;
 
 
-public class TrainingJFrame extends JFrame {
+public class TrainingJFrame extends JPanel {
 
 	private JPanel contentPane;
 
@@ -29,7 +30,9 @@ public class TrainingJFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					TrainingJFrame frame = new TrainingJFrame();
+					TrainingJFrame panel = new TrainingJFrame();
+					JFrame frame = new JFrame();
+					frame.setContentPane(panel);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -42,30 +45,32 @@ public class TrainingJFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public TrainingJFrame() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-//		contentPane.setLayout(new BorderLayout(0, 0));
-		setContentPane(contentPane);
-		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.X_AXIS));
+//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		setBounds(100, 100, 450, 300);
+//		contentPane = new JPanel();
+//		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+////		contentPane.setLayout(new BorderLayout(0, 0));
+//		setContentPane(contentPane);
+//		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.X_AXIS));
 		
-		JPanel panel = new JPanel();
-		panel.setBorder(new TitledBorder(null, "Training", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		contentPane.add(panel);
+//		JPanel panel = new JPanel();
+		setBorder(new TitledBorder(null, "Training", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		
+		JPanel strategienPanel = new JPanel();
+		strategienPanel.setBorder(new TitledBorder(null, "Strategien", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		
 		JLabel lblAlgorithmus = new JLabel("Algorithmus");
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Backpropagation", "Test"}));
-		
 		JLabel lblLernrate = new JLabel("Lernrate");
-		
-		JSpinner spinner = new JSpinner();
 		
 		JLabel lblMomentum = new JLabel("Momentum");
 		
-		JSpinner spinner_1 = new JSpinner();
+		JComboBox comboBoxAlgorithm = new JComboBox();
+		comboBoxAlgorithm.setModel(new DefaultComboBoxModel(new String[] {"Backpropagation", "Test"}));
+		
+		JSpinner spinnerLernRate = new JSpinner();
+		
+		JSpinner spinnerMomentum = new JSpinner();
 		
 		JLabel lblTrainingsmodus = new JLabel("Trainingsmodus");
 		
@@ -73,65 +78,99 @@ public class TrainingJFrame extends JFrame {
 		rdbtnOnline.setSelected(true);
 		
 		JRadioButton rdbtnOffline = new JRadioButton("Offline");
-		
-		
-		GroupLayout gl_panel = new GroupLayout(panel);
-		gl_panel.setHorizontalGroup(
-			gl_panel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel.createSequentialGroup()
+		GroupLayout groupLayout = new GroupLayout(this);
+		groupLayout.setHorizontalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addComponent(strategienPanel, GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
+				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
-						.addComponent(lblLernrate, Alignment.LEADING)
-						.addComponent(lblMomentum, Alignment.LEADING)
-						.addGroup(gl_panel.createSequentialGroup()
-							.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-								.addComponent(lblAlgorithmus)
-								.addComponent(lblTrainingsmodus))
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-								.addComponent(rdbtnOffline, Alignment.TRAILING)
-								.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
-									.addGroup(Alignment.LEADING, gl_panel.createSequentialGroup()
-										.addGap(7)
-										.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-									.addGroup(gl_panel.createSequentialGroup()
-										.addPreferredGap(ComponentPlacement.RELATED)
-										.addGroup(gl_panel.createParallelGroup(Alignment.LEADING, false)
-											.addComponent(spinner_1, Alignment.TRAILING)
-											.addComponent(spinner, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)
-											.addComponent(rdbtnOnline)))))))
-					.addGap(174))
-		);
-		gl_panel.setVerticalGroup(
-			gl_panel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel.createSequentialGroup()
-					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel.createSequentialGroup()
-							.addContainerGap()
-							.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
-								.addComponent(lblAlgorithmus)
-								.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
-								.addComponent(lblLernrate)
-								.addComponent(spinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
+							.addGroup(groupLayout.createSequentialGroup()
 								.addComponent(lblMomentum)
-								.addComponent(spinner_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-							.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_panel.createSequentialGroup()
-									.addGap(28)
-									.addComponent(rdbtnOffline))
-								.addGroup(gl_panel.createSequentialGroup()
-									.addGap(18)
-									.addComponent(lblTrainingsmodus))))
-						.addGroup(gl_panel.createSequentialGroup()
-							.addGap(98)
-							.addComponent(rdbtnOnline)))
-					.addContainerGap(81, Short.MAX_VALUE))
+								.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(spinnerMomentum, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE))
+							.addGroup(groupLayout.createSequentialGroup()
+								.addComponent(lblLernrate)
+								.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(spinnerLernRate, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE))
+							.addGroup(groupLayout.createSequentialGroup()
+								.addComponent(lblAlgorithmus)
+								.addGap(52)
+								.addComponent(comboBoxAlgorithm, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(rdbtnOnline)
+								.addComponent(rdbtnOffline)))
+						.addComponent(lblTrainingsmodus))
+					.addContainerGap(44, Short.MAX_VALUE))
 		);
-		panel.setLayout(gl_panel);
+		groupLayout.setVerticalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblAlgorithmus)
+						.addComponent(comboBoxAlgorithm, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblLernrate)
+						.addComponent(spinnerLernRate, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblMomentum)
+						.addComponent(spinnerMomentum, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblTrainingsmodus)
+						.addComponent(rdbtnOnline))
+					.addGroup(groupLayout.createSequentialGroup()
+						.addPreferredGap(ComponentPlacement.UNRELATED)
+						.addComponent(rdbtnOffline))
+					.addGap(28)
+					.addComponent(strategienPanel, GroupLayout.PREFERRED_SIZE, 79, Short.MAX_VALUE)
+					.addContainerGap())
+		);
+		
+		JLabel lblTyp = new JLabel("Typ");
+		
+		JLabel lblMaximalIteration = new JLabel("Maximal Iteration");
+		
+		JComboBox comboBoxTyp = new JComboBox();
+		comboBoxTyp.setModel(new DefaultComboBoxModel(new String[] {"MaxIteration"}));
+		
+		JSpinner spinner = new JSpinner();
+		
+		JCheckBox chckbxAktivieren = new JCheckBox("Strategie Aktivieren");
+		chckbxAktivieren.setSelected(true);
+		GroupLayout gl_strategienPanel = new GroupLayout(strategienPanel);
+		gl_strategienPanel.setHorizontalGroup(
+			gl_strategienPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_strategienPanel.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_strategienPanel.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblTyp)
+						.addComponent(lblMaximalIteration))
+					.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+					.addGroup(gl_strategienPanel.createParallelGroup(Alignment.TRAILING)
+						.addComponent(comboBoxTyp, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(spinner, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(chckbxAktivieren)
+					.addGap(23))
+		);
+		gl_strategienPanel.setVerticalGroup(
+			gl_strategienPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_strategienPanel.createSequentialGroup()
+					.addGroup(gl_strategienPanel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblTyp)
+						.addComponent(comboBoxTyp, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(chckbxAktivieren))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_strategienPanel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblMaximalIteration)
+						.addComponent(spinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+		);
+		strategienPanel.setLayout(gl_strategienPanel);
+		setLayout(groupLayout);
 	}
-
 }

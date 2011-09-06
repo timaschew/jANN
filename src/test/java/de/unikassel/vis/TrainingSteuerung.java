@@ -18,7 +18,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 
-public class TrainingSteuerung extends JFrame {
+public class TrainingSteuerung extends JPanel {
 
 	private JPanel contentPane;
 
@@ -29,8 +29,8 @@ public class TrainingSteuerung extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					TrainingSteuerung frame = new TrainingSteuerung();
-					frame.setVisible(true);
+					TrainingSteuerung panel = new TrainingSteuerung();
+					panel.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -42,16 +42,16 @@ public class TrainingSteuerung extends JFrame {
 	 * Create the frame.
 	 */
 	public TrainingSteuerung() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 265, 255);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.X_AXIS));
+//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		setBounds(100, 100, 265, 255);
+//		contentPane = new JPanel();
+//		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+//		setContentPane(contentPane);
+//		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.X_AXIS));
 		
-		JPanel trainingSteuerungPanel = new JPanel();
-		trainingSteuerungPanel.setBorder(new TitledBorder(null, "Training-Steuerung", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		contentPane.add(trainingSteuerungPanel);
+//		JPanel trainingSteuerungPanel = new JPanel();
+		setBorder(new TitledBorder(null, "Training-Steuerung", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+//		add(trainingSteuerungPanel);
 		
 		JButton btnSchritte = new JButton("Schritt(e)");
 		
@@ -86,7 +86,7 @@ public class TrainingSteuerung extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
-		GroupLayout gl_trainingSteuerungPanel = new GroupLayout(trainingSteuerungPanel);
+		GroupLayout gl_trainingSteuerungPanel = new GroupLayout(this);
 		gl_trainingSteuerungPanel.setHorizontalGroup(
 			gl_trainingSteuerungPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_trainingSteuerungPanel.createSequentialGroup()
@@ -161,7 +161,7 @@ public class TrainingSteuerung extends JFrame {
 						.addComponent(btnStop))
 					.addContainerGap(51, Short.MAX_VALUE))
 		);
-		trainingSteuerungPanel.setLayout(gl_trainingSteuerungPanel);
+		setLayout(gl_trainingSteuerungPanel);
 	}
 
 }
