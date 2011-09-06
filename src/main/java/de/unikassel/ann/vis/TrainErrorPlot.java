@@ -2,8 +2,11 @@ package de.unikassel.ann.vis;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
@@ -21,6 +24,7 @@ import com.panayotis.gnuplot.plot.Plot;
 import com.panayotis.gnuplot.swing.JPlot;
 
 public class TrainErrorPlot implements TrainErrorListener {
+
 
 	private PointDataSet<Double> numberSet;
 	private JPlot plot;
@@ -44,7 +48,18 @@ public class TrainErrorPlot implements TrainErrorListener {
 		DataSetPlot dataSetPlot = new DataSetPlot(numberSet);
 		dataSetPlot.set("with", "lines");
 		dataSetPlot.setTitle("run no #"+run);
-		JavaPlot javaPlot = new JavaPlot("C:\\cygwin\\bin\\gnuplot.exe", false);
+		Properties property = new Properties();
+		String path = "";
+		try {
+			InputStream inputStream =  getClass().getClassLoader().getResourceAsStream("config.properties");
+			property.load(inputStream);
+			path = property.getProperty("gnuplot.path");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		JavaPlot javaPlot = new JavaPlot(path, false);
 		javaPlot.setTitle("Trainingsfehler");
 		plot = new JPlot(javaPlot);
 		p = plot.getJavaPlot();

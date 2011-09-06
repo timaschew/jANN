@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.HashMap;
+import java.util.ResourceBundle;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -76,6 +77,7 @@ public class Main {
 	private DirectedGraph<Number, Number> graph;
 	private AbstractLayout<Number, Number> layout;
 	private VisualizationViewer<Number, Number> viewer;
+	private ResourceBundle i18n;
 
 	private static Main instance;
 	
@@ -108,6 +110,9 @@ public class Main {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		
+		i18n = ResourceBundle.getBundle("langpack");
+		
 		//
 		// Frame
 		//
@@ -284,46 +289,46 @@ public class Main {
 	}
 
 	private JMenu getDateiMenu() {
-		JMenu mnDatei = new JMenu("Datei");
+		JMenu mnDatei = new JMenu(i18n.getString("menu.file"));
 		
-		JMenuItem mntmNeu = new ActionMenuItem("Neu", Action.NEW);
+		JMenuItem mntmNeu = new ActionMenuItem(i18n.getString("menu.file.new"), Action.NEW);
 		mnDatei.add(mntmNeu);
 		
-		JMenuItem mntmOeffnen = new ActionMenuItem("\u00D6ffnen", Action.OPEN);
+		JMenuItem mntmOeffnen = new ActionMenuItem(i18n.getString("menu.file.open"), Action.OPEN);
 		mnDatei.add(mntmOeffnen);
 		
-		JMenuItem mntmSpeichern = new ActionMenuItem("Speichern", Action.SAVE);
+		JMenuItem mntmSpeichern = new ActionMenuItem(i18n.getString("menu.file.save"), Action.SAVE);
 		mnDatei.add(mntmSpeichern);
 
 		mnDatei.addSeparator();
 		
-		JMenuItem mntmBeenden = new ActionMenuItem("Beenden", Action.EXIT);
+		JMenuItem mntmBeenden = new ActionMenuItem(i18n.getString("menu.file.exit"), Action.EXIT);
 		mnDatei.add(mntmBeenden);
 		
 		return mnDatei;
 	}
 
 	private JMenu getBearbeitenMenu() {
-		JMenu mnBearbeiten = new JMenu("Bearbeiten");
+		JMenu mnBearbeiten = new JMenu(i18n.getString("menu.edit"));
 		return mnBearbeiten;
 	}
 
 	private JMenu getAnsichtMenu() {
-		JMenu mnAnsicht = new JMenu("Ansicht");
+		JMenu mnAnsicht = new JMenu(i18n.getString("menu.view"));
 		
-		JMenuItem mntmDatenvisualisierung = new ActionMenuItem("Daten-Visualisierung", Action.VIEW_DATA);
+		JMenuItem mntmDatenvisualisierung = new ActionMenuItem(i18n.getString("menu.view.showTrainingData"), Action.VIEW_DATA);
 		mnAnsicht.add(mntmDatenvisualisierung);
 		
-		JMenuItem mntmTrainingfehlerverlauf = new ActionMenuItem("Training-Fehler-Verlauf", Action.VIEW_TRAINING);
+		JMenuItem mntmTrainingfehlerverlauf = new ActionMenuItem(i18n.getString("menu.view.showTrainingError"), Action.VIEW_TRAINING);
 		mnAnsicht.add(mntmTrainingfehlerverlauf);
 
 		return mnAnsicht;
 	}
 	
 	private JMenu getHilfeMenu() {
-		JMenu mnHilfe = new JMenu("Hilfe");
+		JMenu mnHilfe = new JMenu(i18n.getString("menu.help"));
 		
-		JMenuItem mntmUeber = new ActionMenuItem("\u00DCber", Action.ABOUT);
+		JMenuItem mntmUeber = new ActionMenuItem(i18n.getString("menu.help.about"), Action.ABOUT);
 		mnHilfe.add(mntmUeber);
 		
 		return mnHilfe;
