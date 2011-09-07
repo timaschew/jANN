@@ -26,20 +26,20 @@ public class TrainingJFrame extends JPanel {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					TrainingJFrame panel = new TrainingJFrame();
-					JFrame frame = new JFrame();
-					frame.setContentPane(panel);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					TrainingJFrame panel = new TrainingJFrame();
+//					JFrame frame = new JFrame();
+//					frame.setContentPane(panel);
+//					frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the frame.
@@ -59,7 +59,7 @@ public class TrainingJFrame extends JPanel {
 		JPanel strategienPanel = new JPanel();
 		strategienPanel.setBorder(new TitledBorder(null, "Strategien", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		
-		JLabel lblAlgorithmus = new JLabel("Algorithmus");
+		JLabel lblAlgorithm = new JLabel("Algorithmus");
 		
 		JLabel lblLernrate = new JLabel("Lernrate");
 		
@@ -95,7 +95,7 @@ public class TrainingJFrame extends JPanel {
 								.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 								.addComponent(spinnerLernRate, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE))
 							.addGroup(groupLayout.createSequentialGroup()
-								.addComponent(lblAlgorithmus)
+								.addComponent(lblAlgorithm)
 								.addGap(52)
 								.addComponent(comboBoxAlgorithm, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
@@ -108,7 +108,7 @@ public class TrainingJFrame extends JPanel {
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblAlgorithmus)
+						.addComponent(lblAlgorithm)
 						.addComponent(comboBoxAlgorithm, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
@@ -132,15 +132,15 @@ public class TrainingJFrame extends JPanel {
 		
 		JLabel lblTyp = new JLabel("Typ");
 		
-		JLabel lblMaximalIteration = new JLabel("Maximal Iteration");
+		JLabel lblMaxIteration = new JLabel("Maximal Iteration");
 		
 		JComboBox comboBoxTyp = new JComboBox();
 		comboBoxTyp.setModel(new DefaultComboBoxModel(new String[] {"MaxIteration"}));
 		
-		JSpinner spinner = new JSpinner();
+		JSpinner spinnerMaxIteration = new JSpinner();
 		
-		JCheckBox chckbxAktivieren = new JCheckBox("Strategie Aktivieren");
-		chckbxAktivieren.setSelected(true);
+		JCheckBox chckbxStrategieActivation = new JCheckBox("Strategie Aktivieren");
+		chckbxStrategieActivation.setSelected(true);
 		GroupLayout gl_strategienPanel = new GroupLayout(strategienPanel);
 		gl_strategienPanel.setHorizontalGroup(
 			gl_strategienPanel.createParallelGroup(Alignment.LEADING)
@@ -148,13 +148,13 @@ public class TrainingJFrame extends JPanel {
 					.addContainerGap()
 					.addGroup(gl_strategienPanel.createParallelGroup(Alignment.LEADING)
 						.addComponent(lblTyp)
-						.addComponent(lblMaximalIteration))
+						.addComponent(lblMaxIteration))
 					.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 					.addGroup(gl_strategienPanel.createParallelGroup(Alignment.TRAILING)
 						.addComponent(comboBoxTyp, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(spinner, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE))
+						.addComponent(spinnerMaxIteration, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(chckbxAktivieren)
+					.addComponent(chckbxStrategieActivation)
 					.addGap(23))
 		);
 		gl_strategienPanel.setVerticalGroup(
@@ -163,11 +163,11 @@ public class TrainingJFrame extends JPanel {
 					.addGroup(gl_strategienPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblTyp)
 						.addComponent(comboBoxTyp, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(chckbxAktivieren))
+						.addComponent(chckbxStrategieActivation))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_strategienPanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblMaximalIteration)
-						.addComponent(spinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(lblMaxIteration)
+						.addComponent(spinnerMaxIteration, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		);
 		strategienPanel.setLayout(gl_strategienPanel);

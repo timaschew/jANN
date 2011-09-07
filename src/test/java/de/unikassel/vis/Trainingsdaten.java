@@ -25,21 +25,21 @@ public class Trainingsdaten extends JPanel {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Trainingsdaten panel = new Trainingsdaten();
-					
-					JFrame frame = new JFrame();
-					frame.setContentPane(panel);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					Trainingsdaten panel = new Trainingsdaten();
+//					
+//					JFrame frame = new JFrame();
+//					frame.setContentPane(panel);
+//					frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the frame.
@@ -56,49 +56,49 @@ public class Trainingsdaten extends JPanel {
 //		JPanel panel = new JPanel();
 //		contentPane.add(panel, BorderLayout.CENTER);
 		
-		JLabel lblWas = new JLabel("Was");
+		JLabel lblWhat = new JLabel("Was");
 		
-		JButton btnTrainingsdatenAnzeigen = new JButton("Trainingsdaten anzeigen");
+		JButton btnShowTrainingsdata = new JButton("Trainingsdaten anzeigen");
 		
-		JLabel lblNormalisieren = new JLabel("Normalisieren");
+		JLabel lblNormalize = new JLabel("Normalisieren");
 		
-		JLabel lblVon = new JLabel("von");
+		JLabel lblfrom = new JLabel("von");
 		
-		JLabel lblBis = new JLabel("bis");
+		JLabel lblUp = new JLabel("bis");
 		
 		JLabel lblInput = new JLabel("Input");
 		
 		JLabel lblOutput = new JLabel("Output");
 		
-		JCheckBox checkBox = new JCheckBox("");
+		JCheckBox checkBoxInput = new JCheckBox("");
 		
-		JCheckBox checkBox_1 = new JCheckBox("");
+		JCheckBox checkBoxOutput = new JCheckBox("");
 		
-		JSpinner spinner = new JSpinner();
+		JSpinner spinnerInputFrom = new JSpinner();
 		
-		JSpinner spinner_1 = new JSpinner();
+		JSpinner spinnerInputUp = new JSpinner();
 		
-		JSpinner spinner_2 = new JSpinner();
+		JSpinner spinnerOutputFrom = new JSpinner();
 		
-		JSpinner spinner_3 = new JSpinner();
+		JSpinner spinnerOutputUp = new JSpinner();
 		
-		JLabel lblAusgabeWiederUmkehren = new JLabel("Ausgabe wieder umkehren");
+		JLabel lblInvertOutput = new JLabel("Ausgabe wieder umkehren");
 		
-		JRadioButton rdbtnJa = new JRadioButton("Ja");
-		rdbtnJa.setSelected(true);
+		JRadioButton rdbtnInvertOutputYes = new JRadioButton("Ja");
+		rdbtnInvertOutputYes.setSelected(true);
 		
-		JRadioButton rdbtnNein = new JRadioButton("Nein");
+		JRadioButton rdbtnInvertOutputNo = new JRadioButton("Nein");
 		
-		JButton btnVorschau = new JButton("Vorschau");
+		JButton btnPreviewData = new JButton("Vorschau");
 		
-		JButton btnAnwenden = new JButton("Anwenden");
+		JButton btnApplyData = new JButton("Anwenden");
 		GroupLayout gl_panel = new GroupLayout(this);
 		gl_panel.setHorizontalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-						.addComponent(btnTrainingsdatenAnzeigen)
+						.addComponent(btnShowTrainingsdata)
 						.addGroup(gl_panel.createSequentialGroup()
 							.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
 								.addGroup(gl_panel.createSequentialGroup()
@@ -107,71 +107,71 @@ public class Trainingsdaten extends JPanel {
 										.addComponent(lblOutput))
 									.addGap(47)
 									.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-										.addComponent(checkBox_1)
-										.addComponent(checkBox)))
+										.addComponent(checkBoxOutput)
+										.addComponent(checkBoxInput)))
 								.addGroup(gl_panel.createSequentialGroup()
-									.addComponent(lblWas)
+									.addComponent(lblWhat)
 									.addGap(41)
-									.addComponent(lblNormalisieren))
-								.addComponent(lblAusgabeWiederUmkehren)
-								.addComponent(btnVorschau))
+									.addComponent(lblNormalize))
+								.addComponent(lblInvertOutput)
+								.addComponent(btnPreviewData))
 							.addGap(13)
 							.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-								.addComponent(btnAnwenden)
+								.addComponent(btnApplyData)
 								.addGroup(gl_panel.createSequentialGroup()
 									.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-										.addComponent(rdbtnJa, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE)
+										.addComponent(rdbtnInvertOutputYes, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE)
 										.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
-											.addComponent(spinner_2, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
-											.addComponent(spinner, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
-											.addComponent(lblVon)))
+											.addComponent(spinnerOutputFrom, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
+											.addComponent(spinnerInputFrom, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
+											.addComponent(lblfrom)))
 									.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
 										.addGroup(gl_panel.createSequentialGroup()
 											.addGap(14)
 											.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-												.addComponent(spinner_1, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
-												.addComponent(lblBis)
-												.addComponent(spinner_3, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)))
+												.addComponent(spinnerInputUp, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
+												.addComponent(lblUp)
+												.addComponent(spinnerOutputUp, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)))
 										.addGroup(gl_panel.createSequentialGroup()
 											.addPreferredGap(ComponentPlacement.UNRELATED)
-											.addComponent(rdbtnNein)))))))
+											.addComponent(rdbtnInvertOutputNo)))))))
 					.addContainerGap(205, Short.MAX_VALUE))
 		);
 		gl_panel.setVerticalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel.createSequentialGroup()
 					.addGap(20)
-					.addComponent(btnTrainingsdatenAnzeigen)
+					.addComponent(btnShowTrainingsdata)
 					.addGap(18)
 					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblWas)
-						.addComponent(lblNormalisieren)
-						.addComponent(lblVon)
-						.addComponent(lblBis))
+						.addComponent(lblWhat)
+						.addComponent(lblNormalize)
+						.addComponent(lblfrom)
+						.addComponent(lblUp))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
 						.addComponent(lblInput)
-						.addComponent(checkBox)
+						.addComponent(checkBoxInput)
 						.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
-							.addComponent(spinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(spinner_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+							.addComponent(spinnerInputFrom, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(spinnerInputUp, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
 							.addComponent(lblOutput)
-							.addComponent(checkBox_1))
+							.addComponent(checkBoxOutput))
 						.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
-							.addComponent(spinner_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(spinner_3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+							.addComponent(spinnerOutputFrom, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(spinnerOutputUp, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
 					.addGap(18)
 					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblAusgabeWiederUmkehren)
-						.addComponent(rdbtnJa)
-						.addComponent(rdbtnNein))
+						.addComponent(lblInvertOutput)
+						.addComponent(rdbtnInvertOutputYes)
+						.addComponent(rdbtnInvertOutputNo))
 					.addGap(18)
 					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-						.addComponent(btnVorschau)
-						.addComponent(btnAnwenden))
+						.addComponent(btnPreviewData)
+						.addComponent(btnApplyData))
 					.addContainerGap(90, Short.MAX_VALUE))
 		);
 		setLayout(gl_panel);
