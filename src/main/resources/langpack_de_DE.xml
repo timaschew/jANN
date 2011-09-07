@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<comment>Application Configuration</comment>
+	<entry key="menu.file">Datei</entry>
+	<entry key="menu.file.new">Neu</entry>
+	<entry key="menu.file.open">Öffnen</entry>
+	<entry key="menu.file.openRecent">Letzte Öffnen</entry>
+	<entry key="menu.file.save">Speichern</entry>
+	<entry key="menu.file.close">Schließen</entry>
+	<entry key="menu.file.exit">Beenden</entry>
+	<entry key="menu.edit">Bearbeiten</entry>
+	<entry key="menu.edit.undo">Rückgängig</entry>
+	<entry key="menu.edit.redo">Wiederholen</entry>
+	<entry key="menu.view">Ansicht</entry>
+	<entry key="menu.view.showTrainingError">Trainingsfehler anzeigen</entry>
+	<entry key="menu.view.showTrainingData">Trainingsdaten anzeigen</entry>
+	<entry key="menu.options">Optionen</entry>
+	<entry key="menu.help">Hilfe</entry>
+	<entry key="menu.help.about">Über</entry>
+</properties>
