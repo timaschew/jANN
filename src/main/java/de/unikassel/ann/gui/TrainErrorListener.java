@@ -1,4 +1,4 @@
-package de.unikassel.ann.vis;
+package de.unikassel.ann.gui;
 
 public interface TrainErrorListener {
 	
