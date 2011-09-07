@@ -6,9 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import javax.swing.SwingWorker;
-
-import de.unikassel.ann.algo.BackPropagation;
 import de.unikassel.ann.algo.TrainingModule;
 import de.unikassel.ann.algo.WorkModule;
 import de.unikassel.ann.model.NetError;
@@ -17,12 +14,9 @@ import de.unikassel.ann.model.Network;
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.Synapse;
 import de.unikassel.ann.model.func.ActivationFunction;
-import de.unikassel.ann.model.func.SigmoidFunction;
 import de.unikassel.ann.rand.Randomizer;
 import de.unikassel.ann.strategy.Strategy;
-import de.unikassel.ann.strategy.Strategy;
-import de.unikassel.ann.vis.TrainErrorListener;
-import de.unikassel.ann.vis.TrainErrorPlot;
+import de.unikassel.ann.gui.TrainErrorListener;
 
 public class NetConfig {
 	
