@@ -2,7 +2,6 @@ package de.unikassel.ann.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -18,7 +17,6 @@ import java.util.HashMap;
 import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -28,7 +26,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.Style;
@@ -40,11 +37,6 @@ import org.apache.commons.collections15.Factory;
 import org.apache.commons.collections15.functors.MapTransformer;
 import org.apache.commons.collections15.map.LazyMap;
 
-import de.unikassel.ann.config.NetConfig;
-import de.unikassel.ann.factory.NetworkFactory;
-import de.unikassel.ann.model.DataPair;
-import de.unikassel.ann.model.DataPairSet;
-import de.unikassel.ann.model.Network;
 import de.unikassel.ann.util.XMLResourceBundleControl;
 import edu.uci.ics.jung.algorithms.layout.AbstractLayout;
 import edu.uci.ics.jung.algorithms.layout.StaticLayout;
@@ -145,69 +137,6 @@ public class Main {
 
 		JPanel jungPanel = new JPanel(new BorderLayout());
 		jungConsoleSplitPane.setLeftComponent(jungPanel);
-
-		JButton prototypeButton = new JButton("start");
-		final TrainErrorPlot tep = new TrainErrorPlot();
-		tep.init();
-		JFrame f = new JFrame();
-		Component plot = tep.getPlotPanel();
-		f.getContentPane().add(plot);
-		f.setVisible(true);
-		f.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		f.setSize(tep.getPlotPanel().getPreferredSize());
-		prototypeButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-
-				final NetConfig netConfig = NetworkFactory.createXorNet(2000, true);
-				netConfig.addTrainErrorListener(tep);
-				final Network net = netConfig.getNetwork();
-
-				// XOR training data
-				final DataPairSet trainSet = new DataPairSet();
-				trainSet.addPair(new DataPair(new Double[] { 0.0, 0.0 }, new Double[] { 0.0 }));
-				trainSet.addPair(new DataPair(new Double[] { 0.0, 1.0 }, new Double[] { 1.0 }));
-				trainSet.addPair(new DataPair(new Double[] { 1.0, 0.0 }, new Double[] { 1.0 }));
-				trainSet.addPair(new DataPair(new Double[] { 1.0, 1.0 }, new Double[] { 0.0 }));
-
-				// XOR test data
-				final DataPairSet testSet = new DataPairSet();
-				testSet.addPair(new DataPair(new Double[] { 0.0, 0.0 }, new Double[] { Double.NaN }));
-				testSet.addPair(new DataPair(new Double[] { 0.0, 1.0 }, new Double[] { Double.NaN }));
-				testSet.addPair(new DataPair(new Double[] { 1.0, 0.0 }, new Double[] { Double.NaN }));
-				testSet.addPair(new DataPair(new Double[] { 1.0, 1.0 }, new Double[] { Double.NaN }));
-
-				final Thread t = new Thread(new Runnable() {
-					@Override
-					public void run() {
-						netConfig.getTrainingModule().train(trainSet);
-						netConfig.getWorkingModule().work(net, testSet);
-						netConfig.printStats();
-						System.out.println(testSet);
-						tep.nextRun();
-					}
-				});
-				t.start();
-				Thread t2 = new Thread(new Runnable() {
-					@Override
-					public void run() {
-						while (t.isAlive()) {
-							tep.updateUI();
-							try {
-								Thread.sleep(100);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
-						tep.updateUI();
-					}
-				});
-				t2.start();
-
-			}
-		});
-		sideBar.add(prototypeButton);
 
 		JPanel consolePanel = new JPanel(new BorderLayout());
 		jungConsoleSplitPane.setRightComponent(consolePanel);

@@ -19,12 +19,12 @@ import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanReader;
 import org.supercsv.io.ICsvBeanWriter;
 
-import de.unikassel.ann.gen.DynamicBeanCreator;
-import de.unikassel.ann.gen.GeneratedXorBeanExample;
 import de.unikassel.ann.io.beans.TopologyBean;
 import de.unikassel.ann.io.beans.TrainingBean;
 import de.unikassel.ann.model.DataPair;
 import de.unikassel.ann.model.DataPairSet;
+import de.unikassel.ann.util.gen.DynamicBeanCreator;
+import de.unikassel.ann.util.gen.GeneratedXorBeanExample;
 
 public class TrainingRW extends BasicCsvReader {
 	

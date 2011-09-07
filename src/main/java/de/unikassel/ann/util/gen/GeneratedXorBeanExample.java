@@ -1,4 +1,4 @@
-package de.unikassel.ann.gen;
+package de.unikassel.ann.util.gen;
 
 import de.unikassel.ann.io.beans.TrainingBean;
 
