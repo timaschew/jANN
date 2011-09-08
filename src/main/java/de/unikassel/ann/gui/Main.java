@@ -50,19 +50,6 @@ import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 
 public class Main {
 
-	private JFrame frame;
-	private JTextPane textPane;
-
-	/**
-	 * Graph, Layout and Viewer
-	 */
-	private DirectedGraph<Number, Number> graph;
-	private AbstractLayout<Number, Number> layout;
-	private VisualizationViewer<Number, Number> viewer;
-	private ResourceBundle i18n;
-
-	private static Main instance;
-
 	/**
 	 * Launch the application.
 	 */
@@ -71,8 +58,8 @@ public class Main {
 			@Override
 			public void run() {
 				try {
-					Main window = new Main();
-					window.frame.setVisible(true);
+					instance = new Main();
+					instance.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -80,11 +67,25 @@ public class Main {
 		});
 	}
 
+	/*
+	 * public fields
+	 */
+	public static Main instance;
+	public ResourceBundle i18n;
+
+	/*
+	 * private fields
+	 */
+	private DirectedGraph<Number, Number> graph;
+	private AbstractLayout<Number, Number> layout;
+	private VisualizationViewer<Number, Number> viewer;
+	private JFrame frame;
+	private JTextPane textPane;
+
 	/**
 	 * Create the application.
 	 */
 	public Main() {
-		instance = this;
 		initialize();
 		redirectSystemStreams();
 	}
