@@ -8,6 +8,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import de.unikassel.ann.controller.Actions;
+
 public class MainMenu extends JMenuBar {
 
 	/**
@@ -52,21 +54,21 @@ public class MainMenu extends JMenuBar {
 		JMenu mnDatei = new JMenu(i18n.getString("menu.file"));
 
 		JMenuItem mntmNeu = new ActionMenuItem(i18n.getString("menu.file.new"),
-				Action.NEW);
+				Actions.NEW);
 		mnDatei.add(mntmNeu);
 
 		JMenuItem mntmOeffnen = new ActionMenuItem(
-				i18n.getString("menu.file.open"), Action.OPEN);
+				i18n.getString("menu.file.open"), Actions.OPEN);
 		mnDatei.add(mntmOeffnen);
 
 		JMenuItem mntmSpeichern = new ActionMenuItem(
-				i18n.getString("menu.file.save"), Action.SAVE);
+				i18n.getString("menu.file.save"), Actions.SAVE);
 		mnDatei.add(mntmSpeichern);
 
 		mnDatei.addSeparator();
 
 		JMenuItem mntmBeenden = new ActionMenuItem(
-				i18n.getString("menu.file.exit"), Action.EXIT);
+				i18n.getString("menu.file.exit"), Actions.EXIT);
 		mnDatei.add(mntmBeenden);
 
 		return mnDatei;
@@ -91,12 +93,12 @@ public class MainMenu extends JMenuBar {
 		JMenu mnAnsicht = new JMenu(i18n.getString("menu.view"));
 
 		JMenuItem mntmDatenvisualisierung = new ActionMenuItem(
-				i18n.getString("menu.view.showTrainingData"), Action.VIEW_DATA);
+				i18n.getString("menu.view.showTrainingData"), Actions.VIEW_DATA);
 		mnAnsicht.add(mntmDatenvisualisierung);
 
 		JMenuItem mntmTrainingfehlerverlauf = new ActionMenuItem(
 				i18n.getString("menu.view.showTrainingError"),
-				Action.VIEW_TRAINING);
+				Actions.VIEW_TRAINING);
 		mnAnsicht.add(mntmTrainingfehlerverlauf);
 
 		return mnAnsicht;
@@ -111,17 +113,10 @@ public class MainMenu extends JMenuBar {
 		JMenu mnHilfe = new JMenu(i18n.getString("menu.help"));
 
 		JMenuItem mntmUeber = new ActionMenuItem(
-				i18n.getString("menu.help.about"), Action.ABOUT);
+				i18n.getString("menu.help.about"), Actions.ABOUT);
 		mnHilfe.add(mntmUeber);
 
 		return mnHilfe;
-	}
-
-	/**
-	 * Menu actions
-	 */
-	private enum Action {
-		NONE, NEW, OPEN, SAVE, EXIT, VIEW_DATA, VIEW_TRAINING, ABOUT
 	}
 
 	/**
@@ -132,9 +127,9 @@ public class MainMenu extends JMenuBar {
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
-		Action action;
+		Actions action;
 
-		public ActionMenuItem(final String text, final Action action) {
+		public ActionMenuItem(final String text, final Actions action) {
 			super(text);
 			this.action = action;
 			addActionListener(this);
