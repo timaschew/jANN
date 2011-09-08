@@ -2,6 +2,8 @@ package de.unikassel.ann.factory;
 
 import org.apache.commons.collections15.Factory;
 
+import de.unikassel.ann.gui.Edge;
+
 /**
  * Edge Factory used by GraphMouse (jung) in order to create edges in the graph
  * viewer.
@@ -9,15 +11,18 @@ import org.apache.commons.collections15.Factory;
  * @author Way
  * 
  */
-public class EdgeFactory implements Factory<Number> {
+public class EdgeFactory implements Factory<Edge> {
 
 	int index = 0;
 
 	@Override
-	public Number create() {
+	public Edge create() {
+		// Raise number of created edges
+		index++;
 
-		// TODO create edge model
+		Edge e = new Edge();
+		e.setIndex(index);
 
-		return index++;
+		return e;
 	}
 }

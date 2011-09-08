@@ -29,12 +29,12 @@ public class GraphLayoutViewer {
 	/*
 	 * private fields
 	 */
-	private DirectedGraph<Number, Number> graph;
-	private AbstractLayout<Number, Number> layout;
-	private VisualizationViewer<Number, Number> viewer;
+	private DirectedGraph<Vertex, Edge> graph;
+	private AbstractLayout<Vertex, Edge> layout;
+	private VisualizationViewer<Vertex, Edge> viewer;
 	private VertexFactory vertexFactory;
 	private EdgeFactory edgeFactory;
-	private EditingModalGraphMouse<Number, Number> graphMouse;
+	private EditingModalGraphMouse<Vertex, Edge> graphMouse;
 
 	/**
 	 * Constructor
@@ -42,12 +42,12 @@ public class GraphLayoutViewer {
 	 * @param parent
 	 */
 	public GraphLayoutViewer(Dimension dim, Container parent) {
-		graph = new DirectedSparseGraph<Number, Number>();
-		layout = new StaticLayout<Number, Number>(graph, dim);
+		graph = new DirectedSparseGraph<Vertex, Edge>();
+		layout = new StaticLayout<Vertex, Edge>(graph, dim);
 		// The Dimension is given by the DividerLocation of the mainSplitPane
 		// and the jungConsoleSplitPane minus the scrollbar size
 
-		viewer = new VisualizationViewer<Number, Number>(layout);
+		viewer = new VisualizationViewer<Vertex, Edge>(layout);
 		viewer.setBackground(Color.white);
 		viewer.addPreRenderPaintable(new VisualizationViewer.Paintable() {
 			@Override
@@ -62,20 +62,22 @@ public class GraphLayoutViewer {
 			}
 		});
 
+		//
+		// Vertex label and tooltip transformer
+		//
 		viewer.getRenderContext().setVertexLabelTransformer(
-				MapTransformer.<Number, String> getInstance(LazyMap
-						.<Number, String> decorate(
-								new HashMap<Number, String>(),
-								new ToStringLabeller<Number>())));
+				VertexInfo.getInstance());
 
+		// viewer.getRenderContext().getVertexLabelTransformer());
+		viewer.setVertexToolTipTransformer(VertexTooltip.getInstance());
+
+		//
+		// Edge label and tooltip transformer
+		//
 		viewer.getRenderContext().setEdgeLabelTransformer(
-				MapTransformer.<Number, String> getInstance(LazyMap
-						.<Number, String> decorate(
-								new HashMap<Number, String>(),
-								new ToStringLabeller<Number>())));
+				EdgeInfo.getInstance());
 
-		viewer.setVertexToolTipTransformer(viewer.getRenderContext()
-				.getVertexLabelTransformer());
+		viewer.setEdgeToolTipTransformer(EdgeTooltip.getInstance());
 
 		//
 		// Panel
@@ -97,7 +99,7 @@ public class GraphLayoutViewer {
 	}
 
 	private void initGraphMouse() {
-		graphMouse = new EditingModalGraphMouse<Number, Number>(
+		graphMouse = new EditingModalGraphMouse<Vertex, Edge>(
 				viewer.getRenderContext(), vertexFactory, edgeFactory);
 
 		viewer.setGraphMouse(graphMouse);
