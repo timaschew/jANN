@@ -37,6 +37,8 @@ import org.apache.commons.collections15.Factory;
 import org.apache.commons.collections15.functors.MapTransformer;
 import org.apache.commons.collections15.map.LazyMap;
 
+import de.unikassel.ann.factory.EdgeFactory;
+import de.unikassel.ann.factory.VertexFactory;
 import de.unikassel.ann.util.XMLResourceBundleControl;
 import edu.uci.ics.jung.algorithms.layout.AbstractLayout;
 import edu.uci.ics.jung.algorithms.layout.StaticLayout;
@@ -76,11 +78,9 @@ public class Main {
 	/*
 	 * private fields
 	 */
-	private DirectedGraph<Number, Number> graph;
-	private AbstractLayout<Number, Number> layout;
-	private VisualizationViewer<Number, Number> viewer;
 	private JFrame frame;
 	private JTextPane textPane;
+	private GraphLayoutViewer glv;
 
 	/**
 	 * Create the application.
@@ -95,7 +95,8 @@ public class Main {
 	 */
 	private void initialize() {
 
-		i18n = ResourceBundle.getBundle("langpack", new XMLResourceBundleControl());
+		i18n = ResourceBundle.getBundle("langpack",
+				new XMLResourceBundleControl());
 
 		//
 		// Frame
@@ -105,23 +106,10 @@ public class Main {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		//
-		// MenuBar
+		// Main Menu(Bar)
 		//
-		JMenuBar menuBar = new JMenuBar();
-
-		JMenu mnDatei = getDateiMenu();
-		menuBar.add(mnDatei);
-
-		JMenu mnBearbeiten = getBearbeitenMenu();
-		menuBar.add(mnBearbeiten);
-
-		JMenu mnAnsicht = getAnsichtMenu();
-		menuBar.add(mnAnsicht);
-
-		JMenu mnHilfe = getHilfeMenu();
-		menuBar.add(mnHilfe);
-
-		frame.setJMenuBar(menuBar);
+		JMenuBar mainMenu = new MainMenu(i18n);
+		frame.setJMenuBar(mainMenu);
 
 		//
 		// Panes
@@ -157,105 +145,10 @@ public class Main {
 		jungConsoleSplitPane.setBorder(BorderFactory.createEmptyBorder());
 
 		//
-		// (Simple) Graph
+		// Graph-Layout-Viewer
 		//
-		graph = new DirectedSparseGraph<Number, Number>();
-		layout = new StaticLayout<Number, Number>(graph, new Dimension(600 - 16, 400 - 16));
-		// The Dimension is given by the DividerLocation of the mainSplitPane and the jungConsoleSplitPane minus the scrollbar size
-
-		viewer = new VisualizationViewer<Number, Number>(layout);
-		viewer.setBackground(Color.white);
-		viewer.addPreRenderPaintable(new VisualizationViewer.Paintable() {
-			@Override
-			public void paint(final Graphics g) {
-				final int height = viewer.getHeight();
-				final int width = viewer.getWidth();
-			}
-
-			@Override
-			public boolean useTransform() {
-				return false;
-			}
-		});
-
-		viewer.getRenderContext().setVertexLabelTransformer(
-				MapTransformer.<Number, String> getInstance(LazyMap.<Number, String> decorate(new HashMap<Number, String>(),
-						new ToStringLabeller<Number>())));
-
-		viewer.getRenderContext().setEdgeLabelTransformer(
-				MapTransformer.<Number, String> getInstance(LazyMap.<Number, String> decorate(new HashMap<Number, String>(),
-						new ToStringLabeller<Number>())));
-
-		viewer.setVertexToolTipTransformer(viewer.getRenderContext().getVertexLabelTransformer());
-
-		Container content = jungPanel;
-		final GraphZoomScrollPane panel = new GraphZoomScrollPane(viewer);
-		content.add(panel);
-		Factory<Number> vertexFactory = new VertexFactory();
-		Factory<Number> edgeFactory = new EdgeFactory();
-
-		final EditingModalGraphMouse<Number, Number> graphMouse = new EditingModalGraphMouse<Number, Number>(viewer.getRenderContext(),
-				vertexFactory, edgeFactory);
-
-		viewer.setGraphMouse(graphMouse);
-		viewer.addKeyListener(graphMouse.getModeKeyListener());
-		viewer.addMouseWheelListener(new MouseWheelListener() {
-
-			@Override
-			public void mouseWheelMoved(final MouseWheelEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-
-		graphMouse.setMode(ModalGraphMouse.Mode.EDITING);
-		graphMouse.setZoomAtMouse(false);
-	}
-
-	private JMenu getDateiMenu() {
-		JMenu mnDatei = new JMenu(i18n.getString("menu.file"));
-
-		JMenuItem mntmNeu = new ActionMenuItem(i18n.getString("menu.file.new"), Action.NEW);
-		mnDatei.add(mntmNeu);
-
-		JMenuItem mntmOeffnen = new ActionMenuItem(i18n.getString("menu.file.open"), Action.OPEN);
-		mnDatei.add(mntmOeffnen);
-
-		JMenuItem mntmSpeichern = new ActionMenuItem(i18n.getString("menu.file.save"), Action.SAVE);
-		mnDatei.add(mntmSpeichern);
-
-		mnDatei.addSeparator();
-
-		JMenuItem mntmBeenden = new ActionMenuItem(i18n.getString("menu.file.exit"), Action.EXIT);
-		mnDatei.add(mntmBeenden);
-
-		return mnDatei;
-	}
-
-	private JMenu getBearbeitenMenu() {
-		JMenu mnBearbeiten = new JMenu(i18n.getString("menu.edit"));
-		return mnBearbeiten;
-	}
-
-	private JMenu getAnsichtMenu() {
-		JMenu mnAnsicht = new JMenu(i18n.getString("menu.view"));
-
-		JMenuItem mntmDatenvisualisierung = new ActionMenuItem(i18n.getString("menu.view.showTrainingData"), Action.VIEW_DATA);
-		mnAnsicht.add(mntmDatenvisualisierung);
-
-		JMenuItem mntmTrainingfehlerverlauf = new ActionMenuItem(i18n.getString("menu.view.showTrainingError"), Action.VIEW_TRAINING);
-		mnAnsicht.add(mntmTrainingfehlerverlauf);
-
-		return mnAnsicht;
-	}
-
-	private JMenu getHilfeMenu() {
-		JMenu mnHilfe = new JMenu(i18n.getString("menu.help"));
-
-		JMenuItem mntmUeber = new ActionMenuItem(i18n.getString("menu.help.about"), Action.ABOUT);
-		mnHilfe.add(mntmUeber);
-
-		return mnHilfe;
+		Dimension dim = new Dimension(600 - 16, 400 - 16);
+		glv = new GraphLayoutViewer(dim, jungPanel);
 	}
 
 	private void updateTextArea(final String text) {
@@ -269,7 +162,8 @@ public class Main {
 				Document doc = textPane.getDocument();
 				try {
 					StyledDocument style = textPane.getStyledDocument();
-					doc.insertString(doc.getLength(), text, style.getStyle(styleName));
+					doc.insertString(doc.getLength(), text,
+							style.getStyle(styleName));
 				} catch (BadLocationException e) {
 					throw new RuntimeException(e);
 				}
@@ -280,7 +174,8 @@ public class Main {
 
 	protected void addStylesToDocument(final StyledDocument doc) {
 		// Initialize some styles.
-		Style def = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
+		Style def = StyleContext.getDefaultStyleContext().getStyle(
+				StyleContext.DEFAULT_STYLE);
 
 		Style regular = doc.addStyle("regular", def);
 		StyleConstants.setFontFamily(def, "SansSerif");
@@ -316,7 +211,8 @@ public class Main {
 			}
 
 			@Override
-			public void write(final byte[] b, final int off, final int len) throws IOException {
+			public void write(final byte[] b, final int off, final int len)
+					throws IOException {
 				updateTextArea(new String(b, off, len));
 			}
 
@@ -333,7 +229,8 @@ public class Main {
 			}
 
 			@Override
-			public void write(final byte[] b, final int off, final int len) throws IOException {
+			public void write(final byte[] b, final int off, final int len)
+					throws IOException {
 				updateTextArea(new String(b, off, len), "error");
 			}
 
@@ -347,74 +244,4 @@ public class Main {
 		// System.setErr(new PrintStream(errorOut, true));
 	}
 
-	private enum Action {
-		NONE, NEW, OPEN, SAVE, EXIT, VIEW_DATA, VIEW_TRAINING, ABOUT
-	}
-
-	private class ActionMenuItem extends JMenuItem implements ActionListener {
-		Action action;
-
-		public ActionMenuItem(final String text) {
-			this(text, Action.NONE);
-		}
-
-		public ActionMenuItem(final String text, final Action action) {
-			super(text);
-			this.action = action;
-			addActionListener(this);
-		}
-
-		@Override
-		public void actionPerformed(final ActionEvent e) {
-			System.out.println(action);
-			switch (action) {
-			case NEW:
-				// TODO
-				break;
-			case OPEN:
-				// TODO
-				break;
-			case SAVE:
-				// TODO
-				break;
-			case VIEW_DATA:
-				// TODO
-				break;
-			case VIEW_TRAINING:
-				// TODO
-				break;
-			case ABOUT:
-				// TODO
-				break;
-			case EXIT:
-				System.exit(e.getID());
-				break;
-			case NONE:
-			default:
-				System.out.println("Unknown command: " + action);
-				break;
-			}
-		}
-
-	}
-
-	class VertexFactory implements Factory<Number> {
-
-		int i = 0;
-
-		@Override
-		public Number create() {
-			return i++;
-		}
-	}
-
-	class EdgeFactory implements Factory<Number> {
-
-		int i = 0;
-
-		@Override
-		public Number create() {
-			return i++;
-		}
-	}
 }
