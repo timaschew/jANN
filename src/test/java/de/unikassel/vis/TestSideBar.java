@@ -47,7 +47,7 @@ public class TestSideBar extends JFrame {
 		mainSplitPane.setRightComponent(sideBar);
 		GridBagLayout gbl_sideBar = new GridBagLayout();
 		gbl_sideBar.columnWidths = new int[]{348, 0};
-		gbl_sideBar.rowHeights = new int[]{367, 171, 117, 54, 0, 0};
+		gbl_sideBar.rowHeights = new int[]{417, 171, 117, 54, 0, 0};
 		gbl_sideBar.columnWeights = new double[]{1.0, Double.MIN_VALUE};
 		gbl_sideBar.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		sideBar.setLayout(gbl_sideBar);
