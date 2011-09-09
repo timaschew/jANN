@@ -1,4 +1,4 @@
-package de.unikassel.ann.gen;
+package de.unikassel.ann.util.gen;
 
 import org.apache.bcel.generic.*;
 import org.apache.bcel.*;

@@ -20,4 +20,10 @@
 		<nature>org.maven.ide.eclipse.maven2Nature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<variableList>
+		<variable>
+			<name>GNUPLOT</name>
+			<value>file:/C:/cygwin/bin/gnuplot.exe</value>
+		</variable>
+	</variableList>
 </projectDescription>

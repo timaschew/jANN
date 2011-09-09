@@ -30,7 +30,6 @@ import org.supercsv.prefs.CsvPreference;
 
 import de.unikassel.ann.algo.BackPropagation;
 import de.unikassel.ann.config.NetConfig;
-import de.unikassel.ann.gen.DynamicBeanCreator;
 import de.unikassel.ann.io.beans.SynapseBean;
 import de.unikassel.ann.io.beans.TopologyBean;
 import de.unikassel.ann.io.beans.TrainingBean;
@@ -41,6 +40,7 @@ import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.Network;
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.strategy.MaxLearnIterationsStrategy;
+import de.unikassel.ann.util.gen.DynamicBeanCreator;
 
 public class NetIO {
 	
