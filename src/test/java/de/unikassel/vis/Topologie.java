@@ -1,50 +1,50 @@
 package de.unikassel.vis;
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 
-import javax.swing.JFrame;
+import javax.accessibility.AccessibleContext;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import java.awt.CardLayout;
+
+import java.awt.Container;
+import java.awt.EventQueue;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.JTextField;
-import javax.swing.JCheckBox;
 import javax.swing.JRadioButton;
-import javax.swing.JToggleButton;
-import javax.swing.JSeparator;
-import java.awt.Color;
+import javax.swing.SpinnerNumberModel;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.JFormattedTextField;
-import javax.swing.JTextArea;
-import javax.swing.JButton;
-import javax.swing.JTree;
-import javax.swing.JScrollBar;
-import javax.swing.JList;
-import javax.swing.JTabbedPane;
-import java.awt.FlowLayout;
-import javax.swing.SpringLayout;
-import javax.swing.JLayeredPane;
-import javax.swing.JSplitPane;
-import javax.swing.BoxLayout;
-import javax.swing.border.TitledBorder;
-import javax.swing.UIManager;
-import java.awt.Component;
 import javax.swing.JSpinner;
+import javax.swing.border.TitledBorder;
+import javax.swing.JCheckBox;
+import javax.swing.JTextArea;
 
 
-public class Topologie extends JFrame {
+public class Topologie extends JPanel implements PropertyChangeListener{
 
-	private JPanel contentPane;
-	private Box topologyBox;
-	private JPanel topologiePanel;
-	private JLabel lblInputNeuronen;
-
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	private JSpinner inputNeuroSpinner;
+	private JSpinner outputNeuroSpinner;
+	private JSpinner hiddenLayerCountSpinner;
+	private JSpinner hiddenNeuronSpinner;
+	private JComboBox hiddenLayerDropDown;
+	
+	private SpinnerNumberModel hiddenLayerCountModel;
+	private SpinnerNumberModel inputNeuronCountModel;
+	private SpinnerNumberModel outputNeuronCountModel;
+	private SpinnerNumberModel[] hiddenNeuronCountModel;
+	
+	private JComboBox comboBoxHiddenMausModus;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -52,7 +52,9 @@ public class Topologie extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Topologie frame = new Topologie();
+					Topologie panel = new Topologie();
+					JFrame frame = new JFrame();
+					frame.setContentPane(panel);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -65,85 +67,206 @@ public class Topologie extends JFrame {
 	 * Create the frame.
 	 */
 	public Topologie() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 192, 211);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.X_AXIS));
+		setBorder(new TitledBorder(null, "Topologie", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		setSize(400, 240);
 		
-		JPanel panel = new JPanel();
-		contentPane.add(panel);
-		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		
-		topologyBox = Box.createVerticalBox();
-		contentPane.add(topologyBox);
-		topologyBox.setAlignmentX(Component.CENTER_ALIGNMENT);
-		topologyBox.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Topologie", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+		int maxHiddenLayer = 10;
+		//Model Hidden Layer Count for hiddenLayerCountSpinner
+		hiddenLayerCountModel = new SpinnerNumberModel(0, 0, maxHiddenLayer, 1); 
+		// CountModel for inputNeuroSpinner
+		inputNeuronCountModel = new SpinnerNumberModel(1, 1, 1000, 1);
+		//Countmodel for outputNeuroSpinner
+		outputNeuronCountModel = new SpinnerNumberModel(1, 1, 1000, 1);
+		//Countmodel-> count of Neurons in different/certain Layers
+		hiddenNeuronCountModel = new SpinnerNumberModel[maxHiddenLayer];
 		
-		topologiePanel = new JPanel();
-		topologyBox.add(topologiePanel);
-		
-		lblInputNeuronen = new JLabel("Input Neuronen");
-		
-		JSpinner inputNeuroSpinner = new JSpinner();
+		JLabel lblInputNeuronen = new JLabel("Input Neuronen");
+		inputNeuroSpinner = new JSpinner();
 		
 		JLabel lblOutputNeuronen = new JLabel("Output Neuronen");
-		
-		JSpinner outputNeuroSpinner = new JSpinner();
+		outputNeuroSpinner = new JSpinner();
 		
 		JLabel lblHiddenLayer = new JLabel("Hidden Layer");
-		
-		JSpinner hiddenLayerSpinner = new JSpinner();
+		hiddenLayerCountSpinner = new JSpinner();
+		hiddenLayerCountSpinner.setModel(hiddenLayerCountModel);
 		
 		JLabel lblHiddenNeuronen = new JLabel("Hidden Neuronen");
+		hiddenNeuronSpinner = new JSpinner();
 		
-		JSpinner hiddenNeuroSpinner = new JSpinner();
-		GroupLayout gl_topologiePanel = new GroupLayout(topologiePanel);
+		//is with the hiddenLayerCountSpinner associated
+		hiddenLayerDropDown = new JComboBox();
+		hiddenLayerDropDown.setEnabled(false);
+		
+		for (int i=0; i<maxHiddenLayer; i++) {
+			hiddenNeuronCountModel[i] = new SpinnerNumberModel(1, 1, 1000, 1);
+			hiddenNeuronSpinner = new JSpinner(hiddenNeuronCountModel[i]);
+			hiddenNeuronSpinner.setName("hidden_"+i);
+//			addPropertyChangeListener(hiddenNeuronSpinner);
+			
+		}
+		
+		
+		JPanel mausModusPanel = new JPanel();
+		mausModusPanel.setBorder(new TitledBorder(null, "Maus-Modus", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		
+		JCheckBox chckbxInputBias = new JCheckBox("Bias");
+		
+		GroupLayout gl_topologiePanel = new GroupLayout(this);
 		gl_topologiePanel.setHorizontalGroup(
 			gl_topologiePanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_topologiePanel.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(gl_topologiePanel.createParallelGroup(Alignment.LEADING, false)
-						.addGroup(gl_topologiePanel.createSequentialGroup()
-							.addComponent(lblInputNeuronen)
-							.addGap(18)
-							.addComponent(inputNeuroSpinner, GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE))
+					.addGroup(gl_topologiePanel.createParallelGroup(Alignment.LEADING)
+						.addComponent(mausModusPanel, GroupLayout.PREFERRED_SIZE, 346, GroupLayout.PREFERRED_SIZE)
 						.addGroup(gl_topologiePanel.createSequentialGroup()
 							.addGroup(gl_topologiePanel.createParallelGroup(Alignment.LEADING)
+								.addComponent(lblInputNeuronen)
 								.addComponent(lblOutputNeuronen)
-								.addComponent(lblHiddenLayer))
+								.addComponent(lblHiddenLayer)
+								.addComponent(lblHiddenNeuronen))
+							.addGap(78)
+							.addGroup(gl_topologiePanel.createParallelGroup(Alignment.LEADING, false)
+								.addComponent(outputNeuroSpinner, GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+								.addComponent(hiddenLayerCountSpinner, GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+								.addComponent(hiddenNeuronSpinner, GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+								.addComponent(inputNeuroSpinner, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE))
 							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addGroup(gl_topologiePanel.createParallelGroup(Alignment.LEADING)
-								.addComponent(hiddenLayerSpinner, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-								.addComponent(outputNeuroSpinner, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)))
-						.addGroup(gl_topologiePanel.createSequentialGroup()
-							.addComponent(lblHiddenNeuronen)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(hiddenNeuroSpinner, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap(275, Short.MAX_VALUE))
+								.addComponent(hiddenLayerDropDown, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
+								.addComponent(chckbxInputBias))))
+					.addContainerGap(32, Short.MAX_VALUE))
 		);
 		gl_topologiePanel.setVerticalGroup(
 			gl_topologiePanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_topologiePanel.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(gl_topologiePanel.createParallelGroup(Alignment.BASELINE)
+					.addGroup(gl_topologiePanel.createParallelGroup(Alignment.LEADING)
 						.addComponent(lblInputNeuronen)
-						.addComponent(inputNeuroSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_topologiePanel.createSequentialGroup()
+							.addGroup(gl_topologiePanel.createParallelGroup(Alignment.BASELINE)
+								.addComponent(inputNeuroSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(chckbxInputBias))
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addGroup(gl_topologiePanel.createParallelGroup(Alignment.BASELINE)
+								.addComponent(outputNeuroSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblOutputNeuronen))
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addGroup(gl_topologiePanel.createParallelGroup(Alignment.BASELINE)
+								.addComponent(hiddenLayerCountSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblHiddenLayer))
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addGroup(gl_topologiePanel.createParallelGroup(Alignment.BASELINE)
+								.addComponent(hiddenNeuronSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblHiddenNeuronen)
+								.addComponent(hiddenLayerDropDown, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addGroup(gl_topologiePanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblOutputNeuronen)
-						.addComponent(outputNeuroSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addGroup(gl_topologiePanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblHiddenLayer)
-						.addComponent(hiddenLayerSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addGroup(gl_topologiePanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblHiddenNeuronen)
-						.addComponent(hiddenNeuroSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(101, Short.MAX_VALUE))
+					.addComponent(mausModusPanel, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(22, Short.MAX_VALUE))
 		);
-		topologiePanel.setLayout(gl_topologiePanel);
+		
+		/**
+		 * internal MausModus-Panel Elements
+		 */
+		JRadioButton rdbtnInput = new JRadioButton("Input");
+		JRadioButton rdbtnOutput = new JRadioButton("Output");
+		JRadioButton rdbtnHidden = new JRadioButton("Hidden:");
+		comboBoxHiddenMausModus = new JComboBox();
+		comboBoxHiddenMausModus.setEnabled(false);
+		
+		
+		GroupLayout gl_mausModusPanel = new GroupLayout(mausModusPanel);
+		gl_mausModusPanel.setHorizontalGroup(
+			gl_mausModusPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_mausModusPanel.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(rdbtnInput)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(rdbtnOutput)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(rdbtnHidden)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(comboBoxHiddenMausModus, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(128, Short.MAX_VALUE))
+		);
+		gl_mausModusPanel.setVerticalGroup(
+			gl_mausModusPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_mausModusPanel.createSequentialGroup()
+					.addGroup(gl_mausModusPanel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(rdbtnInput)
+						.addComponent(rdbtnOutput)
+						.addComponent(rdbtnHidden)
+						.addComponent(comboBoxHiddenMausModus, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap(40, Short.MAX_VALUE))
+		);
+		mausModusPanel.setLayout(gl_mausModusPanel);
+		setLayout(gl_topologiePanel);
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		JComponent src = null;
+		Container spinner = null;
+		try {
+			src = (JComponent)evt.getSource();
+			spinner = src.getParent().getParent();
+		} catch (ClassCastException e) {
+			if (evt.getSource() instanceof AccessibleContext) {
+				if (evt.getPropertyName().equals("AccessibleValue")) {
+					System.out.println(evt.getPropertyName()+": "+evt.getOldValue()+" -> "+evt.getNewValue());
+				}
+			}
+			return;
+		} catch (NullPointerException e) {
+			// there are no 2 parents of src
+			// create an empty spinner to don't let check null in the next lines
+			spinner = new Container();
+		}
+		
+		System.out.println(src);
+		// parnet of a  JFormattedTextField is a NumberEditor and its parent is a JSpinner
+		if (spinner == hiddenLayerCountSpinner) {
+			int hiddenLayerCount = hiddenLayerCountModel.getNumber().intValue();
+			if (hiddenLayerCount == 0) {
+				hiddenLayerDropDown.setEnabled(false);
+				hiddenNeuronSpinner.setEnabled(false);
+				comboBoxHiddenMausModus.setEnabled(false);
+//				hiddenBiasCB[0].setEnabled(false);
+			} else {
+				hiddenLayerDropDown.setEnabled(true);
+				comboBoxHiddenMausModus.setEnabled(true);
+				hiddenNeuronSpinner.setEnabled(true);
+//				hiddenCheckBoxPanel.removeAll();
+//				hiddenBiasCB[0].setEnabled(true);
+				
+				Integer[] comboBoxModel = new Integer[hiddenLayerCount];
+				for (Integer i=1; i<= hiddenLayerCount; i++) {
+					comboBoxModel[i-1] = i;
+				}
+				// set index to old position and check if the old index stil exists
+				int oldHiddenIndex = hiddenLayerDropDown.getSelectedIndex();
+				hiddenLayerDropDown.setModel(new DefaultComboBoxModel(comboBoxModel));
+				if (oldHiddenIndex+1 > hiddenLayerCount) {
+					// decrement index, because the selected layer was removed
+					oldHiddenIndex--;
+				} else if (oldHiddenIndex == -1) {
+					oldHiddenIndex++;
+				}
+				hiddenLayerDropDown.setSelectedIndex(oldHiddenIndex);
+				
+				int oldMouseIndex = comboBoxHiddenMausModus.getSelectedIndex();
+				comboBoxHiddenMausModus.setModel(new DefaultComboBoxModel(comboBoxModel));
+				if (oldMouseIndex+1 > hiddenLayerCount) {
+					// decrement index, because the selected layer was removed
+					oldMouseIndex--;
+				} else if (oldMouseIndex == -1) {
+					oldMouseIndex++;
+				}
+				comboBoxHiddenMausModus.setSelectedIndex(oldMouseIndex);
+			}
+		} else if (spinner.getName().startsWith("hidden")) {
+			String layer = spinner.getName().split("_")[0];
+			System.out.println("hidden layer "+layer+" : "+evt.getNewValue());
+		} 
 	}
 }
