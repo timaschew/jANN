@@ -6,11 +6,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.util.HashMap;
-
-import org.apache.commons.collections15.functors.MapTransformer;
-import org.apache.commons.collections15.map.LazyMap;
-
 import de.unikassel.ann.factory.EdgeFactory;
 import de.unikassel.ann.factory.VertexFactory;
 
@@ -22,7 +17,7 @@ import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.EditingModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
-import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
+import edu.uci.ics.jung.visualization.decorators.EdgeShape;
 
 public class GraphLayoutViewer {
 
@@ -67,8 +62,6 @@ public class GraphLayoutViewer {
 		//
 		viewer.getRenderContext().setVertexLabelTransformer(
 				VertexInfo.getInstance());
-
-		// viewer.getRenderContext().getVertexLabelTransformer());
 		viewer.setVertexToolTipTransformer(VertexTooltip.getInstance());
 
 		//
@@ -76,8 +69,15 @@ public class GraphLayoutViewer {
 		//
 		viewer.getRenderContext().setEdgeLabelTransformer(
 				EdgeInfo.getInstance());
-
+		viewer.getRenderContext().setEdgeShapeTransformer(
+				new EdgeShape.Line<Vertex, Edge>());
 		viewer.setEdgeToolTipTransformer(EdgeTooltip.getInstance());
+
+		//
+		// Edge weight stroke
+		//
+		EdgeWeightStrokeFunction<Edge> ewcs = new EdgeWeightStrokeFunction<Edge>();
+		viewer.getRenderContext().setEdgeStrokeTransformer(ewcs);
 
 		//
 		// Panel
