@@ -149,6 +149,9 @@ public class Main {
 		//
 		Dimension dim = new Dimension(600 - 16, 400 - 16);
 		glv = new GraphLayoutViewer(dim, jungPanel);
+		glv.setFrame(frame);
+		glv.setI18n(i18n);
+		glv.init();
 	}
 
 	private void updateTextArea(final String text) {

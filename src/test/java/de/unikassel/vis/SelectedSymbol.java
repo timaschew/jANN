@@ -55,40 +55,40 @@ public class SelectedSymbol extends JPanel {
 		setBorder(new TitledBorder(null, "Ausgew\u00E4hltes Symbol", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 //		contentPane.add(SelectedSymbolPanel, BorderLayout.CENTER);
 		
-		JLabel lblAusgewhlt = new JLabel("Ausgew\u00E4hlt");
+		JLabel lblSelected = new JLabel("Ausgew\u00E4hlt");
 		
-		JLabel lblSynapsengewicht = new JLabel("Synapsengewicht");
+		JLabel lblSynapseWeight = new JLabel("Synapsengewicht");
 		
-		JLabel lblNeuroneninput = new JLabel("Neuroneninput");
+		JLabel lblNeuroInput = new JLabel("Neuroneninput");
 		
-		JLabel lblAktivierungsfunktion = new JLabel("Aktivierungsfunktion");
+		JLabel lblActivationFunction = new JLabel("Aktivierungsfunktion");
 		
 		fieldAusgewaehlt = new JTextField();
 		fieldAusgewaehlt.setEditable(false);
 		fieldAusgewaehlt.setColumns(10);
 		
-		JComboBox aktivFunktioncomboBox = new JComboBox();
-		aktivFunktioncomboBox.setModel(new DefaultComboBoxModel(new String[] {"Sigmoid", "Test"}));
+		JComboBox activatedFunktioncomboBox = new JComboBox();
+		activatedFunktioncomboBox.setModel(new DefaultComboBoxModel(new String[] {"Sigmoid", "Test"}));
 		
-		JSpinner neuroInputBeiAuswahlSpinner = new JSpinner();
-		neuroInputBeiAuswahlSpinner.setModel(new SpinnerNumberModel(new Double(0), null, null, new Double(1)));
+		JSpinner neuroInputBySelectSpinner = new JSpinner();
+		neuroInputBySelectSpinner.setModel(new SpinnerNumberModel(new Double(0), null, null, new Double(1)));
 		
-		JSpinner spinner = new JSpinner();
+		JSpinner spinnerSynapsWeight = new JSpinner();
 		GroupLayout gl_SelectedSymbolPanel = new GroupLayout(this);
 		gl_SelectedSymbolPanel.setHorizontalGroup(
 			gl_SelectedSymbolPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_SelectedSymbolPanel.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_SelectedSymbolPanel.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblAktivierungsfunktion)
-						.addComponent(lblNeuroneninput)
-						.addComponent(lblAusgewhlt)
-						.addComponent(lblSynapsengewicht))
+						.addComponent(lblActivationFunction)
+						.addComponent(lblNeuroInput)
+						.addComponent(lblSelected)
+						.addComponent(lblSynapseWeight))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_SelectedSymbolPanel.createParallelGroup(Alignment.LEADING, false)
-						.addComponent(aktivFunktioncomboBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(neuroInputBeiAuswahlSpinner)
-						.addComponent(spinner)
+						.addComponent(activatedFunktioncomboBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(neuroInputBySelectSpinner)
+						.addComponent(spinnerSynapsWeight)
 						.addComponent(fieldAusgewaehlt))
 					.addContainerGap(187, Short.MAX_VALUE))
 		);
@@ -97,20 +97,20 @@ public class SelectedSymbol extends JPanel {
 				.addGroup(gl_SelectedSymbolPanel.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_SelectedSymbolPanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblAusgewhlt)
+						.addComponent(lblSelected)
 						.addComponent(fieldAusgewaehlt, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_SelectedSymbolPanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblSynapsengewicht)
-						.addComponent(spinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(lblSynapseWeight)
+						.addComponent(spinnerSynapsWeight, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_SelectedSymbolPanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblNeuroneninput)
-						.addComponent(neuroInputBeiAuswahlSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(lblNeuroInput)
+						.addComponent(neuroInputBySelectSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_SelectedSymbolPanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblAktivierungsfunktion)
-						.addComponent(aktivFunktioncomboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(lblActivationFunction)
+						.addComponent(activatedFunktioncomboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap(135, Short.MAX_VALUE))
 		);
 		setLayout(gl_SelectedSymbolPanel);

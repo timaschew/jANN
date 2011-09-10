@@ -1,5 +1,6 @@
 package de.unikassel.ann.gui;
 
+import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.Synapse;
 
 public class Edge {
@@ -14,11 +15,14 @@ public class Edge {
 	 * Constructor
 	 */
 	public Edge() {
-		// TODO create model (which activation function)
-		// neuron = new Synapse("", false);
-
-		// TODO get selected layer to set it
-		// neuron.setLayer(layer);
+		// Create edge (synapse) between two vertexes (neurons)
+		// TODO get from and to neuron
+		Neuron from = new Neuron("SigmoidFunction", false);
+		Neuron to = new Neuron("SigmoidFunction", false);
+		model = new Synapse(from, to);
+		
+		// TODO remove later (it's just for testing purpose)
+		model.setWeight(new Float(Math.random()));
 	}
 
 	public void setIndex(int index) {

@@ -81,6 +81,7 @@ public class MainMenu extends JMenuBar {
 	 */
 	private JMenu getBearbeitenMenu() {
 		JMenu mnBearbeiten = new JMenu(i18n.getString("menu.edit"));
+
 		return mnBearbeiten;
 	}
 

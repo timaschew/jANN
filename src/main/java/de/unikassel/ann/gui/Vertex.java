@@ -1,5 +1,6 @@
 package de.unikassel.ann.gui;
 
+import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.Neuron;
 
 public class Vertex {
@@ -15,10 +16,12 @@ public class Vertex {
 	 */
 	public Vertex() {
 		// TODO create model (which activation function)
-		// neuron = new Neuron("", false);
+		model = new Neuron("SigmoidFunction", false);
 
 		// TODO get selected layer to set it
-		// neuron.setLayer(layer);
+		Layer layer = new Layer();
+		layer.setIndex(1);
+		model.setLayer(layer);
 	}
 
 	public void setIndex(int index) {
