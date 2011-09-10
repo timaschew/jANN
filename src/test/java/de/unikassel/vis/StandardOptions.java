@@ -19,72 +19,72 @@ public class StandardOptions extends JPanel {
 	public StandardOptions() {
 		setBorder(new TitledBorder(null, "Standard-Einstellung", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		
-		JLabel lblAktivierungsfunktion = new JLabel("Aktivierungsfunktion");
+		JLabel lblActivationFunctionByOptions = new JLabel("Aktivierungsfunktion");
 		
-		JLabel lblInitialgewicht = new JLabel("Initialgewicht");
+		JLabel lblInitialWeight = new JLabel("Initialgewicht");
 		
-		JRadioButton rdbtnZufllig = new JRadioButton("Zufällig");
+		JRadioButton rdbtnRandom = new JRadioButton("Zufällig");
 		
-		JRadioButton rdbtnExakt = new JRadioButton("Exakt");
+		JRadioButton rdbtnExact = new JRadioButton("Exakt");
 		
-		JSpinner spinnerRandom = new JSpinner();
+		JSpinner spinnerRandom1 = new JSpinner();
 		
 		JSpinner spinnerRandom2 = new JSpinner();
 		
 		JSpinner spinnerExact = new JSpinner();
 		
-		JComboBox comboBoxAktivFunktion = new JComboBox();
-		comboBoxAktivFunktion.setModel(new DefaultComboBoxModel(new String[] {"Sigmoid", "Test"}));
-		GroupLayout groupLayout = new GroupLayout(this);
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
+		JComboBox comboBoxActivFunktionByOptions = new JComboBox();
+		comboBoxActivFunktionByOptions.setModel(new DefaultComboBoxModel(new String[] {"Sigmoid", "Test"}));
+		GroupLayout groupLayout2 = new GroupLayout(this);
+		groupLayout2.setHorizontalGroup(
+			groupLayout2.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout2.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(lblAktivierungsfunktion)
+					.addGroup(groupLayout2.createParallelGroup(Alignment.LEADING, false)
+						.addGroup(groupLayout2.createSequentialGroup()
+							.addComponent(lblActivationFunctionByOptions)
 							.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-							.addComponent(comboBoxAktivFunktion, GroupLayout.PREFERRED_SIZE, 87, GroupLayout.PREFERRED_SIZE))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(lblInitialgewicht)
+							.addComponent(comboBoxActivFunktionByOptions, GroupLayout.PREFERRED_SIZE, 87, GroupLayout.PREFERRED_SIZE))
+						.addGroup(groupLayout2.createSequentialGroup()
+							.addComponent(lblInitialWeight)
 							.addGap(18)
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-								.addGroup(groupLayout.createSequentialGroup()
-									.addComponent(rdbtnZufllig)
+							.addGroup(groupLayout2.createParallelGroup(Alignment.LEADING, false)
+								.addGroup(groupLayout2.createSequentialGroup()
+									.addComponent(rdbtnRandom)
 									.addPreferredGap(ComponentPlacement.RELATED)
-									.addComponent(spinnerRandom, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE))
-								.addGroup(groupLayout.createSequentialGroup()
-									.addComponent(rdbtnExakt)
+									.addComponent(spinnerRandom1, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE))
+								.addGroup(groupLayout2.createSequentialGroup()
+									.addComponent(rdbtnExact)
 									.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 									.addComponent(spinnerExact, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)))
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(spinnerRandom2, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)))
 					.addContainerGap(193, Short.MAX_VALUE))
 		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
+		groupLayout2.setVerticalGroup(
+			groupLayout2.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout2.createSequentialGroup()
+					.addGroup(groupLayout2.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout2.createSequentialGroup()
 							.addGap(7)
-							.addComponent(comboBoxAktivFunktion, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(comboBoxActivFunktionByOptions, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(rdbtnZufllig)
-								.addComponent(spinnerRandom, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addGroup(groupLayout2.createParallelGroup(Alignment.BASELINE)
+								.addComponent(rdbtnRandom)
+								.addComponent(spinnerRandom1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 								.addComponent(spinnerRandom2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(rdbtnExakt)
+							.addGroup(groupLayout2.createParallelGroup(Alignment.BASELINE)
+								.addComponent(rdbtnExact)
 								.addComponent(spinnerExact, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-						.addGroup(groupLayout.createSequentialGroup()
+						.addGroup(groupLayout2.createSequentialGroup()
 							.addContainerGap()
-							.addComponent(lblAktivierungsfunktion)
+							.addComponent(lblActivationFunctionByOptions)
 							.addGap(18)
-							.addComponent(lblInitialgewicht)))
+							.addComponent(lblInitialWeight)))
 					.addContainerGap(185, Short.MAX_VALUE))
 		);
-		setLayout(groupLayout);
+		setLayout(groupLayout2);
 
 	}
 
