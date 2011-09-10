@@ -37,7 +37,7 @@ import edu.uci.ics.jung.visualization.util.ArrowFactory;
 public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements
 		MouseListener, MouseMotionListener {
 
-	protected V startVertex;
+	protected Vertex startVertex;
 	protected Point2D down;
 
 	protected CubicCurve2D rawEdge = new CubicCurve2D.Float();
@@ -47,10 +47,11 @@ public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements
 	protected VisualizationServer.Paintable edgePaintable;
 	protected VisualizationServer.Paintable arrowPaintable;
 	protected EdgeType edgeIsDirected;
-	protected Factory<V> vertexFactory;
-	protected Factory<E> edgeFactory;
+	protected Factory<Vertex> vertexFactory;
+	protected Factory<Edge> edgeFactory;
 
-	public GraphMousePlugin(Factory<V> vertexFactory, Factory<E> edgeFactory) {
+	public GraphMousePlugin(Factory<Vertex> vertexFactory,
+			Factory<Edge> edgeFactory) {
 		this(MouseEvent.BUTTON1_MASK, vertexFactory, edgeFactory);
 	}
 
@@ -59,8 +60,8 @@ public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements
 	 * 
 	 * @param modifiers
 	 */
-	public GraphMousePlugin(int modifiers, Factory<V> vertexFactory,
-			Factory<E> edgeFactory) {
+	public GraphMousePlugin(int modifiers, Factory<Vertex> vertexFactory,
+			Factory<Edge> edgeFactory) {
 		super(modifiers);
 		this.vertexFactory = vertexFactory;
 		this.edgeFactory = edgeFactory;
@@ -88,12 +89,14 @@ public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements
 	@SuppressWarnings("unchecked")
 	public void mousePressed(MouseEvent e) {
 		if (checkModifiers(e)) {
-			final VisualizationViewer<V, E> vv = (VisualizationViewer<V, E>) e
+			final VisualizationViewer<Vertex, Edge> vv = (VisualizationViewer<Vertex, Edge>) e
 					.getSource();
 			final Point2D p = e.getPoint();
-			GraphElementAccessor<V, E> pickSupport = vv.getPickSupport();
+			GraphElementAccessor<Vertex, Edge> pickSupport = vv
+					.getPickSupport();
 			if (pickSupport != null) {
-				Graph<V, E> graph = vv.getModel().getGraphLayout().getGraph();
+				Graph<Vertex, Edge> graph = vv.getModel().getGraphLayout()
+						.getGraph();
 				// set default edge type
 				if (graph instanceof DirectedGraph) {
 					edgeIsDirected = EdgeType.DIRECTED;
@@ -101,7 +104,7 @@ public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements
 					edgeIsDirected = EdgeType.UNDIRECTED;
 				}
 
-				final V vertex = pickSupport.getVertex(vv.getModel()
+				final Vertex vertex = pickSupport.getVertex(vv.getModel()
 						.getGraphLayout(), p.getX(), p.getY());
 				if (vertex != null) { // get ready to make an edge
 					startVertex = vertex;
@@ -118,8 +121,9 @@ public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements
 					}
 				} else { // make a new vertex
 
-					V newVertex = vertexFactory.create();
-					Layout<V, E> layout = vv.getModel().getGraphLayout();
+					Vertex newVertex = vertexFactory.create();
+					Layout<Vertex, Edge> layout = vv.getModel()
+							.getGraphLayout();
 					graph.addVertex(newVertex);
 					layout.setLocation(newVertex,
 							vv.getRenderContext().getMultiLayerTransformer()
@@ -139,18 +143,21 @@ public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements
 	@SuppressWarnings("unchecked")
 	public void mouseReleased(MouseEvent e) {
 		if (checkModifiers(e)) {
-			final VisualizationViewer<V, E> vv = (VisualizationViewer<V, E>) e
+			final VisualizationViewer<Vertex, Edge> vv = (VisualizationViewer<Vertex, Edge>) e
 					.getSource();
 			final Point2D p = e.getPoint();
-			Layout<V, E> layout = vv.getModel().getGraphLayout();
-			GraphElementAccessor<V, E> pickSupport = vv.getPickSupport();
+			Layout<Vertex, Edge> layout = vv.getModel().getGraphLayout();
+			GraphElementAccessor<Vertex, Edge> pickSupport = vv
+					.getPickSupport();
 			if (pickSupport != null) {
-				final V vertex = pickSupport.getVertex(layout, p.getX(),
+				final Vertex vertex = pickSupport.getVertex(layout, p.getX(),
 						p.getY());
 				if (vertex != null && startVertex != null) {
-					Graph<V, E> graph = vv.getGraphLayout().getGraph();
-					graph.addEdge(edgeFactory.create(), startVertex, vertex,
-							edgeIsDirected);
+					Graph<Vertex, Edge> graph = vv.getGraphLayout().getGraph();
+					// Create edge with its synapse and the both vertexes
+					Edge edge = edgeFactory.create();
+					edge.createModel(startVertex.getModel(), vertex.getModel());
+					graph.addEdge(edge, startVertex, vertex, edgeIsDirected);
 					vv.repaint();
 				}
 			}
@@ -175,7 +182,7 @@ public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements
 					transformArrowShape(down, e.getPoint());
 				}
 			}
-			VisualizationViewer<V, E> vv = (VisualizationViewer<V, E>) e
+			VisualizationViewer<Vertex, Edge> vv = (VisualizationViewer<Vertex, Edge>) e
 					.getSource();
 			vv.repaint();
 		}

@@ -38,21 +38,21 @@ import edu.uci.ics.jung.visualization.control.TranslatingGraphMousePlugin;
 public class GraphMouse<V, E> extends AbstractModalGraphMouse implements
 		ModalGraphMouse, ItemSelectable {
 
-	protected Factory<V> vertexFactory;
-	protected Factory<E> edgeFactory;
-	protected EditingGraphMousePlugin<V, E> editingPlugin;
-	protected LabelEditingGraphMousePlugin<V, E> labelEditingPlugin;
-	protected EditingPopupGraphMousePlugin<V, E> popupEditingPlugin;
-	protected AnnotatingGraphMousePlugin<V, E> annotatingPlugin;
+	protected Factory<Vertex> vertexFactory;
+	protected Factory<Edge> edgeFactory;
+	protected GraphMousePlugin<Vertex, Edge> editingPlugin;
+	protected LabelEditingGraphMousePlugin<Vertex, Edge> labelEditingPlugin;
+	protected EditingPopupGraphMousePlugin<Vertex, Edge> popupEditingPlugin;
+	protected AnnotatingGraphMousePlugin<Vertex, Edge> annotatingPlugin;
 	protected MultiLayerTransformer basicTransformer;
-	protected RenderContext<V, E> rc;
+	protected RenderContext<Vertex, Edge> rc;
 
 	/**
 	 * create an instance with default values
 	 * 
 	 */
-	public GraphMouse(RenderContext<V, E> rc, Factory<V> vertexFactory,
-			Factory<E> edgeFactory) {
+	public GraphMouse(RenderContext<Vertex, Edge> rc,
+			Factory<Vertex> vertexFactory, Factory<Edge> edgeFactory) {
 		this(rc, vertexFactory, edgeFactory, 1.1f, 1 / 1.1f);
 	}
 
@@ -64,8 +64,9 @@ public class GraphMouse<V, E> extends AbstractModalGraphMouse implements
 	 * @param out
 	 *            override value for scale out
 	 */
-	public GraphMouse(RenderContext<V, E> rc, Factory<V> vertexFactory,
-			Factory<E> edgeFactory, float in, float out) {
+	public GraphMouse(RenderContext<Vertex, Edge> rc,
+			Factory<Vertex> vertexFactory, Factory<Edge> edgeFactory, float in,
+			float out) {
 		super(in, out);
 		this.vertexFactory = vertexFactory;
 		this.edgeFactory = edgeFactory;
@@ -81,19 +82,19 @@ public class GraphMouse<V, E> extends AbstractModalGraphMouse implements
 	 */
 	@Override
 	protected void loadPlugins() {
-		pickingPlugin = new PickingGraphMousePlugin<V, E>();
-		animatedPickingPlugin = new AnimatedPickingGraphMousePlugin<V, E>();
+		pickingPlugin = new PickingGraphMousePlugin<Vertex, Edge>();
+		animatedPickingPlugin = new AnimatedPickingGraphMousePlugin<Vertex, Edge>();
 		translatingPlugin = new TranslatingGraphMousePlugin(
 				InputEvent.BUTTON1_MASK);
 		scalingPlugin = new ScalingGraphMousePlugin(
 				new CrossoverScalingControl(), 0, in, out);
 		rotatingPlugin = new RotatingGraphMousePlugin();
 		shearingPlugin = new ShearingGraphMousePlugin();
-		editingPlugin = new EditingGraphMousePlugin<V, E>(vertexFactory,
+		editingPlugin = new GraphMousePlugin<Vertex, Edge>(vertexFactory,
 				edgeFactory);
-		labelEditingPlugin = new LabelEditingGraphMousePlugin<V, E>();
-		annotatingPlugin = new AnnotatingGraphMousePlugin<V, E>(rc);
-		popupEditingPlugin = new EditingPopupGraphMousePlugin<V, E>(
+		labelEditingPlugin = new LabelEditingGraphMousePlugin<Vertex, Edge>();
+		annotatingPlugin = new AnnotatingGraphMousePlugin<Vertex, Edge>(rc);
+		popupEditingPlugin = new EditingPopupGraphMousePlugin<Vertex, Edge>(
 				vertexFactory, edgeFactory);
 		add(scalingPlugin);
 		setMode(Mode.EDITING);
@@ -306,28 +307,28 @@ public class GraphMouse<V, E> extends AbstractModalGraphMouse implements
 	/**
 	 * @return the annotatingPlugin
 	 */
-	public AnnotatingGraphMousePlugin<V, E> getAnnotatingPlugin() {
+	public AnnotatingGraphMousePlugin<Vertex, Edge> getAnnotatingPlugin() {
 		return annotatingPlugin;
 	}
 
 	/**
 	 * @return the editingPlugin
 	 */
-	public EditingGraphMousePlugin<V, E> getEditingPlugin() {
+	public GraphMousePlugin<Vertex, Edge> getEditingPlugin() {
 		return editingPlugin;
 	}
 
 	/**
 	 * @return the labelEditingPlugin
 	 */
-	public LabelEditingGraphMousePlugin<V, E> getLabelEditingPlugin() {
+	public LabelEditingGraphMousePlugin<Vertex, Edge> getLabelEditingPlugin() {
 		return labelEditingPlugin;
 	}
 
 	/**
 	 * @return the popupEditingPlugin
 	 */
-	public EditingPopupGraphMousePlugin<V, E> getPopupEditingPlugin() {
+	public EditingPopupGraphMousePlugin<Vertex, Edge> getPopupEditingPlugin() {
 		return popupEditingPlugin;
 	}
 }

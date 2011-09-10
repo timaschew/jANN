@@ -15,14 +15,6 @@ public class Edge {
 	 * Constructor
 	 */
 	public Edge() {
-		// Create edge (synapse) between two vertexes (neurons)
-		// TODO get from and to neuron
-		Neuron from = new Neuron("SigmoidFunction", false);
-		Neuron to = new Neuron("SigmoidFunction", false);
-		model = new Synapse(from, to);
-		
-		// TODO remove later (it's just for testing purpose)
-		model.setWeight(new Float(Math.random()));
 	}
 
 	public void setIndex(int index) {
@@ -39,5 +31,25 @@ public class Edge {
 
 	public Synapse getModel() {
 		return model;
+	}
+
+	/**
+	 * Create edge (synapse) between two vertexes (neurons)
+	 * 
+	 * @param Neuron
+	 * @param Neuron
+	 */
+	public void createModel(Neuron from, Neuron to) {
+		model = new Synapse(from, to);
+
+		// TODO remove later (it's just for testing purpose)
+		updateWeight(new Double(Math.random()));
+	}
+
+	public void updateWeight(Double weight) {
+		if (model == null) {
+			return;
+		}
+		model.setWeight(weight);
 	}
 }
