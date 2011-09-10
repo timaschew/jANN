@@ -1,4 +1,4 @@
-package de.unikassel.ann.gui;
+package de.unikassel.ann.gui.graph;
 
 import java.text.DecimalFormat;
 

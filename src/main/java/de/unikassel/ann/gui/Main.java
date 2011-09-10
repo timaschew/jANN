@@ -39,6 +39,7 @@ import org.apache.commons.collections15.map.LazyMap;
 
 import de.unikassel.ann.factory.EdgeFactory;
 import de.unikassel.ann.factory.VertexFactory;
+import de.unikassel.ann.gui.graph.GraphLayoutViewer;
 import de.unikassel.ann.util.XMLResourceBundleControl;
 import edu.uci.ics.jung.algorithms.layout.AbstractLayout;
 import edu.uci.ics.jung.algorithms.layout.StaticLayout;

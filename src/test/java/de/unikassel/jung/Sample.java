@@ -10,9 +10,9 @@ import edu.uci.ics.jung.samples.WorldMapGraphDemo;
 
 public class Sample {
 	public static void main (String args[]) throws IOException {
-//		PluggableRendererDemo.main(null);
+		PluggableRendererDemo.main(null);
 //		UnicodeLabelDemo.main(null);
 //		GraphEditorDemo.main(null);
-		WorldMapGraphDemo.main(null);
+//		WorldMapGraphDemo.main(null);
 	}
 }

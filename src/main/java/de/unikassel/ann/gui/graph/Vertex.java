@@ -1,4 +1,4 @@
-package de.unikassel.ann.gui;
+package de.unikassel.ann.gui.graph;
 
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.Neuron;
@@ -38,6 +38,11 @@ public class Vertex {
 
 	public Neuron getModel() {
 		return model;
+	}
+
+	@Override
+	public String toString() {
+		return "Vertex [index=" + index + "]";
 	}
 
 }

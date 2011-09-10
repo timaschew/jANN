@@ -2,7 +2,7 @@ package de.unikassel.ann.factory;
 
 import org.apache.commons.collections15.Factory;
 
-import de.unikassel.ann.gui.Vertex;
+import de.unikassel.ann.gui.graph.Vertex;
 
 /**
  * Vertex Factory used by GraphMouse (jung) in order to create vertexes in the

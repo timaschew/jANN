@@ -1,4 +1,4 @@
-package de.unikassel.ann.gui;
+package de.unikassel.ann.gui.graph;
 
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.Synapse;

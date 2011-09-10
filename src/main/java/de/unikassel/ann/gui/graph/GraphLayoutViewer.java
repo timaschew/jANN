@@ -1,4 +1,4 @@
-package de.unikassel.ann.gui;
+package de.unikassel.ann.gui.graph;
 
 import java.awt.Color;
 import java.awt.Container;
@@ -14,6 +14,7 @@ import javax.swing.JMenuBar;
 
 import de.unikassel.ann.factory.EdgeFactory;
 import de.unikassel.ann.factory.VertexFactory;
+import de.unikassel.ann.gui.Main;
 
 import edu.uci.ics.jung.algorithms.layout.AbstractLayout;
 import edu.uci.ics.jung.algorithms.layout.StaticLayout;
@@ -21,7 +22,6 @@ import edu.uci.ics.jung.graph.DirectedGraph;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
-import edu.uci.ics.jung.visualization.control.EditingModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 import edu.uci.ics.jung.visualization.decorators.EdgeShape;
 
@@ -35,10 +35,9 @@ public class GraphLayoutViewer {
 	protected VisualizationViewer<Vertex, Edge> viewer;
 	protected VertexFactory vertexFactory;
 	protected EdgeFactory edgeFactory;
-	protected EditingModalGraphMouse<Vertex, Edge> graphMouse;
+	protected GraphMouse<Vertex, Edge> graphMouse;
 
 	private JFrame frame;
-	private Main main;
 	private ResourceBundle i18n;
 
 	/**
@@ -121,7 +120,7 @@ public class GraphLayoutViewer {
 
 	private void initGraphMouse() {
 		// Create Graph Mouse (set in and out parameter to '1f' to disable zoom)
-		graphMouse = new EditingModalGraphMouse<Vertex, Edge>(
+		graphMouse = new GraphMouse<Vertex, Edge>(
 				viewer.getRenderContext(), vertexFactory, edgeFactory, 1f, 1f);
 
 		viewer.setGraphMouse(graphMouse);
