@@ -12,6 +12,6 @@ package de.unikassel.ann.controller;
  * 
  */
 public enum Actions {
-	TEST, NONE, NEW, OPEN, SAVE, EXIT, VIEW_DATA, VIEW_TRAINING, ABOUT;
+	TEST_UPDATEVIEW, TEST_UPDATEMODEL, NONE, NEW, OPEN, SAVE, EXIT, VIEW_DATA, VIEW_TRAINING, ABOUT;
 
 }

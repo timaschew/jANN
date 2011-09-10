@@ -7,21 +7,21 @@
  */
 package de.unikassel.ann.controller;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.util.Vector;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
-import javax.swing.JSpinner;
-import javax.swing.JSpinner.NumberEditor;
+import javax.swing.JLabel;
+import javax.swing.SpinnerModel;
+
+import de.unikassel.ann.controller.ActionControllerTest.MyModel;
 
 /**
  * @author anton
  * 
  */
-public class ActionController implements ActionListener, PropertyChangeListener {
+public class ActionController {
 
 	private static ActionController instance;
 
@@ -32,67 +32,40 @@ public class ActionController implements ActionListener, PropertyChangeListener 
 		return instance;
 	}
 
-	/**
-	 * Adds this listener for the specific property to the spinner
-	 * 
-	 * @param property
-	 * @param spinner
-	 */
-	public void listenOnSpinnerPropertyChanges(final String property, final JSpinner spinner) {
-		if (spinner.getEditor() instanceof JSpinner.DefaultEditor) {
-			JSpinner.DefaultEditor editor = (JSpinner.DefaultEditor) spinner.getEditor();
-			editor.getTextField().addPropertyChangeListener(property, this);
-		} else {
-			throw new IllegalArgumentException("the spinner has not a 'DefaultEditor': " + spinner.getEditor());
-		}
-	}
+	public void doAction(final Actions a, final PropertyChangeEvent evt) {
+		switch (a) {
+		case TEST_UPDATEMODEL:
+			Integer value = (Integer) evt.getNewValue();
+			MyModel dataModel = ActionControllerTest.instance.dataModel;
+			dataModel.setLayerCount(value);
+			break;
 
-	@Override
-	public void actionPerformed(final ActionEvent e) {
-		System.out.println(e);
+		case TEST_UPDATEVIEW:
+			System.out.println("TEST ACTION: " + evt.getNewValue());
+			// model was changed, upadte everything
+			// property in TEST case is MyModel.layerCount from type Integer
+			Integer layerCount = (Integer) evt.getNewValue();
 
-	}
-
-	@Override
-	public void propertyChange(final PropertyChangeEvent e) {
-		System.out.println(e);
-
-		JSpinner spinner = getSpinner(e);
-		JComboBox comboBox = null;// = getComboBox(e);
-
-		if (spinner != null) {
-			if (spinner.getName().equals("spinner1")) {
-
-			} else if (spinner.getName().equals("spinner2")) {
-
-			} else if (spinner.getName().equals("spinner3")) {
-
-			} else {
-				System.err.println("not implemented for name: " + spinner.getName());
+			// update combox box
+			JComboBox cb = ActionControllerTest.instance.comboBox;
+			// create a list with entries for the comboboxModel
+			Vector<Integer> comboBoxEntries = new Vector<Integer>();
+			for (int i = 0; i <= layerCount; i++) {
+				comboBoxEntries.add(i);
 			}
-		} else if (comboBox != null) {
+			// set overwrite the old combobox model
+			cb.setModel(new DefaultComboBoxModel(comboBoxEntries));
+			cb.setSelectedItem(layerCount); // select the last one
 
-		} else {
-			System.err.println("not implemented for this source type: " + e.getSource());
+			// update Spinner
+			SpinnerModel sm = ActionControllerTest.instance.spinnerModel;
+			sm.setValue(layerCount);
+
+			// update Label
+			JLabel label = ActionControllerTest.instance.label;
+			label.setText("Aktueller Wert: " + layerCount);
+
+			break;
 		}
-
 	}
-
-	/**
-	 * @param e
-	 * @return
-	 */
-	private JSpinner getSpinner(final PropertyChangeEvent e) {
-		if (e.getSource() instanceof JFormattedTextField) {
-			JFormattedTextField ftf = (JFormattedTextField) e.getSource();
-			if (ftf.getParent() != null && ftf.getParent() instanceof NumberEditor) {
-				NumberEditor ne = (NumberEditor) ftf.getParent();
-				if (ne.getParent() != null && ne.getParent() instanceof JSpinner) {
-					return (JSpinner) ne.getParent();
-				}
-			}
-		}
-		return null;
-	}
-
 }
