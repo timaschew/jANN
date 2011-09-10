@@ -6,6 +6,12 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.util.ResourceBundle;
+
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+
 import de.unikassel.ann.factory.EdgeFactory;
 import de.unikassel.ann.factory.VertexFactory;
 
@@ -22,14 +28,18 @@ import edu.uci.ics.jung.visualization.decorators.EdgeShape;
 public class GraphLayoutViewer {
 
 	/*
-	 * private fields
+	 * fields
 	 */
-	private DirectedGraph<Vertex, Edge> graph;
-	private AbstractLayout<Vertex, Edge> layout;
-	private VisualizationViewer<Vertex, Edge> viewer;
-	private VertexFactory vertexFactory;
-	private EdgeFactory edgeFactory;
-	private EditingModalGraphMouse<Vertex, Edge> graphMouse;
+	protected DirectedGraph<Vertex, Edge> graph;
+	protected AbstractLayout<Vertex, Edge> layout;
+	protected VisualizationViewer<Vertex, Edge> viewer;
+	protected VertexFactory vertexFactory;
+	protected EdgeFactory edgeFactory;
+	protected EditingModalGraphMouse<Vertex, Edge> graphMouse;
+
+	private JFrame frame;
+	private Main main;
+	private ResourceBundle i18n;
 
 	/**
 	 * Constructor
@@ -91,16 +101,28 @@ public class GraphLayoutViewer {
 		//
 		vertexFactory = new VertexFactory();
 		edgeFactory = new EdgeFactory();
+	}
 
+	public void init() {
 		//
 		// Graph Mouse
 		//
 		initGraphMouse();
+		addMouseModeMenu();
+	}
+
+	public void setFrame(JFrame frame) {
+		this.frame = frame;
+	}
+
+	public void setI18n(ResourceBundle i18n) {
+		this.i18n = i18n;
 	}
 
 	private void initGraphMouse() {
+		// Create Graph Mouse (set in and out parameter to '1f' to disable zoom)
 		graphMouse = new EditingModalGraphMouse<Vertex, Edge>(
-				viewer.getRenderContext(), vertexFactory, edgeFactory);
+				viewer.getRenderContext(), vertexFactory, edgeFactory, 1f, 1f);
 
 		viewer.setGraphMouse(graphMouse);
 		viewer.addKeyListener(graphMouse.getModeKeyListener());
@@ -108,13 +130,44 @@ public class GraphLayoutViewer {
 
 			@Override
 			public void mouseWheelMoved(final MouseWheelEvent e) {
-				// TODO Auto-generated method stub
-
 			}
 		});
 
 		graphMouse.setMode(ModalGraphMouse.Mode.EDITING);
 		graphMouse.setZoomAtMouse(false);
+	}
+
+	/**
+	 * Add MouseMode Menu to the MainMenu of the frame to set the mode of the
+	 * Graph Mouse.
+	 */
+	private void addMouseModeMenu() {
+		if (frame == null) {
+			// No frame -> No menu -> No fun!
+			return;
+		}
+		JMenu modeMenu = graphMouse.getModeMenu();
+		modeMenu.setText(i18n("menu.mousemode", "Mode"));
+		modeMenu.setIcon(null);
+		modeMenu.setPreferredSize(new Dimension(50, 20));
+		JMenuBar menu = frame.getJMenuBar();
+		menu.add(modeMenu, menu.getComponentCount() - 1);
+		graphMouse.setMode(ModalGraphMouse.Mode.EDITING);
+	}
+
+	/**
+	 * Wrapper to ease access to the language ressources and to use a default
+	 * string.
+	 * 
+	 * @param key
+	 * @param defaultString
+	 * @return
+	 */
+	private String i18n(String key, String defaultString) {
+		if (i18n != null) {
+			return i18n.getString(key);
+		}
+		return defaultString;
 	}
 
 }

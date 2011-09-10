@@ -18,4 +18,5 @@
 	<entry key="menu.options">Optionen</entry>
 	<entry key="menu.help">Hilfe</entry>
 	<entry key="menu.help.about">Über</entry>
+	<entry key="menu.mousemode">Modus</entry>
 </properties>
