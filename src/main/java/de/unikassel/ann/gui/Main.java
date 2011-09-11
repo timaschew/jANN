@@ -149,6 +149,9 @@ public class Main {
 		// Graph-Layout-Viewer
 		//
 		Dimension dim = new Dimension(600 - 16, 400 - 16);
+		// The Dimension is given by the DividerLocation of the mainSplitPane
+		// and the jungConsoleSplitPane minus the scrollbar size
+
 		glv = new GraphLayoutViewer(dim, jungPanel);
 		glv.setFrame(frame);
 		glv.setI18n(i18n);
