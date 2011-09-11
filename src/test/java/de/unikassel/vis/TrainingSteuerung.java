@@ -42,16 +42,9 @@ public class TrainingSteuerung extends JPanel {
 	 * Create the frame.
 	 */
 	public TrainingSteuerung() {
-//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//		setBounds(100, 100, 265, 255);
-//		contentPane = new JPanel();
-//		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-//		setContentPane(contentPane);
-//		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.X_AXIS));
 		
-//		JPanel trainingSteuerungPanel = new JPanel();
 		setBorder(new TitledBorder(null, "Training-Steuerung", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-//		add(trainingSteuerungPanel);
+		setSize(400, 200);
 		
 		JButton btnSchritte = new JButton("Schritt(e)");
 		

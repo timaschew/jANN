@@ -53,7 +53,7 @@ public class SelectedSymbol extends JPanel {
 //		
 //		JPanel SelectedSymbolPanel = new JPanel();
 		setBorder(new TitledBorder(null, "Ausgew\u00E4hltes Symbol", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-//		contentPane.add(SelectedSymbolPanel, BorderLayout.CENTER);
+		setSize(309, 180);
 		
 		JLabel lblSelected = new JLabel("Ausgew\u00E4hlt");
 		
