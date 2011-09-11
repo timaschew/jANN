@@ -8,10 +8,19 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -71,6 +80,63 @@ public class GraphLayoutViewer {
 			public void paint(final Graphics g) {
 				final int height = viewer.getHeight();
 				final int width = viewer.getWidth();
+
+				// Distance between two layers
+				final int rowHeight = 80;
+
+				// Position of the vertex depends on the number of vertices that
+				// are already in the same layer.
+				// Since new vertices are always added at the last position, get
+				// the number of vertices to compute the position for the new
+				// vertex.
+				Collection<Vertex> vertices = graph.getVertices();
+
+				// Map to store the number of vertices (value) in each layer
+				// (key)
+				Map<Number, Number> layerMap = new HashMap<Number, Number>();
+
+				// List to sort the vertices by their indexes
+				List<Vertex> verticesSorted = new ArrayList<Vertex>();
+
+				int count = 0, layer = 0, index = 0, dist, num;
+				Point2D location;
+
+				// Count the number of vertices in each layer
+				for (Vertex v : vertices) {
+					if (v.getLayer() == layer) {
+						count++;
+					} else {
+						layer = v.getLayer();
+						count = 1;
+					}
+					layerMap.put(layer, count);
+					verticesSorted.add(v);
+				}
+
+				// Sort the vertices accordingly to their index.
+				Collections.sort(verticesSorted);
+
+				// This is where the magic happens...
+				for (Vertex v : verticesSorted) {
+					// Get layer of the vertex and its index within this layer
+					layer = v.getLayer();
+					if (v.getLayer() == layer) {
+						index++;
+					} else {
+						index = 0;
+					}
+					// Number of spaces between the vertices in one layer
+					num = (Integer) layerMap.get(layer) + 1;
+
+					// Distance between two vertices
+					dist = width / num;
+
+					// Set the location of the current vertex
+					location = new Point2D.Double(index * dist, layer
+							* rowHeight);
+					layout.setLocation(v, location);
+					layout.lock(v, true);
+				}
 			}
 
 			@Override
@@ -78,6 +144,19 @@ public class GraphLayoutViewer {
 				return false;
 			}
 		});
+		// viewer.addPostRenderPaintable(new VisualizationViewer.Paintable() {
+		//
+		// @Override
+		// public void paint(Graphics g) {
+		// layout.lock(true);
+		// }
+		//
+		// @Override
+		// public boolean useTransform() {
+		// return false;
+		// }
+		//
+		// });
 
 		//
 		// Controller

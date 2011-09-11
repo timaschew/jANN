@@ -25,8 +25,6 @@ import edu.uci.ics.jung.visualization.annotations.AnnotatingGraphMousePlugin;
 import edu.uci.ics.jung.visualization.control.AbstractModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.AnimatedPickingGraphMousePlugin;
 import edu.uci.ics.jung.visualization.control.CrossoverScalingControl;
-import edu.uci.ics.jung.visualization.control.EditingGraphMousePlugin;
-import edu.uci.ics.jung.visualization.control.EditingPopupGraphMousePlugin;
 import edu.uci.ics.jung.visualization.control.LabelEditingGraphMousePlugin;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.PickingGraphMousePlugin;
@@ -42,7 +40,7 @@ public class GraphMouse<V, E> extends AbstractModalGraphMouse implements
 	protected Factory<Edge> edgeFactory;
 	protected GraphMousePlugin<Vertex, Edge> editingPlugin;
 	protected LabelEditingGraphMousePlugin<Vertex, Edge> labelEditingPlugin;
-	protected EditingPopupGraphMousePlugin<Vertex, Edge> popupEditingPlugin;
+	protected GraphMousePopupPlugin<Vertex, Edge> popupEditingPlugin;
 	protected AnnotatingGraphMousePlugin<Vertex, Edge> annotatingPlugin;
 	protected MultiLayerTransformer basicTransformer;
 	protected RenderContext<Vertex, Edge> rc;
@@ -94,7 +92,7 @@ public class GraphMouse<V, E> extends AbstractModalGraphMouse implements
 				edgeFactory);
 		labelEditingPlugin = new LabelEditingGraphMousePlugin<Vertex, Edge>();
 		annotatingPlugin = new AnnotatingGraphMousePlugin<Vertex, Edge>(rc);
-		popupEditingPlugin = new EditingPopupGraphMousePlugin<Vertex, Edge>(
+		popupEditingPlugin = new GraphMousePopupPlugin<Vertex, Edge>(
 				vertexFactory, edgeFactory);
 		add(scalingPlugin);
 		setMode(Mode.EDITING);
@@ -328,7 +326,7 @@ public class GraphMouse<V, E> extends AbstractModalGraphMouse implements
 	/**
 	 * @return the popupEditingPlugin
 	 */
-	public EditingPopupGraphMousePlugin<Vertex, Edge> getPopupEditingPlugin() {
+	public GraphMousePopupPlugin<Vertex, Edge> getPopupEditingPlugin() {
 		return popupEditingPlugin;
 	}
 }

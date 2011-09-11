@@ -1,11 +1,10 @@
 package de.unikassel.ann.gui.graph;
 
 import java.text.DecimalFormat;
-
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.Neuron;
 
-public class Vertex {
+public class Vertex implements Comparable<Vertex> {
 
 	// Neuron data model
 	private Neuron model;
@@ -63,6 +62,13 @@ public class Vertex {
 		this.model.setLayer(layer);
 	}
 
+	public int getLayer() {
+		if (this.model == null) {
+			return -1;
+		}
+		return this.model.getLayer().getIndex();
+	}
+
 	public void setValue(Double value) {
 		this.model.setOutputValue(value);
 	}
@@ -82,6 +88,11 @@ public class Vertex {
 		}
 		String value = df.format(getValue());
 		return "#" + index + " (" + value + ")";
+	}
+
+	@Override
+	public int compareTo(Vertex v) {
+		return getIndex() - v.getIndex();
 	}
 
 }

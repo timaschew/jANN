@@ -106,7 +106,8 @@ public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements
 
 				final Vertex vertex = pickSupport.getVertex(vv.getModel()
 						.getGraphLayout(), p.getX(), p.getY());
-				if (vertex != null) { // get ready to make an edge
+				if (vertex != null) {
+					// get ready to make an edge
 					startVertex = vertex;
 					down = e.getPoint();
 					transformEdgeShape(down, down);
@@ -119,15 +120,18 @@ public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements
 						transformArrowShape(down, e.getPoint());
 						vv.addPostRenderPaintable(arrowPaintable);
 					}
-				} else { // make a new vertex
-
+				} else {
+					// make a new vertex
 					Vertex newVertex = vertexFactory.create();
 					Layout<Vertex, Edge> layout = vv.getModel()
 							.getGraphLayout();
 					graph.addVertex(newVertex);
-					layout.setLocation(newVertex,
-							vv.getRenderContext().getMultiLayerTransformer()
-									.inverseTransform(e.getPoint()));
+
+					// Set position of the new vertex
+					Point2D location = vv.getRenderContext()
+							.getMultiLayerTransformer()
+							.inverseTransform(e.getPoint());
+					layout.setLocation(newVertex, location);
 				}
 			}
 			vv.repaint();
