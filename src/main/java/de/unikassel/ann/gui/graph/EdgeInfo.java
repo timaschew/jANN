@@ -4,10 +4,13 @@ import java.text.DecimalFormat;
 
 import org.apache.commons.collections15.Transformer;
 
+import de.unikassel.ann.gui.Main;
+
 public class EdgeInfo<E> implements Transformer<Edge, String> {
 
 	private static EdgeInfo<Edge> instance;
-	private DecimalFormat df = new DecimalFormat("0.000");
+	private DecimalFormat df = new DecimalFormat("0.000", Main.decimalSymbols);
+	
 
 	public static EdgeInfo<Edge> getInstance() {
 		if (instance == null) {

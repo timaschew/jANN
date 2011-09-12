@@ -13,6 +13,8 @@ import java.awt.event.MouseWheelListener;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
@@ -75,6 +77,10 @@ public class Main {
 	 */
 	public static Main instance;
 	public ResourceBundle i18n;
+	/**
+	 * Returns the locale specific decimal sperator, grouping seperator etc.
+	 */
+	public static DecimalFormatSymbols decimalSymbols;
 
 	/*
 	 * private fields
@@ -96,6 +102,7 @@ public class Main {
 	 */
 	private void initialize() {
 
+		decimalSymbols = DecimalFormatSymbols.getInstance();
 		i18n = ResourceBundle.getBundle("langpack",
 				new XMLResourceBundleControl());
 
