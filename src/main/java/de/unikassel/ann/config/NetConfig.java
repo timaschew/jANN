@@ -16,6 +16,7 @@ import de.unikassel.ann.model.Synapse;
 import de.unikassel.ann.model.func.ActivationFunction;
 import de.unikassel.ann.rand.Randomizer;
 import de.unikassel.ann.strategy.Strategy;
+import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.gui.TrainErrorListener;
 
 public class NetConfig {
@@ -132,7 +133,7 @@ public class NetConfig {
 	public void printStats() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("error = ");
-		NumberFormat fmt = new DecimalFormat("0.00000");
+		NumberFormat fmt = new DecimalFormat("0.00000", Main.decimalSymbols);
 		sb.append(fmt.format(trainingModule.getCurrentError()));
 //		sb.append(" / ");
 //		sb.append(fmt.format(trainingModule.getCurrentSingleError()));

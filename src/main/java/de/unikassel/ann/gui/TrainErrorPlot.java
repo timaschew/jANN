@@ -49,16 +49,7 @@ public class TrainErrorPlot implements TrainErrorListener {
 		dataSetPlot.set("with", "lines");
 		dataSetPlot.setTitle("run no #"+run);
 		Properties property = new Properties();
-		String path = "";
-		try {
-			InputStream inputStream =  getClass().getClassLoader().getResourceAsStream("config.properties");
-			property.load(inputStream);
-			path = property.getProperty("gnuplot.path");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		String path = Main.properties.getProperty("gnuplot.path");
 		JavaPlot javaPlot = new JavaPlot(path, false);
 		javaPlot.setTitle("Trainingsfehler");
 		plot = new JPlot(javaPlot);

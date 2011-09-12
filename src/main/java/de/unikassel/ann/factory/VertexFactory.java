@@ -22,7 +22,8 @@ public class VertexFactory implements Factory<Vertex> {
 
 		Vertex v = new Vertex();
 		v.setIndex(index);
-		
+
 		return v;
 	}
+
 }

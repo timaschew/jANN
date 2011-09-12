@@ -1,11 +1,13 @@
 package de.unikassel.ann.strategy;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.util.Locale;
 
 public class RestartImprovementStrategy extends Strategy {
 
-	private static NumberFormat fmt = new DecimalFormat("0.00000");
+	private static NumberFormat fmt = new DecimalFormat("0.00000",  DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 	private Integer iterationForRestart;
 	private Double minimalImprovement;
 	private Integer iterationWithBadImprovement = 0;

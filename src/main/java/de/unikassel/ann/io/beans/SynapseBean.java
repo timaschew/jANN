@@ -1,7 +1,9 @@
 package de.unikassel.ann.io.beans;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.util.Locale;
 
 public class SynapseBean {
 	
@@ -12,7 +14,7 @@ public class SynapseBean {
 	private double value = Double.NaN;
 	private boolean random = false;
 	
-	final static NumberFormat fmt = new DecimalFormat("#.######");
+	final static NumberFormat fmt = new DecimalFormat("#.######", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 	
 	private int from;
 	/**

@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 
+import de.unikassel.ann.gui.Main;
+
 /**
  * @author anton
  * 
@@ -201,7 +203,7 @@ public class DataPairSet {
 
 	@Override
 	public String toString() {
-		NumberFormat fmt = new DecimalFormat("#.####");
+		NumberFormat fmt = new DecimalFormat("#.####", Main.decimalSymbols);
 		StringBuilder sb = new StringBuilder();
 		for (DataPair p : getPairs()) {
 			for (Double d : p.getInput()) {

@@ -11,11 +11,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
@@ -76,11 +79,14 @@ public class Main {
 	 * public fields
 	 */
 	public static Main instance;
-	public ResourceBundle i18n;
+	public static ResourceBundle i18n;
+	public static Properties properties;
+
 	/**
 	 * Returns the locale specific decimal sperator, grouping seperator etc.
 	 */
 	public static DecimalFormatSymbols decimalSymbols;
+	public static Locale locale;
 
 	/*
 	 * private fields
@@ -102,10 +108,24 @@ public class Main {
 	 */
 	private void initialize() {
 
-		decimalSymbols = DecimalFormatSymbols.getInstance();
 		i18n = ResourceBundle.getBundle("langpack",
 				new XMLResourceBundleControl());
+		
+		properties = new Properties();
+		
+		try {
+			InputStream inputStream = getClass().getClassLoader()
+					.getResourceAsStream("config.properties");
+			properties.load(inputStream);
+		} catch (IOException e) {
+			System.err.println("could not load property file");
+			e.printStackTrace();
+		}
+	
+		locale = new Locale(properties.getProperty("gui.locale"));
+		decimalSymbols = DecimalFormatSymbols.getInstance(locale);
 
+		
 		//
 		// Frame
 		//
@@ -156,6 +176,9 @@ public class Main {
 		// Graph-Layout-Viewer
 		//
 		Dimension dim = new Dimension(600 - 16, 400 - 16);
+		// The Dimension is given by the DividerLocation of the mainSplitPane
+		// and the jungConsoleSplitPane minus the scrollbar size
+
 		glv = new GraphLayoutViewer(dim, jungPanel);
 		glv.setFrame(frame);
 		glv.setI18n(i18n);

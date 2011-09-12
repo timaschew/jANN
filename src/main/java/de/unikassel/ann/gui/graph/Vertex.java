@@ -1,9 +1,12 @@
 package de.unikassel.ann.gui.graph;
 
+import java.text.DecimalFormat;
+
+import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.Neuron;
 
-public class Vertex {
+public class Vertex implements Comparable<Vertex> {
 
 	// Neuron data model
 	private Neuron model;
@@ -11,17 +14,27 @@ public class Vertex {
 	// Vertex index (raised by the VertexFactory)
 	private int index;
 
+	// Vertex value format
+	private static DecimalFormat df;
+
 	/**
 	 * Constructor
 	 */
 	public Vertex() {
-		// TODO create model (which activation function)
-		model = new Neuron("SigmoidFunction", false);
+		// TODO get activateFunction
+		String activateFunc = "SigmoidFunction";
 
-		// TODO get selected layer to set it
-		Layer layer = new Layer();
-		layer.setIndex(1);
-		model.setLayer(layer);
+		// TODO bias enabled?
+		boolean bias = false;
+
+		// Create model
+		model = new Neuron(activateFunc, bias);
+
+		// TODO get actual selected layer
+		setLayer(1);
+
+		// TODO remove later, just for testing purpose
+		setValue(new Double(Math.random()));
 	}
 
 	public void setIndex(int index) {
@@ -32,6 +45,10 @@ public class Vertex {
 		return index;
 	}
 
+	/*
+	 * Vertex model
+	 */
+
 	public void setModel(Neuron model) {
 		this.model = model;
 	}
@@ -40,9 +57,44 @@ public class Vertex {
 		return model;
 	}
 
+	public void setLayer(int index) {
+		// TODO Get layer by its index
+		Layer layer = new Layer();
+		layer.setIndex(index);
+		this.model.setLayer(layer);
+	}
+
+	public int getLayer() {
+		if (this.model == null) {
+			return -1;
+		}
+		return this.model.getLayer().getIndex();
+	}
+
+	public void setValue(Double value) {
+		this.model.setOutputValue(value);
+	}
+
+	public Double getValue() {
+		if (this.model == null) {
+			return null;
+		}
+		return this.model.getOutputValue();
+	}
+
 	@Override
 	public String toString() {
-		return "Vertex [index=" + index + "]";
+		if (df == null) {
+			df = new DecimalFormat(
+					Main.properties.getProperty("gui.decimalFormat"), Main.decimalSymbols);
+		}
+		String value = df.format(getValue());
+		return "#" + index + " (" + value + ")";
+	}
+
+	@Override
+	public int compareTo(Vertex v) {
+		return getIndex() - v.getIndex();
 	}
 
 }
