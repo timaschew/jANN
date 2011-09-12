@@ -48,11 +48,11 @@ public class VertexController<V> {
 		this.vertexPickedState = viewer.getPickedVertexState();
 
 		setVertexLabel();
-		setVertexPickListener();
 		setVertexStrokeHighlight();
 		setVertexShape();
 		setVertexColor();
 		setVertexTooltip();
+		setVertexPickListener();
 	}
 
 	/**
@@ -62,26 +62,6 @@ public class VertexController<V> {
 		renderContext.setVertexLabelTransformer(VertexInfo.getInstance());
 		renderer.getVertexLabelRenderer().setPosition(
 				Renderer.VertexLabel.Position.S);
-	}
-
-	/**
-	 * Set Vertex Pick Listener
-	 */
-	private void setVertexPickListener() {
-		// Vertex picked state (used to highlight vertexes on select)
-		vertexPickedState.addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				Set<Vertex> picked = vertexPickedState.getPicked();
-				if (picked.isEmpty()) {
-					// No vertex picked
-					return;
-				}
-				System.out.println(picked);
-			}
-		});
-
 	}
 
 	/**
@@ -129,9 +109,31 @@ public class VertexController<V> {
 				});
 	}
 
+	/**
+	 * Set Vertex Tooltip
+	 */
 	private void setVertexTooltip() {
-		// Tooltip
 		viewer.setVertexToolTipTransformer(VertexTooltip.getInstance());
+	}
+
+	/**
+	 * Set Vertex Pick Listener
+	 */
+	private void setVertexPickListener() {
+		vertexPickedState.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				Set<Vertex> picked = vertexPickedState.getPicked();
+				if (picked.isEmpty()) {
+					// No vertex picked
+					return;
+				}
+				// TODO Show value of the picked vertex in the Sidebar
+				System.out.println(picked);
+			}
+		});
+
 	}
 
 	/*

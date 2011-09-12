@@ -2,6 +2,9 @@ package de.unikassel.ann.controller;
 
 import java.awt.BasicStroke;
 import java.awt.Stroke;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.Set;
 
 import org.apache.commons.collections15.Transformer;
 
@@ -12,6 +15,7 @@ import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.visualization.RenderContext;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.decorators.EdgeShape;
+import edu.uci.ics.jung.visualization.picking.PickedState;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
 
 public class EdgeController<E> {
@@ -28,6 +32,7 @@ public class EdgeController<E> {
 	private VisualizationViewer<Vertex, Edge> viewer;
 	private Renderer<Vertex, Edge> renderer;
 	private RenderContext<Vertex, Edge> renderContext;
+	private PickedState<Edge> edgePickedState;
 
 	public void init(Graph<Vertex, Edge> graph,
 			VisualizationViewer<Vertex, Edge> viewer) {
@@ -35,11 +40,13 @@ public class EdgeController<E> {
 		this.viewer = viewer;
 		this.renderer = viewer.getRenderer();
 		this.renderContext = viewer.getRenderContext();
+		this.edgePickedState = viewer.getPickedEdgeState();
 
 		setEdgeLabel();
 		setEdgeShape();
 		setEdgeStroke();
 		setEdgeTooltip();
+		setEdgePickedListener();
 	}
 
 	/**
@@ -70,6 +77,26 @@ public class EdgeController<E> {
 	 */
 	private void setEdgeTooltip() {
 		viewer.setEdgeToolTipTransformer(EdgeTooltip.getInstance());
+	}
+
+	/**
+	 * Set Edge Pick Listener
+	 */
+	private void setEdgePickedListener() {
+		edgePickedState.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				Set<Edge> picked = edgePickedState.getPicked();
+				if (picked.isEmpty()) {
+					// No edge picked
+					return;
+				}
+				// TODO Show value of the picked edge in the Sidebar
+				System.out.println(picked);
+			}
+		});
+
 	}
 
 	/*
