@@ -17,6 +17,8 @@ import javax.swing.JSpinner;
 import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 import java.awt.Dialog.ModalExclusionType;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 
 public class Trainingsdaten extends JDialog {
@@ -28,7 +30,7 @@ public class Trainingsdaten extends JDialog {
 	public Trainingsdaten() {
 		setTitle("Trainingsdaten normalisieren");
 		setModal(true);
-		setSize(330, 260);
+		setSize(350, 260);
 		setResizable(false);
 		setLocationRelativeTo(null);
 		
@@ -55,11 +57,11 @@ public class Trainingsdaten extends JDialog {
 		
 		JSpinner spinnerInputFrom = new JSpinner();
 		
-		JSpinner spinnerInputUp = new JSpinner();
+		JSpinner spinnerInputTo = new JSpinner();
 		
 		JSpinner spinnerOutputFrom = new JSpinner();
 		
-		JSpinner spinnerOutputUp = new JSpinner();
+		JSpinner spinnerOutputTo = new JSpinner();
 		
 		JLabel lblInvertOutput = new JLabel("Ausgabe wieder umkehren");
 		
@@ -72,7 +74,15 @@ public class Trainingsdaten extends JDialog {
 		
 		JButton btnApplyData = new JButton("Anwenden");
 		
-		JButton btnAbbrechen = new JButton("Abbrechen");
+		JButton btnCancel = new JButton("Abbrechen");
+		btnCancel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				dispose();
+			}
+		});
+		
+		
 		GroupLayout gl_trainingsDatenNormalPanel = new GroupLayout(trainingsDatenNormalPanel);
 		gl_trainingsDatenNormalPanel.setHorizontalGroup(
 			gl_trainingsDatenNormalPanel.createParallelGroup(Alignment.LEADING)
@@ -106,9 +116,9 @@ public class Trainingsdaten extends JDialog {
 								.addGroup(gl_trainingsDatenNormalPanel.createSequentialGroup()
 									.addGap(14)
 									.addGroup(gl_trainingsDatenNormalPanel.createParallelGroup(Alignment.LEADING)
-										.addComponent(spinnerInputUp, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
+										.addComponent(spinnerInputTo, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
 										.addComponent(lblUp)
-										.addComponent(spinnerOutputUp, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)))
+										.addComponent(spinnerOutputTo, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)))
 								.addGroup(gl_trainingsDatenNormalPanel.createSequentialGroup()
 									.addPreferredGap(ComponentPlacement.UNRELATED)
 									.addComponent(rdbtnInvertOutputNo))))
@@ -117,7 +127,7 @@ public class Trainingsdaten extends JDialog {
 							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addComponent(btnApplyData)
 							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(btnAbbrechen)))
+							.addComponent(btnCancel)))
 					.addContainerGap(15, Short.MAX_VALUE))
 		);
 		gl_trainingsDatenNormalPanel.setVerticalGroup(
@@ -137,7 +147,7 @@ public class Trainingsdaten extends JDialog {
 						.addComponent(checkBoxInput)
 						.addGroup(gl_trainingsDatenNormalPanel.createParallelGroup(Alignment.BASELINE)
 							.addComponent(spinnerInputFrom, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(spinnerInputUp, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+							.addComponent(spinnerInputTo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_trainingsDatenNormalPanel.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_trainingsDatenNormalPanel.createParallelGroup(Alignment.BASELINE)
@@ -145,7 +155,7 @@ public class Trainingsdaten extends JDialog {
 							.addComponent(checkBoxOutput))
 						.addGroup(gl_trainingsDatenNormalPanel.createParallelGroup(Alignment.BASELINE)
 							.addComponent(spinnerOutputFrom, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(spinnerOutputUp, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+							.addComponent(spinnerOutputTo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
 					.addGap(18)
 					.addGroup(gl_trainingsDatenNormalPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblInvertOutput)
@@ -155,11 +165,11 @@ public class Trainingsdaten extends JDialog {
 					.addGroup(gl_trainingsDatenNormalPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnPreviewData)
 						.addComponent(btnApplyData)
-						.addComponent(btnAbbrechen))
+						.addComponent(btnCancel))
 					.addContainerGap(23, Short.MAX_VALUE))
 		);
 		trainingsDatenNormalPanel.setLayout(gl_trainingsDatenNormalPanel);
-		getContentPane().add(trainingsDatenNormalPanel);
+		add(trainingsDatenNormalPanel);
 	}
 
 }
