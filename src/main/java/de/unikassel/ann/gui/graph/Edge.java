@@ -1,5 +1,7 @@
 package de.unikassel.ann.gui.graph;
 
+import java.text.DecimalFormat;
+
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.Synapse;
 
@@ -10,6 +12,9 @@ public class Edge {
 
 	// Edge index (raised by the EdgeFactory)
 	private int index;
+
+	// Edge weight format
+	private static DecimalFormat df;
 
 	/**
 	 * Constructor
@@ -25,6 +30,10 @@ public class Edge {
 		return index;
 	}
 
+	/*
+	 * Edge model
+	 */
+
 	public void setModel(Synapse model) {
 		this.model = model;
 	}
@@ -37,7 +46,9 @@ public class Edge {
 	 * Create edge (synapse) between two vertexes (neurons)
 	 * 
 	 * @param Neuron
+	 *            from
 	 * @param Neuron
+	 *            to
 	 */
 	public void createModel(Neuron from, Neuron to) {
 		model = new Synapse(from, to);
@@ -46,10 +57,27 @@ public class Edge {
 		updateWeight(new Double(Math.random()));
 	}
 
+	public Double getWeight() {
+		if (model == null) {
+			return null;
+		}
+		return model.getWeight();
+	}
+
 	public void updateWeight(Double weight) {
 		if (model == null) {
 			return;
 		}
 		model.setWeight(weight);
 	}
+
+	@Override
+	public String toString() {
+		if (df == null) {
+			df = new DecimalFormat(
+					GraphLayoutViewer.getProperty("gui.decimalFormat"));
+		}
+		return df.format(getWeight());
+	}
+
 }

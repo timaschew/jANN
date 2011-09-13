@@ -4,28 +4,47 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.geom.Point2D;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 
+import de.unikassel.ann.controller.EdgeController;
+import de.unikassel.ann.controller.VertexController;
 import de.unikassel.ann.factory.EdgeFactory;
 import de.unikassel.ann.factory.VertexFactory;
-import de.unikassel.ann.gui.Main;
-
 import edu.uci.ics.jung.algorithms.layout.AbstractLayout;
 import edu.uci.ics.jung.algorithms.layout.StaticLayout;
 import edu.uci.ics.jung.graph.DirectedGraph;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
+import edu.uci.ics.jung.visualization.RenderContext;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 import edu.uci.ics.jung.visualization.decorators.EdgeShape;
+import edu.uci.ics.jung.visualization.picking.PickedState;
+import edu.uci.ics.jung.visualization.renderers.Renderer;
 
 public class GraphLayoutViewer {
+
+	private static Properties properties;
 
 	/*
 	 * fields
@@ -43,13 +62,16 @@ public class GraphLayoutViewer {
 	/**
 	 * Constructor
 	 * 
-	 * @param parent
+	 * @param Dimension
+	 *            dim
+	 * @param Container
+	 *            parent
 	 */
 	public GraphLayoutViewer(Dimension dim, Container parent) {
+		loadConfig();
+
 		graph = new DirectedSparseGraph<Vertex, Edge>();
 		layout = new StaticLayout<Vertex, Edge>(graph, dim);
-		// The Dimension is given by the DividerLocation of the mainSplitPane
-		// and the jungConsoleSplitPane minus the scrollbar size
 
 		viewer = new VisualizationViewer<Vertex, Edge>(layout);
 		viewer.setBackground(Color.white);
@@ -58,6 +80,63 @@ public class GraphLayoutViewer {
 			public void paint(final Graphics g) {
 				final int height = viewer.getHeight();
 				final int width = viewer.getWidth();
+
+				// Distance between two layers
+				final int rowHeight = 80;
+
+				// Position of the vertex depends on the number of vertices that
+				// are already in the same layer.
+				// Since new vertices are always added at the last position, get
+				// the number of vertices to compute the position for the new
+				// vertex.
+				Collection<Vertex> vertices = graph.getVertices();
+
+				// Map to store the number of vertices (value) in each layer
+				// (key)
+				Map<Number, Number> layerMap = new HashMap<Number, Number>();
+
+				// List to sort the vertices by their indexes
+				List<Vertex> verticesSorted = new ArrayList<Vertex>();
+
+				int count = 0, layer = 0, index = 0, dist, num;
+				Point2D location;
+
+				// Count the number of vertices in each layer
+				for (Vertex v : vertices) {
+					if (v.getLayer() == layer) {
+						count++;
+					} else {
+						layer = v.getLayer();
+						count = 1;
+					}
+					layerMap.put(layer, count);
+					verticesSorted.add(v);
+				}
+
+				// Sort the vertices accordingly to their index.
+				Collections.sort(verticesSorted);
+
+				// This is where the magic happens...
+				for (Vertex v : verticesSorted) {
+					// Get layer of the vertex and its index within this layer
+					layer = v.getLayer();
+					if (v.getLayer() == layer) {
+						index++;
+					} else {
+						index = 0;
+					}
+					// Number of spaces between the vertices in one layer
+					num = (Integer) layerMap.get(layer) + 1;
+
+					// Distance between two vertices
+					dist = width / num;
+
+					// Set the location of the current vertex
+					location = new Point2D.Double(index * dist, layer
+							* rowHeight);
+					layout.setLocation(v, location);
+					layout.lock(v, true);
+				}
 			}
 
 			@Override
@@ -65,28 +144,31 @@ public class GraphLayoutViewer {
 				return false;
 			}
 		});
+		// viewer.addPostRenderPaintable(new VisualizationViewer.Paintable() {
+		//
+		// @Override
+		// public void paint(Graphics g) {
+		// layout.lock(true);
+		// }
+		//
+		// @Override
+		// public boolean useTransform() {
+		// return false;
+		// }
+		//
+		// });
 
 		//
-		// Vertex label and tooltip transformer
+		// Controller
 		//
-		viewer.getRenderContext().setVertexLabelTransformer(
-				VertexInfo.getInstance());
-		viewer.setVertexToolTipTransformer(VertexTooltip.getInstance());
+		// TODO DISCUSS: Is a GraphController which creates the Vertex- and
+		// EdgeController more sensible?
 
-		//
-		// Edge label and tooltip transformer
-		//
-		viewer.getRenderContext().setEdgeLabelTransformer(
-				EdgeInfo.getInstance());
-		viewer.getRenderContext().setEdgeShapeTransformer(
-				new EdgeShape.Line<Vertex, Edge>());
-		viewer.setEdgeToolTipTransformer(EdgeTooltip.getInstance());
+		// Vertex
+		VertexController.getInstance().init(graph, viewer);
 
-		//
-		// Edge weight stroke
-		//
-		EdgeWeightStrokeFunction<Edge> ewcs = new EdgeWeightStrokeFunction<Edge>();
-		viewer.getRenderContext().setEdgeStrokeTransformer(ewcs);
+		// Edge
+		EdgeController.getInstance().init(graph, viewer);
 
 		//
 		// Panel
@@ -100,6 +182,24 @@ public class GraphLayoutViewer {
 		//
 		vertexFactory = new VertexFactory();
 		edgeFactory = new EdgeFactory();
+	}
+
+	private void loadConfig() {
+		if (properties == null) {
+			properties = new Properties();
+		}
+		try {
+			InputStream inputStream = getClass().getClassLoader()
+					.getResourceAsStream("config.properties");
+			properties.load(inputStream);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static String getProperty(String key) {
+		return properties.getProperty(key);
 	}
 
 	public void init() {
@@ -118,10 +218,14 @@ public class GraphLayoutViewer {
 		this.i18n = i18n;
 	}
 
+	public void refresh() {
+		viewer.repaint();
+	}
+
 	private void initGraphMouse() {
 		// Create Graph Mouse (set in and out parameter to '1f' to disable zoom)
-		graphMouse = new GraphMouse<Vertex, Edge>(
-				viewer.getRenderContext(), vertexFactory, edgeFactory, 1f, 1f);
+		graphMouse = new GraphMouse<Vertex, Edge>(viewer.getRenderContext(),
+				vertexFactory, edgeFactory, 1f, 1f);
 
 		viewer.setGraphMouse(graphMouse);
 		viewer.addKeyListener(graphMouse.getModeKeyListener());
