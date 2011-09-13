@@ -119,9 +119,9 @@ public class SynapseMatrix {
 				Synapse s = getSynapse(from, to);
 				if (s != null) {
 					int fromLayer = s.getFromNeuron().getLayer().getIndex();
-					int fromNeuron = s.getFromNeuron().getIndex();
+					int fromNeuron = s.getFromNeuron().getLayerIndex();
 					int toLayer = s.getToNeuron().getLayer().getIndex();
-					int toNeuron = s.getToNeuron().getIndex();
+					int toNeuron = s.getToNeuron().getLayerIndex();
 					bigMatrix[fromLayer][fromNeuron][toLayer][toNeuron] = s.getWeight();
 				}
 			}

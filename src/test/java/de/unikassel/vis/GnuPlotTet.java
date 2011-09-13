@@ -48,7 +48,7 @@ public class GnuPlotTet {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 
-				final NetConfig netConfig = NetworkFactory.createXorNet(2000, true);
+				final NetConfig netConfig = NetworkFactory.createXorNet(10000, true);
 				netConfig.addTrainErrorListener(tep);
 				final Network net = netConfig.getNetwork();
 

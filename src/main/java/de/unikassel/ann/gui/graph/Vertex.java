@@ -79,7 +79,7 @@ public class Vertex implements Comparable<Vertex> {
 		if (this.model == null) {
 			return null;
 		}
-		return this.model.getOutputValue();
+		return this.model.getValue();
 	}
 
 	@Override

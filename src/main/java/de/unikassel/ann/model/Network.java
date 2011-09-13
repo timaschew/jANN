@@ -206,7 +206,7 @@ public class Network extends BasicNetwork {
 			throw new IllegalArgumentException("output layer count != ouput.length");
 		}
 		for (int i=0; i<neuronList.size(); i++) {
-			output[i] = neuronList.get(i).getOutputValue();
+			output[i] = neuronList.get(i).getValue();
 		}
 	}
 
