@@ -1,11 +1,6 @@
 package de.unikassel.vis;
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JDesktopPane;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JDialog;
@@ -15,19 +10,42 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JCheckBox;
 import javax.swing.JSpinner;
 import javax.swing.JRadioButton;
-import javax.swing.SwingConstants;
-import java.awt.Dialog.ModalExclusionType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 
-public class Trainingsdaten extends JDialog {
+public class TrainDataPanel extends JDialog {
 
+	private static final long serialVersionUID = 1L;
+	private static TrainDataPanel trainDataPanelInstance;
+	
+
+	public static TrainDataPanel getTrainDataPanelInstance() {
+		if (trainDataPanelInstance == null) {
+			trainDataPanelInstance = new TrainDataPanel();
+		}
+		return trainDataPanelInstance;
+	}
+
+
+	private JButton btnShowTrainingsdata;
+	private JCheckBox checkBoxInput;
+	private JCheckBox checkBoxOutput;
+	private JSpinner spinnerInputFrom;
+	private JSpinner spinnerInputTo;
+	private JSpinner spinnerOutputFrom;
+	private JSpinner spinnerOutputTo;
+	private JRadioButton rdbtnInvertOutputYes;
+	private JRadioButton rdbtnInvertOutputNo;
+	private JButton btnPreviewData;
+	private JButton btnApplyData;
+	private JButton btnCancel;
+	
 
 	/**
 	 * Create the frame.
 	 */
-	public Trainingsdaten() {
+	private TrainDataPanel() {
 		setTitle("Trainingsdaten normalisieren");
 		setModal(true);
 		setSize(350, 260);
@@ -39,7 +57,7 @@ public class Trainingsdaten extends JDialog {
 		
 		JLabel lblWhat = new JLabel("Was");
 		
-		JButton btnShowTrainingsdata = new JButton("Trainingsdaten anzeigen");
+		btnShowTrainingsdata = new JButton("Trainingsdaten anzeigen");
 		
 		JLabel lblNormalize = new JLabel("Normalisieren");
 		
@@ -51,30 +69,30 @@ public class Trainingsdaten extends JDialog {
 		
 		JLabel lblOutput = new JLabel("Output");
 		
-		JCheckBox checkBoxInput = new JCheckBox("");
+		checkBoxInput = new JCheckBox("");
 		
-		JCheckBox checkBoxOutput = new JCheckBox("");
+		checkBoxOutput = new JCheckBox("");
 		
-		JSpinner spinnerInputFrom = new JSpinner();
+		spinnerInputFrom = new JSpinner();
 		
-		JSpinner spinnerInputTo = new JSpinner();
+		spinnerInputTo = new JSpinner();
 		
-		JSpinner spinnerOutputFrom = new JSpinner();
+		spinnerOutputFrom = new JSpinner();
 		
-		JSpinner spinnerOutputTo = new JSpinner();
+		spinnerOutputTo = new JSpinner();
 		
 		JLabel lblInvertOutput = new JLabel("Ausgabe wieder umkehren");
 		
-		JRadioButton rdbtnInvertOutputYes = new JRadioButton("Ja");
+		rdbtnInvertOutputYes = new JRadioButton("Ja");
 		rdbtnInvertOutputYes.setSelected(true);
 		
-		JRadioButton rdbtnInvertOutputNo = new JRadioButton("Nein");
+		rdbtnInvertOutputNo = new JRadioButton("Nein");
 		
-		JButton btnPreviewData = new JButton("Vorschau");
+		btnPreviewData = new JButton("Vorschau");
 		
-		JButton btnApplyData = new JButton("Anwenden");
+		btnApplyData = new JButton("Anwenden");
 		
-		JButton btnCancel = new JButton("Abbrechen");
+		btnCancel = new JButton("Abbrechen");
 		btnCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
@@ -109,16 +127,16 @@ public class Trainingsdaten extends JDialog {
 							.addGroup(gl_trainingsDatenNormalPanel.createParallelGroup(Alignment.LEADING)
 								.addComponent(rdbtnInvertOutputYes, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE)
 								.addGroup(gl_trainingsDatenNormalPanel.createParallelGroup(Alignment.TRAILING)
-									.addComponent(spinnerOutputFrom, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
-									.addComponent(spinnerInputFrom, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
+									.addComponent(spinnerOutputFrom, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
+									.addComponent(spinnerInputFrom, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
 									.addComponent(lblfrom)))
 							.addGroup(gl_trainingsDatenNormalPanel.createParallelGroup(Alignment.LEADING)
 								.addGroup(gl_trainingsDatenNormalPanel.createSequentialGroup()
 									.addGap(14)
 									.addGroup(gl_trainingsDatenNormalPanel.createParallelGroup(Alignment.LEADING)
-										.addComponent(spinnerInputTo, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
+										.addComponent(spinnerInputTo, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
 										.addComponent(lblUp)
-										.addComponent(spinnerOutputTo, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)))
+										.addComponent(spinnerOutputTo, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)))
 								.addGroup(gl_trainingsDatenNormalPanel.createSequentialGroup()
 									.addPreferredGap(ComponentPlacement.UNRELATED)
 									.addComponent(rdbtnInvertOutputNo))))
@@ -128,7 +146,7 @@ public class Trainingsdaten extends JDialog {
 							.addComponent(btnApplyData)
 							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addComponent(btnCancel)))
-					.addContainerGap(15, Short.MAX_VALUE))
+					.addContainerGap(69, Short.MAX_VALUE))
 		);
 		gl_trainingsDatenNormalPanel.setVerticalGroup(
 			gl_trainingsDatenNormalPanel.createParallelGroup(Alignment.LEADING)
@@ -166,10 +184,10 @@ public class Trainingsdaten extends JDialog {
 						.addComponent(btnPreviewData)
 						.addComponent(btnApplyData)
 						.addComponent(btnCancel))
-					.addContainerGap(23, Short.MAX_VALUE))
+					.addContainerGap(22, Short.MAX_VALUE))
 		);
 		trainingsDatenNormalPanel.setLayout(gl_trainingsDatenNormalPanel);
-		add(trainingsDatenNormalPanel);
+		getContentPane().add(trainingsDatenNormalPanel);
 	}
 
 }

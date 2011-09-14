@@ -29,6 +29,7 @@ import javax.swing.text.StyledDocument;
 
 import de.unikassel.ann.gui.graph.GraphLayoutViewer;
 import de.unikassel.ann.util.XMLResourceBundleControl;
+import de.unikassel.vis.SideConfigurationPanel;
 
 public class Main {
 
@@ -116,7 +117,7 @@ public class Main {
 		JSplitPane mainSplitPane = new JSplitPane();
 		frame.getContentPane().add(mainSplitPane, BorderLayout.CENTER);
 
-		JPanel sideBar = new JPanel(new BorderLayout());
+		SideConfigurationPanel sideBar = new SideConfigurationPanel();
 		mainSplitPane.setRightComponent(sideBar);
 
 		JSplitPane jungConsoleSplitPane = new JSplitPane();

@@ -9,6 +9,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import de.unikassel.ann.controller.Actions;
+import de.unikassel.vis.ImportFilePanel;
 
 public class MainMenu extends JMenuBar {
 
@@ -145,6 +146,8 @@ public class MainMenu extends JMenuBar {
 				break;
 			case OPEN:
 				// TODO
+				ImportFilePanel panel = ImportFilePanel.getImportFileInstance();
+				panel.show();
 				break;
 			case SAVE:
 				// TODO
