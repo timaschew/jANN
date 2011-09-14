@@ -2,25 +2,19 @@ package de.unikassel.ann.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.HashMap;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -33,23 +27,8 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
-import org.apache.commons.collections15.Factory;
-import org.apache.commons.collections15.functors.MapTransformer;
-import org.apache.commons.collections15.map.LazyMap;
-
-import de.unikassel.ann.factory.EdgeFactory;
-import de.unikassel.ann.factory.VertexFactory;
 import de.unikassel.ann.gui.graph.GraphLayoutViewer;
 import de.unikassel.ann.util.XMLResourceBundleControl;
-import edu.uci.ics.jung.algorithms.layout.AbstractLayout;
-import edu.uci.ics.jung.algorithms.layout.StaticLayout;
-import edu.uci.ics.jung.graph.DirectedGraph;
-import edu.uci.ics.jung.graph.DirectedSparseGraph;
-import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
-import edu.uci.ics.jung.visualization.VisualizationViewer;
-import edu.uci.ics.jung.visualization.control.EditingModalGraphMouse;
-import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
-import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 
 public class Main {
 
@@ -74,7 +53,14 @@ public class Main {
 	 * public fields
 	 */
 	public static Main instance;
-	public ResourceBundle i18n;
+	public static ResourceBundle i18n;
+	public static Properties properties;
+
+	/**
+	 * Returns the locale specific decimal sperator, grouping seperator etc.
+	 */
+	public static DecimalFormatSymbols decimalSymbols;
+	public static Locale locale;
 
 	/*
 	 * private fields
@@ -96,8 +82,20 @@ public class Main {
 	 */
 	private void initialize() {
 
-		i18n = ResourceBundle.getBundle("langpack",
-				new XMLResourceBundleControl());
+		i18n = ResourceBundle.getBundle("langpack", new XMLResourceBundleControl());
+
+		properties = new Properties();
+
+		try {
+			InputStream inputStream = getClass().getClassLoader().getResourceAsStream("config.properties");
+			properties.load(inputStream);
+		} catch (IOException e) {
+			System.err.println("could not load property file");
+			e.printStackTrace();
+		}
+
+		locale = new Locale(properties.getProperty("gui.locale"));
+		decimalSymbols = DecimalFormatSymbols.getInstance(locale);
 
 		//
 		// Frame
@@ -169,8 +167,7 @@ public class Main {
 				Document doc = textPane.getDocument();
 				try {
 					StyledDocument style = textPane.getStyledDocument();
-					doc.insertString(doc.getLength(), text,
-							style.getStyle(styleName));
+					doc.insertString(doc.getLength(), text, style.getStyle(styleName));
 				} catch (BadLocationException e) {
 					throw new RuntimeException(e);
 				}
@@ -181,8 +178,7 @@ public class Main {
 
 	protected void addStylesToDocument(final StyledDocument doc) {
 		// Initialize some styles.
-		Style def = StyleContext.getDefaultStyleContext().getStyle(
-				StyleContext.DEFAULT_STYLE);
+		Style def = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
 
 		Style regular = doc.addStyle("regular", def);
 		StyleConstants.setFontFamily(def, "SansSerif");
@@ -218,8 +214,7 @@ public class Main {
 			}
 
 			@Override
-			public void write(final byte[] b, final int off, final int len)
-					throws IOException {
+			public void write(final byte[] b, final int off, final int len) throws IOException {
 				updateTextArea(new String(b, off, len));
 			}
 
@@ -236,8 +231,7 @@ public class Main {
 			}
 
 			@Override
-			public void write(final byte[] b, final int off, final int len)
-					throws IOException {
+			public void write(final byte[] b, final int off, final int len) throws IOException {
 				updateTextArea(new String(b, off, len), "error");
 			}
 
@@ -247,7 +241,7 @@ public class Main {
 			}
 		};
 
-		System.setOut(new PrintStream(out, true));
+		// System.setOut(new PrintStream(out, true));
 		// System.setErr(new PrintStream(errorOut, true));
 	}
 

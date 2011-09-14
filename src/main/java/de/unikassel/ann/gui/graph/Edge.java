@@ -2,6 +2,7 @@ package de.unikassel.ann.gui.graph;
 
 import java.text.DecimalFormat;
 
+import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.Synapse;
 
@@ -75,7 +76,7 @@ public class Edge {
 	public String toString() {
 		if (df == null) {
 			df = new DecimalFormat(
-					GraphLayoutViewer.getProperty("gui.decimalFormat"));
+					Main.properties.getProperty("gui.decimalFormat"), Main.decimalSymbols);
 		}
 		return df.format(getWeight());
 	}

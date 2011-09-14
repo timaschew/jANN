@@ -24,7 +24,7 @@ public class Layer {
 		if (layerWithBias && n.isBias()) {
 			throw new IllegalArgumentException("second bias neuron not allowed");
 		}
-		n.setIndex(neurons.size());
+		n.setLayerIndex(neurons.size());
 		neurons.add(n);
 		if ((n.getLayer() != null && n.getLayer().equals(this)) == false) {
 			n.setLayer(this);

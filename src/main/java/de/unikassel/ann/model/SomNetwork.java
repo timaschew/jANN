@@ -59,14 +59,14 @@ private Board3D listener;
 			Neuron n = new Neuron(new SigmoidFunction(), false);
 			n.setId(neuronIdCounter++);
 			outputLayer.addNeuron(n);
-			if (i != n.getIndex()) {
+			if (i != n.getLayerIndex()) {
 				throw new IllegalArgumentException("multi dim array index != neuron index");
 			}
 			multiDimArray[i] = n;
 			for (Neuron fromNeuron : inputLayer.getNeurons()) {
 				Synapse s = new Synapse(fromNeuron, n);
 				// for som DO NOT use glaobel id, only the index of the layer
-				synapseMatrix.addOrUpdateSynapse(s, fromNeuron.getIndex(), n.getIndex());
+				synapseMatrix.addOrUpdateSynapse(s, fromNeuron.getLayerIndex(), n.getLayerIndex());
 			}
 		}
 	}

@@ -1,7 +1,9 @@
 package de.unikassel.ann.io.beans;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.util.Locale;
 
 public abstract class TrainingBean {
 	
@@ -64,7 +66,7 @@ public abstract class TrainingBean {
 	
 	@Override
 	public String toString() {
-		NumberFormat fmt = new DecimalFormat("#.######");
+		NumberFormat fmt = new DecimalFormat("#.######", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 		StringBuilder sb = new StringBuilder();
 		
 		for (int i=0; i<input.length; i++) {
