@@ -2,13 +2,16 @@ package de.unikassel.ann.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ResourceBundle;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.Actions;
+import de.unikassel.ann.io.NetIO;
 import de.unikassel.vis.ImportFilePanel;
 
 public class MainMenu extends JMenuBar {
@@ -17,15 +20,15 @@ public class MainMenu extends JMenuBar {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private ResourceBundle i18n;
+	private Main main;
 
 	/**
 	 * Constructor
 	 */
-	public MainMenu(ResourceBundle i18n) {
+	public MainMenu(Main main) {
 		super();
 
-		this.i18n = i18n;
+		this.main = main;
 		addMenus();
 	}
 
@@ -52,24 +55,24 @@ public class MainMenu extends JMenuBar {
 	 * @return JMenu
 	 */
 	private JMenu getDateiMenu() {
-		JMenu mnDatei = new JMenu(i18n.getString("menu.file"));
+		JMenu mnDatei = new JMenu(Main.i18n.getString("menu.file"));
 
-		JMenuItem mntmNeu = new ActionMenuItem(i18n.getString("menu.file.new"),
-				Actions.NEW);
+		JMenuItem mntmNeu = new ActionMenuItem(
+				Main.i18n.getString("menu.file.new"), Actions.NEW);
 		mnDatei.add(mntmNeu);
 
 		JMenuItem mntmOeffnen = new ActionMenuItem(
-				i18n.getString("menu.file.open"), Actions.OPEN);
+				Main.i18n.getString("menu.file.open"), Actions.OPEN);
 		mnDatei.add(mntmOeffnen);
 
 		JMenuItem mntmSpeichern = new ActionMenuItem(
-				i18n.getString("menu.file.save"), Actions.SAVE);
+				Main.i18n.getString("menu.file.save"), Actions.SAVE);
 		mnDatei.add(mntmSpeichern);
 
 		mnDatei.addSeparator();
 
 		JMenuItem mntmBeenden = new ActionMenuItem(
-				i18n.getString("menu.file.exit"), Actions.EXIT);
+				Main.i18n.getString("menu.file.exit"), Actions.EXIT);
 		mnDatei.add(mntmBeenden);
 
 		return mnDatei;
@@ -81,7 +84,7 @@ public class MainMenu extends JMenuBar {
 	 * @return JMenu
 	 */
 	private JMenu getBearbeitenMenu() {
-		JMenu mnBearbeiten = new JMenu(i18n.getString("menu.edit"));
+		JMenu mnBearbeiten = new JMenu(Main.i18n.getString("menu.edit"));
 
 		return mnBearbeiten;
 	}
@@ -92,14 +95,15 @@ public class MainMenu extends JMenuBar {
 	 * @return JMenu
 	 */
 	private JMenu getAnsichtMenu() {
-		JMenu mnAnsicht = new JMenu(i18n.getString("menu.view"));
+		JMenu mnAnsicht = new JMenu(Main.i18n.getString("menu.view"));
 
 		JMenuItem mntmDatenvisualisierung = new ActionMenuItem(
-				i18n.getString("menu.view.showTrainingData"), Actions.VIEW_DATA);
+				Main.i18n.getString("menu.view.showTrainingData"),
+				Actions.VIEW_DATA);
 		mnAnsicht.add(mntmDatenvisualisierung);
 
 		JMenuItem mntmTrainingfehlerverlauf = new ActionMenuItem(
-				i18n.getString("menu.view.showTrainingError"),
+				Main.i18n.getString("menu.view.showTrainingError"),
 				Actions.VIEW_TRAINING);
 		mnAnsicht.add(mntmTrainingfehlerverlauf);
 
@@ -112,10 +116,10 @@ public class MainMenu extends JMenuBar {
 	 * @return JMenu
 	 */
 	private JMenu getHilfeMenu() {
-		JMenu mnHilfe = new JMenu(i18n.getString("menu.help"));
+		JMenu mnHilfe = new JMenu(Main.i18n.getString("menu.help"));
 
 		JMenuItem mntmUeber = new ActionMenuItem(
-				i18n.getString("menu.help.about"), Actions.ABOUT);
+				Main.i18n.getString("menu.help.about"), Actions.ABOUT);
 		mnHilfe.add(mntmUeber);
 
 		return mnHilfe;
@@ -143,6 +147,7 @@ public class MainMenu extends JMenuBar {
 			switch (action) {
 			case NEW:
 				// TODO
+				testRenderNetwork();
 				break;
 			case OPEN:
 				// TODO
@@ -169,6 +174,25 @@ public class MainMenu extends JMenuBar {
 				System.out.println("Unknown command: " + action);
 				break;
 			}
+		}
+
+		private void testRenderNetwork() {
+			String curDir = System.getProperty("user.dir");
+			File importFile = new File(curDir
+					+ "/src/test/resources/net_cfg.csv");
+
+			NetIO netIO = new NetIO();
+			// read and parse file
+			try {
+				netIO.readConfigFile(importFile);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			// create network (topology and synapses)
+			NetConfig netConfig = netIO.generateNetwork();
+			main.getGraphLayoutViewer().renderNetwork(netConfig.getNetwork());
 		}
 
 	}

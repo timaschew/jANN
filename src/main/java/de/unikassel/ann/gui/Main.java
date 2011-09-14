@@ -83,12 +83,14 @@ public class Main {
 	 */
 	private void initialize() {
 
-		i18n = ResourceBundle.getBundle("langpack", new XMLResourceBundleControl());
+		i18n = ResourceBundle.getBundle("langpack",
+				new XMLResourceBundleControl());
 
 		properties = new Properties();
 
 		try {
-			InputStream inputStream = getClass().getClassLoader().getResourceAsStream("config.properties");
+			InputStream inputStream = getClass().getClassLoader()
+					.getResourceAsStream("config.properties");
 			properties.load(inputStream);
 		} catch (IOException e) {
 			System.err.println("could not load property file");
@@ -108,7 +110,7 @@ public class Main {
 		//
 		// Main Menu(Bar)
 		//
-		JMenuBar mainMenu = new MainMenu(i18n);
+		JMenuBar mainMenu = new MainMenu(this);
 		frame.setJMenuBar(mainMenu);
 
 		//
@@ -117,8 +119,8 @@ public class Main {
 		JSplitPane mainSplitPane = new JSplitPane();
 		frame.getContentPane().add(mainSplitPane, BorderLayout.CENTER);
 
-		SideConfigurationPanel sideBar = new SideConfigurationPanel();
-		mainSplitPane.setRightComponent(sideBar);
+//		SideConfigurationPanel sideBar = new SideConfigurationPanel();
+//		mainSplitPane.setRightComponent(sideBar);
 
 		JSplitPane jungConsoleSplitPane = new JSplitPane();
 		jungConsoleSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
@@ -153,8 +155,11 @@ public class Main {
 
 		glv = new GraphLayoutViewer(dim, jungPanel);
 		glv.setFrame(frame);
-		glv.setI18n(i18n);
 		glv.init();
+	}
+
+	public GraphLayoutViewer getGraphLayoutViewer() {
+		return glv;
 	}
 
 	private void updateTextArea(final String text) {
@@ -168,7 +173,8 @@ public class Main {
 				Document doc = textPane.getDocument();
 				try {
 					StyledDocument style = textPane.getStyledDocument();
-					doc.insertString(doc.getLength(), text, style.getStyle(styleName));
+					doc.insertString(doc.getLength(), text,
+							style.getStyle(styleName));
 				} catch (BadLocationException e) {
 					throw new RuntimeException(e);
 				}
@@ -179,7 +185,8 @@ public class Main {
 
 	protected void addStylesToDocument(final StyledDocument doc) {
 		// Initialize some styles.
-		Style def = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
+		Style def = StyleContext.getDefaultStyleContext().getStyle(
+				StyleContext.DEFAULT_STYLE);
 
 		Style regular = doc.addStyle("regular", def);
 		StyleConstants.setFontFamily(def, "SansSerif");
@@ -215,7 +222,8 @@ public class Main {
 			}
 
 			@Override
-			public void write(final byte[] b, final int off, final int len) throws IOException {
+			public void write(final byte[] b, final int off, final int len)
+					throws IOException {
 				updateTextArea(new String(b, off, len));
 			}
 
@@ -232,7 +240,8 @@ public class Main {
 			}
 
 			@Override
-			public void write(final byte[] b, final int off, final int len) throws IOException {
+			public void write(final byte[] b, final int off, final int len)
+					throws IOException {
 				updateTextArea(new String(b, off, len), "error");
 			}
 
