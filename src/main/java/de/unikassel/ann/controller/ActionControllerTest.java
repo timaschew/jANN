@@ -87,8 +87,8 @@ public class ActionControllerTest extends JFrame {
 		/**
 		 * @param propertyChangeListener
 		 */
-		public void addPropertyChangeListener(final PropertyChangeListener listener) {
-			pcs.addPropertyChangeListener(listener);
+		public void addPropertyChangeListener(final String propertyName, final PropertyChangeListener listener) {
+			pcs.addPropertyChangeListener(propertyName, listener);
 		}
 
 	}
@@ -102,7 +102,7 @@ public class ActionControllerTest extends JFrame {
 	public JComboBox comboBox;
 	public JSpinner spinner;
 
-	private ActionController ac = ActionController.getInstance();
+	private ActionController ac = ActionController.get();
 	public JLabel label;
 
 	public ActionControllerTest() {
@@ -128,22 +128,20 @@ public class ActionControllerTest extends JFrame {
 	}
 
 	private void initChangeListeners() {
-		dataModel.addPropertyChangeListener(new PropertyChangeListener() {
+		dataModel.addPropertyChangeListener(MyModel.LAYER_COUNT_PROPERTY, new PropertyChangeListener() {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
 				ac.doAction(Actions.TEST_UPDATEVIEW, evt);
 			}
 		});
 
-		PropertyChangeListener modelUpdateListener = new PropertyChangeListener() {
+		JSpinner.DefaultEditor editor = (JSpinner.DefaultEditor) spinner.getEditor();
+		editor.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
 				ac.doAction(Actions.TEST_UPDATEMODEL, evt);
 			}
-		};
-
-		JSpinner.DefaultEditor editor = (JSpinner.DefaultEditor) spinner.getEditor();
-		editor.getTextField().addPropertyChangeListener("value", modelUpdateListener);
+		});
 
 		comboBox.addActionListener(new ActionListener() {
 			@Override

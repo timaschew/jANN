@@ -25,7 +25,10 @@ public class ActionController {
 
 	private static ActionController instance;
 
-	public static ActionController getInstance() {
+	private ActionController() {
+	}
+
+	public static ActionController get() {
 		if (instance == null) {
 			instance = new ActionController();
 		}
