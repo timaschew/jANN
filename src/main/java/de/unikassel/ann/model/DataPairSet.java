@@ -3,21 +3,20 @@ package de.unikassel.ann.model;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 
-import de.unikassel.ann.gui.Main;
+import de.unikassel.ann.controller.Settings;
 
 /**
  * @author anton
  * 
- * Klasse um ein Datensatz von Ein- und Ausgaben für das KNN zu strukturieren.<br>
- * Kann sowohl für als Trainingdata set, als auch als Testdata set verwendet werden.<br>
- * Anzahl an Eingabe- und Ausgabedaten bzw. Datensätzen (äußere Dimension) muss gleich sein.<br>
- * Die innere Dimension (Anzahl der Neuronen) kann sich unterscheiden
- *
+ *         Klasse um ein Datensatz von Ein- und Ausgaben für das KNN zu strukturieren.<br>
+ *         Kann sowohl für als Trainingdata set, als auch als Testdata set verwendet werden.<br>
+ *         Anzahl an Eingabe- und Ausgabedaten bzw. Datensätzen (äußere Dimension) muss gleich sein.<br>
+ *         Die innere Dimension (Anzahl der Neuronen) kann sich unterscheiden
+ * 
  */
 public class DataPairSet {
 
@@ -27,21 +26,22 @@ public class DataPairSet {
 	 * Innere Dimension entspricht einer Neuronenzuordnung
 	 */
 	private Double[][] input;
-	
+
 	/**
 	 * Ausgaben für das KNN<br>
 	 * Äußere Dimension entspricht einem Datensatz<br>
 	 * Innere Dimension entspricht einer Neuronenzuordnung
 	 */
 	private Double[][] ideal;
-	
+
 	/**
 	 * Erzeugt eine neue Instanz von Datensätzen für Ein- und Ausgaben<br>
 	 * Arrrays müssen außen gleich lang und nicht nicht leer sein
+	 * 
 	 * @param input
 	 * @param ideal
 	 */
-	public DataPairSet(Double[][] input, Double[][] ideal) {
+	public DataPairSet(final Double[][] input, final Double[][] ideal) {
 		if (isNotEmptyNested(input, ideal) && sameOuterSize(input, ideal)) {
 			this.input = input;
 			this.ideal = ideal;
@@ -50,24 +50,22 @@ public class DataPairSet {
 		}
 	}
 
-	
 	public DataPairSet() {
 	}
-	
-	public DataPairSet(DataPairSet copy) {
-		if (copy == null || ArrayUtils.isEmpty(copy.ideal)||
-				ArrayUtils.isEmpty(copy.input)) {
+
+	public DataPairSet(final DataPairSet copy) {
+		if (copy == null || ArrayUtils.isEmpty(copy.ideal) || ArrayUtils.isEmpty(copy.input)) {
 			throw new NullPointerException("dataset cannot be null");
 		}
 		input = new Double[copy.input.length][copy.input[0].length];
 		ideal = new Double[copy.ideal.length][copy.ideal[0].length];
-		for (int i=0; i<copy.input.length; i++) {
-			for (int j=0; j<copy.input[i].length; j++) {
+		for (int i = 0; i < copy.input.length; i++) {
+			for (int j = 0; j < copy.input[i].length; j++) {
 				input[i][j] = copy.input[i][j];
 			}
 		}
-		for (int i=0; i<copy.ideal.length; i++) {
-			for (int j=0; j<copy.ideal[i].length; j++) {
+		for (int i = 0; i < copy.ideal.length; i++) {
+			for (int j = 0; j < copy.ideal[i].length; j++) {
 				ideal[i][j] = copy.ideal[i][j];
 			}
 		}
@@ -80,7 +78,7 @@ public class DataPairSet {
 	 * @param inputRows
 	 * @param idealRows
 	 */
-	public void addRows(Double[][] inputRows, Double[][] idealRows) {
+	public void addRows(final Double[][] inputRows, final Double[][] idealRows) {
 		if (sameOuterSize(inputRows, idealRows)) {
 			if (isNotEmptyNested(inputRows, idealRows)) {
 				if (sameSize(inputRows[0], idealRows[0])) {
@@ -98,24 +96,24 @@ public class DataPairSet {
 		}
 	}
 
-
 	/**
 	 * Fügt einzelnen Datensatz zu den bisherigen hinzu
+	 * 
 	 * @param inputRow
 	 * @param idealRow
 	 */
-	public void addRow(Double[] inputRow, Double[] idealRow) {
+	public void addRow(final Double[] inputRow, final Double[] idealRow) {
 		if (sameSize(inputRow, idealRow)) {
 			input = (Double[][]) ArrayUtils.add(input, inputRow);
 			ideal = (Double[][]) ArrayUtils.add(ideal, idealRow);
 		}
-		
+
 	}
-	
+
 	/**
 	 * {@link #addRow(Double[], Double[])}
 	 */
-	public void addRow(List<Double> inputRow, List<Double> idealRow) {
+	public void addRow(final List<Double> inputRow, final List<Double> idealRow) {
 		Double[] in = new Double[0];
 		Double[] out = new Double[0];
 		addRow(inputRow.toArray(in), idealRow.toArray(out));
@@ -130,41 +128,40 @@ public class DataPairSet {
 		}
 		throw new IllegalAccessError("input and ideal size is different");
 	}
-	
+
 	public Double[][] getInput() {
 		return input;
 	}
-	
+
 	public Double[][] getIdeal() {
 		return ideal;
 	}
-	
-	public DataPair getPair(Integer index) {
+
+	public DataPair getPair(final Integer index) {
 		return new DataPair(input[index], ideal[index]);
 	}
-	
+
 	public List<DataPair> getPairs() {
 		List<DataPair> list = new ArrayList<DataPair>();
-		for (int i=0; i<input.length; i++) {
+		for (int i = 0; i < input.length; i++) {
 			list.add(getPair(i));
 		}
 		return list;
 	}
-	
-	
-	private boolean sameOuterSize(Double[][] inputRows, Double[][] idealRows) {
+
+	private boolean sameOuterSize(final Double[][] inputRows, final Double[][] idealRows) {
 		return inputRows.length == idealRows.length;
 	}
-	
+
 	/**
-	 * Prüfe ob die Arrays <b>nicht</b> miteinander gleich lang sind, 
-	 * sondern mit jeweils mit der inneren Länge von
-	 * {@link #input} und {@link #ideal}
+	 * Prüfe ob die Arrays <b>nicht</b> miteinander gleich lang sind, sondern mit jeweils mit der inneren Länge von {@link #input} und
+	 * {@link #ideal}
+	 * 
 	 * @param inputRows
 	 * @param idealRows
 	 * @return true wenn innere Länge gleich, sonst false
 	 */
-	private boolean sameSize(Double[] inputRows, Double[] idealRows) {
+	private boolean sameSize(final Double[] inputRows, final Double[] idealRows) {
 		if (input == null && ideal == null) {
 			return true;
 		}
@@ -173,10 +170,11 @@ public class DataPairSet {
 
 	/**
 	 * Prüfe ob arrays nicht in äußerer und innerer Dimension leer sind
+	 * 
 	 * @param rows
 	 * @return true wenn nicht leer, sonst false
 	 */
-	private boolean isNotEmptyNested(Double[][]... rows) {
+	private boolean isNotEmptyNested(final Double[][]... rows) {
 		boolean result = true;
 		for (Double[][] row : rows) {
 			result = result && ArrayUtils.isEmpty(row) == false;
@@ -185,17 +183,16 @@ public class DataPairSet {
 		return result;
 	}
 
-
-	public void addPair(DataPair pair) {
+	public void addPair(final DataPair pair) {
 		addRow(pair.getInput(), pair.getIdeal());
 	}
-	
+
 	/**
-	 * Resets every ideal value in the set to Double.NaN 
+	 * Resets every ideal value in the set to Double.NaN
 	 */
 	public void resetIdeal() {
-		for (int i=0; i<ideal.length; i++) {
-			for (int j=0; j<ideal[i].length; j++) {
+		for (int i = 0; i < ideal.length; i++) {
+			for (int j = 0; j < ideal[i].length; j++) {
 				ideal[i][j] = Double.NaN;
 			}
 		}
@@ -203,7 +200,7 @@ public class DataPairSet {
 
 	@Override
 	public String toString() {
-		NumberFormat fmt = new DecimalFormat("#.####", Main.decimalSymbols);
+		NumberFormat fmt = new DecimalFormat("#.####", Settings.decimalSymbols);
 		StringBuilder sb = new StringBuilder();
 		for (DataPair p : getPairs()) {
 			for (Double d : p.getInput()) {
@@ -219,5 +216,5 @@ public class DataPairSet {
 		}
 		return sb.toString();
 	}
-	
+
 }

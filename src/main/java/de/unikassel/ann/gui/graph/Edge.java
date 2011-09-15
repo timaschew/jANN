@@ -2,7 +2,7 @@ package de.unikassel.ann.gui.graph;
 
 import java.text.DecimalFormat;
 
-import de.unikassel.ann.gui.Main;
+import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.Synapse;
 
@@ -23,7 +23,7 @@ public class Edge {
 	public Edge() {
 	}
 
-	public void setIndex(int index) {
+	public void setIndex(final int index) {
 		this.index = index;
 	}
 
@@ -35,7 +35,7 @@ public class Edge {
 	 * Edge model
 	 */
 
-	public void setModel(Synapse model) {
+	public void setModel(final Synapse model) {
 		this.model = model;
 	}
 
@@ -47,11 +47,11 @@ public class Edge {
 	 * Create edge (synapse) between two vertexes (neurons)
 	 * 
 	 * @param Neuron
-	 *            from
+	 *          from
 	 * @param Neuron
-	 *            to
+	 *          to
 	 */
-	public void createModel(Neuron from, Neuron to) {
+	public void createModel(final Neuron from, final Neuron to) {
 		model = new Synapse(from, to);
 
 		// TODO remove later (it's just for testing purpose)
@@ -65,7 +65,7 @@ public class Edge {
 		return model.getWeight();
 	}
 
-	public void updateWeight(Double weight) {
+	public void updateWeight(final Double weight) {
 		if (model == null) {
 			return;
 		}
@@ -75,8 +75,7 @@ public class Edge {
 	@Override
 	public String toString() {
 		if (df == null) {
-			df = new DecimalFormat(
-					Main.properties.getProperty("gui.decimalFormat"), Main.decimalSymbols);
+			df = new DecimalFormat(Settings.properties.getProperty("gui.decimalFormat"), Settings.decimalSymbols);
 		}
 		return df.format(getWeight());
 	}

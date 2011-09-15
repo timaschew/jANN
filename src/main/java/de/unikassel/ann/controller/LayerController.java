@@ -1,16 +1,10 @@
 package de.unikassel.ann.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import de.unikassel.ann.gui.graph.Vertex;
-import de.unikassel.ann.model.BasicNetwork;
 import de.unikassel.ann.model.Layer;
-import de.unikassel.ann.model.Neuron;
 
 public class LayerController<T> {
 
@@ -28,9 +22,9 @@ public class LayerController<T> {
 	/**
 	 * Constructor
 	 */
-	public LayerController() {
+	private LayerController() {
 		layers = new ArrayList<JungLayer>();
-		
+
 		// Default create at least on layer
 		addLayer();
 	}
@@ -54,7 +48,7 @@ public class LayerController<T> {
 		layers.remove(index);
 	}
 
-	public Layer addVertex(int index, Vertex vertex) {
+	public Layer addVertex(final int index, final Vertex vertex) {
 		if (index > layers.size()) {
 			// First vertex for this layer -> Create new Layer
 			addLayer();
@@ -66,7 +60,7 @@ public class LayerController<T> {
 		return layer.getLayer();
 	}
 
-	public void removeVertex(int index) {
+	public void removeVertex(final int index) {
 		JungLayer layer = layers.get(index);
 		layer.removeVertex();
 	}
@@ -77,7 +71,7 @@ public class LayerController<T> {
 		private Layer layer;
 		private List<Vertex> vertices;
 
-		public JungLayer(int index) {
+		public JungLayer(final int index) {
 			this.index = index;
 			layer = new Layer(); // TODO from where do we get the layers?
 			layer.setIndex(index);
@@ -96,7 +90,7 @@ public class LayerController<T> {
 			return vertices;
 		}
 
-		public void addVertex(Vertex vertex) {
+		public void addVertex(final Vertex vertex) {
 			vertices.add(vertex);
 		}
 

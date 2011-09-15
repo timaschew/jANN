@@ -8,6 +8,8 @@ import com.panayotis.gnuplot.dataset.PointDataSet;
 import com.panayotis.gnuplot.plot.DataSetPlot;
 import com.panayotis.gnuplot.swing.JPlot;
 
+import de.unikassel.ann.controller.Settings;
+
 public class TrainErrorPlot implements TrainErrorListener {
 
 	private PointDataSet<Double> numberSet;
@@ -27,13 +29,12 @@ public class TrainErrorPlot implements TrainErrorListener {
 	}
 
 	public void init() {
-		new Main();
 		rl = new ReentrantLock();
 		numberSet = new PointDataSet<Double>();
 		DataSetPlot dataSetPlot = new DataSetPlot(numberSet);
 		dataSetPlot.set("with", "lines");
 		dataSetPlot.setTitle("run no #" + run);
-		String path = Main.properties.getProperty("gnuplot.path");
+		String path = Settings.properties.getProperty("gnuplot.path");
 		JavaPlot javaPlot = new JavaPlot(path, false);
 		javaPlot.setTitle("Trainingsfehler");
 		plot = new JPlot(javaPlot);

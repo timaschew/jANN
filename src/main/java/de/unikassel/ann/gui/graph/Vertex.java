@@ -2,6 +2,7 @@ package de.unikassel.ann.gui.graph;
 
 import java.text.DecimalFormat;
 
+import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.Neuron;
@@ -91,8 +92,8 @@ public class Vertex implements Comparable<Vertex> {
 	public String toString() {
 		if (df == null) {
 			df = new DecimalFormat(
-					Main.properties.getProperty("gui.decimalFormat"),
-					Main.decimalSymbols);
+					Settings.properties.getProperty("gui.decimalFormat"),
+					Settings.decimalSymbols);
 		}
 		String value = df.format(getValue());
 		return "#" + index + " (" + value + ")";

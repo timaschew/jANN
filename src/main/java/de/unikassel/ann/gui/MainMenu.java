@@ -3,7 +3,6 @@ package de.unikassel.ann.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ResourceBundle;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -11,6 +10,7 @@ import javax.swing.JMenuItem;
 
 import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.Actions;
+import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.io.NetIO;
 import de.unikassel.vis.ImportFilePanel;
 
@@ -25,7 +25,7 @@ public class MainMenu extends JMenuBar {
 	/**
 	 * Constructor
 	 */
-	public MainMenu(Main main) {
+	public MainMenu(final Main main) {
 		super();
 
 		this.main = main;
@@ -55,24 +55,20 @@ public class MainMenu extends JMenuBar {
 	 * @return JMenu
 	 */
 	private JMenu getDateiMenu() {
-		JMenu mnDatei = new JMenu(Main.i18n.getString("menu.file"));
+		JMenu mnDatei = new JMenu(Settings.i18n.getString("menu.file"));
 
-		JMenuItem mntmNeu = new ActionMenuItem(
-				Main.i18n.getString("menu.file.new"), Actions.NEW);
+		JMenuItem mntmNeu = new ActionMenuItem(Settings.i18n.getString("menu.file.new"), Actions.NEW);
 		mnDatei.add(mntmNeu);
 
-		JMenuItem mntmOeffnen = new ActionMenuItem(
-				Main.i18n.getString("menu.file.open"), Actions.OPEN);
+		JMenuItem mntmOeffnen = new ActionMenuItem(Settings.i18n.getString("menu.file.open"), Actions.OPEN);
 		mnDatei.add(mntmOeffnen);
 
-		JMenuItem mntmSpeichern = new ActionMenuItem(
-				Main.i18n.getString("menu.file.save"), Actions.SAVE);
+		JMenuItem mntmSpeichern = new ActionMenuItem(Settings.i18n.getString("menu.file.save"), Actions.SAVE);
 		mnDatei.add(mntmSpeichern);
 
 		mnDatei.addSeparator();
 
-		JMenuItem mntmBeenden = new ActionMenuItem(
-				Main.i18n.getString("menu.file.exit"), Actions.EXIT);
+		JMenuItem mntmBeenden = new ActionMenuItem(Settings.i18n.getString("menu.file.exit"), Actions.EXIT);
 		mnDatei.add(mntmBeenden);
 
 		return mnDatei;
@@ -84,7 +80,7 @@ public class MainMenu extends JMenuBar {
 	 * @return JMenu
 	 */
 	private JMenu getBearbeitenMenu() {
-		JMenu mnBearbeiten = new JMenu(Main.i18n.getString("menu.edit"));
+		JMenu mnBearbeiten = new JMenu(Settings.i18n.getString("menu.edit"));
 
 		return mnBearbeiten;
 	}
@@ -95,16 +91,12 @@ public class MainMenu extends JMenuBar {
 	 * @return JMenu
 	 */
 	private JMenu getAnsichtMenu() {
-		JMenu mnAnsicht = new JMenu(Main.i18n.getString("menu.view"));
+		JMenu mnAnsicht = new JMenu(Settings.i18n.getString("menu.view"));
 
-		JMenuItem mntmDatenvisualisierung = new ActionMenuItem(
-				Main.i18n.getString("menu.view.showTrainingData"),
-				Actions.VIEW_DATA);
+		JMenuItem mntmDatenvisualisierung = new ActionMenuItem(Settings.i18n.getString("menu.view.showTrainingData"), Actions.VIEW_DATA);
 		mnAnsicht.add(mntmDatenvisualisierung);
 
-		JMenuItem mntmTrainingfehlerverlauf = new ActionMenuItem(
-				Main.i18n.getString("menu.view.showTrainingError"),
-				Actions.VIEW_TRAINING);
+		JMenuItem mntmTrainingfehlerverlauf = new ActionMenuItem(Settings.i18n.getString("menu.view.showTrainingError"), Actions.VIEW_TRAINING);
 		mnAnsicht.add(mntmTrainingfehlerverlauf);
 
 		return mnAnsicht;
@@ -116,10 +108,9 @@ public class MainMenu extends JMenuBar {
 	 * @return JMenu
 	 */
 	private JMenu getHilfeMenu() {
-		JMenu mnHilfe = new JMenu(Main.i18n.getString("menu.help"));
+		JMenu mnHilfe = new JMenu(Settings.i18n.getString("menu.help"));
 
-		JMenuItem mntmUeber = new ActionMenuItem(
-				Main.i18n.getString("menu.help.about"), Actions.ABOUT);
+		JMenuItem mntmUeber = new ActionMenuItem(Settings.i18n.getString("menu.help.about"), Actions.ABOUT);
 		mnHilfe.add(mntmUeber);
 
 		return mnHilfe;
@@ -178,8 +169,7 @@ public class MainMenu extends JMenuBar {
 
 		private void testRenderNetwork() {
 			String curDir = System.getProperty("user.dir");
-			File importFile = new File(curDir
-					+ "/src/test/resources/net_cfg.csv");
+			File importFile = new File(curDir + "/src/test/resources/net_cfg.csv");
 
 			NetIO netIO = new NetIO();
 			// read and parse file

@@ -8,19 +8,19 @@ import java.util.Random;
 
 import de.unikassel.ann.algo.TrainingModule;
 import de.unikassel.ann.algo.WorkModule;
-import de.unikassel.ann.model.NetError;
+import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.gui.TrainErrorListener;
 import de.unikassel.ann.model.Layer;
+import de.unikassel.ann.model.NetError;
 import de.unikassel.ann.model.Network;
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.Synapse;
 import de.unikassel.ann.model.func.ActivationFunction;
 import de.unikassel.ann.rand.Randomizer;
 import de.unikassel.ann.strategy.Strategy;
-import de.unikassel.ann.gui.Main;
-import de.unikassel.ann.gui.TrainErrorListener;
 
 public class NetConfig {
-	
+
 	Network network;
 	List<Strategy> strategies;
 	WorkModule workModule;
@@ -29,7 +29,7 @@ public class NetConfig {
 	List<NetError> errorLogs;
 	private int restartAmount = 0;
 	List<TrainErrorListener> trainErrorListener;
-	
+
 	public NetConfig() {
 		network = new Network();
 		network.setConfig(this);
@@ -37,7 +37,7 @@ public class NetConfig {
 		errorLogs = new ArrayList<NetError>();
 		trainErrorListener = new ArrayList<TrainErrorListener>();
 	}
-	
+
 	public boolean shouldStopTraining() {
 		for (Strategy s : strategies) {
 			if (s.shouldStop()) {
@@ -46,7 +46,7 @@ public class NetConfig {
 		}
 		return false;
 	}
-	
+
 	public boolean shouldRestartTraining() {
 		for (Strategy s : strategies) {
 			if (s.shouldRestart()) {
@@ -58,7 +58,7 @@ public class NetConfig {
 		}
 		return false;
 	}
-	
+
 	private void reset() {
 		for (Strategy s : strategies) {
 			s.reset();
@@ -69,22 +69,22 @@ public class NetConfig {
 	public void initWeights() {
 		Random r = new Random();
 		for (Synapse s : network.getSynapseSet()) {
-			s.setWeight((r.nextDouble() * 2) - 1);
+			s.setWeight(r.nextDouble() * 2 - 1);
 		}
 	}
-	
+
 	/**
 	 * Generates the network with this configuration
 	 */
 	public void buildNetwork() {
 		network.finalizeStructure();
 	}
-	
+
 	public Network getNetwork() {
 		return network;
 	}
-	
-	public void addOrUpdateExisting(Strategy strat) {
+
+	public void addOrUpdateExisting(final Strategy strat) {
 		Strategy toRemove = null;
 		for (Strategy s : strategies) {
 			if (s.getClass().getSimpleName().equals(strat.getClass().getSimpleName())) {
@@ -98,30 +98,32 @@ public class NetConfig {
 		strategies.add(strat);
 	}
 
-	public void addLayer(int neuronCount, boolean bias, ActivationFunction function) {
+	public void addLayer(final int neuronCount, final boolean bias, final ActivationFunction function) {
 		Layer l = new Layer();
 		if (bias) {
 			l.addNeuron(new Neuron(function, true));
 		}
-		for (int i=0; i<neuronCount; i++) {
+		for (int i = 0; i < neuronCount; i++) {
 			Neuron n = new Neuron(function, false);
 			l.addNeuron(n);
 		}
 		network.addLayer(l);
-		
+
 	}
 
-	public void addTrainingModule(TrainingModule train) {
-		this.trainingModule = train;
+	public void addTrainingModule(final TrainingModule train) {
+		trainingModule = train;
 		train.setConfig(this);
 	}
-	public void addWorkModule(WorkModule work) {
-		this.workModule = work;
+
+	public void addWorkModule(final WorkModule work) {
+		workModule = work;
 	}
 
 	public TrainingModule getTrainingModule() {
 		return trainingModule;
 	}
+
 	public WorkModule getWorkingModule() {
 		return workModule;
 	}
@@ -133,10 +135,10 @@ public class NetConfig {
 	public void printStats() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("error = ");
-		NumberFormat fmt = new DecimalFormat("0.00000", Main.decimalSymbols);
+		NumberFormat fmt = new DecimalFormat("0.00000", Settings.decimalSymbols);
 		sb.append(fmt.format(trainingModule.getCurrentError()));
-//		sb.append(" / ");
-//		sb.append(fmt.format(trainingModule.getCurrentSingleError()));
+		// sb.append(" / ");
+		// sb.append(fmt.format(trainingModule.getCurrentSingleError()));
 		sb.append("\n");
 		sb.append("learnSteps = ");
 		sb.append(trainingModule.getCurrentStep());
@@ -145,47 +147,47 @@ public class NetConfig {
 		sb.append(trainingModule.getCurrentIteration());
 		sb.append("\n");
 		if (restartAmount > 0) {
-			sb.append("restarted "+restartAmount+" times\n");
+			sb.append("restarted " + restartAmount + " times\n");
 		}
 		System.out.println(sb.toString());
-		
-	}
-	
-//	private class TrainErrorThread extends Thread {
-//		TrainErrorThread() {
-//			start();
-//		}
-//		public void run() {
-//			while (getTrainingModule().isTrainingNow()) {
-////				trainErrorListener.get(0).addError(getTrainingModule().getCurrentIteration(), getTrainingModule().getCurrentError());
-//				trainErrorListener.get(0).updateUI();
-//			}
-//		}
-//	}
-//	
-//	private class MyWorker extends SwingWorker<Void, Void> {
-//		
-//		public MyWorker() {
-//			execute();
-//		}
-//		@Override
-//	    public Void doInBackground() {
-//			while (getTrainingModule().isTrainingNow()) {
-////				trainErrorListener.get(0).addError(getTrainingModule().getCurrentIteration(), getTrainingModule().getCurrentError());
-//				trainErrorListener.get(0).updateUI();
-//			}
-//			return null;
-//	    }
-//	}
 
-	public void addTrainErrorListener(TrainErrorListener tel) {
+	}
+
+	// private class TrainErrorThread extends Thread {
+	// TrainErrorThread() {
+	// start();
+	// }
+	// public void run() {
+	// while (getTrainingModule().isTrainingNow()) {
+	// // trainErrorListener.get(0).addError(getTrainingModule().getCurrentIteration(), getTrainingModule().getCurrentError());
+	// trainErrorListener.get(0).updateUI();
+	// }
+	// }
+	// }
+	//
+	// private class MyWorker extends SwingWorker<Void, Void> {
+	//
+	// public MyWorker() {
+	// execute();
+	// }
+	// @Override
+	// public Void doInBackground() {
+	// while (getTrainingModule().isTrainingNow()) {
+	// // trainErrorListener.get(0).addError(getTrainingModule().getCurrentIteration(), getTrainingModule().getCurrentError());
+	// trainErrorListener.get(0).updateUI();
+	// }
+	// return null;
+	// }
+	// }
+
+	public void addTrainErrorListener(final TrainErrorListener tel) {
 		trainErrorListener.add(tel);
 	}
 
-	public void notifyError(Double currentError) {
-		for (TrainErrorListener tel: trainErrorListener) {
+	public void notifyError(final Double currentError) {
+		for (TrainErrorListener tel : trainErrorListener) {
 			tel.addError(getTrainingModule().getCurrentIteration(), currentError);
-			
+
 		}
 	}
 }

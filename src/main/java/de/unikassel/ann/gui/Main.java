@@ -5,12 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.DecimalFormatSymbols;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -28,20 +23,20 @@ import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
 import de.unikassel.ann.gui.graph.GraphLayoutViewer;
-import de.unikassel.ann.util.XMLResourceBundleControl;
-import de.unikassel.vis.SideConfigurationPanel;
 
 public class Main {
+
+	private static Main instance = new Main();
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(final String[] args) {
 		EventQueue.invokeLater(new Runnable() {
+
 			@Override
 			public void run() {
 				try {
-					instance = new Main();
 					instance.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -49,19 +44,6 @@ public class Main {
 			}
 		});
 	}
-
-	/*
-	 * public fields
-	 */
-	public static Main instance;
-	public static ResourceBundle i18n;
-	public static Properties properties;
-
-	/**
-	 * Returns the locale specific decimal sperator, grouping seperator etc.
-	 */
-	public static DecimalFormatSymbols decimalSymbols;
-	public static Locale locale;
 
 	/*
 	 * private fields
@@ -73,7 +55,7 @@ public class Main {
 	/**
 	 * Create the application.
 	 */
-	public Main() {
+	private Main() {
 		initialize();
 		redirectSystemStreams();
 	}
@@ -82,23 +64,6 @@ public class Main {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-
-		i18n = ResourceBundle.getBundle("langpack",
-				new XMLResourceBundleControl());
-
-		properties = new Properties();
-
-		try {
-			InputStream inputStream = getClass().getClassLoader()
-					.getResourceAsStream("config.properties");
-			properties.load(inputStream);
-		} catch (IOException e) {
-			System.err.println("could not load property file");
-			e.printStackTrace();
-		}
-
-		locale = new Locale(properties.getProperty("gui.locale"));
-		decimalSymbols = DecimalFormatSymbols.getInstance(locale);
 
 		//
 		// Frame
@@ -119,8 +84,8 @@ public class Main {
 		JSplitPane mainSplitPane = new JSplitPane();
 		frame.getContentPane().add(mainSplitPane, BorderLayout.CENTER);
 
-//		SideConfigurationPanel sideBar = new SideConfigurationPanel();
-//		mainSplitPane.setRightComponent(sideBar);
+		// SideConfigurationPanel sideBar = new SideConfigurationPanel();
+		// mainSplitPane.setRightComponent(sideBar);
 
 		JSplitPane jungConsoleSplitPane = new JSplitPane();
 		jungConsoleSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
@@ -173,8 +138,7 @@ public class Main {
 				Document doc = textPane.getDocument();
 				try {
 					StyledDocument style = textPane.getStyledDocument();
-					doc.insertString(doc.getLength(), text,
-							style.getStyle(styleName));
+					doc.insertString(doc.getLength(), text, style.getStyle(styleName));
 				} catch (BadLocationException e) {
 					throw new RuntimeException(e);
 				}
@@ -185,8 +149,7 @@ public class Main {
 
 	protected void addStylesToDocument(final StyledDocument doc) {
 		// Initialize some styles.
-		Style def = StyleContext.getDefaultStyleContext().getStyle(
-				StyleContext.DEFAULT_STYLE);
+		Style def = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
 
 		Style regular = doc.addStyle("regular", def);
 		StyleConstants.setFontFamily(def, "SansSerif");
@@ -222,8 +185,7 @@ public class Main {
 			}
 
 			@Override
-			public void write(final byte[] b, final int off, final int len)
-					throws IOException {
+			public void write(final byte[] b, final int off, final int len) throws IOException {
 				updateTextArea(new String(b, off, len));
 			}
 
@@ -240,8 +202,7 @@ public class Main {
 			}
 
 			@Override
-			public void write(final byte[] b, final int off, final int len)
-					throws IOException {
+			public void write(final byte[] b, final int off, final int len) throws IOException {
 				updateTextArea(new String(b, off, len), "error");
 			}
 

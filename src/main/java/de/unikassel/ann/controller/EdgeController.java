@@ -21,6 +21,10 @@ import edu.uci.ics.jung.visualization.renderers.Renderer;
 public class EdgeController<E> {
 	private static EdgeController<Edge> instance;
 
+	private EdgeController() {
+
+	}
+
 	public static EdgeController<Edge> getInstance() {
 		if (instance == null) {
 			instance = new EdgeController<Edge>();
@@ -34,8 +38,7 @@ public class EdgeController<E> {
 	private RenderContext<Vertex, Edge> renderContext;
 	private PickedState<Edge> edgePickedState;
 
-	public void init(Graph<Vertex, Edge> graph,
-			VisualizationViewer<Vertex, Edge> viewer) {
+	public void init(final Graph<Vertex, Edge> graph, final VisualizationViewer<Vertex, Edge> viewer) {
 		this.graph = graph;
 		this.viewer = viewer;
 		this.renderer = viewer.getRenderer();
@@ -60,8 +63,7 @@ public class EdgeController<E> {
 	 * Set Edge Shape (Scaling/size)
 	 */
 	private void setEdgeShape() {
-		renderContext
-				.setEdgeShapeTransformer(new EdgeShape.Line<Vertex, Edge>());
+		renderContext.setEdgeShapeTransformer(new EdgeShape.Line<Vertex, Edge>());
 	}
 
 	/**
@@ -86,7 +88,7 @@ public class EdgeController<E> {
 		edgePickedState.addItemListener(new ItemListener() {
 
 			@Override
-			public void itemStateChanged(ItemEvent e) {
+			public void itemStateChanged(final ItemEvent e) {
 				Set<Edge> picked = edgePickedState.getPicked();
 				if (picked.isEmpty()) {
 					// No edge picked
@@ -114,7 +116,7 @@ public class EdgeController<E> {
 		}
 
 		@Override
-		public String transform(Edge e) {
+		public String transform(final Edge e) {
 			return e.toString();
 		}
 	}
@@ -122,8 +124,7 @@ public class EdgeController<E> {
 	/*
 	 * Edge Tooltip class
 	 */
-	private static final class EdgeTooltip<E> implements
-			Transformer<Edge, String> {
+	private static final class EdgeTooltip<E> implements Transformer<Edge, String> {
 
 		private static EdgeTooltip<Edge> instance;
 
@@ -135,7 +136,7 @@ public class EdgeController<E> {
 		}
 
 		@Override
-		public String transform(Edge e) {
+		public String transform(final Edge e) {
 			// TODO get value of the Edge by its model
 			// e.getModel().getWeight();
 			return "The amazing Tooltip of the Edge #" + e.getIndex();
@@ -145,8 +146,7 @@ public class EdgeController<E> {
 	/*
 	 * Edge Stroke class
 	 */
-	private static final class EdgeWeightStroke<E> implements
-			Transformer<Edge, Stroke> {
+	private static final class EdgeWeightStroke<E> implements Transformer<Edge, Stroke> {
 		protected static final Stroke basic = new BasicStroke(1);
 		protected static final Stroke heavy = new BasicStroke(2);
 		protected static final Stroke dotted = RenderContext.DOTTED;
@@ -157,11 +157,12 @@ public class EdgeController<E> {
 			this.weighted = true;
 		}
 
-		public void setWeighted(boolean weighted) {
+		public void setWeighted(final boolean weighted) {
 			this.weighted = weighted;
 		}
 
-		public Stroke transform(Edge e) {
+		@Override
+		public Stroke transform(final Edge e) {
 			if (weighted) {
 				if (drawHeavy(e)) {
 					return heavy;
@@ -173,13 +174,13 @@ public class EdgeController<E> {
 			}
 		}
 
-		protected boolean drawHeavy(Edge e) {
+		protected boolean drawHeavy(final Edge e) {
 			Synapse model = e.getModel();
 			if (model == null) {
 				return false;
 			}
 			double value = model.getWeight();
-			return (value > 0.7);
+			return value > 0.7;
 		}
 
 	}

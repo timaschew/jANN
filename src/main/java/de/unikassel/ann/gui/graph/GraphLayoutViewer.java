@@ -13,16 +13,16 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
+
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 
 import de.unikassel.ann.controller.EdgeController;
+import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.controller.VertexController;
 import de.unikassel.ann.factory.EdgeFactory;
 import de.unikassel.ann.factory.VertexFactory;
-import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.Network;
 import edu.uci.ics.jung.algorithms.layout.AbstractLayout;
@@ -51,11 +51,11 @@ public class GraphLayoutViewer {
 	 * Constructor
 	 * 
 	 * @param Dimension
-	 *            dim
+	 *          dim
 	 * @param Container
-	 *            parent
+	 *          parent
 	 */
-	public GraphLayoutViewer(Dimension dim, Container parent) {
+	public GraphLayoutViewer(final Dimension dim, final Container parent) {
 		graph = new DirectedSparseGraph<Vertex, Edge>();
 		layout = new StaticLayout<Vertex, Edge>(graph, dim);
 
@@ -118,8 +118,7 @@ public class GraphLayoutViewer {
 					dist = width / num;
 
 					// Set the location of the current vertex
-					location = new Point2D.Double(index * dist, layer
-							* rowHeight);
+					location = new Point2D.Double(index * dist, layer * rowHeight);
 					layout.setLocation(v, location);
 					layout.lock(v, true);
 				}
@@ -165,7 +164,7 @@ public class GraphLayoutViewer {
 		addMouseModeMenu();
 	}
 
-	public void setFrame(JFrame frame) {
+	public void setFrame(final JFrame frame) {
 		this.frame = frame;
 	}
 
@@ -173,7 +172,7 @@ public class GraphLayoutViewer {
 		viewer.repaint();
 	}
 
-	public void renderNetwork(Network network) {
+	public void renderNetwork(final Network network) {
 		// TODO
 		List<Layer> layers = network.getLayers();
 		System.out.println(layers);
@@ -181,8 +180,7 @@ public class GraphLayoutViewer {
 
 	private void initGraphMouse() {
 		// Create Graph Mouse (set in and out parameter to '1f' to disable zoom)
-		graphMouse = new GraphMouse<Vertex, Edge>(viewer.getRenderContext(),
-				vertexFactory, edgeFactory, 1f, 1f);
+		graphMouse = new GraphMouse<Vertex, Edge>(viewer.getRenderContext(), vertexFactory, edgeFactory, 1f, 1f);
 
 		viewer.setGraphMouse(graphMouse);
 		viewer.addKeyListener(graphMouse.getModeKeyListener());
@@ -198,8 +196,7 @@ public class GraphLayoutViewer {
 	}
 
 	/**
-	 * Add MouseMode Menu to the MainMenu of the frame to set the mode of the
-	 * Graph Mouse.
+	 * Add MouseMode Menu to the MainMenu of the frame to set the mode of the Graph Mouse.
 	 */
 	private void addMouseModeMenu() {
 		if (frame == null) {
@@ -207,27 +204,12 @@ public class GraphLayoutViewer {
 			return;
 		}
 		JMenu modeMenu = graphMouse.getModeMenu();
-		modeMenu.setText(i18n("menu.mousemode", "Mode"));
+		modeMenu.setText(Settings.getI18n("menu.mousemode", "Mode"));
 		modeMenu.setIcon(null);
 		modeMenu.setPreferredSize(new Dimension(50, 20));
 		JMenuBar menu = frame.getJMenuBar();
 		menu.add(modeMenu, menu.getComponentCount() - 1);
 		graphMouse.setMode(ModalGraphMouse.Mode.EDITING);
-	}
-
-	/**
-	 * Wrapper to ease access to the language ressources and to use a default
-	 * string.
-	 * 
-	 * @param key
-	 * @param defaultString
-	 * @return
-	 */
-	private String i18n(String key, String defaultString) {
-		if (Main.i18n != null) {
-			return Main.i18n.getString(key);
-		}
-		return defaultString;
 	}
 
 }
