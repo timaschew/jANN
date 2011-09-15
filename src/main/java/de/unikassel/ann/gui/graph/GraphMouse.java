@@ -199,9 +199,9 @@ public class GraphMouse<V, E> extends AbstractModalGraphMouse implements
 		if (modeMenu == null) {
 			modeMenu = new JMenu();// {
 			Icon icon = BasicIconFactory.getMenuArrowIcon();
-			modeMenu.setIcon(BasicIconFactory.getMenuArrowIcon());
-			modeMenu.setPreferredSize(new Dimension(icon.getIconWidth() + 10,
-					icon.getIconHeight() + 10));
+			// modeMenu.setIcon(BasicIconFactory.getMenuArrowIcon());
+			// modeMenu.setPreferredSize(new Dimension(icon.getIconWidth() + 10,
+			// icon.getIconHeight() + 10));
 
 			final JRadioButtonMenuItem transformingButton = new JRadioButtonMenuItem(
 					Mode.TRANSFORMING.toString());

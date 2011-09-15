@@ -338,8 +338,6 @@ public class GraphLayoutViewer {
 		}
 		JMenu modeMenu = graphMouse.getModeMenu();
 		modeMenu.setText(Settings.getI18n("menu.mousemode", "Mode"));
-		modeMenu.setIcon(null);
-		modeMenu.setPreferredSize(new Dimension(50, 20));
 		JMenuBar menu = frame.getJMenuBar();
 		menu.add(modeMenu, menu.getComponentCount() - 1);
 		graphMouse.setMode(ModalGraphMouse.Mode.EDITING);
