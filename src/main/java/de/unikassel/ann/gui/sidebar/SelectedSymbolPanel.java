@@ -1,4 +1,4 @@
-package de.unikassel.vis;
+package de.unikassel.ann.gui.sidebar;
 
 import javax.swing.JPanel;
 import javax.swing.GroupLayout;

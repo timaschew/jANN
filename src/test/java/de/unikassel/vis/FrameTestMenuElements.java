@@ -11,6 +11,10 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
+
+import de.unikassel.ann.gui.sidebar.SideConfigurationPanel;
+import de.unikassel.ann.gui.sidebar.TrainDataPanel;
+
 import java.awt.GridLayout;
 
 public class FrameTestMenuElements extends JFrame {

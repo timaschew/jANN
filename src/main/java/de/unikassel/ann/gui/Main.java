@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -22,7 +23,9 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
+import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.gui.graph.GraphLayoutViewer;
+import de.unikassel.ann.gui.sidebar.SideConfigurationPanel;
 
 public class Main {
 
@@ -84,8 +87,8 @@ public class Main {
 		JSplitPane mainSplitPane = new JSplitPane();
 		frame.getContentPane().add(mainSplitPane, BorderLayout.CENTER);
 
-		// SideConfigurationPanel sideBar = new SideConfigurationPanel();
-		// mainSplitPane.setRightComponent(sideBar);
+		SideConfigurationPanel sideBar = new SideConfigurationPanel();
+		mainSplitPane.setRightComponent(sideBar);
 
 		JSplitPane jungConsoleSplitPane = new JSplitPane();
 		jungConsoleSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
@@ -212,8 +215,13 @@ public class Main {
 			}
 		};
 
-		// System.setOut(new PrintStream(out, true));
-		// System.setErr(new PrintStream(errorOut, true));
+		if (Settings.properties.get("redirect.std.out").equals("1")) {
+			System.setOut(new PrintStream(out, true));
+		}
+		if (Settings.properties.get("redirect.std.err").equals("1")) {
+			System.setErr(new PrintStream(errorOut, true));
+		}
+
 	}
 
 }

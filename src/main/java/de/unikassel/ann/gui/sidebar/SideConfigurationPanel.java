@@ -1,4 +1,4 @@
-package de.unikassel.vis;
+package de.unikassel.ann.gui.sidebar;
 
 
 import javax.swing.JPanel;
@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
 import javax.swing.ScrollPaneConstants;
+
 
 public class SideConfigurationPanel extends JTabbedPane {
 
