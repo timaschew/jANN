@@ -48,7 +48,7 @@ public class FrameTestMenuElements extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				 ImportFileMenuPanel panel = new ImportFileMenuPanel();
+				 ImportFilePanel panel = ImportFilePanel.getImportFileInstance();
 				 panel.pack();
 				 panel.setVisible(true);
 			}
@@ -62,7 +62,7 @@ public class FrameTestMenuElements extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Trainingsdaten datenPanel = new Trainingsdaten();
+				TrainDataPanel datenPanel = TrainDataPanel.getTrainDataPanelInstance();
 				datenPanel.pack();
 				datenPanel.setVisible(true);
 			}
@@ -70,7 +70,7 @@ public class FrameTestMenuElements extends JFrame {
 		contentPane.add(btnTrainingsDatenNormalisieren);
 		
 		
-		TestSideBar test = new TestSideBar();
+		SideConfigurationPanel test = new SideConfigurationPanel();
 		contentPane.add(test);
 	}
 

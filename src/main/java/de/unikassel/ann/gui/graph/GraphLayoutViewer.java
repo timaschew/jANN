@@ -22,6 +22,9 @@ import de.unikassel.ann.controller.EdgeController;
 import de.unikassel.ann.controller.VertexController;
 import de.unikassel.ann.factory.EdgeFactory;
 import de.unikassel.ann.factory.VertexFactory;
+import de.unikassel.ann.gui.Main;
+import de.unikassel.ann.model.Layer;
+import de.unikassel.ann.model.Network;
 import edu.uci.ics.jung.algorithms.layout.AbstractLayout;
 import edu.uci.ics.jung.algorithms.layout.StaticLayout;
 import edu.uci.ics.jung.graph.DirectedGraph;
@@ -43,7 +46,6 @@ public class GraphLayoutViewer {
 	protected GraphMouse<Vertex, Edge> graphMouse;
 
 	private JFrame frame;
-	private ResourceBundle i18n;
 
 	/**
 	 * Constructor
@@ -167,12 +169,14 @@ public class GraphLayoutViewer {
 		this.frame = frame;
 	}
 
-	public void setI18n(ResourceBundle i18n) {
-		this.i18n = i18n;
-	}
-
 	public void refresh() {
 		viewer.repaint();
+	}
+
+	public void renderNetwork(Network network) {
+		// TODO
+		List<Layer> layers = network.getLayers();
+		System.out.println(layers);
 	}
 
 	private void initGraphMouse() {
@@ -220,8 +224,8 @@ public class GraphLayoutViewer {
 	 * @return
 	 */
 	private String i18n(String key, String defaultString) {
-		if (i18n != null) {
-			return i18n.getString(key);
+		if (Main.i18n != null) {
+			return Main.i18n.getString(key);
 		}
 		return defaultString;
 	}

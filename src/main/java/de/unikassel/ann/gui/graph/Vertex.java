@@ -82,11 +82,17 @@ public class Vertex implements Comparable<Vertex> {
 		return this.model.getValue();
 	}
 
+	public void remove() {
+		// TODO Auto-generated method stub
+		System.out.println(this + " remove()");
+	}
+
 	@Override
 	public String toString() {
 		if (df == null) {
 			df = new DecimalFormat(
-					Main.properties.getProperty("gui.decimalFormat"), Main.decimalSymbols);
+					Main.properties.getProperty("gui.decimalFormat"),
+					Main.decimalSymbols);
 		}
 		String value = df.format(getValue());
 		return "#" + index + " (" + value + ")";

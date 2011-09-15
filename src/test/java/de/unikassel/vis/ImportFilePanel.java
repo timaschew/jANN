@@ -21,13 +21,10 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JCheckBox;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.SwingConstants;
-import java.awt.Component;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 
-public class ImportFileMenuPanel extends JDialog {
+
+
+public class ImportFilePanel extends JDialog {
 
 	/**
 	 * 
@@ -37,10 +34,26 @@ public class ImportFileMenuPanel extends JDialog {
 	private JPanel searchFilePanel;
 	private JTextArea area;
 
+	private JCheckBox topologieCB;
+	private JCheckBox synapseCB;
+	private JCheckBox trainigDataCB;
+	
+	private static ImportFilePanel importFileInstance;
+	
+
+	public static ImportFilePanel getImportFileInstance() {
+		if (importFileInstance == null) {
+			importFileInstance = new ImportFilePanel();
+		}
+		return importFileInstance;
+	}
+	
+	
+
 	/**
 	 * Create the panel.
 	 */
-	public ImportFileMenuPanel() {
+	private ImportFilePanel() {
 		
 		searchFilePanel = new JPanel();
 		searchFilePanel.setLayout(new BorderLayout());
@@ -55,7 +68,7 @@ public class ImportFileMenuPanel extends JDialog {
 		
 		JLabel lblImportFile = new JLabel("File Importieren");
 		JButton btnSearch = new JButton("Suchen");
-		btnSearch.setIcon(new ImageIcon(ImportFileMenuPanel.class.getResource("/de/unikassel/vis/search-icon.png")));
+		btnSearch.setIcon(new ImageIcon(ImportFilePanel.class.getResource("/de/unikassel/vis/search-icon.png")));
 		
 		
 		//
@@ -68,21 +81,15 @@ public class ImportFileMenuPanel extends JDialog {
 		});
 		
 		JLabel lblTopology = new JLabel("Topologie");
-		
-		JCheckBox topologieCB = new JCheckBox("");
-		
+		topologieCB = new JCheckBox("");
 		JLabel lblSynapse = new JLabel("Synapse");
-		
-		JCheckBox synapseCB = new JCheckBox("");
-		
+		synapseCB = new JCheckBox("");
 		JLabel lblTrainingData = new JLabel("Training Data");
-		
-		JCheckBox trainigDataCB = new JCheckBox("");
-		
+		trainigDataCB = new JCheckBox("");
 		JButton btnImport = new JButton("Import");
 		//TODO Nach Import JungView Aktualisieren
-		
 		JButton btnCancel = new JButton("Abbrechen");
+		
 		btnCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
