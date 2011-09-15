@@ -14,6 +14,8 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+import de.unikassel.ann.model.UserSession;
+
 /**
  * @author anton
  * 
@@ -34,8 +36,19 @@ public class SettingsTest {
 
 	@Test()
 	public void testWrapperWihtoutException() {
-		ResourceBundle i18n = Settings.i18n;
 		String str = Settings.getI18n("bladsbalsudb");
 		Assert.assertNull(str);
+	}
+
+	@Test
+	public void testSession() {
+		UserSession session1 = Settings.getInstance().createNewSession(null);
+		UserSession session2 = Settings.getInstance().createNewSession(null);
+		UserSession session3 = Settings.getInstance().createNewSession(null);
+
+		System.out.println(session1);
+		System.out.println(session2);
+		System.out.println(session3);
+
 	}
 }

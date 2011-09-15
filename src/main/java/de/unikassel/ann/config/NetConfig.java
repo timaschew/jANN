@@ -21,14 +21,14 @@ import de.unikassel.ann.strategy.Strategy;
 
 public class NetConfig {
 
-	Network network;
-	List<Strategy> strategies;
-	WorkModule workModule;
-	TrainingModule trainingModule;
-	Randomizer randomizer;
-	List<NetError> errorLogs;
+	private Network network;
+	private List<Strategy> strategies;
+	private WorkModule workModule;
+	private TrainingModule trainingModule;
+	private Randomizer randomizer;
+	private List<NetError> errorLogs;
 	private int restartAmount = 0;
-	List<TrainErrorListener> trainErrorListener;
+	private List<TrainErrorListener> trainErrorListener;
 
 	public NetConfig() {
 		network = new Network();
