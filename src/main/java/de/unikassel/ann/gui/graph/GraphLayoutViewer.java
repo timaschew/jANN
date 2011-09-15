@@ -7,28 +7,33 @@ import java.awt.Graphics;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 
 import de.unikassel.ann.controller.EdgeController;
+import de.unikassel.ann.controller.LayerController;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.controller.VertexController;
 import de.unikassel.ann.factory.EdgeFactory;
 import de.unikassel.ann.factory.VertexFactory;
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.Network;
+import de.unikassel.ann.model.Neuron;
+import de.unikassel.ann.model.Synapse;
 import edu.uci.ics.jung.algorithms.layout.AbstractLayout;
 import edu.uci.ics.jung.algorithms.layout.StaticLayout;
 import edu.uci.ics.jung.graph.DirectedGraph;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
+import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
@@ -51,9 +56,9 @@ public class GraphLayoutViewer {
 	 * Constructor
 	 * 
 	 * @param Dimension
-	 *          dim
+	 *            dim
 	 * @param Container
-	 *          parent
+	 *            parent
 	 */
 	public GraphLayoutViewer(final Dimension dim, final Container parent) {
 		graph = new DirectedSparseGraph<Vertex, Edge>();
@@ -67,61 +72,107 @@ public class GraphLayoutViewer {
 				final int height = viewer.getHeight();
 				final int width = viewer.getWidth();
 
-				// Distance between two layers
-				final int rowHeight = 80;
-
 				// Position of the vertex depends on the number of vertices that
 				// are already in the same layer.
 				// Since new vertices are always added at the last position, get
 				// the number of vertices to compute the position for the new
 				// vertex.
-				Collection<Vertex> vertices = graph.getVertices();
+				LayerController<Layer> layerController = LayerController
+						.getInstance();
 
-				// Map to store the number of vertices (value) in each layer
-				// (key)
-				Map<Number, Number> layerMap = new HashMap<Number, Number>();
+				// TODO Take the vertices from the graph or from the
+				// LayerController?
+				// NOTE Vorteil bei den Vertices des LayerControllers: Sie sind
+				// bereits nach Layer sortiert -> Ueberpruefung ob Vertex im
+				// gleichen Layer liegt entfaellt!
+				HashMap<Layer, List<Vertex>> vertices = layerController
+						.getVertices();
+
+				// No vertices? -> No fun!
+				if (vertices.size() == 0) {
+					return;
+				}
+
+				// Collection<Vertex> vertices = graph.getVertices();
 
 				// List to sort the vertices by their indexes
-				List<Vertex> verticesSorted = new ArrayList<Vertex>();
+				// List<Vertex> verticesSorted = new ArrayList<Vertex>();
 
-				int count = 0, layer = 0, index = 0, dist, num;
+				// int count = 0, layer = 0, index = 0, dist, numVertices;
 				Point2D location;
 
 				// Count the number of vertices in each layer
-				for (Vertex v : vertices) {
-					if (v.getLayer() == layer) {
-						count++;
-					} else {
-						layer = v.getLayer();
-						count = 1;
-					}
-					layerMap.put(layer, count);
-					verticesSorted.add(v);
-				}
+				// for (Vertex v : vertices) {
+				// verticesSorted.add(v);
+				// }
 
 				// Sort the vertices accordingly to their index.
-				Collections.sort(verticesSorted);
+				// Collections.sort(verticesSorted);
+
+				// Gap between the layers
+				int gapY = height / layerController.getLayer().size();
+
+				Iterator<Entry<Layer, List<Vertex>>> iter;
+				Map.Entry<Layer, List<Vertex>> entry;
+				Layer layer;
+				List<Vertex> layerVertices;
+
+				iter = vertices.entrySet().iterator();
+				while (iter.hasNext()) {
+					entry = (Entry<Layer, List<Vertex>>) iter.next();
+					layer = entry.getKey();
+					layerVertices = entry.getValue();
+
+					// Skip empty layers
+					if (layerVertices.size() == 0) {
+						continue;
+					}
+
+					// Compute the gap between two vertices
+					int gapX = width / layerVertices.size();
+
+					int vertexIndex = -1;
+					for (Vertex vertex : layerVertices) {
+						vertexIndex++;
+
+						// Compute location of the vertex
+						int x = vertexIndex * gapX + (gapX / 2);
+						int y = layer.getIndex() * gapY + (gapY / 2);
+						location = new Point2D.Double(x, y);
+
+						// Set vertex location and lock it
+						layout.setLocation(vertex, location);
+						layout.lock(vertex, true);
+					}
+				}
 
 				// This is where the magic happens...
-				for (Vertex v : verticesSorted) {
-					// Get layer of the vertex and its index within this layer
-					layer = v.getLayer();
-					if (v.getLayer() == layer) {
-						index++;
-					} else {
-						index = 0;
-					}
-					// Number of spaces between the vertices in one layer
-					num = (Integer) layerMap.get(layer) + 1;
-
-					// Distance between two vertices
-					dist = width / num;
-
-					// Set the location of the current vertex
-					location = new Point2D.Double(index * dist, layer * rowHeight);
-					layout.setLocation(v, location);
-					layout.lock(v, true);
-				}
+				// for (Vertex v : verticesSorted) {
+				// // Get layer of the vertex and set its index within this
+				// // layer
+				// if (v.getLayer() == layer) {
+				// index++;
+				// } else {
+				// index = 0;
+				// layer = v.getLayer();
+				// }
+				// // The number of gaps between the vertices in the current
+				// // layer depends on the number of vertices in it.
+				// numVertices = layerController.getNumVerticesInLayer(layer);
+				//
+				// // Set distance between two vertices
+				// dist = width / numVertices;
+				//
+				// // Set the location of the current vertex
+				// location = new Point2D.Double(index * dist, (layer + 1)
+				// * rowHeight);
+				//
+				// System.out.println(v);
+				// System.out.println(location);
+				//
+				// layout.setLocation(v, location);
+				// layout.lock(v, true);
+				// }
 			}
 
 			@Override
@@ -168,19 +219,100 @@ public class GraphLayoutViewer {
 		this.frame = frame;
 	}
 
-	public void refresh() {
+	public void repaint() {
 		viewer.repaint();
 	}
 
+	/**
+	 * Remove all vertices and their edges from the graph.
+	 */
+	// public void clear() {
+	// HashMap<Layer, List<Vertex>> vertices = LayerController.getInstance()
+	// .getVertices();
+	// Iterator<Entry<Layer, List<Vertex>>> iter;
+	// Map.Entry<Layer, List<Vertex>> entry;
+	// List<Vertex> layerVertices;
+	//
+	// iter = vertices.entrySet().iterator();
+	// while (iter.hasNext()) {
+	// entry = (Entry<Layer, List<Vertex>>) iter.next();
+	// layerVertices = entry.getValue();
+	//
+	// for (Vertex vertex : layerVertices) {
+	// // vertex.remove();
+	// graph.removeVertex(vertex);
+	// }
+	// }
+	// repaint();
+	// }
+
+	/**
+	 * Render neurons and their synapses as Vertices and Edges into the Graph.
+	 * 
+	 * @param network
+	 */
 	public void renderNetwork(final Network network) {
-		// TODO
+		// Clear current view -> TODO
+		// clear();
+
+		//
+		// Render Vertices into their Layers
+		//
+		LayerController<Layer> layerController = LayerController.getInstance();
 		List<Layer> layers = network.getLayers();
-		System.out.println(layers);
+		for (Layer layer : layers) {
+			layerController.addLayer(layer);
+
+			List<Neuron> neurons = layer.getNeurons();
+			for (Neuron neuron : neurons) {
+				Vertex vertex = vertexFactory.create();
+
+				// Set the id of the neuron as index of the vertex
+				vertex.setIndex(neuron.getId());
+				vertex.setModel(neuron);
+
+				// Add the new vertex to the current jung layer
+				layerController.addVertex(layer.getIndex(), vertex);
+
+				// Add the new vertex to the graph
+				graph.addVertex(vertex);
+			}
+		}
+
+		//
+		// Render Synapses
+		//
+		Set<Synapse> synapseSet = network.getSynapseSet();
+		for (Iterator iterator = synapseSet.iterator(); iterator.hasNext();) {
+			Synapse synapse = (Synapse) iterator.next();
+
+			// Get the vertices of the synapse by their id of the their models
+			Integer fromId = synapse.getFromNeuron().getId();
+			Integer toId = synapse.getToNeuron().getId();
+
+			Vertex fromVertex = layerController.getVertexById(fromId);
+			Vertex toVertex = layerController.getVertexById(toId);
+
+			if (fromVertex == null || toVertex == null) {
+				// Problem! Both vertices are mandatory for the edge!
+				continue;
+			}
+
+			// Create new edge with its synapse and the both vertexes
+			Edge edge = edgeFactory.create();
+			edge.createModel(fromVertex.getModel(), toVertex.getModel());
+
+			// Add the new edge to the graph
+			graph.addEdge(edge, fromVertex, toVertex, EdgeType.DIRECTED);
+		}
+
+		repaint();
 	}
 
 	private void initGraphMouse() {
 		// Create Graph Mouse (set in and out parameter to '1f' to disable zoom)
-		graphMouse = new GraphMouse<Vertex, Edge>(viewer.getRenderContext(), vertexFactory, edgeFactory, 1f, 1f);
+		graphMouse = new GraphMouse<Vertex, Edge>(viewer.getRenderContext(),
+				vertexFactory, edgeFactory, 1f, 1f);
 
 		viewer.setGraphMouse(graphMouse);
 		viewer.addKeyListener(graphMouse.getModeKeyListener());
@@ -196,7 +328,8 @@ public class GraphLayoutViewer {
 	}
 
 	/**
-	 * Add MouseMode Menu to the MainMenu of the frame to set the mode of the Graph Mouse.
+	 * Add MouseMode Menu to the MainMenu of the frame to set the mode of the
+	 * Graph Mouse.
 	 */
 	private void addMouseModeMenu() {
 		if (frame == null) {

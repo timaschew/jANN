@@ -16,6 +16,8 @@ import javax.swing.JComponent;
 
 import org.apache.commons.collections15.Factory;
 
+import de.unikassel.ann.controller.LayerController;
+
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedGraph;
@@ -123,14 +125,22 @@ public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements
 				} else {
 					// make a new vertex
 					Vertex newVertex = vertexFactory.create();
-					Layout<Vertex, Edge> layout = vv.getModel()
-							.getGraphLayout();
+
+					// TODO get current index
+					int index = 1;
+
+					// Add the new vertex to the current jung layer
+					LayerController.getInstance().addVertex(1, vertex);
+
+					// Add the new vertex to the graph
 					graph.addVertex(newVertex);
 
 					// Set position of the new vertex
 					Point2D location = vv.getRenderContext()
 							.getMultiLayerTransformer()
 							.inverseTransform(e.getPoint());
+					Layout<Vertex, Edge> layout = vv.getModel()
+							.getGraphLayout();
 					layout.setLocation(newVertex, location);
 				}
 			}

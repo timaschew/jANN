@@ -3,6 +3,7 @@ package de.unikassel.ann.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -45,6 +46,9 @@ public class MainMenu extends JMenuBar {
 		JMenu mnAnsicht = getAnsichtMenu();
 		this.add(mnAnsicht);
 
+		JMenu mnTest = getTestMenu();
+		this.add(mnTest);
+
 		JMenu mnHilfe = getHilfeMenu();
 		this.add(mnHilfe);
 	}
@@ -57,18 +61,22 @@ public class MainMenu extends JMenuBar {
 	private JMenu getDateiMenu() {
 		JMenu mnDatei = new JMenu(Settings.i18n.getString("menu.file"));
 
-		JMenuItem mntmNeu = new ActionMenuItem(Settings.i18n.getString("menu.file.new"), Actions.NEW);
+		JMenuItem mntmNeu = new ActionMenuItem(
+				Settings.i18n.getString("menu.file.new"), Actions.NEW);
 		mnDatei.add(mntmNeu);
 
-		JMenuItem mntmOeffnen = new ActionMenuItem(Settings.i18n.getString("menu.file.open"), Actions.OPEN);
+		JMenuItem mntmOeffnen = new ActionMenuItem(
+				Settings.i18n.getString("menu.file.open"), Actions.OPEN);
 		mnDatei.add(mntmOeffnen);
 
-		JMenuItem mntmSpeichern = new ActionMenuItem(Settings.i18n.getString("menu.file.save"), Actions.SAVE);
+		JMenuItem mntmSpeichern = new ActionMenuItem(
+				Settings.i18n.getString("menu.file.save"), Actions.SAVE);
 		mnDatei.add(mntmSpeichern);
 
 		mnDatei.addSeparator();
 
-		JMenuItem mntmBeenden = new ActionMenuItem(Settings.i18n.getString("menu.file.exit"), Actions.EXIT);
+		JMenuItem mntmBeenden = new ActionMenuItem(
+				Settings.i18n.getString("menu.file.exit"), Actions.EXIT);
 		mnDatei.add(mntmBeenden);
 
 		return mnDatei;
@@ -93,13 +101,33 @@ public class MainMenu extends JMenuBar {
 	private JMenu getAnsichtMenu() {
 		JMenu mnAnsicht = new JMenu(Settings.i18n.getString("menu.view"));
 
-		JMenuItem mntmDatenvisualisierung = new ActionMenuItem(Settings.i18n.getString("menu.view.showTrainingData"), Actions.VIEW_DATA);
+		JMenuItem mntmDatenvisualisierung = new ActionMenuItem(
+				Settings.i18n.getString("menu.view.showTrainingData"),
+				Actions.VIEW_DATA);
 		mnAnsicht.add(mntmDatenvisualisierung);
 
-		JMenuItem mntmTrainingfehlerverlauf = new ActionMenuItem(Settings.i18n.getString("menu.view.showTrainingError"), Actions.VIEW_TRAINING);
+		JMenuItem mntmTrainingfehlerverlauf = new ActionMenuItem(
+				Settings.i18n.getString("menu.view.showTrainingError"),
+				Actions.VIEW_TRAINING);
 		mnAnsicht.add(mntmTrainingfehlerverlauf);
 
 		return mnAnsicht;
+	}
+
+	/**
+	 * Test menu
+	 * 
+	 * @return JMenu
+	 */
+	private JMenu getTestMenu() {
+		JMenu mnTest = new JMenu(Settings.i18n.getString("menu.test"));
+
+		JMenuItem mntmNetzwerk = new ActionMenuItem(
+				Settings.i18n.getString("menu.test.network"),
+				Actions.TEST_NETWORK);
+		mnTest.add(mntmNetzwerk);
+
+		return mnTest;
 	}
 
 	/**
@@ -110,7 +138,8 @@ public class MainMenu extends JMenuBar {
 	private JMenu getHilfeMenu() {
 		JMenu mnHilfe = new JMenu(Settings.i18n.getString("menu.help"));
 
-		JMenuItem mntmUeber = new ActionMenuItem(Settings.i18n.getString("menu.help.about"), Actions.ABOUT);
+		JMenuItem mntmUeber = new ActionMenuItem(
+				Settings.i18n.getString("menu.help.about"), Actions.ABOUT);
 		mnHilfe.add(mntmUeber);
 
 		return mnHilfe;
@@ -138,12 +167,11 @@ public class MainMenu extends JMenuBar {
 			switch (action) {
 			case NEW:
 				// TODO
-				testRenderNetwork();
 				break;
 			case OPEN:
 				// TODO
 				ImportFilePanel panel = ImportFilePanel.getImportFileInstance();
-				panel.show();
+				panel.setVisible(true);
 				break;
 			case SAVE:
 				// TODO
@@ -160,6 +188,13 @@ public class MainMenu extends JMenuBar {
 			case EXIT:
 				System.exit(e.getID());
 				break;
+			case TEST_NETWORK:
+				try {
+					testNetwork();
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+				break;
 			case NONE:
 			default:
 				System.out.println("Unknown command: " + action);
@@ -167,21 +202,20 @@ public class MainMenu extends JMenuBar {
 			}
 		}
 
-		private void testRenderNetwork() {
+		private void testNetwork() throws IOException, ClassNotFoundException {
 			String curDir = System.getProperty("user.dir");
-			File importFile = new File(curDir + "/src/test/resources/net_cfg.csv");
+			File importFile = new File(curDir
+					+ "/src/test/resources/net_cfg.csv");
 
 			NetIO netIO = new NetIO();
+
 			// read and parse file
-			try {
-				netIO.readConfigFile(importFile);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			netIO.readConfigFile(importFile);
 
 			// create network (topology and synapses)
 			NetConfig netConfig = netIO.generateNetwork();
+
+			// render network as graph
 			main.getGraphLayoutViewer().renderNetwork(netConfig.getNetwork());
 		}
 
