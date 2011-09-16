@@ -124,16 +124,9 @@ public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements
 						vv.addPostRenderPaintable(arrowPaintable);
 					}
 				} else {
-					// make a new vertex
+					// Create a new vertex
 					Vertex newVertex = vertexFactory.create();
-					
-
-					// TODO get current index
-					int layerIndex = 1;
-//					Settings.getInstance().getCurrentSession().
-
-					// Add the new vertex to the current jung layer
-					LayerController.getInstance().addVertex(layerIndex, newVertex);
+					newVertex.setup();
 
 					// Add the new vertex to the graph
 					graph.addVertex(newVertex);

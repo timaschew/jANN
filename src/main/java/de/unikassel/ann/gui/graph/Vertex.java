@@ -2,6 +2,7 @@ package de.unikassel.ann.gui.graph;
 
 import java.text.DecimalFormat;
 
+import de.unikassel.ann.controller.LayerController;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.model.Layer;
@@ -30,12 +31,24 @@ public class Vertex implements Comparable<Vertex> {
 
 		// Create model
 		model = new Neuron(activateFunc, bias);
+	}
 
-		// TODO get actual selected layer
-		setLayer(1);
+	/**
+	 * Vertex setup. Sets the current sidebar config values to the layer and add
+	 * it to the layercontroller.
+	 */
+	public void setup() {
+		// TODO Set current layer index for this vertex (for its neuron model)
+		int layerIndex = 1;
+		setLayer(layerIndex);
+		// Settings.getInstance().getCurrentSession().
 
+		// TODO Set its startvalue to 0
 		// TODO remove later, just for testing purpose
 		setValue(new Double(Math.random()));
+		
+		// Add the new vertex to the current jung layer
+		LayerController.getInstance().addVertex(layerIndex, this);
 	}
 
 	public void setIndex(int index) {
