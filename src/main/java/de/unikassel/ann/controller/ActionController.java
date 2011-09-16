@@ -14,6 +14,7 @@ import javax.swing.DefaultComboBoxModel;
 
 import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.gui.sidebar.Sidebar;
+import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.SidebarConfig;
 
 /**
@@ -35,10 +36,16 @@ public class ActionController {
 	}
 
 	public void doAction(final Actions a, final PropertyChangeEvent evt) {
+		
+//		System.out.println(a);
+//		System.out.println(evt.getOldValue());
+//		System.out.println(evt.getNewValue());
+		
 		switch (a) {
 
 		case UPDATE_SIDEBAR_CONFIG_INPUT_NEURON_MODEL:
-			SidebarConfig sidebarConfig = Settings.getInstance().getCurrentSession().sidebarConfig;
+			SidebarConfig sidebarConfig = Settings.getInstance()
+					.getCurrentSession().sidebarConfig;
 			sidebarConfig.setInputNeurons((Integer) evt.getNewValue());
 			break;
 
@@ -47,12 +54,55 @@ public class ActionController {
 			sidebarConfig.setHiddenLayers((Integer) evt.getNewValue());
 			break;
 
+		case UPDATE_JUNG_GRAPH:
+			sidebarConfig = Settings.getInstance().getCurrentSession().sidebarConfig;
+			Integer selectedHiddenLayer = 1; // TODO get selected hidden layer
+												// sidebarConfig.
+			Integer maxHiddenLayer = sidebarConfig.getHiddenLayers();
+			LayerController<Layer> layerController = LayerController
+					.getInstance();
+
+			if ((Integer) evt.getOldValue() > (Integer) evt.getNewValue()) {
+				// remove last
+				if (evt.getPropertyName().equals(
+						SidebarConfig.P.hiddenNeurons.name())) {
+					layerController.removeVertex(selectedHiddenLayer);
+				} else if (evt.getPropertyName().equals(
+						SidebarConfig.P.inputNeurons.name())) {
+					layerController.removeVertex(0);
+				} else if (evt.getPropertyName().equals(
+						SidebarConfig.P.hiddenLayers.name())) {
+					layerController.removeLayer(maxHiddenLayer);
+				} else if (evt.getPropertyName().equals(
+						SidebarConfig.P.outputNeurons.name())) {
+					layerController.removeVertex(maxHiddenLayer + 1);
+				}
+			} else {
+				// add new
+				if (evt.getPropertyName().equals(
+						SidebarConfig.P.hiddenNeurons.name())) {
+					layerController.addVertex(selectedHiddenLayer);
+				} else if (evt.getPropertyName().equals(
+						SidebarConfig.P.inputNeurons.name())) {
+					layerController.addVertex(selectedHiddenLayer);
+				} else if (evt.getPropertyName().equals(
+						SidebarConfig.P.hiddenLayers.name())) {
+					layerController.addLayer(maxHiddenLayer + 1);
+				} else if (evt.getPropertyName().equals(
+						SidebarConfig.P.outputNeurons.name())) {
+					layerController.addLayer(maxHiddenLayer + 1);
+				}
+			}
+
+			break;
+
 		case UPDATE_SIDEBAR_TOPOLOGY_VIEW:
 			sidebarConfig = Settings.getInstance().getCurrentSession().sidebarConfig;
 			Sidebar sidebar = Main.instance.sideBar;
 			// update full topology panel
 
-			sidebar.topolgyPanel.inputNeuroSpinner.setValue(sidebarConfig.getInputNeurons());
+			sidebar.topolgyPanel.inputNeuroSpinner.setValue(sidebarConfig
+					.getInputNeurons());
 			System.out.println("updated the view");
 
 			if (sidebarConfig.getHiddenLayers() > 0) {
@@ -65,9 +115,12 @@ public class ActionController {
 				for (int i = 1; i <= sidebarConfig.getHiddenLayers(); i++) {
 					comboBoxEntries.add(new Integer(i));
 				}
-				DefaultComboBoxModel newComboBoxModel = new DefaultComboBoxModel(comboBoxEntries);
-				sidebar.topolgyPanel.hiddenLayerDropDown.setModel(newComboBoxModel);
-				sidebar.topolgyPanel.hiddenLayerDropDown.setSelectedItem(sidebarConfig.getHiddenLayers());
+				DefaultComboBoxModel newComboBoxModel = new DefaultComboBoxModel(
+						comboBoxEntries);
+				sidebar.topolgyPanel.hiddenLayerDropDown
+						.setModel(newComboBoxModel);
+				sidebar.topolgyPanel.hiddenLayerDropDown
+						.setSelectedItem(sidebarConfig.getHiddenLayers());
 			} else {
 				sidebar.topolgyPanel.hiddenLayerDropDown.setEnabled(false);
 				sidebar.topolgyPanel.hiddenBiasCB.setEnabled(false);

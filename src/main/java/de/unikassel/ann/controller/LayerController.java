@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import de.unikassel.ann.factory.VertexFactory;
 import de.unikassel.ann.gui.graph.Vertex;
 import de.unikassel.ann.model.Layer;
 
@@ -23,13 +25,15 @@ public class LayerController<T> {
 		return instance;
 	}
 
-	protected List<JungLayer> layers;
+	protected LinkedList<JungLayer> layers;
+	private VertexFactory vertexFactory;
 
 	/**
 	 * Constructor
 	 */
 	private LayerController() {
-		layers = new ArrayList<JungLayer>();
+		layers = new LinkedList<JungLayer>();
+		vertexFactory = new VertexFactory();
 
 		// Default create at least on layer
 		addLayer();
@@ -50,14 +54,13 @@ public class LayerController<T> {
 	 * @param index
 	 */
 	public void addLayer(int index) {
-		// Add as much layer as necessary until we get a layer with the index
-		while (index >= layers.size()) {
-			addLayer();
-		}
+		Layer layer = new Layer();
+		layer.setIndex(index);
+		addLayer(layer);
 	}
 
 	/**
-	 * Add a layer with a already existing layer model.
+	 * Add a layer with an already existing layer model.
 	 * 
 	 * @param layer
 	 */
@@ -91,6 +94,19 @@ public class LayerController<T> {
 		layers.remove(index);
 	}
 
+	public void removeLayer(Integer index) {
+		layers.remove(index);
+		
+		// TODO are the vertices automatically removed as well?
+	}
+	
+	public Layer addVertex(final int index) {
+		Vertex vertex = vertexFactory.create();
+		vertex.setup();
+		
+		return addVertex(index, vertex);
+	}
+	
 	public Layer addVertex(final int index, final Vertex vertex) {
 		if (index >= layers.size()) {
 			// Layer with the index does not exist -> Create new Layer

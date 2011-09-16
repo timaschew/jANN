@@ -55,16 +55,16 @@ public class TopologyPanel extends JPanel {
 		setPreferredSize(new Dimension(400, 250));
 
 		JLabel lblInputNeuronen = new JLabel("Input Neuronen");
-		inputNeuroSpinner = new JSpinner(new SpinnerNumberModel(1, 1, MAX_NEURONS, 1));
+		inputNeuroSpinner = new JSpinner(new SpinnerNumberModel(0, 0, MAX_NEURONS, 1));
 
 		JLabel lblOutputNeuronen = new JLabel("Output Neuronen");
-		outputNeuroSpinner = new JSpinner(new SpinnerNumberModel(1, 1, MAX_NEURONS, 1));
+		outputNeuroSpinner = new JSpinner(new SpinnerNumberModel(0, 0, MAX_NEURONS, 1));
 
 		JLabel lblHiddenLayer = new JLabel("Hidden Layer");
 		hiddenLayerCountSpinner = new JSpinner(new SpinnerNumberModel(0, 0, MAX_HIDDEN_LAYER, 1));
 
 		JLabel lblHiddenNeuronen = new JLabel("Hidden Neuronen");
-		hiddenNeuronSpinner = new JSpinner(new SpinnerNumberModel(1, 1, MAX_NEURONS, 1));
+		hiddenNeuronSpinner = new JSpinner(new SpinnerNumberModel(0, 0, MAX_NEURONS, 1));
 
 		// is with the hiddenLayerCountSpinner associated
 

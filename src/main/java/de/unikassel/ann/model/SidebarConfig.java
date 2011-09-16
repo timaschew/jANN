@@ -27,7 +27,7 @@ public class SidebarConfig {
 	private PropertyChangeSupport pcs;
 
 	public enum P {
-		inputNeurons, outputNeurons, hiddenLayers, hiddenNeurons
+		inputNeurons, outputNeurons, hiddenLayers, hiddenNeurons, topology
 	};
 
 	private Integer inputNeurons = 1;
@@ -46,13 +46,13 @@ public class SidebarConfig {
 	public Integer getMouseInsertLayer() {
 		TopologyPanel topoPanel = Main.instance.sideBar.topolgyPanel;
 		if (topoPanel.mouseInputRB.isSelected()) {
-			return 1;
+			return 0;
 		} else if (topoPanel.mouseOutputRB.isSelected()) {
 			// input + hidden + 1 = output
-			return 1 + hiddenLayers + 1;
+			return hiddenLayers + 1;
 		} else if (topoPanel.mouseHiddenRB.isSelected()) {
 			Integer selectedHiddenLayer = (Integer) topoPanel.comboBoxHiddenMausModus.getSelectedItem();
-			return 1 + selectedHiddenLayer;
+			return selectedHiddenLayer;
 		}
 		throw new IllegalAccessError("radio buttons for insert mode are all deselected");
 	}
@@ -68,6 +68,32 @@ public class SidebarConfig {
 				ac.doAction(Actions.UPDATE_SIDEBAR_TOPOLOGY_VIEW, evt);
 			}
 		});
+		
+		pcs.addPropertyChangeListener(P.inputNeurons.name(), new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
+				ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
+			}
+		});
+		pcs.addPropertyChangeListener(P.hiddenNeurons.name(), new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
+				ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
+			}
+		});
+		pcs.addPropertyChangeListener(P.outputNeurons.name(), new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
+				ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
+			}
+		});
+		pcs.addPropertyChangeListener(P.hiddenLayers.name(), new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
+				ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
+			}
+		});
+		
 	}
 
 	// public void addPropertyChangeListener(final String propertyName, final PropertyChangeListener listener) {

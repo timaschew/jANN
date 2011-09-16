@@ -103,6 +103,7 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 				popup.add(new AbstractAction("Delete Vertex") {
 					public void actionPerformed(ActionEvent e) {
 						pickedVertexState.pick(vertex, false);
+						vertex.remove(); // TODO check
 						graph.removeVertex(vertex);
 						vv.repaint();
 					}
