@@ -30,8 +30,8 @@ public class SidebarConfig {
 		inputNeurons, outputNeurons, hiddenLayers, hiddenNeurons, topology
 	};
 
-	private Integer inputNeurons = 1;
-	private Integer outputNeurons = 1;
+	private Integer inputNeurons = 0;
+	private Integer outputNeurons = 0;
 	private Integer hiddenLayers = 0;
 	private Map<Integer, Integer> hiddenNeurons;
 	private ActionController ac;
@@ -112,7 +112,7 @@ public class SidebarConfig {
 	 *          the inputNeurons to set
 	 */
 	public void setInputNeurons(final Integer inputNeurons) {
-		if (inputNeurons < 1) {
+		if (inputNeurons < 0) {
 			return;
 		}
 		Integer oldValue = this.inputNeurons;
@@ -132,7 +132,7 @@ public class SidebarConfig {
 	 *          the outputNeurons to set
 	 */
 	public void setOutputNeurons(final Integer outputNeurons) {
-		if (outputNeurons < 1) {
+		if (outputNeurons < 0) {
 			return;
 		}
 		Integer oldValue = this.outputNeurons;

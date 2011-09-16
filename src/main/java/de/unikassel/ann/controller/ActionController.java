@@ -37,9 +37,9 @@ public class ActionController {
 
 	public void doAction(final Actions a, final PropertyChangeEvent evt) {
 		
-//		System.out.println(a);
-//		System.out.println(evt.getOldValue());
-//		System.out.println(evt.getNewValue());
+		System.out.println(a);
+		System.out.println(evt.getOldValue());
+		System.out.println(evt.getNewValue());
 		
 		switch (a) {
 
