@@ -1,4 +1,4 @@
-package de.unikassel.vis;
+package de.unikassel.ann.gui;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;

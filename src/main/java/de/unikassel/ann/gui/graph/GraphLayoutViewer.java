@@ -7,13 +7,11 @@ import java.awt.Graphics;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -56,9 +54,9 @@ public class GraphLayoutViewer {
 	 * Constructor
 	 * 
 	 * @param Dimension
-	 *            dim
+	 *          dim
 	 * @param Container
-	 *            parent
+	 *          parent
 	 */
 	public GraphLayoutViewer(final Dimension dim, final Container parent) {
 		graph = new DirectedSparseGraph<Vertex, Edge>();
@@ -77,16 +75,14 @@ public class GraphLayoutViewer {
 				// Since new vertices are always added at the last position, get
 				// the number of vertices to compute the position for the new
 				// vertex.
-				LayerController<Layer> layerController = LayerController
-						.getInstance();
+				LayerController<Layer> layerController = LayerController.getInstance();
 
 				// TODO Take the vertices from the graph or from the
 				// LayerController?
 				// NOTE Vorteil bei den Vertices des LayerControllers: Sie sind
 				// bereits nach Layer sortiert -> Ueberpruefung ob Vertex im
 				// gleichen Layer liegt entfaellt!
-				HashMap<Layer, List<Vertex>> vertices = layerController
-						.getVertices();
+				HashMap<Layer, List<Vertex>> vertices = layerController.getVertices();
 
 				// No vertices? -> No fun!
 				if (vertices.size() == 0) {
@@ -119,7 +115,7 @@ public class GraphLayoutViewer {
 
 				iter = vertices.entrySet().iterator();
 				while (iter.hasNext()) {
-					entry = (Entry<Layer, List<Vertex>>) iter.next();
+					entry = iter.next();
 					layer = entry.getKey();
 					layerVertices = entry.getValue();
 
@@ -136,8 +132,8 @@ public class GraphLayoutViewer {
 						vertexIndex++;
 
 						// Compute location of the vertex
-						int x = vertexIndex * gapX + (gapX / 2);
-						int y = layer.getIndex() * gapY + (gapY / 2);
+						int x = vertexIndex * gapX + gapX / 2;
+						int y = layer.getIndex() * gapY + gapY / 2;
 						location = new Point2D.Double(x, y);
 
 						// Set vertex location and lock it
@@ -282,9 +278,7 @@ public class GraphLayoutViewer {
 		//
 		// Render Synapses
 		//
-		Set<Synapse> synapseSet = network.getSynapseSet();
-		for (Iterator iterator = synapseSet.iterator(); iterator.hasNext();) {
-			Synapse synapse = (Synapse) iterator.next();
+		for (Synapse synapse : network.getSynapseSet()) {
 
 			// Get the vertices of the synapse by their id of the their models
 			Integer fromId = synapse.getFromNeuron().getId();
@@ -311,8 +305,7 @@ public class GraphLayoutViewer {
 
 	private void initGraphMouse() {
 		// Create Graph Mouse (set in and out parameter to '1f' to disable zoom)
-		graphMouse = new GraphMouse<Vertex, Edge>(viewer.getRenderContext(),
-				vertexFactory, edgeFactory, 1f, 1f);
+		graphMouse = new GraphMouse<Vertex, Edge>(viewer.getRenderContext(), vertexFactory, edgeFactory, 1f, 1f);
 
 		viewer.setGraphMouse(graphMouse);
 		viewer.addKeyListener(graphMouse.getModeKeyListener());
@@ -328,8 +321,7 @@ public class GraphLayoutViewer {
 	}
 
 	/**
-	 * Add MouseMode Menu to the MainMenu of the frame to set the mode of the
-	 * Graph Mouse.
+	 * Add MouseMode Menu to the MainMenu of the frame to set the mode of the Graph Mouse.
 	 */
 	private void addMouseModeMenu() {
 		if (frame == null) {

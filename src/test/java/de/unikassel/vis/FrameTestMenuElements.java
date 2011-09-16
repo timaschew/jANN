@@ -12,6 +12,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
 
+import de.unikassel.ann.gui.ImportFilePanel;
 import de.unikassel.ann.gui.sidebar.SideConfigurationPanel;
 import de.unikassel.ann.gui.sidebar.TrainDataPanel;
 

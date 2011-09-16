@@ -13,7 +13,6 @@ import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.Actions;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.io.NetIO;
-import de.unikassel.vis.ImportFilePanel;
 
 public class MainMenu extends JMenuBar {
 

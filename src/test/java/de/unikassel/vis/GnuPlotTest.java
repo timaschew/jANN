@@ -25,7 +25,7 @@ import de.unikassel.ann.model.Network;
  * @author anton
  * 
  */
-public class GnuPlotTet {
+public class GnuPlotTest {
 
 	/**
 	 * @param args

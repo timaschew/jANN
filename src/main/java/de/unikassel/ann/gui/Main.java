@@ -25,11 +25,11 @@ import javax.swing.text.StyledDocument;
 
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.gui.graph.GraphLayoutViewer;
-import de.unikassel.ann.gui.sidebar.SideConfigurationPanel;
+import de.unikassel.ann.gui.sidebar.Sidebar;
 
 public class Main {
 
-	private static Main instance = new Main();
+	public static Main instance = new Main();
 
 	/**
 	 * Launch the application.
@@ -54,6 +54,7 @@ public class Main {
 	private JFrame frame;
 	private JTextPane textPane;
 	private GraphLayoutViewer glv;
+	public Sidebar sideBar;
 
 	/**
 	 * Create the application.
@@ -87,7 +88,8 @@ public class Main {
 		JSplitPane mainSplitPane = new JSplitPane();
 		frame.getContentPane().add(mainSplitPane, BorderLayout.CENTER);
 
-		SideConfigurationPanel sideBar = new SideConfigurationPanel();
+		// SideConfigurationPanel sideBar = new SideConfigurationPanel();
+		sideBar = new Sidebar();
 		mainSplitPane.setRightComponent(sideBar);
 
 		JSplitPane jungConsoleSplitPane = new JSplitPane();

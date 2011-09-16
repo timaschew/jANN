@@ -24,17 +24,20 @@ public class UserSession {
 
 	private Network network;
 
+	public SidebarConfig sidebarConfig;
+
 	private String name;
 
 	private static Set<String> names;
 
 	public UserSession() {
-		this("unnamed");
+		this("Neu");
 	}
 
 	public UserSession(final String name) {
 		initName(name);
 		initDefaultNetwork();
+		sidebarConfig = new SidebarConfig();
 	}
 
 	/**

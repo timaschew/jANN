@@ -28,7 +28,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JLabel;
 import javax.swing.SpinnerNumberModel;
 
-public class SideBar extends JFrame implements PropertyChangeListener {
+public class TopologyPanelPrototyp extends JFrame implements PropertyChangeListener {
 	private static final Dimension jspinnerDimension = new Dimension(55, 22);
 	private JSplitPane splitPane;
 	private JPanel leftMainPane;
@@ -66,13 +66,13 @@ public class SideBar extends JFrame implements PropertyChangeListener {
 
 
 	public static void main (String args[]) {
-		SideBar sb = new SideBar();
+		TopologyPanelPrototyp sb = new TopologyPanelPrototyp();
 		sb.setVisible(true);
 		sb.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		sb.pack();
 	}
 	
-	public SideBar() {
+	public TopologyPanelPrototyp() {
 		
 	
 		getContentPane().setLayout(new BorderLayout());

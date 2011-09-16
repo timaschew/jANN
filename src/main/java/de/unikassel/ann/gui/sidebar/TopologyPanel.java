@@ -1,172 +1,211 @@
 package de.unikassel.ann.gui.sidebar;
 
-import javax.swing.JPanel;
-
 import java.awt.Dimension;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
-import javax.swing.JLabel;
-import javax.swing.JComboBox;
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.border.TitledBorder;
-import javax.swing.JCheckBox;
 
+import de.unikassel.ann.controller.ActionController;
+import de.unikassel.ann.controller.Actions;
 
-public class TopologyPanel extends JPanel{
+public class TopologyPanel extends JPanel {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-	
-	private JSpinner inputNeuroSpinner;
-	private JSpinner outputNeuroSpinner;
-	private JSpinner hiddenLayerCountSpinner;
-	private JSpinner hiddenNeuronSpinner;
-	private JComboBox hiddenLayerDropDown;
 
-	
-	private JComboBox comboBoxHiddenMausModus;
-	
-	private static TopologyPanel topologyPanelInstance;
+	private static final int MAX_NEURONS = 99;
 
-	public static TopologyPanel getTopologyPanelInstance() {
-		if (topologyPanelInstance == null) {
-			topologyPanelInstance = new TopologyPanel();
-		}
-		return topologyPanelInstance;
-	}
+	private static final int MAX_HIDDEN_LAYER = 10;
+
+	public JSpinner inputNeuroSpinner;
+	public JSpinner outputNeuroSpinner;
+	public JSpinner hiddenLayerCountSpinner;
+	public JSpinner hiddenNeuronSpinner;
+	public JComboBox hiddenLayerDropDown;
+	public JComboBox comboBoxHiddenMausModus;
+	public JCheckBox inputBiasCB;
+	public JCheckBox hiddenBiasCB;
+
+	private final ButtonGroup buttonGroup = new ButtonGroup();
+
+	private ActionController ac = ActionController.get();
 
 	/**
 	 * Create the frame.
 	 */
-	private TopologyPanel() {
+	public TopologyPanel() {
 		setBorder(new TitledBorder(null, "Topologie", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-//		setSize(400, 240);
-		setPreferredSize(new Dimension(400, 240));
+		// setSize(400, 240);
+		setPreferredSize(new Dimension(400, 250));
 
-		
 		JLabel lblInputNeuronen = new JLabel("Input Neuronen");
-		inputNeuroSpinner = new JSpinner();
-		
+		inputNeuroSpinner = new JSpinner(new SpinnerNumberModel(1, 1, MAX_NEURONS, 1));
+
 		JLabel lblOutputNeuronen = new JLabel("Output Neuronen");
-		outputNeuroSpinner = new JSpinner();
-		
-		
+		outputNeuroSpinner = new JSpinner(new SpinnerNumberModel(1, 1, MAX_NEURONS, 1));
+
 		JLabel lblHiddenLayer = new JLabel("Hidden Layer");
-		hiddenLayerCountSpinner = new JSpinner();
-		
+		hiddenLayerCountSpinner = new JSpinner(new SpinnerNumberModel(0, 0, MAX_HIDDEN_LAYER, 1));
+
 		JLabel lblHiddenNeuronen = new JLabel("Hidden Neuronen");
-		hiddenNeuronSpinner = new JSpinner();
-		
-		//is with the hiddenLayerCountSpinner associated
-		hiddenLayerDropDown = new JComboBox(new String[]{"1"});
+		hiddenNeuronSpinner = new JSpinner(new SpinnerNumberModel(1, 1, MAX_NEURONS, 1));
+
+		// is with the hiddenLayerCountSpinner associated
+
+		hiddenLayerDropDown = new JComboBox(new DefaultComboBoxModel());
 		hiddenLayerDropDown.setEnabled(false);
+		hiddenNeuronSpinner.setEnabled(false);
 
-
-		
 		JPanel mouseModusPanel = new JPanel();
 		mouseModusPanel.setBorder(new TitledBorder(null, "Maus-Modus", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		
-		JCheckBox inputBiasCB = new JCheckBox("Bias");
-		JCheckBox hiddenBiasCB = new JCheckBox("Bias");
-		
+
+		inputBiasCB = new JCheckBox("Bias");
+		hiddenBiasCB = new JCheckBox("Bias");
+		hiddenBiasCB.setEnabled(false);
+
 		GroupLayout gl_topologiePanel = new GroupLayout(this);
-		gl_topologiePanel.setHorizontalGroup(
-			gl_topologiePanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_topologiePanel.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(gl_topologiePanel.createParallelGroup(Alignment.LEADING)
-						.addComponent(mouseModusPanel, GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE)
-						.addGroup(gl_topologiePanel.createSequentialGroup()
-							.addGroup(gl_topologiePanel.createParallelGroup(Alignment.LEADING)
-								.addComponent(lblInputNeuronen)
-								.addComponent(lblOutputNeuronen)
-								.addComponent(lblHiddenLayer)
-								.addComponent(lblHiddenNeuronen))
-							.addGap(78)
-							.addGroup(gl_topologiePanel.createParallelGroup(Alignment.LEADING, false)
-								.addComponent(outputNeuroSpinner, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
-								.addComponent(hiddenLayerCountSpinner, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
-								.addComponent(hiddenNeuronSpinner, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
-								.addComponent(inputNeuroSpinner, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE))
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addGroup(gl_topologiePanel.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_topologiePanel.createSequentialGroup()
-									.addComponent(hiddenLayerDropDown, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addComponent(hiddenBiasCB))
-								.addComponent(inputBiasCB))))
-					.addContainerGap())
-		);
-		gl_topologiePanel.setVerticalGroup(
-			gl_topologiePanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_topologiePanel.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(gl_topologiePanel.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblInputNeuronen)
-						.addGroup(gl_topologiePanel.createSequentialGroup()
-							.addGroup(gl_topologiePanel.createParallelGroup(Alignment.BASELINE)
-								.addComponent(inputBiasCB)
-								.addComponent(inputNeuroSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-							.addGap(9)
-							.addGroup(gl_topologiePanel.createParallelGroup(Alignment.BASELINE)
-								.addComponent(outputNeuroSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblOutputNeuronen))
-							.addGap(11)
-							.addGroup(gl_topologiePanel.createParallelGroup(Alignment.BASELINE)
-								.addComponent(hiddenLayerCountSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblHiddenLayer))
-							.addGap(11)
-							.addGroup(gl_topologiePanel.createParallelGroup(Alignment.BASELINE)
-								.addComponent(hiddenNeuronSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblHiddenNeuronen)
-								.addComponent(hiddenLayerDropDown, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(hiddenBiasCB))))
-					.addGap(11)
-					.addComponent(mouseModusPanel, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(18, Short.MAX_VALUE))
-		);
-		
+		gl_topologiePanel.setHorizontalGroup(gl_topologiePanel.createParallelGroup(Alignment.LEADING).addGroup(
+				gl_topologiePanel
+						.createSequentialGroup()
+						.addContainerGap()
+						.addGroup(
+								gl_topologiePanel
+										.createParallelGroup(Alignment.LEADING)
+										.addComponent(mouseModusPanel, GroupLayout.DEFAULT_SIZE, 368, Short.MAX_VALUE)
+										.addGroup(
+												gl_topologiePanel
+														.createSequentialGroup()
+														.addGroup(
+																gl_topologiePanel.createParallelGroup(Alignment.LEADING).addComponent(lblInputNeuronen)
+																		.addComponent(lblOutputNeuronen).addComponent(lblHiddenLayer).addComponent(lblHiddenNeuronen))
+														.addGap(78)
+														.addGroup(
+																gl_topologiePanel
+																		.createParallelGroup(Alignment.LEADING, false)
+																		.addComponent(outputNeuroSpinner, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
+																		.addComponent(hiddenLayerCountSpinner, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
+																		.addComponent(hiddenNeuronSpinner, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 45,
+																				GroupLayout.PREFERRED_SIZE)
+																		.addComponent(inputNeuroSpinner, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE))
+														.addPreferredGap(ComponentPlacement.UNRELATED)
+														.addGroup(
+																gl_topologiePanel
+																		.createParallelGroup(Alignment.LEADING)
+																		.addGroup(
+																				gl_topologiePanel.createSequentialGroup()
+																						.addComponent(hiddenLayerDropDown, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
+																						.addPreferredGap(ComponentPlacement.RELATED).addComponent(hiddenBiasCB))
+																		.addComponent(inputBiasCB)))).addContainerGap()));
+		gl_topologiePanel.setVerticalGroup(gl_topologiePanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(
+						gl_topologiePanel
+								.createSequentialGroup()
+								.addContainerGap()
+								.addGroup(
+										gl_topologiePanel
+												.createParallelGroup(Alignment.LEADING)
+												.addComponent(lblInputNeuronen)
+												.addGroup(
+														gl_topologiePanel
+																.createSequentialGroup()
+																.addGroup(
+																		gl_topologiePanel
+																				.createParallelGroup(Alignment.BASELINE)
+																				.addComponent(inputBiasCB)
+																				.addComponent(inputNeuroSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+																						GroupLayout.PREFERRED_SIZE))
+																.addGap(9)
+																.addGroup(
+																		gl_topologiePanel
+																				.createParallelGroup(Alignment.BASELINE)
+																				.addComponent(outputNeuroSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+																						GroupLayout.PREFERRED_SIZE).addComponent(lblOutputNeuronen))
+																.addGap(11)
+																.addGroup(
+																		gl_topologiePanel
+																				.createParallelGroup(Alignment.BASELINE)
+																				.addComponent(hiddenLayerCountSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+																						GroupLayout.PREFERRED_SIZE).addComponent(lblHiddenLayer))
+																.addGap(11)
+																.addGroup(
+																		gl_topologiePanel
+																				.createParallelGroup(Alignment.BASELINE)
+																				.addComponent(hiddenNeuronSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+																						GroupLayout.PREFERRED_SIZE)
+																				.addComponent(lblHiddenNeuronen)
+																				.addComponent(hiddenLayerDropDown, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+																						GroupLayout.PREFERRED_SIZE).addComponent(hiddenBiasCB)))).addGap(11)
+								.addComponent(mouseModusPanel, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
+								.addContainerGap(18, Short.MAX_VALUE)));
 		/**
 		 * internal MausModus-Panel Elements
 		 */
-		JRadioButton rdbtnInput = new JRadioButton("Input");
-		JRadioButton rdbtnOutput = new JRadioButton("Output");
-		JRadioButton rdbtnHidden = new JRadioButton("Hidden:");
+		JRadioButton mouseInputRB = new JRadioButton("Input");
+		mouseInputRB.setSelected(true);
+		buttonGroup.add(mouseInputRB);
+		JRadioButton mouseOutputRB = new JRadioButton("Output");
+		buttonGroup.add(mouseOutputRB);
+		JRadioButton mouseHiddenRB = new JRadioButton("Hidden:");
+		buttonGroup.add(mouseHiddenRB);
 		comboBoxHiddenMausModus = new JComboBox();
 		comboBoxHiddenMausModus.setEnabled(false);
-		
-		
+
 		GroupLayout gl_mouseModusPanel = new GroupLayout(mouseModusPanel);
-		gl_mouseModusPanel.setHorizontalGroup(
-			gl_mouseModusPanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_mouseModusPanel.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(rdbtnInput)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(rdbtnOutput)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(rdbtnHidden)
-					.addGap(18)
-					.addComponent(comboBoxHiddenMausModus, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(115, Short.MAX_VALUE))
-		);
-		gl_mouseModusPanel.setVerticalGroup(
-			gl_mouseModusPanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_mouseModusPanel.createSequentialGroup()
-					.addGroup(gl_mouseModusPanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(rdbtnInput)
-						.addComponent(rdbtnOutput)
-						.addComponent(rdbtnHidden)
-						.addComponent(comboBoxHiddenMausModus, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-		);
+		gl_mouseModusPanel.setHorizontalGroup(gl_mouseModusPanel.createParallelGroup(Alignment.LEADING).addGroup(
+				gl_mouseModusPanel.createSequentialGroup().addContainerGap().addComponent(mouseInputRB)
+						.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(mouseOutputRB).addPreferredGap(ComponentPlacement.UNRELATED)
+						.addComponent(mouseHiddenRB).addGap(18)
+						.addComponent(comboBoxHiddenMausModus, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(115, Short.MAX_VALUE)));
+		gl_mouseModusPanel.setVerticalGroup(gl_mouseModusPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(
+						gl_mouseModusPanel
+								.createSequentialGroup()
+								.addGroup(
+										gl_mouseModusPanel
+												.createParallelGroup(Alignment.BASELINE)
+												.addComponent(mouseInputRB)
+												.addComponent(mouseOutputRB)
+												.addComponent(mouseHiddenRB)
+												.addComponent(comboBoxHiddenMausModus, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+														GroupLayout.PREFERRED_SIZE)).addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 		mouseModusPanel.setLayout(gl_mouseModusPanel);
 		setLayout(gl_topologiePanel);
+
+		initActions();
 	}
-	
+
+	/**
+	 * 
+	 */
+	private void initActions() {
+		JSpinner.DefaultEditor editor = (JSpinner.DefaultEditor) inputNeuroSpinner.getEditor();
+		editor.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
+				ac.doAction(Actions.UPDATE_SIDEBAR_CONFIG_INPUT_NEURON_MODEL, evt);
+			}
+		});
+
+		editor = (JSpinner.DefaultEditor) hiddenLayerCountSpinner.getEditor();
+		editor.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
+				ac.doAction(Actions.UPDATE_SIDEBAR_CONFIG_HIDDEN_LAYER_MODEL, evt);
+			}
+		});
+
+	}
 }
