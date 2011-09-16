@@ -1,4 +1,4 @@
-package de.unikassel.vis;
+package de.unikassel.gui;
 
 import java.awt.BorderLayout;
 
