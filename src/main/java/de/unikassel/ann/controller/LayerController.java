@@ -53,7 +53,7 @@ public class LayerController<T> {
 	 * 
 	 * @param index
 	 */
-	public void addLayer(int index) {
+	public void addLayer(final int index) {
 		Layer layer = new Layer();
 		layer.setIndex(index);
 		addLayer(layer);
@@ -64,7 +64,7 @@ public class LayerController<T> {
 	 * 
 	 * @param layer
 	 */
-	public void addLayer(Layer layer) {
+	public void addLayer(final Layer layer) {
 		int index = layer.getIndex();
 
 		// Check if there is already a layer with the same index available
@@ -94,33 +94,47 @@ public class LayerController<T> {
 		layers.remove(index);
 	}
 
-	public void removeLayer(Integer index) {
+	public void removeLayer(final Integer index) {
 		layers.remove(index);
-		
+
 		// TODO are the vertices automatically removed as well?
 	}
-	
-	public Layer addVertex(final int index) {
+
+	public Layer addVertex(final int layerIndex, final int vertexIndex) {
+		if (layers.get(layerIndex).getVertices().size() >= vertexIndex) {
+			return null;
+		}
+		return addVertex(layerIndex);
+	}
+
+	public Layer addVertex(final int layerIndex) {
 		Vertex vertex = vertexFactory.create();
 		vertex.setup();
-		
-		return addVertex(index, vertex);
+
+		return addVertex(layerIndex, vertex);
 	}
-	
-	public Layer addVertex(final int index, final Vertex vertex) {
-		if (index >= layers.size()) {
+
+	public Layer addVertex(final int layerIndex, final Vertex vertex) {
+		if (layerIndex >= layers.size()) {
 			// Layer with the index does not exist -> Create new Layer
-			addLayer(index);
+			addLayer(layerIndex);
 		}
-		JungLayer layer = layers.get(index);
+		JungLayer layer = layers.get(layerIndex);
 		layer.addVertex(vertex);
 
 		// Return the layer to which the vertex was added
 		return layer.getLayer();
 	}
 
-	public void removeVertex(final int index) {
-		JungLayer layer = layers.get(index);
+	public void removeVertex(final int layerIndex, final int vertexIndex) {
+		if (layers.get(layerIndex).getVertices().size() <= vertexIndex) {
+			return;
+		}
+		removeVertex(layerIndex);
+	}
+
+	public void removeVertex(final int layerIndex) {
+		JungLayer layer = layers.get(layerIndex);
 		layer.removeVertex();
 	}
 
@@ -139,20 +153,19 @@ public class LayerController<T> {
 		return map;
 	}
 
-	public int getNumVerticesInLayer(int index) {
+	public int getNumVerticesInLayer(final int index) {
 		return layers.get(index).getVertices().size();
 	}
 
-	public Vertex getVertexById(Integer id) {
-		HashMap<Layer, List<Vertex>> vertexMap = LayerController.getInstance()
-				.getVertices();
+	public Vertex getVertexById(final Integer id) {
+		HashMap<Layer, List<Vertex>> vertexMap = LayerController.getInstance().getVertices();
 		Iterator<Entry<Layer, List<Vertex>>> iter;
 		Map.Entry<Layer, List<Vertex>> entry;
 		List<Vertex> vertices;
 
 		iter = vertexMap.entrySet().iterator();
 		while (iter.hasNext()) {
-			entry = (Entry<Layer, List<Vertex>>) iter.next();
+			entry = iter.next();
 			vertices = entry.getValue();
 
 			for (Vertex vertex : vertices) {
@@ -168,7 +181,7 @@ public class LayerController<T> {
 
 	public void clear() {
 		// Remove all layers with their vertices
-		layers.clear();		
+		layers.clear();
 	}
 
 	private final class JungLayer implements Comparable<JungLayer> {
@@ -212,9 +225,9 @@ public class LayerController<T> {
 		}
 
 		@Override
-		public int compareTo(JungLayer layer) {
+		public int compareTo(final JungLayer layer) {
 			return getIndex() - layer.getIndex();
 		}
-	}	
+	}
 
 }

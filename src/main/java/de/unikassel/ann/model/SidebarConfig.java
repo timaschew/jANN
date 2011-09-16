@@ -68,7 +68,7 @@ public class SidebarConfig {
 				ac.doAction(Actions.UPDATE_SIDEBAR_TOPOLOGY_VIEW, evt);
 			}
 		});
-		
+
 		pcs.addPropertyChangeListener(P.inputNeurons.name(), new PropertyChangeListener() {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
@@ -93,7 +93,7 @@ public class SidebarConfig {
 				ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
 			}
 		});
-		
+
 	}
 
 	// public void addPropertyChangeListener(final String propertyName, final PropertyChangeListener listener) {

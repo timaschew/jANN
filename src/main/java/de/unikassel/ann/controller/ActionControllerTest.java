@@ -91,6 +91,13 @@ public class ActionControllerTest extends JFrame {
 			pcs.addPropertyChangeListener(propertyName, listener);
 		}
 
+		/**
+		 * @param propertyChangeListener
+		 */
+		public void addPropertyChangeListener(final PropertyChangeListener listener) {
+			pcs.addPropertyChangeListener(listener);
+		}
+
 	}
 
 	public static ActionControllerTest instance;
@@ -128,7 +135,7 @@ public class ActionControllerTest extends JFrame {
 	}
 
 	private void initChangeListeners() {
-		dataModel.addPropertyChangeListener(MyModel.LAYER_COUNT_PROPERTY, new PropertyChangeListener() {
+		dataModel.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
 				ac.doAction(Actions.TEST_UPDATEVIEW, evt);
