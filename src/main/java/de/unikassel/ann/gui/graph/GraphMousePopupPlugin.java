@@ -118,10 +118,15 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 			} else {
 				popup.add(new AbstractAction("Create Vertex") {
 					public void actionPerformed(ActionEvent e) {
+						// Create a new vertex
 						Vertex newVertex = vertexFactory.create();
+						newVertex.setup();
+
+						// Add the new vertex to the graph
 						graph.addVertex(newVertex);
-						layout.setLocation(newVertex, vv.getRenderContext()
-								.getMultiLayerTransformer().inverseTransform(p));
+
+//						layout.setLocation(newVertex, vv.getRenderContext()
+//								.getMultiLayerTransformer().inverseTransform(p));
 						vv.repaint();
 					}
 				});

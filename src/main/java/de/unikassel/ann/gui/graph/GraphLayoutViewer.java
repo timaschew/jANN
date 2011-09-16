@@ -16,6 +16,9 @@ import java.util.Map.Entry;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JPanel;
+
+import org.apache.commons.collections15.Transformer;
 
 import de.unikassel.ann.controller.EdgeController;
 import de.unikassel.ann.controller.LayerController;
@@ -49,16 +52,52 @@ public class GraphLayoutViewer {
 	protected GraphMouse<Vertex, Edge> graphMouse;
 
 	private JFrame frame;
+	private Dimension dim;
+	private Container parent;
+
+	private static GraphLayoutViewer instance;
+
+	public static GraphLayoutViewer getInstance() {
+		if (instance == null) {
+			instance = new GraphLayoutViewer();
+		}
+		return instance;
+	}
 
 	/**
-	 * Constructor
-	 * 
-	 * @param Dimension
-	 *          dim
-	 * @param Container
-	 *          parent
+	 * Private Constructor
 	 */
-	public GraphLayoutViewer(final Dimension dim, final Container parent) {
+	private GraphLayoutViewer() {
+	}
+
+	public DirectedGraph<Vertex, Edge> getGraph() {
+		return graph;
+	}
+
+	public void setGraph(DirectedGraph<Vertex, Edge> graph) {
+		this.graph = graph;
+	}
+
+	public AbstractLayout<Vertex, Edge> getLayout() {
+		return layout;
+	}
+
+	public void setLayout(AbstractLayout<Vertex, Edge> layout) {
+		this.layout = layout;
+	}
+
+	public VisualizationViewer<Vertex, Edge> getViewer() {
+		return viewer;
+	}
+
+	public void setViewer(VisualizationViewer<Vertex, Edge> viewer) {
+		this.viewer = viewer;
+	}
+
+	/**
+	 * Initialize
+	 */
+	public void init() {
 		graph = new DirectedSparseGraph<Vertex, Edge>();
 		layout = new StaticLayout<Vertex, Edge>(graph, dim);
 
@@ -75,35 +114,17 @@ public class GraphLayoutViewer {
 				// Since new vertices are always added at the last position, get
 				// the number of vertices to compute the position for the new
 				// vertex.
-				LayerController<Layer> layerController = LayerController.getInstance();
-
-				// TODO Take the vertices from the graph or from the
-				// LayerController?
-				// NOTE Vorteil bei den Vertices des LayerControllers: Sie sind
-				// bereits nach Layer sortiert -> Ueberpruefung ob Vertex im
-				// gleichen Layer liegt entfaellt!
-				HashMap<Layer, List<Vertex>> vertices = layerController.getVertices();
+				LayerController<Layer> layerController = LayerController
+						.getInstance();
+				HashMap<Layer, List<Vertex>> vertices = layerController
+						.getVertices();
 
 				// No vertices? -> No fun!
 				if (vertices.size() == 0) {
 					return;
 				}
 
-				// Collection<Vertex> vertices = graph.getVertices();
-
-				// List to sort the vertices by their indexes
-				// List<Vertex> verticesSorted = new ArrayList<Vertex>();
-
-				// int count = 0, layer = 0, index = 0, dist, numVertices;
 				Point2D location;
-
-				// Count the number of vertices in each layer
-				// for (Vertex v : vertices) {
-				// verticesSorted.add(v);
-				// }
-
-				// Sort the vertices accordingly to their index.
-				// Collections.sort(verticesSorted);
 
 				// Gap between the layers
 				int gapY = height / layerController.getLayer().size();
@@ -141,34 +162,6 @@ public class GraphLayoutViewer {
 						layout.lock(vertex, true);
 					}
 				}
-
-				// This is where the magic happens...
-				// for (Vertex v : verticesSorted) {
-				// // Get layer of the vertex and set its index within this
-				// // layer
-				// if (v.getLayer() == layer) {
-				// index++;
-				// } else {
-				// index = 0;
-				// layer = v.getLayer();
-				// }
-				// // The number of gaps between the vertices in the current
-				// // layer depends on the number of vertices in it.
-				// numVertices = layerController.getNumVerticesInLayer(layer);
-				//
-				// // Set distance between two vertices
-				// dist = width / numVertices;
-				//
-				// // Set the location of the current vertex
-				// location = new Point2D.Double(index * dist, (layer + 1)
-				// * rowHeight);
-				//
-				// System.out.println(v);
-				// System.out.println(location);
-				//
-				// layout.setLocation(v, location);
-				// layout.lock(v, true);
-				// }
 			}
 
 			@Override
@@ -184,10 +177,10 @@ public class GraphLayoutViewer {
 		// EdgeController more sensible?
 
 		// Vertex
-		VertexController.getInstance().init(graph, viewer);
+		VertexController.getInstance().init();
 
 		// Edge
-		EdgeController.getInstance().init(graph, viewer);
+		EdgeController.getInstance().init();
 
 		//
 		// Panel
@@ -201,14 +194,20 @@ public class GraphLayoutViewer {
 		//
 		vertexFactory = new VertexFactory();
 		edgeFactory = new EdgeFactory();
-	}
 
-	public void init() {
 		//
 		// Graph Mouse
 		//
 		initGraphMouse();
 		addMouseModeMenu();
+	}
+
+	public void setDimension(Dimension dim) {
+		this.dim = dim;
+	}
+
+	public void setParent(JPanel parent) {
+		this.parent = parent;
 	}
 
 	public void setFrame(final JFrame frame) {
@@ -222,25 +221,16 @@ public class GraphLayoutViewer {
 	/**
 	 * Remove all vertices and their edges from the graph.
 	 */
-	// public void clear() {
-	// HashMap<Layer, List<Vertex>> vertices = LayerController.getInstance()
-	// .getVertices();
-	// Iterator<Entry<Layer, List<Vertex>>> iter;
-	// Map.Entry<Layer, List<Vertex>> entry;
-	// List<Vertex> layerVertices;
-	//
-	// iter = vertices.entrySet().iterator();
-	// while (iter.hasNext()) {
-	// entry = (Entry<Layer, List<Vertex>>) iter.next();
-	// layerVertices = entry.getValue();
-	//
-	// for (Vertex vertex : layerVertices) {
-	// // vertex.remove();
-	// graph.removeVertex(vertex);
-	// }
-	// }
-	// repaint();
-	// }
+	public void clear() {
+		// Clear current LayerController
+		LayerController.getInstance().clear();
+		
+		// Create new graph
+		graph = new DirectedSparseGraph<Vertex, Edge>();
+		layout.setGraph(graph);
+
+		repaint();
+	}
 
 	/**
 	 * Render neurons and their synapses as Vertices and Edges into the Graph.
@@ -248,8 +238,8 @@ public class GraphLayoutViewer {
 	 * @param network
 	 */
 	public void renderNetwork(final Network network) {
-		// Clear current view -> TODO
-		// clear();
+		// Clear current graph view
+		clear();
 
 		//
 		// Render Vertices into their Layers
@@ -305,7 +295,8 @@ public class GraphLayoutViewer {
 
 	private void initGraphMouse() {
 		// Create Graph Mouse (set in and out parameter to '1f' to disable zoom)
-		graphMouse = new GraphMouse<Vertex, Edge>(viewer.getRenderContext(), vertexFactory, edgeFactory, 1f, 1f);
+		graphMouse = new GraphMouse<Vertex, Edge>(viewer.getRenderContext(),
+				vertexFactory, edgeFactory, 1f, 1f);
 
 		viewer.setGraphMouse(graphMouse);
 		viewer.addKeyListener(graphMouse.getModeKeyListener());
@@ -321,7 +312,8 @@ public class GraphLayoutViewer {
 	}
 
 	/**
-	 * Add MouseMode Menu to the MainMenu of the frame to set the mode of the Graph Mouse.
+	 * Add MouseMode Menu to the MainMenu of the frame to set the mode of the
+	 * Graph Mouse.
 	 */
 	private void addMouseModeMenu() {
 		if (frame == null) {

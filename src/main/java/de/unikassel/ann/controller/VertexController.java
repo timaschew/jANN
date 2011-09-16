@@ -12,6 +12,7 @@ import java.util.Set;
 import org.apache.commons.collections15.Transformer;
 
 import de.unikassel.ann.gui.graph.Edge;
+import de.unikassel.ann.gui.graph.GraphLayoutViewer;
 import de.unikassel.ann.gui.graph.Vertex;
 
 import edu.uci.ics.jung.graph.Graph;
@@ -26,6 +27,9 @@ public class VertexController<V> {
 
 	private static VertexController<Vertex> instance;
 
+	private VertexController() {
+	};
+
 	public static VertexController<Vertex> getInstance() {
 		if (instance == null) {
 			instance = new VertexController<Vertex>();
@@ -33,16 +37,13 @@ public class VertexController<V> {
 		return instance;
 	}
 
-	private Graph<Vertex, Edge> graph;
 	private VisualizationViewer<Vertex, Edge> viewer;
 	private Renderer<Vertex, Edge> renderer;
 	private RenderContext<Vertex, Edge> renderContext;
 	private PickedState<Vertex> vertexPickedState;
 
-	public void init(Graph<Vertex, Edge> graph,
-			VisualizationViewer<Vertex, Edge> viewer) {
-		this.graph = graph;
-		this.viewer = viewer;
+	public void init() {
+		this.viewer = GraphLayoutViewer.getInstance().getViewer();
 		this.renderer = viewer.getRenderer();
 		this.renderContext = viewer.getRenderContext();
 		this.vertexPickedState = viewer.getPickedVertexState();
@@ -69,7 +70,7 @@ public class VertexController<V> {
 	 */
 	private void setVertexStrokeHighlight() {
 		VertexStrokeHighlight<Vertex, Number> vsh = new VertexStrokeHighlight<Vertex, Number>(
-				graph, vertexPickedState);
+				vertexPickedState);
 		renderContext.setVertexStrokeTransformer(vsh);
 	}
 
@@ -77,6 +78,7 @@ public class VertexController<V> {
 	 * Set Vertex Shape (Scaling/size)
 	 */
 	private void setVertexShape() {
+		Graph<Vertex, Edge> graph = GraphLayoutViewer.getInstance().getGraph();
 		VertexTransformer<Vertex, Edge> vt = new VertexTransformer<Vertex, Edge>(
 				graph);
 		renderContext.setVertexShapeTransformer(vt);
@@ -194,11 +196,8 @@ public class VertexController<V> {
 		protected Stroke medium = new BasicStroke(3);
 		protected Stroke light = new BasicStroke(1);
 		protected PickedInfo<Vertex> pi;
-		protected Graph<Vertex, Edge> graph;
 
-		public VertexStrokeHighlight(Graph<Vertex, Edge> graph,
-				PickedInfo<Vertex> pi) {
-			this.graph = graph;
+		public VertexStrokeHighlight(PickedInfo<Vertex> pi) {
 			this.pi = pi;
 
 			// Default enable highlighting
@@ -210,6 +209,8 @@ public class VertexController<V> {
 		}
 
 		public Stroke transform(Vertex v) {
+			Graph<Vertex, Edge> graph = GraphLayoutViewer.getInstance()
+					.getGraph();
 			if (highlight) {
 				if (pi.isPicked(v)) {
 					return heavy;
