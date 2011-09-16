@@ -21,6 +21,7 @@ import javax.swing.SwingConstants;
  */
 public class Sidebar extends JPanel {
 
+	private static final long serialVersionUID = 3451251923560791391L;
 	public TopologyPanel topolgyPanel;
 	private TrainStrategyPanel trainStrategyPanel;
 	private StandardOptionsPanel standardOptionsPanel;

@@ -15,6 +15,8 @@ import java.util.Map;
 
 import de.unikassel.ann.controller.ActionController;
 import de.unikassel.ann.controller.Actions;
+import de.unikassel.ann.gui.Main;
+import de.unikassel.ann.gui.sidebar.TopologyPanel;
 
 /**
  * @author anton
@@ -39,6 +41,20 @@ public class SidebarConfig {
 		hiddenNeurons = new HashMap<Integer, Integer>();
 		initChangeListener();
 		ac = ActionController.get();
+	}
+
+	public Integer getMouseInsertLayer() {
+		TopologyPanel topoPanel = Main.instance.sideBar.topolgyPanel;
+		if (topoPanel.mouseInputRB.isSelected()) {
+			return 1;
+		} else if (topoPanel.mouseOutputRB.isSelected()) {
+			// input + hidden + 1 = output
+			return 1 + hiddenLayers + 1;
+		} else if (topoPanel.mouseHiddenRB.isSelected()) {
+			Integer selectedHiddenLayer = (Integer) topoPanel.comboBoxHiddenMausModus.getSelectedItem();
+			return 1 + selectedHiddenLayer;
+		}
+		throw new IllegalAccessError("radio buttons for insert mode are all deselected");
 	}
 
 	/**

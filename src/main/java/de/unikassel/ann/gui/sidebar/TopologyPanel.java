@@ -42,6 +42,10 @@ public class TopologyPanel extends JPanel {
 
 	private ActionController ac = ActionController.get();
 
+	public JRadioButton mouseInputRB;
+	public JRadioButton mouseOutputRB;
+	public JRadioButton mouseHiddenRB;
+
 	/**
 	 * Create the frame.
 	 */
@@ -152,12 +156,12 @@ public class TopologyPanel extends JPanel {
 		/**
 		 * internal MausModus-Panel Elements
 		 */
-		JRadioButton mouseInputRB = new JRadioButton("Input");
+		mouseInputRB = new JRadioButton("Input");
 		mouseInputRB.setSelected(true);
 		buttonGroup.add(mouseInputRB);
-		JRadioButton mouseOutputRB = new JRadioButton("Output");
+		mouseOutputRB = new JRadioButton("Output");
 		buttonGroup.add(mouseOutputRB);
-		JRadioButton mouseHiddenRB = new JRadioButton("Hidden:");
+		mouseHiddenRB = new JRadioButton("Hidden:");
 		buttonGroup.add(mouseHiddenRB);
 		comboBoxHiddenMausModus = new JComboBox();
 		comboBoxHiddenMausModus.setEnabled(false);
