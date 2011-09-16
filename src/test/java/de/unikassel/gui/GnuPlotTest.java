@@ -5,7 +5,7 @@
  * 
  * anton
  */
-package de.unikassel.vis;
+package de.unikassel.gui;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;

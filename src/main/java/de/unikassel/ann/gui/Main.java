@@ -16,6 +16,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.Style;
@@ -60,6 +62,22 @@ public class Main {
 	 * Create the application.
 	 */
 	private Main() {
+		try {
+			{
+				// Set look and feel by the properties file
+				String lookAndFeel = Settings.properties.getProperty("gui.lookandfeel");
+				UIManager.setLookAndFeel(lookAndFeel);
+			}
+		} catch (UnsupportedLookAndFeelException e) {
+			// handle exception
+		} catch (ClassNotFoundException e) {
+			// handle exception
+		} catch (InstantiationException e) {
+			// handle exception
+		} catch (IllegalAccessException e) {
+			// handle exception
+		}
+
 		initialize();
 		redirectSystemStreams();
 	}
