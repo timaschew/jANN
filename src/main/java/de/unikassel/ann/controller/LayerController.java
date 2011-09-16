@@ -1,8 +1,6 @@
 package de.unikassel.ann.controller;
 
-import java.awt.Component;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -152,6 +150,11 @@ public class LayerController<T> {
 		return null;
 	}
 
+	public void clear() {
+		// Remove all layers with their vertices
+		layers.clear();		
+	}
+
 	private final class JungLayer implements Comparable<JungLayer> {
 		private int index = -1;
 
@@ -196,6 +199,6 @@ public class LayerController<T> {
 		public int compareTo(JungLayer layer) {
 			return getIndex() - layer.getIndex();
 		}
-	}
+	}	
 
 }

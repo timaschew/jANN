@@ -9,6 +9,7 @@ import java.util.Set;
 import org.apache.commons.collections15.Transformer;
 
 import de.unikassel.ann.gui.graph.Edge;
+import de.unikassel.ann.gui.graph.GraphLayoutViewer;
 import de.unikassel.ann.gui.graph.Vertex;
 import de.unikassel.ann.model.Synapse;
 import edu.uci.ics.jung.graph.Graph;
@@ -19,10 +20,10 @@ import edu.uci.ics.jung.visualization.picking.PickedState;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
 
 public class EdgeController<E> {
+	
 	private static EdgeController<Edge> instance;
 
 	private EdgeController() {
-
 	}
 
 	public static EdgeController<Edge> getInstance() {
@@ -32,15 +33,13 @@ public class EdgeController<E> {
 		return instance;
 	}
 
-	private Graph<Vertex, Edge> graph;
 	private VisualizationViewer<Vertex, Edge> viewer;
 	private Renderer<Vertex, Edge> renderer;
 	private RenderContext<Vertex, Edge> renderContext;
 	private PickedState<Edge> edgePickedState;
 
-	public void init(final Graph<Vertex, Edge> graph, final VisualizationViewer<Vertex, Edge> viewer) {
-		this.graph = graph;
-		this.viewer = viewer;
+	public void init() {
+		this.viewer = GraphLayoutViewer.getInstance().getViewer();
 		this.renderer = viewer.getRenderer();
 		this.renderContext = viewer.getRenderContext();
 		this.edgePickedState = viewer.getPickedEdgeState();
@@ -63,7 +62,8 @@ public class EdgeController<E> {
 	 * Set Edge Shape (Scaling/size)
 	 */
 	private void setEdgeShape() {
-		renderContext.setEdgeShapeTransformer(new EdgeShape.Line<Vertex, Edge>());
+		renderContext
+				.setEdgeShapeTransformer(new EdgeShape.Line<Vertex, Edge>());
 	}
 
 	/**
@@ -124,7 +124,8 @@ public class EdgeController<E> {
 	/*
 	 * Edge Tooltip class
 	 */
-	private static final class EdgeTooltip<E> implements Transformer<Edge, String> {
+	private static final class EdgeTooltip<E> implements
+			Transformer<Edge, String> {
 
 		private static EdgeTooltip<Edge> instance;
 
@@ -146,7 +147,8 @@ public class EdgeController<E> {
 	/*
 	 * Edge Stroke class
 	 */
-	private static final class EdgeWeightStroke<E> implements Transformer<Edge, Stroke> {
+	private static final class EdgeWeightStroke<E> implements
+			Transformer<Edge, Stroke> {
 		protected static final Stroke basic = new BasicStroke(1);
 		protected static final Stroke heavy = new BasicStroke(2);
 		protected static final Stroke dotted = RenderContext.DOTTED;
