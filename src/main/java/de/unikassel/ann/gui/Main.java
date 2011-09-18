@@ -56,7 +56,7 @@ public class Main {
 	private JFrame frame;
 	private JTextPane textPane;
 	private GraphLayoutViewer glv;
-	
+
 	/*
 	 * public fields
 	 */
@@ -67,11 +67,10 @@ public class Main {
 	 */
 	private Main() {
 		try {
-			{
-				// Set look and feel by the properties file
-				String lookAndFeel = Settings.properties.getProperty("gui.lookandfeel");
-				UIManager.setLookAndFeel(lookAndFeel);
-			}
+			// Set look and feel by the properties file
+			String lookAndFeel = Settings.properties
+					.getProperty("gui.lookandfeel");
+			UIManager.setLookAndFeel(lookAndFeel);
 		} catch (UnsupportedLookAndFeelException e) {
 			// handle exception
 		} catch (ClassNotFoundException e) {
@@ -95,7 +94,7 @@ public class Main {
 		// Frame
 		//
 		frame = new JFrame();
-		frame.setBounds(100, 100, 800, 600);
+		frame.setBounds(100, 100, 1060, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		//
@@ -167,7 +166,8 @@ public class Main {
 				Document doc = textPane.getDocument();
 				try {
 					StyledDocument style = textPane.getStyledDocument();
-					doc.insertString(doc.getLength(), text, style.getStyle(styleName));
+					doc.insertString(doc.getLength(), text,
+							style.getStyle(styleName));
 				} catch (BadLocationException e) {
 					throw new RuntimeException(e);
 				}
@@ -178,7 +178,8 @@ public class Main {
 
 	protected void addStylesToDocument(final StyledDocument doc) {
 		// Initialize some styles.
-		Style def = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
+		Style def = StyleContext.getDefaultStyleContext().getStyle(
+				StyleContext.DEFAULT_STYLE);
 
 		Style regular = doc.addStyle("regular", def);
 		StyleConstants.setFontFamily(def, "SansSerif");
@@ -214,7 +215,8 @@ public class Main {
 			}
 
 			@Override
-			public void write(final byte[] b, final int off, final int len) throws IOException {
+			public void write(final byte[] b, final int off, final int len)
+					throws IOException {
 				updateTextArea(new String(b, off, len));
 			}
 
@@ -231,7 +233,8 @@ public class Main {
 			}
 
 			@Override
-			public void write(final byte[] b, final int off, final int len) throws IOException {
+			public void write(final byte[] b, final int off, final int len)
+					throws IOException {
 				updateTextArea(new String(b, off, len), "error");
 			}
 

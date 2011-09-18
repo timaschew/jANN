@@ -45,6 +45,10 @@ public class SidebarModel {
 		ac = ActionController.get();
 	}
 
+	public void reset() {
+		// TODO set sidebar panels to their default values
+	}
+
 	public Map<Integer, Boolean> getBias() {
 		return bias;
 	}
@@ -61,10 +65,12 @@ public class SidebarModel {
 			// input + hidden + 1 = output
 			return hiddenLayers + 1;
 		} else if (topoPanel.mouseHiddenRB.isSelected()) {
-			Integer selectedHiddenLayer = (Integer) topoPanel.comboBoxHiddenMausModus.getSelectedItem();
+			Integer selectedHiddenLayer = (Integer) topoPanel.comboBoxHiddenMausModus
+					.getSelectedItem();
 			return selectedHiddenLayer;
 		}
-		throw new IllegalAccessError("radio buttons for insert mode are all deselected");
+		throw new IllegalAccessError(
+				"radio buttons for insert mode are all deselected");
 	}
 
 	/**
@@ -79,34 +85,39 @@ public class SidebarModel {
 			}
 		});
 
-		pcs.addPropertyChangeListener(P.inputNeurons.name(), new PropertyChangeListener() {
-			@Override
-			public void propertyChange(final PropertyChangeEvent evt) {
-				ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
-			}
-		});
-		pcs.addPropertyChangeListener(P.hiddenNeurons.name(), new PropertyChangeListener() {
-			@Override
-			public void propertyChange(final PropertyChangeEvent evt) {
-				ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
-			}
-		});
-		pcs.addPropertyChangeListener(P.outputNeurons.name(), new PropertyChangeListener() {
-			@Override
-			public void propertyChange(final PropertyChangeEvent evt) {
-				ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
-			}
-		});
-		pcs.addPropertyChangeListener(P.hiddenLayers.name(), new PropertyChangeListener() {
-			@Override
-			public void propertyChange(final PropertyChangeEvent evt) {
-				ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
-			}
-		});
+		pcs.addPropertyChangeListener(P.inputNeurons.name(),
+				new PropertyChangeListener() {
+					@Override
+					public void propertyChange(final PropertyChangeEvent evt) {
+						ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
+					}
+				});
+		pcs.addPropertyChangeListener(P.hiddenNeurons.name(),
+				new PropertyChangeListener() {
+					@Override
+					public void propertyChange(final PropertyChangeEvent evt) {
+						ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
+					}
+				});
+		pcs.addPropertyChangeListener(P.outputNeurons.name(),
+				new PropertyChangeListener() {
+					@Override
+					public void propertyChange(final PropertyChangeEvent evt) {
+						ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
+					}
+				});
+		pcs.addPropertyChangeListener(P.hiddenLayers.name(),
+				new PropertyChangeListener() {
+					@Override
+					public void propertyChange(final PropertyChangeEvent evt) {
+						ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
+					}
+				});
 
 	}
 
-	// public void addPropertyChangeListener(final String propertyName, final PropertyChangeListener listener) {
+	// public void addPropertyChangeListener(final String propertyName, final
+	// PropertyChangeListener listener) {
 	// pcs.addPropertyChangeListener(propertyName, listener);
 	// }
 
@@ -119,7 +130,7 @@ public class SidebarModel {
 
 	/**
 	 * @param inputNeurons
-	 *          the inputNeurons to set
+	 *            the inputNeurons to set
 	 */
 	public void setInputNeurons(final Integer inputNeurons) {
 		if (inputNeurons < 0) {
@@ -139,7 +150,7 @@ public class SidebarModel {
 
 	/**
 	 * @param outputNeurons
-	 *          the outputNeurons to set
+	 *            the outputNeurons to set
 	 */
 	public void setOutputNeurons(final Integer outputNeurons) {
 		if (outputNeurons < 0) {
@@ -159,7 +170,7 @@ public class SidebarModel {
 
 	/**
 	 * @param hiddenLayers
-	 *          the hiddenLayers to set
+	 *            the hiddenLayers to set
 	 */
 	public void setHiddenLayers(final Integer hiddenLayers) {
 		if (hiddenLayers < 0) {
@@ -179,7 +190,7 @@ public class SidebarModel {
 
 	/**
 	 * @param hiddenNeurons
-	 *          the hiddenNeurons to set
+	 *            the hiddenNeurons to set
 	 */
 	public void addHiddenNeurons(final Integer layer, final Integer neuronCount) {
 		if (layer < 0 || neuronCount < 0) {

@@ -18,14 +18,10 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 
-import org.apache.commons.collections15.Transformer;
-
 import de.unikassel.ann.controller.EdgeController;
 import de.unikassel.ann.controller.LayerController;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.controller.VertexController;
-import de.unikassel.ann.factory.EdgeFactory;
-import de.unikassel.ann.factory.VertexFactory;
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.Network;
 import de.unikassel.ann.model.Neuron;
@@ -36,6 +32,7 @@ import edu.uci.ics.jung.graph.DirectedGraph;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
+import edu.uci.ics.jung.visualization.VisualizationServer.Paintable;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 
@@ -68,6 +65,10 @@ public class GraphLayoutViewer {
 	private GraphLayoutViewer() {
 	}
 
+	/*
+	 * Getter & Setter
+	 */
+
 	public DirectedGraph<Vertex, Edge> getGraph() {
 		return graph;
 	}
@@ -96,94 +97,25 @@ public class GraphLayoutViewer {
 	 * Initialize
 	 */
 	public void init() {
+		//
+		// Graph - Layout - Viewer
+		//
 		graph = new DirectedSparseGraph<Vertex, Edge>();
 		layout = new StaticLayout<Vertex, Edge>(graph, dim);
-
 		viewer = new VisualizationViewer<Vertex, Edge>(layout);
 		viewer.setBackground(Color.white);
-		viewer.addPreRenderPaintable(new VisualizationViewer.Paintable() {
-			@Override
-			public void paint(final Graphics g) {
-				final int height = viewer.getHeight();
-				final int width = viewer.getWidth();
-
-				// Position of the vertex depends on the number of vertices that
-				// are already in the same layer.
-				// Since new vertices are always added at the last position, get
-				// the number of vertices to compute the position for the new
-				// vertex.
-				LayerController<Layer> layerController = LayerController
-						.getInstance();
-				HashMap<Layer, List<Vertex>> vertices = layerController
-						.getVertices();
-
-				// No vertices? -> No fun!
-				if (vertices.size() == 0) {
-					return;
-				}
-
-				Point2D location;
-
-				// Gap between the layers
-				int gapY = height / layerController.getLayer().size();
-
-				Iterator<Entry<Layer, List<Vertex>>> iter;
-				Map.Entry<Layer, List<Vertex>> entry;
-				Layer layer;
-				List<Vertex> layerVertices;
-
-				iter = vertices.entrySet().iterator();
-				while (iter.hasNext()) {
-					entry = iter.next();
-					layer = entry.getKey();
-					layerVertices = entry.getValue();
-
-					// Skip empty layers
-					if (layerVertices.size() == 0) {
-						continue;
-					}
-
-					// Compute the gap between two vertices
-					int gapX = width / layerVertices.size();
-
-					int vertexIndex = -1;
-					for (Vertex vertex : layerVertices) {
-						vertexIndex++;
-
-						// Compute location of the vertex
-						int x = vertexIndex * gapX + gapX / 2;
-						int y = layer.getIndex() * gapY + gapY / 2;
-						location = new Point2D.Double(x, y);
-
-						// Set vertex location and lock it
-						layout.setLocation(vertex, location);
-						layout.lock(vertex, true);
-					}
-				}
-			}
-
-			@Override
-			public boolean useTransform() {
-				return false;
-			}
-		});
+		viewer.addPreRenderPaintable(getViewerPreRenderer());
 
 		//
 		// Controller
 		//
-
-		// Vertex
 		VertexController.getInstance().init();
-
-		// Edge
 		EdgeController.getInstance().init();
 
 		//
 		// Panel
-		// TODO DISCUSS use really the GraphZoomScollPane or maybe create an own
 		//
-		final GraphZoomScrollPane panel = new GraphZoomScrollPane(viewer);
-		parent.add(panel);
+		parent.add(new GraphZoomScrollPane(viewer));
 
 		//
 		// Graph Mouse
@@ -286,6 +218,83 @@ public class GraphLayoutViewer {
 		}
 
 		repaint();
+	}
+
+	/**
+	 * PreRenderer for the Viewer to compute and set the position of each graph
+	 * component.
+	 * 
+	 * @return Paintable
+	 */
+	private Paintable getViewerPreRenderer() {
+		return new VisualizationViewer.Paintable() {
+			@Override
+			public void paint(final Graphics g) {
+				final int height = viewer.getHeight();
+				final int width = viewer.getWidth();
+				
+				// Position of the vertex depends on the number of vertices that
+				// are already in the same layer.
+				// Since new vertices are always added at the last position, get
+				// the number of vertices to compute the position for the new
+				// vertex.
+				LayerController<Layer> layerController = LayerController
+						.getInstance();
+				HashMap<Layer, List<Vertex>> vertices = layerController
+						.getVertices();
+
+				// System.out.println(vertices);
+				
+				// No vertices? -> No fun!
+				if (vertices.size() == 0) {
+					return;
+				}
+
+				Point2D location;
+
+				// Gap between the layers
+				int gapY = height / layerController.getLayers().size();
+
+				Iterator<Entry<Layer, List<Vertex>>> iter;
+				Map.Entry<Layer, List<Vertex>> entry;
+				Layer layer;
+				List<Vertex> layerVertices;
+
+				iter = vertices.entrySet().iterator();
+				while (iter.hasNext()) {
+					entry = iter.next();
+					layer = entry.getKey();
+					layerVertices = entry.getValue();
+
+					// Skip empty layers
+					if (layerVertices.size() == 0) {
+						continue;
+					}
+
+					// Compute the gap between two vertices
+					int gapX = width / layerVertices.size();
+
+					int vertexIndex = -1;
+					for (Vertex vertex : layerVertices) {
+						vertexIndex++;
+
+						// Compute location of the vertex
+						int x = vertexIndex * gapX + gapX / 2;
+						int y = layer.getIndex() * gapY + gapY / 2;
+						location = new Point2D.Double(x, y);
+
+						// Set vertex location and lock it
+						layout.setLocation(vertex, location);
+						layout.lock(vertex, true);
+					}
+				}
+			}
+
+			@Override
+			public boolean useTransform() {
+				return false;
+			}
+		};
 	}
 
 	private void initGraphMouse() {

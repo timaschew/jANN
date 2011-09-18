@@ -170,13 +170,16 @@ public class MainMenu extends JMenuBar {
 			case NEW:
 				// TODO
 				// Check if the current session is unsaved -> save?
-				
+				// Create a new Session
+
 				// Clear Graph
 				GraphLayoutViewer.getInstance().clear();
-				
+
 				// Reset Sidebar
-				Main.instance.sideBar.reset();
-				
+				SidebarModel sidebarModel = Settings.getInstance()
+						.getCurrentSession().sidebarModel;
+				sidebarModel.reset();
+
 				break;
 			case OPEN:
 				// TODO

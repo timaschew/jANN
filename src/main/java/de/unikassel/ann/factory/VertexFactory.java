@@ -23,6 +23,8 @@ public class VertexFactory implements Factory<Vertex> {
 		Vertex v = new Vertex();
 		v.setIndex(index);
 
+		System.out.println("VertexFactory.create() :: " + index);
+
 		return v;
 	}
 

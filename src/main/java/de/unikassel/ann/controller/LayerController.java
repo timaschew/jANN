@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import de.unikassel.ann.factory.VertexFactory;
 import de.unikassel.ann.gui.graph.GraphLayoutViewer;
 import de.unikassel.ann.gui.graph.Vertex;
 import de.unikassel.ann.model.Layer;
@@ -33,18 +32,13 @@ public class LayerController<T> {
 	 */
 	private LayerController() {
 		layers = new LinkedList<JungLayer>();
-
-		// Default create at least on layer
-		addLayer();
 	}
 
 	/**
 	 * Add a layer and create its layer model.
 	 */
 	public void addLayer() {
-		Layer layer = new Layer();
-		layer.setIndex(layers.size());
-		addLayer(layer);
+		addLayer(layers.size());
 	}
 
 	/**
@@ -81,6 +75,8 @@ public class LayerController<T> {
 	}
 
 	/**
+	 * Add Vertex (1)
+	 * 
 	 * Add a new vertex to the layer with the index.
 	 * 
 	 * @param layerIndex
@@ -92,6 +88,8 @@ public class LayerController<T> {
 	}
 
 	/**
+	 * Add Vertex (2)
+	 * 
 	 * Add a new vertex to the layer with the index.
 	 * 
 	 * @param layerIndex
@@ -99,6 +97,8 @@ public class LayerController<T> {
 	 * @return
 	 */
 	public Layer addVertex(final int layerIndex, boolean addToGraph) {
+		// System.out.println("(2) addVertex(" + layerIndex + ", " + addToGraph
+		// + ")");
 		// Create a new vertex
 		Vertex vertex = VertexController.getInstance().getVertexFactory()
 				.create();
@@ -108,6 +108,8 @@ public class LayerController<T> {
 	}
 
 	/**
+	 * Add Vertex (3)
+	 * 
 	 * Add a vertex with the index to the layer with the index.
 	 * 
 	 * @param layerIndex
@@ -119,6 +121,31 @@ public class LayerController<T> {
 	}
 
 	/**
+	 * Add Vertex (4)
+	 * 
+	 * Add a vertex with the index to the layer with the index and add the
+	 * vertex to the graph.
+	 * 
+	 * @param layerIndex
+	 * @param vertexIndex
+	 * @param addToGraph
+	 * @return
+	 */
+	public Layer addVertex(int layerIndex, int vertexIndex, boolean addToGraph) {
+		int layerSize = getLayerSize(layerIndex);
+		// System.out.println("(4) addVertex: layerSize = " + layerSize
+		// + ", vertexIndex = " + vertexIndex);
+		if (layerSize >= vertexIndex) {
+			// Vertex already exists
+			return layers.get(layerIndex).getLayer();
+		}
+
+		return addVertex(layerIndex, addToGraph);
+	}
+
+	/**
+	 * Add Vertex (5)
+	 * 
 	 * Add the vertex to the layer with the index.
 	 * 
 	 * @param layerIndex
@@ -133,6 +160,10 @@ public class LayerController<T> {
 			addLayer(layerIndex);
 		}
 
+		// System.out.println("(5) addVertex(" + layerIndex + ", " + vertex +
+		// ", "
+		// + addToGraph + ")");
+
 		// Add vertex to the layer
 		JungLayer layer = layers.get(layerIndex);
 		layer.addVertex(vertex);
@@ -146,31 +177,6 @@ public class LayerController<T> {
 
 		// Return the layer to which the vertex was added
 		return layer.getLayer();
-	}
-
-	/**
-	 * Add a vertex with the index to the layer with the index and add the
-	 * vertex to the graph.
-	 * 
-	 * @param layerIndex
-	 * @param vertexIndex
-	 * @param addToGraph
-	 * @return
-	 */
-	public Layer addVertex(int layerIndex, int vertexIndex, boolean addToGraph) {
-
-		System.out.println("addVertex(" + layerIndex + ", " + vertexIndex
-				+ ", " + addToGraph + ")");
-
-		int layerSize = layers.get(layerIndex).getVertices().size();
-		if (layerSize >= vertexIndex) {
-			System.out.println("Vertex already exists!\nlayerSize = "
-					+ layerSize + ", vertexIndex = " + vertexIndex);
-			// Vertex already exists
-			return layers.get(layerIndex).getLayer();
-		}
-
-		return addVertex(layerIndex, addToGraph);
 	}
 
 	public void removeLayer() {
@@ -193,7 +199,14 @@ public class LayerController<T> {
 	}
 
 	public void removeVertex(final int layerIndex, final int vertexIndex) {
-		if (layers.get(layerIndex).getVertices().size() <= vertexIndex) {
+		int layerSize;
+		try {
+			layerSize = getLayerSize(layerIndex);
+		} catch (IndexOutOfBoundsException ex) {
+			// Layer not found -> doesn't it exist?
+			return;
+		}
+		if (layerSize <= vertexIndex) {
 			return;
 		}
 		removeVertex(layerIndex);
@@ -204,10 +217,32 @@ public class LayerController<T> {
 		layer.removeVertex();
 	}
 
-	public Set<Layer> getLayer() {
+	public Set<Layer> getLayers() {
 		return getVertices().keySet();
 	}
 
+	/**
+	 * Get number of vertices in the layer with the index.
+	 * 
+	 * @param layerIndex
+	 * @return
+	 */
+	public int getLayerSize(int layerIndex) {
+		JungLayer jungLayer;
+		try {
+			jungLayer = layers.get(layerIndex);
+		} catch (Exception ex) {
+			// Layer not found!
+			return 0;
+		}
+		return jungLayer.getVertices().size();
+	}
+
+	/**
+	 * Get all vertices mapped to their layer.
+	 * 
+	 * @return
+	 */
 	public HashMap<Layer, List<Vertex>> getVertices() {
 		// Sort layers by their index
 		Collections.sort(layers);
@@ -219,10 +254,27 @@ public class LayerController<T> {
 		return map;
 	}
 
-	public int getNumVerticesInLayer(final int index) {
-		return layers.get(index).getVertices().size();
+	/**
+	 * Get all vertices on the layer with the index.
+	 * 
+	 * @param index
+	 * @return
+	 */
+	public List<Vertex> getVerticesInLayer(final int index) {
+		try {
+			return layers.get(index).getVertices();
+		} catch (IndexOutOfBoundsException ex) {
+			// Return empty list
+			return new ArrayList<Vertex>();
+		}
 	}
 
+	/**
+	 * Get a vertice by its id.
+	 * 
+	 * @param id
+	 * @return
+	 */
 	public Vertex getVertexById(final Integer id) {
 		HashMap<Layer, List<Vertex>> vertexMap = LayerController.getInstance()
 				.getVertices();
@@ -251,6 +303,9 @@ public class LayerController<T> {
 		layers.clear();
 	}
 
+	/*
+	 * Private JungLayer class
+	 */
 	private final class JungLayer implements Comparable<JungLayer> {
 		private int index = -1;
 
@@ -283,17 +338,36 @@ public class LayerController<T> {
 		}
 
 		public void addVertex(final Vertex vertex) {
+			// Prevent duplicate vertices
+			if (contains(vertex)) {
+				return;
+			}
 			vertices.add(vertex);
 		}
 
 		public void removeVertex() {
-			// Remove last vertex
-			vertices.remove(vertices.size() - 1);
+			// Try to remove last vertex in this layer
+			try {
+				vertices.remove(vertices.size() - 1);
+			} catch (IndexOutOfBoundsException ex) {
+				// ex.printStackTrace();
+			}
 		}
 
 		@Override
 		public int compareTo(final JungLayer layer) {
 			return getIndex() - layer.getIndex();
+		}
+
+		private boolean contains(Vertex vertex) {
+			for (Vertex v : vertices) {
+				if (v.getIndex() == vertex.getIndex()) {
+					// Vertex found by its index!
+					return true;
+				}
+			}
+			// Vertex not found!
+			return false;
 		}
 	}
 

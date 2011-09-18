@@ -44,22 +44,27 @@ public class ActionController {
 		System.out.println(a + " ( " + evt.getOldValue() + ", "
 				+ evt.getNewValue() + " )");
 
+		SidebarModel sidebarModel = Settings.getInstance().getCurrentSession().sidebarModel;
+
 		Integer newValue = (Integer) evt.getNewValue();
 		switch (a) {
-
 		case UPDATE_SIDEBAR_CONFIG_INPUT_NEURON_MODEL:
-			SidebarModel sidebarModel = Settings.getInstance()
-					.getCurrentSession().sidebarModel;
 			sidebarModel.setInputNeurons(newValue);
 			break;
 
+		case UPDATE_SIDEBAR_CONFIG_HIDDEN_NEURON_MODEL:
+			// TODO sidebarModel.setHiddenNeurons(newValue);
+			break;
+
 		case UPDATE_SIDEBAR_CONFIG_HIDDEN_LAYER_MODEL:
-			sidebarModel = Settings.getInstance().getCurrentSession().sidebarModel;
 			sidebarModel.setHiddenLayers(newValue);
 			break;
 
+		case UPDATE_SIDEBAR_CONFIG_OUTPUT_NEURON_MODEL:
+			sidebarModel.setOutputNeurons(newValue);
+			break;
+
 		case UPDATE_JUNG_GRAPH:
-			sidebarModel = Settings.getInstance().getCurrentSession().sidebarModel;
 			Integer selectedHiddenLayer = 1; // TODO get selected hidden layer
 			// sidebarConfig.
 			Integer maxHiddenLayer = sidebarModel.getHiddenLayers();
@@ -122,7 +127,6 @@ public class ActionController {
 			break;
 
 		case UPDATE_SIDEBAR_TOPOLOGY_VIEW:
-			sidebarModel = Settings.getInstance().getCurrentSession().sidebarModel;
 			Sidebar sidebar = Main.instance.sideBar;
 			// update full topology panel
 
