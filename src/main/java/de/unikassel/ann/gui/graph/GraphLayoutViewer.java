@@ -47,8 +47,6 @@ public class GraphLayoutViewer {
 	protected DirectedGraph<Vertex, Edge> graph;
 	protected AbstractLayout<Vertex, Edge> layout;
 	protected VisualizationViewer<Vertex, Edge> viewer;
-	protected VertexFactory vertexFactory;
-	protected EdgeFactory edgeFactory;
 	protected GraphMouse<Vertex, Edge> graphMouse;
 
 	private JFrame frame;
@@ -173,8 +171,6 @@ public class GraphLayoutViewer {
 		//
 		// Controller
 		//
-		// TODO DISCUSS: Is a GraphController which creates the Vertex- and
-		// EdgeController more sensible?
 
 		// Vertex
 		VertexController.getInstance().init();
@@ -188,12 +184,6 @@ public class GraphLayoutViewer {
 		//
 		final GraphZoomScrollPane panel = new GraphZoomScrollPane(viewer);
 		parent.add(panel);
-
-		//
-		// Factories
-		//
-		vertexFactory = new VertexFactory();
-		edgeFactory = new EdgeFactory();
 
 		//
 		// Graph Mouse
@@ -224,11 +214,14 @@ public class GraphLayoutViewer {
 	public void clear() {
 		// Clear current LayerController
 		LayerController.getInstance().clear();
-		
+
+		// Reset factories
+		VertexController.getInstance().getVertexFactory().reset();
+		EdgeController.getInstance().getEdgeFactory().reset();
+
 		// Create new graph
 		graph = new DirectedSparseGraph<Vertex, Edge>();
 		layout.setGraph(graph);
-
 		repaint();
 	}
 
@@ -245,20 +238,22 @@ public class GraphLayoutViewer {
 		// Render Vertices into their Layers
 		//
 		LayerController<Layer> layerController = LayerController.getInstance();
+		VertexController<Vertex> vertexController = VertexController
+				.getInstance();
 		List<Layer> layers = network.getLayers();
 		for (Layer layer : layers) {
 			layerController.addLayer(layer);
 
 			List<Neuron> neurons = layer.getNeurons();
 			for (Neuron neuron : neurons) {
-				Vertex vertex = vertexFactory.create();
+				Vertex vertex = vertexController.getVertexFactory().create();
 
 				// Set the id of the neuron as index of the vertex
 				vertex.setIndex(neuron.getId());
 				vertex.setModel(neuron);
 
 				// Add the new vertex to the current jung layer
-				layerController.addVertex(layer.getIndex(), vertex);
+				layerController.addVertex(layer.getIndex(), vertex, false);
 
 				// Add the new vertex to the graph
 				graph.addVertex(vertex);
@@ -283,7 +278,7 @@ public class GraphLayoutViewer {
 			}
 
 			// Create new edge with its synapse and the both vertexes
-			Edge edge = edgeFactory.create();
+			Edge edge = EdgeController.getInstance().getEdgeFactory().create();
 			edge.createModel(fromVertex.getModel(), toVertex.getModel());
 
 			// Add the new edge to the graph
@@ -296,7 +291,8 @@ public class GraphLayoutViewer {
 	private void initGraphMouse() {
 		// Create Graph Mouse (set in and out parameter to '1f' to disable zoom)
 		graphMouse = new GraphMouse<Vertex, Edge>(viewer.getRenderContext(),
-				vertexFactory, edgeFactory, 1f, 1f);
+				VertexController.getInstance().getVertexFactory(),
+				EdgeController.getInstance().getEdgeFactory(), 1f, 1f);
 
 		viewer.setGraphMouse(graphMouse);
 		viewer.addKeyListener(graphMouse.getModeKeyListener());

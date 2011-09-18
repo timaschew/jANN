@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import de.unikassel.ann.factory.VertexFactory;
+import de.unikassel.ann.gui.graph.GraphLayoutViewer;
 import de.unikassel.ann.gui.graph.Vertex;
 import de.unikassel.ann.model.Layer;
 
@@ -26,14 +27,12 @@ public class LayerController<T> {
 	}
 
 	protected LinkedList<JungLayer> layers;
-	private VertexFactory vertexFactory;
 
 	/**
 	 * Constructor
 	 */
 	private LayerController() {
 		layers = new LinkedList<JungLayer>();
-		vertexFactory = new VertexFactory();
 
 		// Default create at least on layer
 		addLayer();
@@ -81,6 +80,99 @@ public class LayerController<T> {
 		layers.add(jungLayer);
 	}
 
+	/**
+	 * Add a new vertex to the layer with the index.
+	 * 
+	 * @param layerIndex
+	 * @param addToGraph
+	 * @return Layer
+	 */
+	public Layer addVertex(final int layerIndex) {
+		return addVertex(layerIndex, false);
+	}
+
+	/**
+	 * Add a new vertex to the layer with the index.
+	 * 
+	 * @param layerIndex
+	 * @param addToGraph
+	 * @return
+	 */
+	public Layer addVertex(final int layerIndex, boolean addToGraph) {
+		// Create a new vertex
+		Vertex vertex = VertexController.getInstance().getVertexFactory()
+				.create();
+		vertex.setup();
+
+		return addVertex(layerIndex, vertex, addToGraph);
+	}
+
+	/**
+	 * Add a vertex with the index to the layer with the index.
+	 * 
+	 * @param layerIndex
+	 * @param vertexIndex
+	 * @return Layer
+	 */
+	public Layer addVertex(final int layerIndex, final int vertexIndex) {
+		return addVertex(layerIndex, vertexIndex, false);
+	}
+
+	/**
+	 * Add the vertex to the layer with the index.
+	 * 
+	 * @param layerIndex
+	 * @param vertex
+	 * @param addToGraph
+	 * @return Layer
+	 */
+	public Layer addVertex(final int layerIndex, final Vertex vertex,
+			final boolean addToGraph) {
+		if (layerIndex >= layers.size()) {
+			// Layer with the index does not exist -> Create new Layer
+			addLayer(layerIndex);
+		}
+
+		// Add vertex to the layer
+		JungLayer layer = layers.get(layerIndex);
+		layer.addVertex(vertex);
+
+		// Add vertex to the graph
+		if (addToGraph) {
+			GraphLayoutViewer glv = GraphLayoutViewer.getInstance();
+			glv.getGraph().addVertex(vertex);
+			glv.repaint();
+		}
+
+		// Return the layer to which the vertex was added
+		return layer.getLayer();
+	}
+
+	/**
+	 * Add a vertex with the index to the layer with the index and add the
+	 * vertex to the graph.
+	 * 
+	 * @param layerIndex
+	 * @param vertexIndex
+	 * @param addToGraph
+	 * @return
+	 */
+	public Layer addVertex(int layerIndex, int vertexIndex, boolean addToGraph) {
+
+		System.out.println("addVertex(" + layerIndex + ", " + vertexIndex
+				+ ", " + addToGraph + ")");
+
+		int layerSize = layers.get(layerIndex).getVertices().size();
+		if (layerSize >= vertexIndex) {
+			System.out.println("Vertex already exists!\nlayerSize = "
+					+ layerSize + ", vertexIndex = " + vertexIndex);
+			// Vertex already exists
+			return layers.get(layerIndex).getLayer();
+		}
+
+		return addVertex(layerIndex, addToGraph);
+	}
+
 	public void removeLayer() {
 		int index = layers.size() - 1;
 
@@ -98,32 +190,6 @@ public class LayerController<T> {
 		layers.remove(index);
 
 		// TODO are the vertices automatically removed as well?
-	}
-
-	public Layer addVertex(final int layerIndex, final int vertexIndex) {
-		if (layers.get(layerIndex).getVertices().size() >= vertexIndex) {
-			return null;
-		}
-		return addVertex(layerIndex);
-	}
-
-	public Layer addVertex(final int layerIndex) {
-		Vertex vertex = vertexFactory.create();
-		vertex.setup();
-
-		return addVertex(layerIndex, vertex);
-	}
-
-	public Layer addVertex(final int layerIndex, final Vertex vertex) {
-		if (layerIndex >= layers.size()) {
-			// Layer with the index does not exist -> Create new Layer
-			addLayer(layerIndex);
-		}
-		JungLayer layer = layers.get(layerIndex);
-		layer.addVertex(vertex);
-
-		// Return the layer to which the vertex was added
-		return layer.getLayer();
 	}
 
 	public void removeVertex(final int layerIndex, final int vertexIndex) {
@@ -158,7 +224,8 @@ public class LayerController<T> {
 	}
 
 	public Vertex getVertexById(final Integer id) {
-		HashMap<Layer, List<Vertex>> vertexMap = LayerController.getInstance().getVertices();
+		HashMap<Layer, List<Vertex>> vertexMap = LayerController.getInstance()
+				.getVertices();
 		Iterator<Entry<Layer, List<Vertex>>> iter;
 		Map.Entry<Layer, List<Vertex>> entry;
 		List<Vertex> vertices;

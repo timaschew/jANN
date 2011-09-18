@@ -56,6 +56,10 @@ public class Main {
 	private JFrame frame;
 	private JTextPane textPane;
 	private GraphLayoutViewer glv;
+	
+	/*
+	 * public fields
+	 */
 	public Sidebar sideBar;
 
 	/**

@@ -140,12 +140,12 @@ public class TopologyPanel extends JPanel {
 		/**
 		 * internal MausModus-Panel Elements
 		 */
-		JRadioButton mouseInputRB = new JRadioButton(Settings.i18n.getString("sidebar.topology.mouse.input"));
+		mouseInputRB = new JRadioButton(Settings.i18n.getString("sidebar.topology.mouse.input"));
 		mouseInputRB.setSelected(true);
 		buttonGroup.add(mouseInputRB);
-		JRadioButton mouseOutputRB = new JRadioButton(Settings.i18n.getString("sidebar.topology.mouse.output"));
+		mouseOutputRB = new JRadioButton(Settings.i18n.getString("sidebar.topology.mouse.output"));
 		buttonGroup.add(mouseOutputRB);
-		JRadioButton mouseHiddenRB = new JRadioButton(Settings.i18n.getString("sidebar.topology.mouse.hidden"));
+		mouseHiddenRB = new JRadioButton(Settings.i18n.getString("sidebar.topology.mouse.hidden"));
 		buttonGroup.add(mouseHiddenRB);
 		comboBoxHiddenMausModus = new JComboBox();
 		comboBoxHiddenMausModus.setEnabled(false);

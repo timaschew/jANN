@@ -52,8 +52,8 @@ public class Vertex implements Comparable<Vertex> {
 		// TODO remove later, just for testing purpose
 		setValue(new Double(Math.random()));
 
-		// Add the new vertex to the current jung layer
-		LayerController.getInstance().addVertex(layerIndex, this);
+		// Add the new vertex to the current jung layer but not to the graph
+		LayerController.getInstance().addVertex(layerIndex, this, false);
 
 		// Update Sidebar config
 		int numVerticesInLayer = LayerController.getInstance()

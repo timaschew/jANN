@@ -26,4 +26,11 @@ public class VertexFactory implements Factory<Vertex> {
 		return v;
 	}
 
+	/**
+	 * Reset factory
+	 */
+	public void reset() {
+		index = 0;
+	}
+
 }

@@ -54,5 +54,9 @@ public class Sidebar extends JPanel {
 		tabbedPane.addTab("Training", null, new JPanel(), null);
 
 	}
+	
+	public void reset() {
+		// TODO set sidebar panels to their default values
+	}
 
 }
