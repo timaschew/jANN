@@ -20,7 +20,7 @@ import de.unikassel.ann.controller.Actions;
  * @author anton
  * 
  */
-public class SidebarConfig {
+public class SidebarModel {
 
 	private PropertyChangeSupport pcs;
 
@@ -32,11 +32,13 @@ public class SidebarConfig {
 	private Integer outputNeurons = 1;
 	private Integer hiddenLayers = 0;
 	private Map<Integer, Integer> hiddenNeurons;
+	private Map<Integer, Boolean> bias;
 	private ActionController ac;
 
-	public SidebarConfig() {
+	public SidebarModel() {
 		pcs = new PropertyChangeSupport(this);
 		hiddenNeurons = new HashMap<Integer, Integer>();
+		bias = new HashMap<Integer, Boolean>();
 		initChangeListener();
 		ac = ActionController.get();
 	}
@@ -136,6 +138,21 @@ public class SidebarConfig {
 		Integer oldValue = hiddenNeurons.get(layer);
 		hiddenNeurons.put(layer, neuronCount);
 		pcs.firePropertyChange(P.hiddenNeurons.name(), oldValue, neuronCount);
+	}
+	
+	/**
+	 * @return the bias
+	 */
+	public Map<Integer, Boolean> getBias() {
+		return bias;
+	}
+
+	/**
+	 * @param bias
+	 * 			the bias to set
+	 */
+	public void setBias(Map<Integer, Boolean> bias) {
+		this.bias = bias;
 	}
 
 }

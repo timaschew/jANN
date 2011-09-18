@@ -48,7 +48,7 @@ public class TrainDataPanel extends JDialog {
 	private TrainDataPanel() {
 		setTitle("Trainingsdaten normalisieren");
 		setModal(true);
-		setSize(350, 260);
+		setSize(350, 270);
 		setResizable(false);
 		setLocationRelativeTo(null);
 		

@@ -14,7 +14,7 @@ import javax.swing.DefaultComboBoxModel;
 
 import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.gui.sidebar.Sidebar;
-import de.unikassel.ann.model.SidebarConfig;
+import de.unikassel.ann.model.SidebarModel;
 
 /**
  * @author anton
@@ -38,40 +38,45 @@ public class ActionController {
 		switch (a) {
 
 		case UPDATE_SIDEBAR_CONFIG_INPUT_NEURON_MODEL:
-			SidebarConfig sidebarConfig = Settings.getInstance().getCurrentSession().sidebarConfig;
-			sidebarConfig.setInputNeurons((Integer) evt.getNewValue());
+			SidebarModel sidebarModel = Settings.getInstance().getCurrentSession().sidebarModel;
+			sidebarModel.setInputNeurons((Integer) evt.getNewValue());
 			break;
 
 		case UPDATE_SIDEBAR_CONFIG_HIDDEN_LAYER_MODEL:
-			sidebarConfig = Settings.getInstance().getCurrentSession().sidebarConfig;
-			sidebarConfig.setHiddenLayers((Integer) evt.getNewValue());
+			sidebarModel = Settings.getInstance().getCurrentSession().sidebarModel;
+			sidebarModel.setHiddenLayers((Integer) evt.getNewValue());
 			break;
 
 		case UPDATE_SIDEBAR_TOPOLOGY_VIEW:
-			sidebarConfig = Settings.getInstance().getCurrentSession().sidebarConfig;
+			sidebarModel = Settings.getInstance().getCurrentSession().sidebarModel;
 			Sidebar sidebar = Main.instance.sideBar;
 			// update full topology panel
 
-			sidebar.topolgyPanel.inputNeuroSpinner.setValue(sidebarConfig.getInputNeurons());
+			sidebar.topolgyPanel.inputNeuroSpinner.setValue(sidebarModel.getInputNeurons());
 			System.out.println("updated the view");
 
-			if (sidebarConfig.getHiddenLayers() > 0) {
+			if (sidebarModel.getHiddenLayers() > 0) {
 				// enable combox box and checkbox
 				sidebar.topolgyPanel.hiddenLayerDropDown.setEnabled(true);
 				sidebar.topolgyPanel.hiddenBiasCB.setEnabled(true);
 				sidebar.topolgyPanel.hiddenNeuronSpinner.setEnabled(true);
+				sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(true);
 
 				Vector<Integer> comboBoxEntries = new Vector<Integer>();
-				for (int i = 1; i <= sidebarConfig.getHiddenLayers(); i++) {
+				for (int i = 1; i <= sidebarModel.getHiddenLayers(); i++) {
 					comboBoxEntries.add(new Integer(i));
 				}
 				DefaultComboBoxModel newComboBoxModel = new DefaultComboBoxModel(comboBoxEntries);
 				sidebar.topolgyPanel.hiddenLayerDropDown.setModel(newComboBoxModel);
-				sidebar.topolgyPanel.hiddenLayerDropDown.setSelectedItem(sidebarConfig.getHiddenLayers());
+				sidebar.topolgyPanel.hiddenLayerDropDown.setSelectedItem(sidebarModel.getHiddenLayers());
+				DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel(comboBoxEntries);
+				sidebar.topolgyPanel.comboBoxHiddenMausModus.setModel(comboBoxModel);
+				sidebar.topolgyPanel.comboBoxHiddenMausModus.setSelectedItem(sidebarModel.getHiddenLayers());
 			} else {
 				sidebar.topolgyPanel.hiddenLayerDropDown.setEnabled(false);
 				sidebar.topolgyPanel.hiddenBiasCB.setEnabled(false);
 				sidebar.topolgyPanel.hiddenNeuronSpinner.setEnabled(false);
+				sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(false);
 			}
 
 			break;

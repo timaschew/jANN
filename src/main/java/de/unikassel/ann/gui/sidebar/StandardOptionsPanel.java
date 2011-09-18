@@ -12,6 +12,8 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.TitledBorder;
 
+import de.unikassel.ann.controller.Settings;
+
 public class StandardOptionsPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -27,17 +29,17 @@ public class StandardOptionsPanel extends JPanel {
 	 * Create the panel.
 	 */
 	public StandardOptionsPanel() {
-		setBorder(new TitledBorder(null, "Standard Options", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		setSize(400, 132);
+		setBorder(new TitledBorder(null, Settings.i18n.getString("sidebar.standardOptions"), TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		setSize(400, 160);
 
-		JLabel lblFunktionToActivate = new JLabel("Aktivierungsfunktion");
-		JLabel lblInitialWeight = new JLabel("Initialgewicht");
+		JLabel lblFunktionToActivate = new JLabel(Settings.i18n.getString("sidebar.standardOptions.activatedFunction"));
+		JLabel lblInitialWeight = new JLabel(Settings.i18n.getString("sidebar.standardOptions.initialWeigth"));
 
 		funktionToActivateCombo = new JComboBox();
 		funktionToActivateCombo.setModel(new DefaultComboBoxModel(new String[] { "Sigmoid", "TanH" }));
 
-		rdbtnRandomInitialWeight = new JRadioButton("Zufällig");
-		rdbtnExactInitialWeight = new JRadioButton("Exakt");
+		rdbtnRandomInitialWeight = new JRadioButton(Settings.i18n.getString("sidebar.standardOptions.randomRB"));
+		rdbtnExactInitialWeight = new JRadioButton(Settings.i18n.getString("sidebar.standardOptions.exactRB"));
 
 		RandomInitialWeightSpinner1 = new JSpinner();
 		RandomInitialWeightSpinner1.setModel(new SpinnerNumberModel(new Double(0), null, null, new Double(1)));

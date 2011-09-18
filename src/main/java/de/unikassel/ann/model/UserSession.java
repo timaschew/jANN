@@ -24,7 +24,7 @@ public class UserSession {
 
 	private Network network;
 
-	public SidebarConfig sidebarConfig;
+	public SidebarModel sidebarModel;
 
 	private String name;
 
@@ -37,7 +37,7 @@ public class UserSession {
 	public UserSession(final String name) {
 		initName(name);
 		initDefaultNetwork();
-		sidebarConfig = new SidebarConfig();
+		sidebarModel = new SidebarModel();
 	}
 
 	/**

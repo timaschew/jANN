@@ -18,6 +18,8 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
+import de.unikassel.ann.controller.Settings;
+
 public class TrainStrategyPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -33,14 +35,14 @@ public class TrainStrategyPanel extends JPanel {
 	 */
 	public TrainStrategyPanel() {
 
-		setBorder(new TitledBorder(null, "Training", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		setBorder(new TitledBorder(null,Settings.i18n.getString("sidebar.trainingsStrategy") , TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		setSize(400, 351);
 
-		JLabel lblAlgorithm = new JLabel("Algorithmus");
+		JLabel lblAlgorithm = new JLabel(Settings.i18n.getString("sidebar.trainingsStrategy.algorithm")); 
 
-		JLabel lblLernrate = new JLabel("Lernrate");
+		JLabel lblLernrate = new JLabel(Settings.i18n.getString("sidebar.trainingsStrategy.lernRate"));
 
-		JLabel lblMomentum = new JLabel("Momentum");
+		JLabel lblMomentum = new JLabel(Settings.i18n.getString("sidebar.trainingsStretegy.momentum"));
 
 		comboBoxAlgorithm = new JComboBox();
 		comboBoxAlgorithm.setModel(new DefaultComboBoxModel(new String[] { "Backpropagation", "Test" }));
@@ -48,20 +50,21 @@ public class TrainStrategyPanel extends JPanel {
 		spinnerLernRate = new JSpinner();
 		spinnerMomentum = new JSpinner();
 
-		JLabel lblTrainingsmodus = new JLabel("Trainingsmodus");
+		JLabel lblTrainingsmodus = new JLabel(Settings.i18n.getString("sidebar.trainingsStrategy.trainingmodus"));//Settings.i18n.getString("sidebar.trainingsStrategy.trainingmodus")
 
-		rdbtnOnline = new JRadioButton("Online");
+		rdbtnOnline = new JRadioButton();
+		rdbtnOnline.setText(Settings.i18n.getString("sidebar.trainingsStrategy.onlineRB"));
 		buttonGroup.add(rdbtnOnline);
 		rdbtnOnline.setSelected(true);
 
 		rdbtnOffline = new JRadioButton("Offline");
+//		rdbtnOffline.setName(Settings.i18n.getString("sidebar.trainingStrategy.offlineRB"));
 		buttonGroup.add(rdbtnOffline);
 
 		JPanel strategiePanel = new JPanel();
 		CardLayout cardLayout = new CardLayout();
 		// TODO: use cardLayout
-		strategiePanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Strategien", TitledBorder.LEADING,
-				TitledBorder.TOP, null, new Color(0, 0, 0)));
+		strategiePanel.setBorder(new TitledBorder(null, Settings.i18n.getString("sidebar.trainingsStrategy.strategy"), TitledBorder.LEADING,TitledBorder.TOP, null, new Color(0, 0, 0)));
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(
 				groupLayout
@@ -112,7 +115,7 @@ public class TrainStrategyPanel extends JPanel {
 						.addComponent(strategiePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
-		JLabel lblTypStrategien = new JLabel("Typ");
+		JLabel lblTypStrategien = new JLabel(Settings.i18n.getString("sidebar.traininnsStrategy.strategy.type"));
 
 		JComboBox comboBoxTypStrategien = new JComboBox();
 		comboBoxTypStrategien.setModel(new DefaultComboBoxModel(new String[] { "MaxIterations" }));
@@ -120,11 +123,11 @@ public class TrainStrategyPanel extends JPanel {
 		JCheckBox chckbxActivateStrategie = new JCheckBox("");
 		chckbxActivateStrategie.setSelected(true);
 
-		JLabel lblMaxIterations = new JLabel("Max. Iterations");
+		JLabel lblMaxIterations = new JLabel(Settings.i18n.getString("sidebar.traininnsStrategy.strategy.maxIterations"));
 
 		JSpinner spinnerMaxIterations = new JSpinner();
 
-		JLabel label = new JLabel("Max. Iterations");
+		JLabel label = new JLabel(Settings.i18n.getString("sidebar.traininnsStrategy.strategy.maxIterations2"));
 
 		JSpinner spinner = new JSpinner();
 		GroupLayout gl_strategiePanel = new GroupLayout(strategiePanel);

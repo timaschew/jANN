@@ -47,7 +47,7 @@ public class TrainControlPanel extends JPanel {
 	private TrainControlPanel() {
 		
 		setBorder(new TitledBorder(null, "Training-Steuerung", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		setSize(401, 200);
+		setSize(400, 235);
 		
 		btnSchritte = new JButton("Schritt(e)");
 		btnTrainingsPattern = new JButton("Trainingspattern");
