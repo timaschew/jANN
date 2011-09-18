@@ -15,6 +15,8 @@ import java.util.Map;
 
 import de.unikassel.ann.controller.ActionController;
 import de.unikassel.ann.controller.Actions;
+import de.unikassel.ann.gui.Main;
+import de.unikassel.ann.gui.sidebar.TopologyPanel;
 
 /**
  * @author anton
@@ -25,11 +27,11 @@ public class SidebarModel {
 	private PropertyChangeSupport pcs;
 
 	public enum P {
-		inputNeurons, outputNeurons, hiddenLayers, hiddenNeurons
+		inputNeurons, outputNeurons, hiddenLayers, hiddenNeurons, topology
 	};
 
-	private Integer inputNeurons = 1;
-	private Integer outputNeurons = 1;
+	private Integer inputNeurons = 0;
+	private Integer outputNeurons = 0;
 	private Integer hiddenLayers = 0;
 	private Map<Integer, Integer> hiddenNeurons;
 	private Map<Integer, Boolean> bias;
@@ -43,6 +45,28 @@ public class SidebarModel {
 		ac = ActionController.get();
 	}
 
+	public Map<Integer, Boolean> getBias() {
+		return bias;
+	}
+
+	public void setBias(Map<Integer, Boolean> bias) {
+		this.bias = bias;
+	}
+
+	public Integer getMouseInsertLayer() {
+		TopologyPanel topoPanel = Main.instance.sideBar.topolgyPanel;
+		if (topoPanel.mouseInputRB.isSelected()) {
+			return 0;
+		} else if (topoPanel.mouseOutputRB.isSelected()) {
+			// input + hidden + 1 = output
+			return hiddenLayers + 1;
+		} else if (topoPanel.mouseHiddenRB.isSelected()) {
+			Integer selectedHiddenLayer = (Integer) topoPanel.comboBoxHiddenMausModus.getSelectedItem();
+			return selectedHiddenLayer;
+		}
+		throw new IllegalAccessError("radio buttons for insert mode are all deselected");
+	}
+
 	/**
 	 * 
 	 */
@@ -54,6 +78,32 @@ public class SidebarModel {
 				ac.doAction(Actions.UPDATE_SIDEBAR_TOPOLOGY_VIEW, evt);
 			}
 		});
+
+		pcs.addPropertyChangeListener(P.inputNeurons.name(), new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
+				ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
+			}
+		});
+		pcs.addPropertyChangeListener(P.hiddenNeurons.name(), new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
+				ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
+			}
+		});
+		pcs.addPropertyChangeListener(P.outputNeurons.name(), new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
+				ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
+			}
+		});
+		pcs.addPropertyChangeListener(P.hiddenLayers.name(), new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
+				ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
+			}
+		});
+
 	}
 
 	// public void addPropertyChangeListener(final String propertyName, final PropertyChangeListener listener) {
@@ -72,7 +122,7 @@ public class SidebarModel {
 	 *          the inputNeurons to set
 	 */
 	public void setInputNeurons(final Integer inputNeurons) {
-		if (inputNeurons < 1) {
+		if (inputNeurons < 0) {
 			return;
 		}
 		Integer oldValue = this.inputNeurons;
@@ -92,7 +142,7 @@ public class SidebarModel {
 	 *          the outputNeurons to set
 	 */
 	public void setOutputNeurons(final Integer outputNeurons) {
-		if (outputNeurons < 1) {
+		if (outputNeurons < 0) {
 			return;
 		}
 		Integer oldValue = this.outputNeurons;
@@ -138,21 +188,6 @@ public class SidebarModel {
 		Integer oldValue = hiddenNeurons.get(layer);
 		hiddenNeurons.put(layer, neuronCount);
 		pcs.firePropertyChange(P.hiddenNeurons.name(), oldValue, neuronCount);
-	}
-	
-	/**
-	 * @return the bias
-	 */
-	public Map<Integer, Boolean> getBias() {
-		return bias;
-	}
-
-	/**
-	 * @param bias
-	 * 			the bias to set
-	 */
-	public void setBias(Map<Integer, Boolean> bias) {
-		this.bias = bias;
 	}
 
 }

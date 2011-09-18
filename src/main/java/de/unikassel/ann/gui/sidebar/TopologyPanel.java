@@ -31,6 +31,7 @@ public class TopologyPanel extends JPanel {
 	private static final int MAX_HIDDEN_LAYER = 10;
 
 	public JSpinner inputNeuroSpinner;
+	public SpinnerNumberModel inputSpinnerModel = new SpinnerNumberModel(0, 0, MAX_NEURONS, 1);
 	public JSpinner outputNeuroSpinner;
 	public JSpinner hiddenLayerCountSpinner;
 	public JSpinner hiddenNeuronSpinner;
@@ -43,25 +44,29 @@ public class TopologyPanel extends JPanel {
 
 	private ActionController ac = ActionController.get();
 
+	public JRadioButton mouseInputRB;
+	public JRadioButton mouseOutputRB;
+	public JRadioButton mouseHiddenRB;
+
 	/**
 	 * Create the frame.
 	 */
 	public TopologyPanel() {
 		setBorder(new TitledBorder(null, Settings.i18n.getString("sidebar.topology"), TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		// setSize(400, 240);
-		setPreferredSize(new Dimension(400, 280));
+		setPreferredSize(new Dimension(400, 250));
 
 		JLabel lblInputNeuronen = new JLabel(Settings.i18n.getString("sidebar.topology.inputNeurons"));
-		inputNeuroSpinner = new JSpinner(new SpinnerNumberModel(1, 1, MAX_NEURONS, 1));
+		inputNeuroSpinner = new JSpinner(inputSpinnerModel);
 
 		JLabel lblOutputNeuronen = new JLabel(Settings.i18n.getString("sidebar.topology.outputNeurons"));
-		outputNeuroSpinner = new JSpinner(new SpinnerNumberModel(1, 1, MAX_NEURONS, 1));
+		outputNeuroSpinner = new JSpinner(new SpinnerNumberModel(0, 0, MAX_NEURONS, 1));
 
 		JLabel lblHiddenLayer = new JLabel(Settings.i18n.getString("sidebar.topology.hiddenlayers"));
 		hiddenLayerCountSpinner = new JSpinner(new SpinnerNumberModel(0, 0, MAX_HIDDEN_LAYER, 1));
 
 		JLabel lblHiddenNeuronen = new JLabel(Settings.i18n.getString("sidebar.topology.hiddenNeurons"));
-		hiddenNeuronSpinner = new JSpinner(new SpinnerNumberModel(1, 1, MAX_NEURONS, 1));
+		hiddenNeuronSpinner = new JSpinner(new SpinnerNumberModel(0, 0, MAX_NEURONS, 1));
 
 		// is with the hiddenLayerCountSpinner associated
 

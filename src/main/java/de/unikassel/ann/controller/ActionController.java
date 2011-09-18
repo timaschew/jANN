@@ -11,9 +11,14 @@ import java.beans.PropertyChangeEvent;
 import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.SpinnerModel;
 
+import de.unikassel.ann.controller.ActionControllerTest.MyModel;
 import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.gui.sidebar.Sidebar;
+import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.SidebarModel;
 
 /**
@@ -35,16 +40,55 @@ public class ActionController {
 	}
 
 	public void doAction(final Actions a, final PropertyChangeEvent evt) {
+
+		System.out.println(a);
+		System.out.println(evt.getOldValue());
+		System.out.println(evt.getNewValue());
+
+		Integer newValue = (Integer) evt.getNewValue();
 		switch (a) {
 
 		case UPDATE_SIDEBAR_CONFIG_INPUT_NEURON_MODEL:
 			SidebarModel sidebarModel = Settings.getInstance().getCurrentSession().sidebarModel;
-			sidebarModel.setInputNeurons((Integer) evt.getNewValue());
+			sidebarModel.setInputNeurons(newValue);
 			break;
 
 		case UPDATE_SIDEBAR_CONFIG_HIDDEN_LAYER_MODEL:
 			sidebarModel = Settings.getInstance().getCurrentSession().sidebarModel;
-			sidebarModel.setHiddenLayers((Integer) evt.getNewValue());
+			sidebarModel.setHiddenLayers(newValue);
+			break;
+
+		case UPDATE_JUNG_GRAPH:
+			sidebarModel = Settings.getInstance().getCurrentSession().sidebarModel;
+			Integer selectedHiddenLayer = 1; // TODO get selected hidden layer
+			// sidebarConfig.
+			Integer maxHiddenLayer = sidebarModel.getHiddenLayers();
+			LayerController<Layer> layerController = LayerController.getInstance();
+
+			if ((Integer) evt.getOldValue() > newValue) {
+				// remove last
+				if (evt.getPropertyName().equals(SidebarModel.P.hiddenNeurons.name())) {
+					layerController.removeVertex(selectedHiddenLayer, newValue);
+				} else if (evt.getPropertyName().equals(SidebarModel.P.inputNeurons.name())) {
+					layerController.removeVertex(0, newValue);
+				} else if (evt.getPropertyName().equals(SidebarModel.P.hiddenLayers.name())) {
+					// layerController.removeLayer(maxHiddenLayer, newValue);
+				} else if (evt.getPropertyName().equals(SidebarModel.P.outputNeurons.name())) {
+					layerController.removeVertex(maxHiddenLayer + 1, newValue);
+				}
+			} else if ((Integer) evt.getOldValue() < newValue) {
+				// add new
+				if (evt.getPropertyName().equals(SidebarModel.P.hiddenNeurons.name())) {
+					layerController.addVertex(selectedHiddenLayer, newValue);
+				} else if (evt.getPropertyName().equals(SidebarModel.P.inputNeurons.name())) {
+					layerController.addVertex(0, newValue);
+				} else if (evt.getPropertyName().equals(SidebarModel.P.hiddenLayers.name())) {
+					// layerController.addLayer(maxHiddenLayer + 1, newValue);
+				} else if (evt.getPropertyName().equals(SidebarModel.P.outputNeurons.name())) {
+					layerController.addVertex(maxHiddenLayer + 1, newValue);
+				}
+			}
+
 			break;
 
 		case UPDATE_SIDEBAR_TOPOLOGY_VIEW:
@@ -81,39 +125,39 @@ public class ActionController {
 
 			break;
 
+		case TEST_UPDATEMODEL:
+			Integer value = newValue;
+			MyModel dataModel = ActionControllerTest.instance.dataModel;
+			dataModel.setLayerCount(value);
+			break;
+
+		case TEST_UPDATEVIEW:
+			System.out.println("TEST ACTION: " + evt.getNewValue());
+			// model was changed, upadte everything
+			// property in TEST case is MyModel.layerCount from type Integer
+			Integer layerCount = newValue;
+
+			// update combox box
+			JComboBox cb = ActionControllerTest.instance.comboBox;
+			// create a list with entries for the comboboxModel
+			Vector<Integer> comboBoxEntries = new Vector<Integer>();
+			for (int i = 0; i <= layerCount; i++) {
+				comboBoxEntries.add(i);
+			}
+			// set overwrite the old combobox model
+			cb.setModel(new DefaultComboBoxModel(comboBoxEntries));
+			cb.setSelectedItem(layerCount); // select the last one
+
+			// update Spinner
+			SpinnerModel sm = ActionControllerTest.instance.spinnerModel;
+			sm.setValue(layerCount);
+
+			// update Label
+			JLabel label = ActionControllerTest.instance.label;
+			label.setText("Aktueller Wert: " + layerCount);
+
+			break;
 		}
 
-		// case TEST_UPDATEMODEL:
-		// Integer value = (Integer) evt.getNewValue();
-		// MyModel dataModel = ActionControllerTest.instance.dataModel;
-		// dataModel.setLayerCount(value);
-		// break;
-		//
-		// case TEST_UPDATEVIEW:
-		// System.out.println("TEST ACTION: " + evt.getNewValue());
-		// // model was changed, upadte everything
-		// // property in TEST case is MyModel.layerCount from type Integer
-		// Integer layerCount = (Integer) evt.getNewValue();
-		//
-		// // update combox box
-		// JComboBox cb = ActionControllerTest.instance.comboBox;
-		// // create a list with entries for the comboboxModel
-		// Vector<Integer> comboBoxEntries = new Vector<Integer>();
-		// for (int i = 0; i <= layerCount; i++) {
-		// comboBoxEntries.add(i);
-		// }
-		// // set overwrite the old combobox model
-		// cb.setModel(new DefaultComboBoxModel(comboBoxEntries));
-		// cb.setSelectedItem(layerCount); // select the last one
-		//
-		// // update Spinner
-		// SpinnerModel sm = ActionControllerTest.instance.spinnerModel;
-		// sm.setValue(layerCount);
-		//
-		// // update Label
-		// JLabel label = ActionControllerTest.instance.label;
-		// label.setText("Aktueller Wert: " + layerCount);
-		//
-		// break;
 	}
 }
