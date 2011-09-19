@@ -11,6 +11,8 @@ import javax.swing.JPopupMenu;
 
 import org.apache.commons.collections15.Factory;
 
+import de.unikassel.ann.model.Neuron;
+
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedGraph;
@@ -68,13 +70,19 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 							directedMenu.add(new AbstractAction("[" + other
 									+ "," + vertex + "]") {
 								public void actionPerformed(ActionEvent e) {
-									// Create edge with its synapse and the both
-									// vertexes
-									Edge edge = edgeFactory.create();
-									edge.createModel(other.getModel(),
-											vertex.getModel());
-									graph.addEdge(edge, other, vertex,
-											EdgeType.DIRECTED);
+									// Check if the two neurons are in different
+									// layers
+									Neuron fromNeuron = other.getModel();
+									Neuron toNeuron = vertex.getModel();
+									if (fromNeuron.getLayer().getIndex() != toNeuron
+											.getLayer().getIndex()) {
+										// Create edge with its synapse between
+										// the both vertexes
+										Edge edge = edgeFactory.create();
+										edge.createModel(fromNeuron, toNeuron);
+										graph.addEdge(edge, other, vertex,
+												EdgeType.DIRECTED);
+									}
 									vv.repaint();
 								}
 							});
@@ -88,12 +96,18 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 							undirectedMenu.add(new AbstractAction("[" + other
 									+ "," + vertex + "]") {
 								public void actionPerformed(ActionEvent e) {
-									// Create edge with its synapse and the both
-									// vertexes
-									Edge edge = edgeFactory.create();
-									edge.createModel(other.getModel(),
-											vertex.getModel());
-									graph.addEdge(edge, other, vertex);
+									// Check if the two neurons are in different
+									// layers
+									Neuron fromNeuron = other.getModel();
+									Neuron toNeuron = vertex.getModel();
+									if (fromNeuron.getLayer().getIndex() != toNeuron
+											.getLayer().getIndex()) {
+										// Create edge with its synapse between
+										// the both vertexes
+										Edge edge = edgeFactory.create();
+										edge.createModel(fromNeuron, toNeuron);
+										graph.addEdge(edge, other, vertex);
+									}
 									vv.repaint();
 								}
 							});
@@ -126,8 +140,8 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 						// Add the new vertex to the graph
 						graph.addVertex(newVertex);
 
-//						layout.setLocation(newVertex, vv.getRenderContext()
-//								.getMultiLayerTransformer().inverseTransform(p));
+						// layout.setLocation(newVertex, vv.getRenderContext()
+						// .getMultiLayerTransformer().inverseTransform(p));
 						vv.repaint();
 					}
 				});

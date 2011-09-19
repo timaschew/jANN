@@ -47,9 +47,9 @@ public class Edge {
 	 * Create edge (synapse) between two vertexes (neurons)
 	 * 
 	 * @param Neuron
-	 *          from
+	 *            from
 	 * @param Neuron
-	 *          to
+	 *            to
 	 */
 	public void createModel(final Neuron from, final Neuron to) {
 		model = new Synapse(from, to);
@@ -75,7 +75,9 @@ public class Edge {
 	@Override
 	public String toString() {
 		if (df == null) {
-			df = new DecimalFormat(Settings.properties.getProperty("gui.decimalFormat"), Settings.decimalSymbols);
+			df = new DecimalFormat(
+					Settings.properties.getProperty("gui.decimalFormat"),
+					Settings.decimalSymbols);
 		}
 		return df.format(getWeight());
 	}

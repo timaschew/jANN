@@ -18,6 +18,7 @@ import org.apache.commons.collections15.Factory;
 
 import de.unikassel.ann.controller.LayerController;
 import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.model.Neuron;
 
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
@@ -132,12 +133,12 @@ public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements
 					graph.addVertex(newVertex);
 
 					// Set position of the new vertex
-//					Point2D location = vv.getRenderContext()
-//							.getMultiLayerTransformer()
-//							.inverseTransform(e.getPoint());
-//					Layout<Vertex, Edge> layout = vv.getModel()
-//							.getGraphLayout();
-//					layout.setLocation(newVertex, location);
+					// Point2D location = vv.getRenderContext()
+					// .getMultiLayerTransformer()
+					// .inverseTransform(e.getPoint());
+					// Layout<Vertex, Edge> layout = vv.getModel()
+					// .getGraphLayout();
+					// layout.setLocation(newVertex, location);
 				}
 			}
 			vv.repaint();
@@ -164,10 +165,17 @@ public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements
 						p.getY());
 				if (vertex != null && startVertex != null) {
 					Graph<Vertex, Edge> graph = vv.getGraphLayout().getGraph();
-					// Create edge with its synapse and the both vertexes
-					Edge edge = edgeFactory.create();
-					edge.createModel(startVertex.getModel(), vertex.getModel());
-					graph.addEdge(edge, startVertex, vertex, edgeIsDirected);
+
+					// Check if the two neurons are in different layers
+					Neuron fromNeuron = startVertex.getModel();
+					Neuron toNeuron = vertex.getModel();
+					if (fromNeuron.getLayer().getIndex() != toNeuron.getLayer()
+							.getIndex()) {
+						// Create edge with its synapse between the both vertexes
+						Edge edge = edgeFactory.create();
+						edge.createModel(fromNeuron, toNeuron);
+						graph.addEdge(edge, startVertex, vertex, edgeIsDirected);
+					}
 					vv.repaint();
 				}
 			}

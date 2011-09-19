@@ -209,6 +209,13 @@ public class GraphLayoutViewer {
 				continue;
 			}
 
+			if (fromVertex.getModel().getLayer().getIndex() == toVertex.getModel()
+					.getLayer().getIndex()) {
+				// Do not conntect two neurons in the same layer with an
+				// edge!
+				continue;
+			}
+
 			// Create new edge with its synapse and the both vertexes
 			Edge edge = EdgeController.getInstance().getEdgeFactory().create();
 			edge.createModel(fromVertex.getModel(), toVertex.getModel());
@@ -232,7 +239,7 @@ public class GraphLayoutViewer {
 			public void paint(final Graphics g) {
 				final int height = viewer.getHeight();
 				final int width = viewer.getWidth();
-				
+
 				// Position of the vertex depends on the number of vertices that
 				// are already in the same layer.
 				// Since new vertices are always added at the last position, get
@@ -244,7 +251,7 @@ public class GraphLayoutViewer {
 						.getVertices();
 
 				// System.out.println(vertices);
-				
+
 				// No vertices? -> No fun!
 				if (vertices.size() == 0) {
 					return;
