@@ -15,8 +15,10 @@ import java.util.Map;
 
 import de.unikassel.ann.controller.ActionController;
 import de.unikassel.ann.controller.Actions;
+import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.gui.sidebar.TopologyPanel;
+import de.unikassel.ann.model.func.ActivationFunction;
 
 /**
  * @author anton
@@ -27,7 +29,7 @@ public class SidebarModel {
 	private PropertyChangeSupport pcs;
 
 	public enum P {
-		inputNeurons, outputNeurons, hiddenLayers, hiddenNeurons, topology
+		inputNeurons, outputNeurons, hiddenLayers, hiddenNeurons, topology, bias
 	};
 
 	private Integer inputNeurons = 0;
@@ -36,7 +38,12 @@ public class SidebarModel {
 	private Map<Integer, Integer> hiddenNeurons;
 	private Map<Integer, Boolean> bias;
 	private ActionController ac;
-
+	public Neuron selectedNeuron;
+	public Synapse selectedSynapse;
+	public ActivationFunction selectedActivation;
+	
+	
+	
 	public SidebarModel() {
 		pcs = new PropertyChangeSupport(this);
 		hiddenNeurons = new HashMap<Integer, Integer>();
@@ -44,13 +51,42 @@ public class SidebarModel {
 		initChangeListener();
 		ac = ActionController.get();
 	}
+	
+
+	public Neuron getSelectedNeuron() {
+		return selectedNeuron;
+	}
+
+	public void setSelectedNeuron(Neuron selectedNeuron) {
+		this.selectedNeuron = selectedNeuron;
+	}
+
+	public Synapse getSelectedSynapse() {
+		return selectedSynapse;
+	}
+
+	public void setSelectedSynapse(Synapse selectedSynapse) {
+		this.selectedSynapse = selectedSynapse;
+	}
+
+	public ActivationFunction getSelectedActivation() {
+		return selectedActivation;
+	}
+
+	public void setSelectedActivation(ActivationFunction selectedActivation) {
+		this.selectedActivation = selectedActivation;
+	}
+
 
 	public Map<Integer, Boolean> getBias() {
 		return bias;
 	}
 
-	public void setBias(Map<Integer, Boolean> bias) {
-		this.bias = bias;
+	public void setBias(Integer layer, Boolean bia) {
+		Boolean oldValue = bias.get(layer);
+		bias.put(layer, bia);
+		pcs.firePropertyChange(P.bias.name(), oldValue, bia);
+		
 	}
 
 	public Integer getMouseInsertLayer() {
@@ -100,6 +136,12 @@ public class SidebarModel {
 		pcs.addPropertyChangeListener(P.hiddenLayers.name(), new PropertyChangeListener() {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
+				ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
+			}
+		});
+		pcs.addPropertyChangeListener(P.bias.name(), new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
 				ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
 			}
 		});
@@ -188,6 +230,11 @@ public class SidebarModel {
 		Integer oldValue = hiddenNeurons.get(layer);
 		hiddenNeurons.put(layer, neuronCount);
 		pcs.firePropertyChange(P.hiddenNeurons.name(), oldValue, neuronCount);
+	}
+
+
+	public void createNetwork() {
+		//TODO create Network
 	}
 
 }

@@ -10,6 +10,9 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JCheckBox;
 import javax.swing.JSpinner;
 import javax.swing.JRadioButton;
+
+import de.unikassel.ann.controller.Settings;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -28,25 +31,25 @@ public class TrainDataPanel extends JDialog {
 	}
 
 
-	private JButton btnShowTrainingsdata;
-	private JCheckBox checkBoxInput;
-	private JCheckBox checkBoxOutput;
-	private JSpinner spinnerInputFrom;
-	private JSpinner spinnerInputTo;
-	private JSpinner spinnerOutputFrom;
-	private JSpinner spinnerOutputTo;
-	private JRadioButton rdbtnInvertOutputYes;
-	private JRadioButton rdbtnInvertOutputNo;
-	private JButton btnPreviewData;
-	private JButton btnApplyData;
-	private JButton btnCancel;
+	public JButton btnShowTrainingsdata;
+	public JCheckBox checkBoxInput;
+	public JCheckBox checkBoxOutput;
+	public JSpinner spinnerInputFrom;
+	public JSpinner spinnerInputTo;
+	public JSpinner spinnerOutputFrom;
+	public JSpinner spinnerOutputTo;
+	public JRadioButton rdbtnInvertOutputYes;
+	public JRadioButton rdbtnInvertOutputNo;
+	public JButton btnPreviewData;
+	public JButton btnApplyData;
+	public JButton btnCancel;
 	
 
 	/**
 	 * Create the frame.
 	 */
 	private TrainDataPanel() {
-		setTitle("Trainingsdaten normalisieren");
+		setTitle(Settings.i18n.getString("menu.options.trainData"));
 		setModal(true);
 		setSize(350, 270);
 		setResizable(false);
@@ -55,19 +58,19 @@ public class TrainDataPanel extends JDialog {
 		
 		JPanel trainingsDatenNormalPanel = new JPanel();
 		
-		JLabel lblWhat = new JLabel("Was");
+		JLabel lblWhat = new JLabel(Settings.i18n.getString("menu.options.trainData.lblWhat"));
 		
-		btnShowTrainingsdata = new JButton("Trainingsdaten anzeigen");
+		btnShowTrainingsdata = new JButton(Settings.i18n.getString("menu.options.trainData.btnShowTrainingsdata"));
 		
-		JLabel lblNormalize = new JLabel("Normalisieren");
+		JLabel lblNormalize = new JLabel(Settings.i18n.getString("menu.options.trainData.lblNormalize"));
 		
-		JLabel lblfrom = new JLabel("von");
+		JLabel lblfrom = new JLabel(Settings.i18n.getString("menu.options.trainData.lblfrom"));
 		
-		JLabel lblUp = new JLabel("bis");
+		JLabel lblUp = new JLabel(Settings.i18n.getString("menu.options.trainData.lblUp"));
 		
-		JLabel lblInput = new JLabel("Input");
+		JLabel lblInput = new JLabel(Settings.i18n.getString("menu.options.trainData.lblInput"));
 		
-		JLabel lblOutput = new JLabel("Output");
+		JLabel lblOutput = new JLabel(Settings.i18n.getString("menu.options.trainData.lblOutput"));
 		
 		checkBoxInput = new JCheckBox("");
 		
@@ -81,18 +84,18 @@ public class TrainDataPanel extends JDialog {
 		
 		spinnerOutputTo = new JSpinner();
 		
-		JLabel lblInvertOutput = new JLabel("Ausgabe wieder umkehren");
+		JLabel lblInvertOutput = new JLabel(Settings.i18n.getString("menu.options.trainData.lblInvertOutput"));
 		
-		rdbtnInvertOutputYes = new JRadioButton("Ja");
+		rdbtnInvertOutputYes = new JRadioButton(Settings.i18n.getString("menu.options.trainData.rdbtnInvertOutputYes"));
 		rdbtnInvertOutputYes.setSelected(true);
 		
-		rdbtnInvertOutputNo = new JRadioButton("Nein");
+		rdbtnInvertOutputNo = new JRadioButton(Settings.i18n.getString("menu.options.trainData.rdbtnInvertOutputNo"));
 		
-		btnPreviewData = new JButton("Vorschau");
+		btnPreviewData = new JButton(Settings.i18n.getString("menu.options.trainData.btnPreviewData"));
 		
-		btnApplyData = new JButton("Anwenden");
+		btnApplyData = new JButton(Settings.i18n.getString("menu.options.trainData.btnApplyData"));
 		
-		btnCancel = new JButton("Abbrechen");
+		btnCancel = new JButton(Settings.i18n.getString("menu.options.trainData.btnCancel"));
 		btnCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {

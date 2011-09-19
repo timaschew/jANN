@@ -1,6 +1,8 @@
 package de.unikassel.ann.gui.sidebar;
 
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -21,6 +23,9 @@ import javax.swing.border.TitledBorder;
 import de.unikassel.ann.controller.ActionController;
 import de.unikassel.ann.controller.Actions;
 import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.model.SidebarModel;
+
+import javax.swing.JButton;
 
 public class TopologyPanel extends JPanel {
 
@@ -48,13 +53,17 @@ public class TopologyPanel extends JPanel {
 	public JRadioButton mouseOutputRB;
 	public JRadioButton mouseHiddenRB;
 
+	public JCheckBox chckbxAllNeuronsBind;
+
+	public JButton btnCreateNetwork;
+
 	/**
 	 * Create the frame.
 	 */
 	public TopologyPanel() {
 		setBorder(new TitledBorder(null, Settings.i18n.getString("sidebar.topology"), TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		// setSize(400, 240);
-		setPreferredSize(new Dimension(400, 250));
+		setPreferredSize(new Dimension(400, 330));
 
 		JLabel lblInputNeuronen = new JLabel(Settings.i18n.getString("sidebar.topology.inputNeurons"));
 		inputNeuroSpinner = new JSpinner(inputSpinnerModel);
@@ -80,6 +89,17 @@ public class TopologyPanel extends JPanel {
 		inputBiasCB = new JCheckBox(Settings.i18n.getString("sidebar.topology.biasInputCB"));
 		hiddenBiasCB = new JCheckBox(Settings.i18n.getString("sidebar.topology.biasHiddenCB"));
 		hiddenBiasCB.setEnabled(false);
+		
+		chckbxAllNeuronsBind = new JCheckBox(Settings.i18n.getString("sidebar.topology.chckbxAllNeuronsBind"));
+		
+		btnCreateNetwork = new JButton(Settings.i18n.getString("sidebar.topology.btnCreateNetwork"));
+		btnCreateNetwork.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SidebarModel model = new SidebarModel();
+				model.createNetwork();
+			}
+		});
 
 		GroupLayout gl_topologiePanel = new GroupLayout(this);
 		gl_topologiePanel.setHorizontalGroup(
@@ -87,7 +107,9 @@ public class TopologyPanel extends JPanel {
 				.addGroup(gl_topologiePanel.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_topologiePanel.createParallelGroup(Alignment.LEADING)
-						.addComponent(mouseModusPanel, GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
+						.addGroup(gl_topologiePanel.createSequentialGroup()
+							.addComponent(mouseModusPanel, GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
+							.addContainerGap())
 						.addGroup(gl_topologiePanel.createSequentialGroup()
 							.addGroup(gl_topologiePanel.createParallelGroup(Alignment.LEADING)
 								.addComponent(lblInputNeuronen)
@@ -106,8 +128,13 @@ public class TopologyPanel extends JPanel {
 									.addComponent(hiddenLayerDropDown, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
 									.addPreferredGap(ComponentPlacement.RELATED)
 									.addComponent(hiddenBiasCB))
-								.addComponent(inputBiasCB))))
-					.addContainerGap())
+								.addComponent(inputBiasCB))
+							.addContainerGap(35, Short.MAX_VALUE))
+						.addGroup(Alignment.TRAILING, gl_topologiePanel.createSequentialGroup()
+							.addComponent(chckbxAllNeuronsBind)
+							.addPreferredGap(ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
+							.addComponent(btnCreateNetwork)
+							.addGap(29))))
 		);
 		gl_topologiePanel.setVerticalGroup(
 			gl_topologiePanel.createParallelGroup(Alignment.LEADING)
@@ -133,9 +160,13 @@ public class TopologyPanel extends JPanel {
 								.addComponent(lblHiddenNeuronen)
 								.addComponent(hiddenLayerDropDown, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 								.addComponent(hiddenBiasCB))))
-					.addGap(11)
-					.addComponent(mouseModusPanel, GroupLayout.PREFERRED_SIZE, 70, Short.MAX_VALUE)
-					.addContainerGap())
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(mouseModusPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addGap(18)
+					.addGroup(gl_topologiePanel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(chckbxAllNeuronsBind)
+						.addComponent(btnCreateNetwork))
+					.addContainerGap(9, Short.MAX_VALUE))
 		);
 		/**
 		 * internal MausModus-Panel Elements

@@ -9,6 +9,9 @@ import javax.swing.JButton;
 import javax.swing.JSpinner;
 import javax.swing.JRadioButton;
 import javax.swing.LayoutStyle.ComponentPlacement;
+
+import de.unikassel.ann.controller.Settings;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -27,33 +30,33 @@ public class TrainControlPanel extends JPanel {
 		return trainControlPanelInstance;
 	}
 
-	private JButton btnSchritte;
-	private JButton btnTrainingsPattern;
-	private JButton btnIterationen;
-	private JSpinner stepsSpinner;
-	private JSpinner trainPatternspinner;
-	private JSpinner iterationSpinner;
-	private JSpinner delaySpinner;
-	private JRadioButton rdbtnSteps;
-	private JRadioButton rdbtnTrainPattern;
-	private JRadioButton rdbtnIterations;
-	private JButton btnPlay;
-	private JButton btnPause;
-	private JButton btnStop;
+	public JButton btnSteps;
+	public JButton btnTrainingsPattern;
+	public JButton btnIterations;
+	public JSpinner stepsSpinner;
+	public JSpinner trainPatternspinner;
+	public JSpinner iterationSpinner;
+	public JSpinner delaySpinner;
+	public JRadioButton rdbtnSteps;
+	public JRadioButton rdbtnTrainPattern;
+	public JRadioButton rdbtnIterations;
+	public JButton btnPlay;
+	public JButton btnPause;
+	public JButton btnStop;
 
 	/**
 	 * Create the frame.
 	 */
 	private TrainControlPanel() {
 		
-		setBorder(new TitledBorder(null, "Training-Steuerung", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		setBorder(new TitledBorder(null, Settings.i18n.getString("sidebar.trainControl"), TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		setSize(400, 235);
 		
-		btnSchritte = new JButton("Schritt(e)");
-		btnTrainingsPattern = new JButton("Trainingspattern");
-		btnIterationen = new JButton("Iterationen");
+		btnSteps = new JButton(Settings.i18n.getString("sidebar.trainControl.btnSteps"));
+		btnTrainingsPattern = new JButton(Settings.i18n.getString("sidebar.trainControl.btnTrainingsPattern"));
+		btnIterations = new JButton(Settings.i18n.getString("sidebar.trainControl.btnIterations"));
 		
-		JLabel lblVerzoegerung = new JLabel("Verz\u00F6gerung");
+		JLabel lblVerzoegerung = new JLabel(Settings.i18n.getString("sidebar.trainControl.lblVerzoegerung"));
 		stepsSpinner = new JSpinner();
 		trainPatternspinner = new JSpinner();
 		iterationSpinner = new JSpinner();
@@ -62,10 +65,10 @@ public class TrainControlPanel extends JPanel {
 		rdbtnTrainPattern = new JRadioButton("");
 		rdbtnIterations = new JRadioButton("");
 		
-		JLabel lblMs = new JLabel("ms");
-		btnPlay = new JButton("Play");
-		btnPause = new JButton("Pause");
-		btnStop = new JButton("Stop");
+		JLabel lblMs = new JLabel(Settings.i18n.getString("sidebar.trainControl.lblMs"));
+		btnPlay = new JButton(Settings.i18n.getString("sidebar.trainControl.btnPlay"));
+		btnPause = new JButton(Settings.i18n.getString("sidebar.trainControl.btnPause"));
+		btnStop = new JButton(Settings.i18n.getString("sidebar.trainControl.btnStop"));
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 			}
@@ -78,9 +81,9 @@ public class TrainControlPanel extends JPanel {
 					.addGroup(gl_trainingSteuerungPanel.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_trainingSteuerungPanel.createSequentialGroup()
 							.addGroup(gl_trainingSteuerungPanel.createParallelGroup(Alignment.LEADING)
-								.addComponent(btnSchritte)
+								.addComponent(btnSteps)
 								.addComponent(btnTrainingsPattern)
-								.addComponent(btnIterationen)
+								.addComponent(btnIterations)
 								.addComponent(lblVerzoegerung))
 							.addGap(86)
 							.addGroup(gl_trainingSteuerungPanel.createParallelGroup(Alignment.TRAILING)
@@ -110,7 +113,7 @@ public class TrainControlPanel extends JPanel {
 							.addContainerGap()
 							.addGroup(gl_trainingSteuerungPanel.createParallelGroup(Alignment.LEADING)
 								.addGroup(gl_trainingSteuerungPanel.createParallelGroup(Alignment.BASELINE)
-									.addComponent(btnSchritte)
+									.addComponent(btnSteps)
 									.addComponent(stepsSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 								.addComponent(rdbtnSteps))
 							.addPreferredGap(ComponentPlacement.RELATED)
@@ -123,7 +126,7 @@ public class TrainControlPanel extends JPanel {
 						.addGroup(gl_trainingSteuerungPanel.createSequentialGroup()
 							.addGap(71)
 							.addGroup(gl_trainingSteuerungPanel.createParallelGroup(Alignment.TRAILING)
-								.addComponent(btnIterationen)
+								.addComponent(btnIterations)
 								.addComponent(iterationSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_trainingSteuerungPanel.createParallelGroup(Alignment.LEADING)

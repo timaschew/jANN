@@ -15,7 +15,9 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.SpinnerModel;
 
+import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.ActionControllerTest.MyModel;
+import de.unikassel.ann.factory.NetworkFactory;
 import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.gui.sidebar.Sidebar;
 import de.unikassel.ann.model.Layer;
@@ -98,33 +100,77 @@ public class ActionController {
 
 			sidebar.topolgyPanel.inputNeuroSpinner.setValue(sidebarModel.getInputNeurons());
 			System.out.println("updated the view");
-
-			if (sidebarModel.getHiddenLayers() > 0) {
-				// enable combox box and checkbox
+			
+			// get last selection from combobox
+			Integer selectedItem = (Integer) sidebar.topolgyPanel.hiddenLayerDropDown.getSelectedItem();
+			// refresh the comboboxen: remove all and add then again
+			// remove all items
+			sidebar.topolgyPanel.hiddenLayerDropDown.removeAllItems();
+			sidebar.topolgyPanel.comboBoxHiddenMausModus.removeAllItems();
+			// add the items
+			for (int i = 1; i <= sidebarModel.getHiddenLayers(); i++) {
+				//if getHiddenayer >= 1 then enable der Elements 
 				sidebar.topolgyPanel.hiddenLayerDropDown.setEnabled(true);
 				sidebar.topolgyPanel.hiddenBiasCB.setEnabled(true);
 				sidebar.topolgyPanel.hiddenNeuronSpinner.setEnabled(true);
 				sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(true);
-
-				Vector<Integer> comboBoxEntries = new Vector<Integer>();
-				for (int i = 1; i <= sidebarModel.getHiddenLayers(); i++) {
-					comboBoxEntries.add(new Integer(i));
+				
+				sidebar.topolgyPanel.hiddenLayerDropDown.addItem(new Integer(i));
+				sidebar.topolgyPanel.comboBoxHiddenMausModus.addItem(new Integer(i));
+			}
+			// if previous selection was not null, set to old value
+			if (selectedItem != null) {
+				// if old value don't exist anymore set to current hidden layer amount, 
+				// otherwise use the previous selected item
+				if (selectedItem > sidebarModel.getHiddenLayers()) {
+					sidebar.topolgyPanel.hiddenLayerDropDown.setSelectedItem(sidebarModel.getHiddenLayers());
+					sidebar.topolgyPanel.comboBoxHiddenMausModus.setSelectedItem(sidebarModel.getHiddenLayers());
+					
+					sidebar.topolgyPanel.hiddenLayerDropDown.setEnabled(false);
+					sidebar.topolgyPanel.hiddenBiasCB.setEnabled(false);
+					sidebar.topolgyPanel.hiddenNeuronSpinner.setEnabled(false);
+					sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(false);
+				} else {
+					sidebar.topolgyPanel.hiddenLayerDropDown.setSelectedItem(selectedItem);
+					sidebar.topolgyPanel.comboBoxHiddenMausModus.setSelectedItem(selectedItem);
 				}
-				DefaultComboBoxModel newComboBoxModel = new DefaultComboBoxModel(comboBoxEntries);
-				sidebar.topolgyPanel.hiddenLayerDropDown.setModel(newComboBoxModel);
-				sidebar.topolgyPanel.hiddenLayerDropDown.setSelectedItem(sidebarModel.getHiddenLayers());
-				DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel(comboBoxEntries);
-				sidebar.topolgyPanel.comboBoxHiddenMausModus.setModel(comboBoxModel);
-				sidebar.topolgyPanel.comboBoxHiddenMausModus.setSelectedItem(sidebarModel.getHiddenLayers());
-			} else {
-				sidebar.topolgyPanel.hiddenLayerDropDown.setEnabled(false);
-				sidebar.topolgyPanel.hiddenBiasCB.setEnabled(false);
-				sidebar.topolgyPanel.hiddenNeuronSpinner.setEnabled(false);
-				sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(false);
 			}
 
-			break;
+//
+//			if (sidebarModel.getHiddenLayers() > 0) {
+//				// enable combox box and checkbox
+//				sidebar.topolgyPanel.hiddenLayerDropDown.setEnabled(true);
+//				sidebar.topolgyPanel.hiddenBiasCB.setEnabled(true);
+//				sidebar.topolgyPanel.hiddenNeuronSpinner.setEnabled(true);
+//				sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(true);
+//
+//				Vector<Integer> comboBoxEntries = new Vector<Integer>();
+//				for (int i = 1; i <= sidebarModel.getHiddenLayers(); i++) {
+//					comboBoxEntries.add(new Integer(i));
+//				}
+//				DefaultComboBoxModel newComboBoxModel = new DefaultComboBoxModel(comboBoxEntries);
+//				sidebar.topolgyPanel.hiddenLayerDropDown.setModel(newComboBoxModel);
+//				sidebar.topolgyPanel.hiddenLayerDropDown.setSelectedItem(sidebarModel.getHiddenLayers());
+//				DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel(comboBoxEntries);
+//				sidebar.topolgyPanel.comboBoxHiddenMausModus.setModel(comboBoxModel);
+//				sidebar.topolgyPanel.comboBoxHiddenMausModus.setSelectedItem(sidebarModel.getHiddenLayers());
+//			} else {
+//				sidebar.topolgyPanel.hiddenLayerDropDown.setEnabled(false);
+//				sidebar.topolgyPanel.hiddenBiasCB.setEnabled(false);
+//				sidebar.topolgyPanel.hiddenNeuronSpinner.setEnabled(false);
+//				sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(false);
+//			}
 
+			break;
+			
+		case CREATE_NETWORK:
+			NetConfig config = new NetConfig();
+			sidebarModel = Settings.getInstance().getCurrentSession().sidebarModel;
+			NetworkFactory factory = new NetworkFactory();
+//			factory.createSimpleNet(sidebarModel.getInputNeurons(), sidebarModel.getHiddenNeurons(), 
+//					sidebarModel.getOutputNeurons(), sidebarModel.getBias());
+			break;
+			
 		case TEST_UPDATEMODEL:
 			Integer value = newValue;
 			MyModel dataModel = ActionControllerTest.instance.dataModel;

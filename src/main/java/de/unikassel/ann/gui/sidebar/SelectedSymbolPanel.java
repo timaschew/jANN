@@ -14,16 +14,18 @@ import javax.swing.border.TitledBorder;
 
 import de.unikassel.ann.controller.Settings;
 
+
 public class SelectedSymbolPanel extends JPanel {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JTextField fieldSelected;
-	private JComboBox activatedFunktioncomboBox;
-	private JSpinner neuroInputBySelectSpinner;
-	private JSpinner spinnerSynapsWeight;
+	public JTextField fieldSelected;
+	public JComboBox activatedFunktioncomboBox;
+	public JSpinner neuroInputBySelectSpinner;
+	public JSpinner spinnerSynapsWeight;
+	
 
 	/**
 	 * Create the frame.

@@ -91,7 +91,7 @@ public class Main {
 		// Frame
 		//
 		frame = new JFrame();
-		frame.setBounds(100, 100, 800, 600);
+		frame.setBounds(100, 100, 1060, 600); //statt 800 1060
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		//
@@ -105,13 +105,21 @@ public class Main {
 		//
 		JSplitPane mainSplitPane = new JSplitPane();
 		frame.getContentPane().add(mainSplitPane, BorderLayout.CENTER);
-
+		
 		// SideConfigurationPanel sideBar = new SideConfigurationPanel();
 		sideBar = new Sidebar();
+		//Provide minimum sizes for the  components in the split pane
+		sideBar.setMinimumSize(new Dimension(435,50));
 		mainSplitPane.setRightComponent(sideBar);
+		//makes the right component's size remain fixed
+		mainSplitPane.setResizeWeight(1.0);
+
+		
+		
 
 		JSplitPane jungConsoleSplitPane = new JSplitPane();
 		jungConsoleSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		jungConsoleSplitPane.setMinimumSize(new Dimension(625,50));
 		mainSplitPane.setLeftComponent(jungConsoleSplitPane);
 
 		JPanel jungPanel = new JPanel(new BorderLayout());

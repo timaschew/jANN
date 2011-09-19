@@ -16,6 +16,20 @@
 	<entry key="menu.view.showTrainingError">Trainingsfehler anzeigen</entry>
 	<entry key="menu.view.showTrainingData">Trainingsdaten anzeigen</entry>
 	<entry key="menu.options">Optionen</entry>
+	<entry key="menu.options.trainData">Trainingsdaten normalisieren</entry>
+	<entry key="menu.options.trainData.lblWhat">Was</entry>
+	<entry key="menu.options.trainData.btnShowTrainingsdata">Trainingsdaten anzeigen</entry>
+	<entry key="menu.options.trainData.lblNormalize">Normalisieren</entry>
+	<entry key="menu.options.trainData.lblfrom">Von</entry>
+	<entry key="menu.options.trainData.lblUp">Bis</entry>
+	<entry key="menu.options.trainData.lblInput">Input</entry>
+	<entry key="menu.options.trainData.lblOutput">Output</entry>
+	<entry key="menu.options.trainData.lblInvertOutput">Ausgabe wieder umkehren</entry>
+	<entry key="menu.options.trainData.rdbtnInvertOutputYes">Ja</entry>
+	<entry key="menu.options.trainData.rdbtnInvertOutputNo">Nein</entry>
+	<entry key="menu.options.trainData.btnPreviewData">Vorschau</entry>
+	<entry key="menu.options.trainData.btnApplyData">Anwenden</entry>
+	<entry key="menu.options.trainData.btnCancel">Abbrechen</entry>
 	<entry key="menu.help">Hilfe</entry>
 	<entry key="menu.help.about">Über</entry>
 	<entry key="menu.test">Test</entry>
@@ -26,7 +40,8 @@
 	<entry key="sidebar.topology.outputNeurons">Output Neuronen</entry>
 	<entry key="sidebar.topology.hiddenlayers">Hidden Layer</entry>
 	<entry key="sidebar.topology.hiddenNeurons">Hidden Neuronen</entry>
-	<entry key="sidebar.topology.allNeuronsBind">Alle Neuronen verbinden</entry>
+	<entry key="sidebar.topology.chckbxAllNeuronsBind">Alle Neuronen verbinden</entry>
+	<entry key="sidebar.topology.btnCreateNetwork">Netzwerk erstellen</entry>
 	<entry key="sidebar.topology.biasInputCB">Bias</entry>
 	<entry key="sidebar.topology.biasHiddenCB">Bias</entry>
 	<entry key="sidebar.topology.mouse">Mouse Modus</entry>
@@ -41,9 +56,9 @@
 	<entry key="sidebar.trainingsStrategy.onlineRB">Online</entry>
 	<entry key="sidebar.trainingsStrategy.offlineRB">Offline</entry>
 	<entry key="sidebar.trainingsStrategy.strategy">Strategie</entry>
-	<entry key="sidebar.traininnsStrategy.strategy.type">Typ</entry>
-	<entry key="sidebar.traininnsStrategy.strategy.maxIterations">Max. Iterationen</entry>
-	<entry key="sidebar.traininnsStrategy.strategy.maxIterations2">Max. Iterationen</entry>
+	<entry key="sidebar.trainingsStrategy.strategy.type">Typ</entry>
+	<entry key="sidebar.trainingsStrategy.strategy.maxIterations">Max. Iterationen</entry>
+	<entry key="sidebar.trainingsStrategy.strategy.maxIterations2">Max. Iterationen</entry>
 	<entry key="sidebar.standardOptions">Standard Einstellung</entry>
 	<entry key="sidebar.standardOptions.activatedFunction">Aktivierungsfunktion</entry>
 	<entry key="sidebar.standardOptions.initialWeigth">Initialgewicht</entry>
@@ -54,4 +69,13 @@
 	<entry key="sidebar.selectedSymbol.synapseWeigth">Synapsengewicht</entry>
 	<entry key="sidebar.selectedSymbol.neuronsInput">Neuronen Input</entry>
 	<entry key="sidebar.selectedSymbol.activatedFunction">Aktivierungsfunktion</entry>
+	<entry key="sidebar.trainControl">Training-Steuerung</entry>
+	<entry key="sidebar.trainControl.btnSteps">Schritte</entry>
+	<entry key="sidebar.trainControl.btnTrainingsPattern">Trainingspattern</entry>
+	<entry key="sidebar.trainControl.btnIterations">Iterationen</entry>
+	<entry key="sidebar.trainControl.lblVerzoegerung">Verzögerung</entry>
+	<entry key="sidebar.trainControl.lblMs">ms</entry>
+	<entry key="sidebar.trainControl.btnPlay">Play</entry>
+	<entry key="sidebar.trainControl.btnPause">Pause</entry>
+	<entry key="sidebar.trainControl.btnStop">Stop</entry>
 </properties>

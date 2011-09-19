@@ -23,12 +23,18 @@ import de.unikassel.ann.controller.Settings;
 public class TrainStrategyPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JComboBox comboBoxAlgorithm;
-	private JSpinner spinnerLernRate;
-	private JSpinner spinnerMomentum;
-	private AbstractButton rdbtnOnline;
-	private JRadioButton rdbtnOffline;
-	private final ButtonGroup buttonGroup = new ButtonGroup();
+	public JComboBox comboBoxAlgorithm;
+	public JSpinner spinnerLernRate;
+	public JSpinner spinnerMomentum;
+	public AbstractButton rdbtnOnline;
+	public JRadioButton rdbtnOffline;
+	public final ButtonGroup buttonGroup = new ButtonGroup();
+	
+	public JPanel strategiePanel;
+	public JComboBox comboBoxTypStrategien;
+	public JCheckBox chckbxActivateStrategie;
+	public JSpinner spinnerMaxIterations;
+	public JSpinner spinnerMaxIterations2;
 
 	/**
 	 * Create the panel.
@@ -61,7 +67,7 @@ public class TrainStrategyPanel extends JPanel {
 //		rdbtnOffline.setName(Settings.i18n.getString("sidebar.trainingStrategy.offlineRB"));
 		buttonGroup.add(rdbtnOffline);
 
-		JPanel strategiePanel = new JPanel();
+		strategiePanel = new JPanel();
 		CardLayout cardLayout = new CardLayout();
 		// TODO: use cardLayout
 		strategiePanel.setBorder(new TitledBorder(null, Settings.i18n.getString("sidebar.trainingsStrategy.strategy"), TitledBorder.LEADING,TitledBorder.TOP, null, new Color(0, 0, 0)));
@@ -115,21 +121,21 @@ public class TrainStrategyPanel extends JPanel {
 						.addComponent(strategiePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
-		JLabel lblTypStrategien = new JLabel(Settings.i18n.getString("sidebar.traininnsStrategy.strategy.type"));
+		JLabel lblTypStrategien = new JLabel(Settings.i18n.getString("sidebar.trainingsStrategy.strategy.type"));
 
-		JComboBox comboBoxTypStrategien = new JComboBox();
+		comboBoxTypStrategien = new JComboBox();
 		comboBoxTypStrategien.setModel(new DefaultComboBoxModel(new String[] { "MaxIterations" }));
 
-		JCheckBox chckbxActivateStrategie = new JCheckBox("");
+		chckbxActivateStrategie = new JCheckBox("");
 		chckbxActivateStrategie.setSelected(true);
 
-		JLabel lblMaxIterations = new JLabel(Settings.i18n.getString("sidebar.traininnsStrategy.strategy.maxIterations"));
+		JLabel lblMaxIterations = new JLabel(Settings.i18n.getString("sidebar.trainingsStrategy.strategy.maxIterations"));
 
-		JSpinner spinnerMaxIterations = new JSpinner();
+		spinnerMaxIterations = new JSpinner();
 
-		JLabel label = new JLabel(Settings.i18n.getString("sidebar.traininnsStrategy.strategy.maxIterations2"));
+		JLabel label = new JLabel(Settings.i18n.getString("sidebar.trainingsStrategy.strategy.maxIterations2"));
 
-		JSpinner spinner = new JSpinner();
+		spinnerMaxIterations2 = new JSpinner();
 		GroupLayout gl_strategiePanel = new GroupLayout(strategiePanel);
 		gl_strategiePanel.setHorizontalGroup(gl_strategiePanel.createParallelGroup(Alignment.LEADING).addGroup(
 				gl_strategiePanel
@@ -155,7 +161,7 @@ public class TrainStrategyPanel extends JPanel {
 												gl_strategiePanel.createSequentialGroup()
 														.addComponent(label, GroupLayout.PREFERRED_SIZE, 94, GroupLayout.PREFERRED_SIZE)
 														.addPreferredGap(ComponentPlacement.RELATED, 140, Short.MAX_VALUE)
-														.addComponent(spinner, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)))
+														.addComponent(spinnerMaxIterations2, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)))
 						.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(chckbxActivateStrategie).addGap(21)));
 		gl_strategiePanel.setVerticalGroup(gl_strategiePanel.createParallelGroup(Alignment.LEADING).addGroup(
 				gl_strategiePanel
@@ -171,7 +177,7 @@ public class TrainStrategyPanel extends JPanel {
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addGroup(
 								gl_strategiePanel.createParallelGroup(Alignment.BASELINE).addComponent(label)
-										.addComponent(spinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))));
+										.addComponent(spinnerMaxIterations2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))));
 		strategiePanel.setLayout(gl_strategiePanel);
 		setLayout(groupLayout);
 	}

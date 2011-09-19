@@ -1,5 +1,6 @@
 package de.unikassel.ann.gui.sidebar;
 
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -18,12 +19,14 @@ public class StandardOptionsPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private JComboBox funktionToActivateCombo;
-	private JRadioButton rdbtnRandomInitialWeight;
-	private JRadioButton rdbtnExactInitialWeight;
-	private JSpinner RandomInitialWeightSpinner1;
-	private JSpinner RandomInitialWeightSpinner2;
-	private JSpinner exactInitialWeightSpinner;
+	public JComboBox funktionToActivateCombo;
+	public JRadioButton rdbtnRandomInitialWeight;
+	public JRadioButton rdbtnExactInitialWeight;
+	public JSpinner RandomInitialWeightSpinner1;
+	public JSpinner RandomInitialWeightSpinner2;
+	public JSpinner exactInitialWeightSpinner;
+	
+	public final ButtonGroup buttonGroup = new ButtonGroup();
 
 	/**
 	 * Create the panel.
@@ -39,7 +42,9 @@ public class StandardOptionsPanel extends JPanel {
 		funktionToActivateCombo.setModel(new DefaultComboBoxModel(new String[] { "Sigmoid", "TanH" }));
 
 		rdbtnRandomInitialWeight = new JRadioButton(Settings.i18n.getString("sidebar.standardOptions.randomRB"));
+		buttonGroup.add(rdbtnRandomInitialWeight);
 		rdbtnExactInitialWeight = new JRadioButton(Settings.i18n.getString("sidebar.standardOptions.exactRB"));
+		buttonGroup.add(rdbtnExactInitialWeight);
 
 		RandomInitialWeightSpinner1 = new JSpinner();
 		RandomInitialWeightSpinner1.setModel(new SpinnerNumberModel(new Double(0), null, null, new Double(1)));
