@@ -44,7 +44,7 @@ public class GraphLayoutViewer {
 	protected DirectedGraph<Vertex, Edge> graph;
 	protected AbstractLayout<Vertex, Edge> layout;
 	protected VisualizationViewer<Vertex, Edge> viewer;
-	protected GraphMouse<Vertex, Edge> graphMouse;
+	public GraphMouse<Vertex, Edge> graphMouse;
 
 	private JFrame frame;
 	private Dimension dim;

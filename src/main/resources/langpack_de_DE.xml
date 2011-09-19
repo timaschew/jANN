@@ -48,6 +48,7 @@
 	<entry key="sidebar.topology.mouse.input">Input</entry>
 	<entry key="sidebar.topology.mouse.output">Output</entry>
 	<entry key="sidebar.topology.mouse.hidden">Hidden:</entry>
+	<entry key="sidebar.topology.mouse.lblMouseModi">Mouse Modis:</entry>
 	<entry key="sidebar.trainingsStrategy">Training</entry>
 	<entry key="sidebar.trainingsStrategy.algorithm">Algorithmus</entry>
 	<entry key="sidebar.trainingsStrategy.lernRate">Lernrate</entry>

@@ -43,11 +43,12 @@ public class Sidebar extends JPanel {
 		JPanel wrapper = new JPanel();
 		GridBagLayout gbl_wrapper = new GridBagLayout();
 		gbl_wrapper.columnWidths = new int[]{412, 0};
-		gbl_wrapper.rowHeights = new int[]{339, 350, 160, 246, 0};
+		gbl_wrapper.rowHeights = new int[]{339, 350, 90, 224, 160};
 		gbl_wrapper.columnWeights = new double[]{0.0, Double.MIN_VALUE};
-		gbl_wrapper.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_wrapper.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0};
 		wrapper.setLayout(gbl_wrapper);
 		
+		//topology Panel
 		topolgyPanel = new TopologyPanel();
 		GridBagConstraints gbc_topolgyPanel = new GridBagConstraints();
 		gbc_topolgyPanel.anchor = GridBagConstraints.NORTH;
@@ -56,6 +57,7 @@ public class Sidebar extends JPanel {
 		gbc_topolgyPanel.gridx = 0;
 		gbc_topolgyPanel.gridy = 0;
 		wrapper.add(topolgyPanel, gbc_topolgyPanel);
+		//Trainstrategy Panel
 		trainStrategyPanel = new TrainStrategyPanel();
 		GridBagConstraints gbc_trainStrategyPanel = new GridBagConstraints();
 		gbc_trainStrategyPanel.anchor = GridBagConstraints.NORTH;
@@ -64,6 +66,7 @@ public class Sidebar extends JPanel {
 		gbc_trainStrategyPanel.gridx = 0;
 		gbc_trainStrategyPanel.gridy = 1;
 		wrapper.add(trainStrategyPanel, gbc_trainStrategyPanel);
+		//Standardoption Panel
 		standardOptionsPanel = new StandardOptionsPanel();
 		GridBagConstraints gbc_standardOptionsPanel = new GridBagConstraints();
 		gbc_standardOptionsPanel.anchor = GridBagConstraints.NORTH;
@@ -72,6 +75,7 @@ public class Sidebar extends JPanel {
 		gbc_standardOptionsPanel.gridx = 0;
 		gbc_standardOptionsPanel.gridy = 2;
 		wrapper.add(standardOptionsPanel, gbc_standardOptionsPanel);
+		//selectedSymbol Panel
 		selectedSymbolsPanel = new SelectedSymbolPanel();
 		GridBagConstraints gbc_selectedSymbolsPanel = new GridBagConstraints();
 		gbc_selectedSymbolsPanel.anchor = GridBagConstraints.NORTH;
@@ -79,6 +83,7 @@ public class Sidebar extends JPanel {
 		gbc_selectedSymbolsPanel.gridx = 0;
 		gbc_selectedSymbolsPanel.gridy = 3;
 		wrapper.add(selectedSymbolsPanel, gbc_selectedSymbolsPanel);
+	
 
 		JScrollPane scrollPane = new JScrollPane(wrapper);
 

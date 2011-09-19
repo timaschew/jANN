@@ -1,7 +1,12 @@
 package de.unikassel.ann.gui.sidebar;
 
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
@@ -35,6 +40,9 @@ public class TrainStrategyPanel extends JPanel {
 	public JCheckBox chckbxActivateStrategie;
 	public JSpinner spinnerMaxIterations;
 	public JSpinner spinnerMaxIterations2;
+	
+	final static String MAX_ITERATIONSTRATEGY = "MaxIteration";
+	final static String MIN_ERRORSTRATEGY = "MinError";
 
 	/**
 	 * Create the panel.
@@ -42,7 +50,7 @@ public class TrainStrategyPanel extends JPanel {
 	public TrainStrategyPanel() {
 
 		setBorder(new TitledBorder(null,Settings.i18n.getString("sidebar.trainingsStrategy") , TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		setSize(400, 351);
+		setSize(400, 359);
 
 		JLabel lblAlgorithm = new JLabel(Settings.i18n.getString("sidebar.trainingsStrategy.algorithm")); 
 
@@ -63,14 +71,13 @@ public class TrainStrategyPanel extends JPanel {
 		buttonGroup.add(rdbtnOnline);
 		rdbtnOnline.setSelected(true);
 
-		rdbtnOffline = new JRadioButton("Offline");
-//		rdbtnOffline.setName(Settings.i18n.getString("sidebar.trainingStrategy.offlineRB"));
+		rdbtnOffline = new JRadioButton(Settings.i18n.getString("sidebar.trainingsStrategy.offlineRB"));
 		buttonGroup.add(rdbtnOffline);
 
-		strategiePanel = new JPanel();
-		CardLayout cardLayout = new CardLayout();
-		// TODO: use cardLayout
+		strategiePanel = new JPanel(new GridLayout(2, 1));
 		strategiePanel.setBorder(new TitledBorder(null, Settings.i18n.getString("sidebar.trainingsStrategy.strategy"), TitledBorder.LEADING,TitledBorder.TOP, null, new Color(0, 0, 0)));
+		
+		// Layout TrainStrategy Pane
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(
 				groupLayout
@@ -122,63 +129,120 @@ public class TrainStrategyPanel extends JPanel {
 						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 		JLabel lblTypStrategien = new JLabel(Settings.i18n.getString("sidebar.trainingsStrategy.strategy.type"));
-
-		comboBoxTypStrategien = new JComboBox();
-		comboBoxTypStrategien.setModel(new DefaultComboBoxModel(new String[] { "MaxIterations" }));
-
+		String comboBoxItems[] = { MAX_ITERATIONSTRATEGY, MIN_ERRORSTRATEGY };
+//		comboBoxTypStrategien.setModel(new DefaultComboBoxModel(new String[] { "MaxIterations", "MinError" }));
+		comboBoxTypStrategien = new JComboBox(comboBoxItems);
 		chckbxActivateStrategie = new JCheckBox("");
 		chckbxActivateStrategie.setSelected(true);
 
+
+
+		JPanel comboBoxPane = new JPanel(); //use FlowLayout
+		comboBoxTypStrategien.setEditable(false);
+
+	
+		
+		// Panel that uses CardLayout
+		final JPanel cards = new JPanel(new CardLayout());
+
 		JLabel lblMaxIterations = new JLabel(Settings.i18n.getString("sidebar.trainingsStrategy.strategy.maxIterations"));
-
 		spinnerMaxIterations = new JSpinner();
-
+		spinnerMaxIterations.setSize(new Dimension(45, 20));
 		JLabel label = new JLabel(Settings.i18n.getString("sidebar.trainingsStrategy.strategy.maxIterations2"));
-
 		spinnerMaxIterations2 = new JSpinner();
-		GroupLayout gl_strategiePanel = new GroupLayout(strategiePanel);
-		gl_strategiePanel.setHorizontalGroup(gl_strategiePanel.createParallelGroup(Alignment.LEADING).addGroup(
-				gl_strategiePanel
-						.createSequentialGroup()
-						.addContainerGap()
-						.addGroup(
-								gl_strategiePanel
-										.createParallelGroup(Alignment.LEADING)
-										.addGroup(
-												gl_strategiePanel
-														.createSequentialGroup()
-														.addGroup(
-																gl_strategiePanel.createParallelGroup(Alignment.LEADING).addComponent(lblTypStrategien)
-																		.addComponent(lblMaxIterations))
-														.addPreferredGap(ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
-														.addGroup(
-																gl_strategiePanel
-																		.createParallelGroup(Alignment.TRAILING)
-																		.addComponent(comboBoxTypStrategien, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-																				GroupLayout.PREFERRED_SIZE)
-																		.addComponent(spinnerMaxIterations, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)))
-										.addGroup(
-												gl_strategiePanel.createSequentialGroup()
-														.addComponent(label, GroupLayout.PREFERRED_SIZE, 94, GroupLayout.PREFERRED_SIZE)
-														.addPreferredGap(ComponentPlacement.RELATED, 140, Short.MAX_VALUE)
-														.addComponent(spinnerMaxIterations2, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)))
-						.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(chckbxActivateStrategie).addGap(21)));
-		gl_strategiePanel.setVerticalGroup(gl_strategiePanel.createParallelGroup(Alignment.LEADING).addGroup(
-				gl_strategiePanel
-						.createSequentialGroup()
-						.addGroup(
-								gl_strategiePanel.createParallelGroup(Alignment.BASELINE).addComponent(lblTypStrategien)
-										.addComponent(chckbxActivateStrategie)
-										.addComponent(comboBoxTypStrategien, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addGroup(
-								gl_strategiePanel.createParallelGroup(Alignment.BASELINE).addComponent(lblMaxIterations)
-										.addComponent(spinnerMaxIterations, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(
-								gl_strategiePanel.createParallelGroup(Alignment.BASELINE).addComponent(label)
-										.addComponent(spinnerMaxIterations2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))));
-		strategiePanel.setLayout(gl_strategiePanel);
+		
+		JLabel lblMinError = new JLabel("MinError");
+		JSpinner spinnerMinError = new JSpinner();
+		
+		//Panel for MaxIteration Strategy
+		JPanel maxIter = new JPanel();
+		
+		//Panel for minError Strategy
+		JPanel minError = new JPanel();
+		
+		cards.add(maxIter, MAX_ITERATIONSTRATEGY);
+		cards.add(minError, MIN_ERRORSTRATEGY);//comboBoxTypStrategien.getItemAt(1)
+		
+		//Layout for MaxIterationen Strategy Card
+		GroupLayout gl_maxIter = new GroupLayout(maxIter);
+		gl_maxIter.setHorizontalGroup(
+			gl_maxIter.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_maxIter.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(lblMaxIterations)
+					.addGap(73)
+					.addComponent(spinnerMaxIterations, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
+					.addGap(127))
+		);
+		gl_maxIter.setVerticalGroup(
+			gl_maxIter.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_maxIter.createSequentialGroup()
+					.addGap(5)
+					.addGroup(gl_maxIter.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblMaxIterations)
+						.addComponent(spinnerMaxIterations, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+		);
+		maxIter.setLayout(gl_maxIter);
+		
+		
+		//Layout for MinError Strategy Card
+		GroupLayout gl_minError = new GroupLayout(minError);
+		gl_minError.setHorizontalGroup(
+			gl_minError.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_minError.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(lblMinError)
+					.addGap(113)
+					.addComponent(spinnerMinError, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
+					.addGap(120))
+		);
+		gl_minError.setVerticalGroup(
+			gl_minError.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_minError.createSequentialGroup()
+					.addGap(5)
+					.addGroup(gl_minError.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblMinError)
+						.addComponent(spinnerMinError, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+		);
+		minError.setLayout(gl_minError);
+		
+		 // Layout for comboBoxPanel -->typ and comboboxStrategyTyp
+		 GroupLayout gl_comboBoxPane = new GroupLayout(comboBoxPane);
+		 gl_comboBoxPane.setHorizontalGroup(
+		 	gl_comboBoxPane.createParallelGroup(Alignment.LEADING)
+		 		.addGroup(gl_comboBoxPane.createSequentialGroup()
+		 			.addContainerGap()
+		 			.addComponent(lblTypStrategien)
+		 			.addGap(92)
+		 			.addComponent(comboBoxTypStrategien, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+		 			.addPreferredGap(ComponentPlacement.RELATED)
+		 			.addComponent(chckbxActivateStrategie))
+		 );
+		 gl_comboBoxPane.setVerticalGroup(
+		 	gl_comboBoxPane.createParallelGroup(Alignment.LEADING)
+		 		.addGroup(gl_comboBoxPane.createSequentialGroup()
+		 			.addGap(5)
+		 			.addGroup(gl_comboBoxPane.createParallelGroup(Alignment.BASELINE)
+		 				.addComponent(lblTypStrategien)
+		 				.addComponent(comboBoxTypStrategien, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+		 		.addGroup(gl_comboBoxPane.createSequentialGroup()
+		 			.addGap(9)
+		 			.addComponent(chckbxActivateStrategie))
+		 );
+		 comboBoxPane.setLayout(gl_comboBoxPane);
+		 
+		 //Listener for cardLayout
+		 comboBoxTypStrategien.addItemListener(new ItemListener() {
+			 @Override
+			 public void itemStateChanged(ItemEvent evt) {
+				 CardLayout cl = (CardLayout)(cards.getLayout());
+				 cl.show(cards, (String)evt.getItem());
+			 }
+		 });
+		 
+		 strategiePanel.add(comboBoxPane);
+		 strategiePanel.add(cards);
+		
 		setLayout(groupLayout);
 	}
 }

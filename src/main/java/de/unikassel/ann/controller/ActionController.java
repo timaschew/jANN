@@ -19,9 +19,11 @@ import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.ActionControllerTest.MyModel;
 import de.unikassel.ann.factory.NetworkFactory;
 import de.unikassel.ann.gui.Main;
+import de.unikassel.ann.gui.graph.GraphLayoutViewer;
 import de.unikassel.ann.gui.sidebar.Sidebar;
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.SidebarModel;
+import edu.uci.ics.jung.visualization.control.ModalGraphMouse.Mode;
 
 /**
  * @author anton
@@ -190,11 +192,33 @@ public class ActionController {
 			break;
 			
 		case CREATE_NETWORK:
-			NetConfig config = new NetConfig();
-			sidebarModel = Settings.getInstance().getCurrentSession().sidebarModel;
 			NetworkFactory factory = new NetworkFactory();
-//			factory.createSimpleNet(sidebarModel.getInputNeurons(), sidebarModel.getHiddenNeurons(), 
-//					sidebarModel.getOutputNeurons(), sidebarModel.getBias());
+			System.out.println("Create network");
+//			factory.createSimpleNet(sidebarModel.getInputNeurons(), sidebarModel.getHiddenLayers(), 
+//					sidebarModel.getOutputNeurons(), sidebarModel.getInputBias());
+			
+			break;
+			
+		case PLAY_TRAINING:
+			
+			
+			break;
+			
+		case CHANGE_MOUSE_MODI:
+			sidebar = Main.instance.sideBar;
+			String selected = (String) sidebar.topolgyPanel.comboBoxMouseModis.getSelectedItem();
+			if(selected == "Picking"){
+				GraphLayoutViewer.getInstance().graphMouse.setMode(Mode.PICKING);
+				System.out.println("picking");
+			}else if (selected == "Editing"){
+				GraphLayoutViewer.getInstance().graphMouse.setMode(Mode.EDITING);
+				System.out.println("editing");
+			}else if(selected == "Transforming"){
+				GraphLayoutViewer.getInstance().graphMouse.setMode(Mode.TRANSFORMING);
+				System.out.println("transforming");
+			}
+			
+			
 			break;
 			
 		case TEST_UPDATEMODEL:

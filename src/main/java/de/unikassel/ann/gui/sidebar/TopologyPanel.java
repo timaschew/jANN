@@ -20,9 +20,11 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.TitledBorder;
 
+import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.ActionController;
 import de.unikassel.ann.controller.Actions;
 import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.factory.NetworkFactory;
 import de.unikassel.ann.model.SidebarModel;
 
 import javax.swing.JButton;
@@ -44,6 +46,7 @@ public class TopologyPanel extends JPanel {
 	public JComboBox comboBoxHiddenMausModus;
 	public JCheckBox inputBiasCB;
 	public JCheckBox hiddenBiasCB;
+	public JComboBox comboBoxMouseModis;
 
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 
@@ -56,14 +59,15 @@ public class TopologyPanel extends JPanel {
 	public JCheckBox chckbxAllNeuronsBind;
 
 	public JButton btnCreateNetwork;
-
+	private JLabel lblMouseModi;
+	
 	/**
 	 * Create the frame.
 	 */
 	public TopologyPanel() {
 		setBorder(new TitledBorder(null, Settings.i18n.getString("sidebar.topology"), TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		// setSize(400, 240);
-		setPreferredSize(new Dimension(400, 330));
+		setPreferredSize(new Dimension(400, 342));
 
 		JLabel lblInputNeuronen = new JLabel(Settings.i18n.getString("sidebar.topology.inputNeurons"));
 		inputNeuroSpinner = new JSpinner(inputSpinnerModel);
@@ -93,11 +97,11 @@ public class TopologyPanel extends JPanel {
 		chckbxAllNeuronsBind = new JCheckBox(Settings.i18n.getString("sidebar.topology.chckbxAllNeuronsBind"));
 		
 		btnCreateNetwork = new JButton(Settings.i18n.getString("sidebar.topology.btnCreateNetwork"));
+		
 		btnCreateNetwork.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				SidebarModel model = new SidebarModel();
-				model.createNetwork();
+			public void actionPerformed(ActionEvent evt) {
+				ac.doAction(Actions.CREATE_NETWORK, new PropertyChangeEvent(btnCreateNetwork, "button", 0, 1));
 			}
 		});
 
@@ -106,10 +110,7 @@ public class TopologyPanel extends JPanel {
 			gl_topologiePanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_topologiePanel.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(gl_topologiePanel.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_topologiePanel.createSequentialGroup()
-							.addComponent(mouseModusPanel, GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
-							.addContainerGap())
+					.addGroup(gl_topologiePanel.createParallelGroup(Alignment.TRAILING)
 						.addGroup(gl_topologiePanel.createSequentialGroup()
 							.addGroup(gl_topologiePanel.createParallelGroup(Alignment.LEADING)
 								.addComponent(lblInputNeuronen)
@@ -130,11 +131,15 @@ public class TopologyPanel extends JPanel {
 									.addComponent(hiddenBiasCB))
 								.addComponent(inputBiasCB))
 							.addContainerGap(35, Short.MAX_VALUE))
-						.addGroup(Alignment.TRAILING, gl_topologiePanel.createSequentialGroup()
+						.addGroup(gl_topologiePanel.createSequentialGroup()
+							.addGap(6)
 							.addComponent(chckbxAllNeuronsBind)
-							.addPreferredGap(ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
+							.addPreferredGap(ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
 							.addComponent(btnCreateNetwork)
-							.addGap(29))))
+							.addGap(14))
+						.addGroup(Alignment.LEADING, gl_topologiePanel.createSequentialGroup()
+							.addComponent(mouseModusPanel, GroupLayout.PREFERRED_SIZE, 360, GroupLayout.PREFERRED_SIZE)
+							.addContainerGap())))
 		);
 		gl_topologiePanel.setVerticalGroup(
 			gl_topologiePanel.createParallelGroup(Alignment.LEADING)
@@ -161,12 +166,12 @@ public class TopologyPanel extends JPanel {
 								.addComponent(hiddenLayerDropDown, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 								.addComponent(hiddenBiasCB))))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(mouseModusPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGap(18)
+					.addComponent(mouseModusPanel, GroupLayout.PREFERRED_SIZE, 98, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_topologiePanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(chckbxAllNeuronsBind)
-						.addComponent(btnCreateNetwork))
-					.addContainerGap(9, Short.MAX_VALUE))
+						.addComponent(btnCreateNetwork)
+						.addComponent(chckbxAllNeuronsBind))
+					.addContainerGap())
 		);
 		/**
 		 * internal MausModus-Panel Elements
@@ -180,26 +185,54 @@ public class TopologyPanel extends JPanel {
 		buttonGroup.add(mouseHiddenRB);
 		comboBoxHiddenMausModus = new JComboBox();
 		comboBoxHiddenMausModus.setEnabled(false);
-
+		
+		lblMouseModi = new JLabel(Settings.i18n.getString("sidebar.topology.mouse.lblMouseModi"));
+		comboBoxMouseModis = new JComboBox();
+		comboBoxMouseModis.setModel(new DefaultComboBoxModel(new String[] {"Editing", "Picking", "Transforming"}));
+		
+		comboBoxMouseModis.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ac.doAction(Actions.CHANGE_MOUSE_MODI, new PropertyChangeEvent(comboBoxMouseModis, "item", "", comboBoxMouseModis.getSelectedIndex()));
+			}
+		});
+		
+		
+	
 		GroupLayout gl_mouseModusPanel = new GroupLayout(mouseModusPanel);
-		gl_mouseModusPanel.setHorizontalGroup(gl_mouseModusPanel.createParallelGroup(Alignment.LEADING).addGroup(
-				gl_mouseModusPanel.createSequentialGroup().addContainerGap().addComponent(mouseInputRB)
-						.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(mouseOutputRB).addPreferredGap(ComponentPlacement.UNRELATED)
-						.addComponent(mouseHiddenRB).addGap(18)
-						.addComponent(comboBoxHiddenMausModus, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(115, Short.MAX_VALUE)));
-		gl_mouseModusPanel.setVerticalGroup(gl_mouseModusPanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(
-						gl_mouseModusPanel
-								.createSequentialGroup()
-								.addGroup(
-										gl_mouseModusPanel
-												.createParallelGroup(Alignment.BASELINE)
-												.addComponent(mouseInputRB)
-												.addComponent(mouseOutputRB)
-												.addComponent(mouseHiddenRB)
-												.addComponent(comboBoxHiddenMausModus, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-														GroupLayout.PREFERRED_SIZE)).addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+		gl_mouseModusPanel.setHorizontalGroup(
+			gl_mouseModusPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_mouseModusPanel.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_mouseModusPanel.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_mouseModusPanel.createSequentialGroup()
+							.addComponent(mouseInputRB)
+							.addGap(26)
+							.addComponent(mouseOutputRB)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(mouseHiddenRB)
+							.addGap(18)
+							.addComponent(comboBoxHiddenMausModus, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_mouseModusPanel.createSequentialGroup()
+							.addComponent(lblMouseModi)
+							.addGap(18)
+							.addComponent(comboBoxMouseModis, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+					.addGap(67))
+		);
+		gl_mouseModusPanel.setVerticalGroup(
+			gl_mouseModusPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_mouseModusPanel.createSequentialGroup()
+					.addGroup(gl_mouseModusPanel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(mouseInputRB)
+						.addComponent(mouseOutputRB)
+						.addComponent(mouseHiddenRB)
+						.addComponent(comboBoxHiddenMausModus, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(6)
+					.addGroup(gl_mouseModusPanel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblMouseModi)
+						.addComponent(comboBoxMouseModis, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(6))
+		);
 		mouseModusPanel.setLayout(gl_mouseModusPanel);
 		setLayout(gl_topologiePanel);
 
@@ -246,6 +279,7 @@ public class TopologyPanel extends JPanel {
 				ac.doAction(Actions.UPDATE_SIDEBAR_CONFIG_OUTPUT_NEURON_MODEL, evt);
 			}
 		});
+		
 
 	}
 }

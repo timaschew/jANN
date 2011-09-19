@@ -10,10 +10,14 @@ import javax.swing.JSpinner;
 import javax.swing.JRadioButton;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
+import de.unikassel.ann.config.NetConfig;
+import de.unikassel.ann.controller.ActionController;
+import de.unikassel.ann.controller.Actions;
 import de.unikassel.ann.controller.Settings;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
 
 
 public class TrainControlPanel extends JPanel {
@@ -43,6 +47,8 @@ public class TrainControlPanel extends JPanel {
 	public JButton btnPlay;
 	public JButton btnPause;
 	public JButton btnStop;
+	
+	private ActionController ac = ActionController.get();
 
 	/**
 	 * Create the frame.
@@ -69,8 +75,9 @@ public class TrainControlPanel extends JPanel {
 		btnPlay = new JButton(Settings.i18n.getString("sidebar.trainControl.btnPlay"));
 		btnPause = new JButton(Settings.i18n.getString("sidebar.trainControl.btnPause"));
 		btnStop = new JButton(Settings.i18n.getString("sidebar.trainControl.btnStop"));
-		btnStop.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
+		btnPlay.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				ac.doAction(Actions.PLAY_TRAINING, new PropertyChangeEvent(btnPlay, "button", 0, 1));
 			}
 		});
 		GroupLayout gl_trainingSteuerungPanel = new GroupLayout(this);
