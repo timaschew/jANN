@@ -65,6 +65,11 @@ public class SidebarModel {
 		return selectedSynapse;
 	}
 
+	
+	public void reset() {
+		// TODO set sidebar panels to their default values
+	}
+	
 	public void setSelectedSynapse(Synapse selectedSynapse) {
 		this.selectedSynapse = selectedSynapse;
 	}

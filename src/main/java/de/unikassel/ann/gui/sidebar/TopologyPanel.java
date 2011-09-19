@@ -171,12 +171,12 @@ public class TopologyPanel extends JPanel {
 		/**
 		 * internal MausModus-Panel Elements
 		 */
-		JRadioButton mouseInputRB = new JRadioButton(Settings.i18n.getString("sidebar.topology.mouse.input"));
+		mouseInputRB = new JRadioButton(Settings.i18n.getString("sidebar.topology.mouse.input"));
 		mouseInputRB.setSelected(true);
 		buttonGroup.add(mouseInputRB);
-		JRadioButton mouseOutputRB = new JRadioButton(Settings.i18n.getString("sidebar.topology.mouse.output"));
+		mouseOutputRB = new JRadioButton(Settings.i18n.getString("sidebar.topology.mouse.output"));
 		buttonGroup.add(mouseOutputRB);
-		JRadioButton mouseHiddenRB = new JRadioButton(Settings.i18n.getString("sidebar.topology.mouse.hidden"));
+		mouseHiddenRB = new JRadioButton(Settings.i18n.getString("sidebar.topology.mouse.hidden"));
 		buttonGroup.add(mouseHiddenRB);
 		comboBoxHiddenMausModus = new JComboBox();
 		comboBoxHiddenMausModus.setEnabled(false);
@@ -210,6 +210,7 @@ public class TopologyPanel extends JPanel {
 	 * 
 	 */
 	private void initActions() {
+		// Input Neuronen
 		JSpinner.DefaultEditor editor = (JSpinner.DefaultEditor) inputNeuroSpinner.getEditor();
 		editor.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {
 			@Override
@@ -218,11 +219,31 @@ public class TopologyPanel extends JPanel {
 			}
 		});
 
+		// Hidden Neuronen
+		editor = (JSpinner.DefaultEditor) hiddenNeuronSpinner.getEditor();
+		editor.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
+				ac.doAction(Actions.UPDATE_SIDEBAR_CONFIG_HIDDEN_NEURON_MODEL, evt);
+			}
+		});
+
+		// Hidden Layer
 		editor = (JSpinner.DefaultEditor) hiddenLayerCountSpinner.getEditor();
 		editor.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
 				ac.doAction(Actions.UPDATE_SIDEBAR_CONFIG_HIDDEN_LAYER_MODEL, evt);
+			}
+		});
+
+		// Output Neuronen
+		editor = (JSpinner.DefaultEditor) outputNeuroSpinner.getEditor();
+		editor.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
+				System.out.println("############");
+				ac.doAction(Actions.UPDATE_SIDEBAR_CONFIG_OUTPUT_NEURON_MODEL, evt);
 			}
 		});
 

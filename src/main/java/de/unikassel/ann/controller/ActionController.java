@@ -55,6 +55,10 @@ public class ActionController {
 			sidebarModel.setInputNeurons(newValue);
 			break;
 
+		case UPDATE_SIDEBAR_CONFIG_HIDDEN_NEURON_MODEL:
+			// TODO sidebarModel.setHiddenNeurons(newValue);
+			break;
+
 		case UPDATE_SIDEBAR_CONFIG_HIDDEN_LAYER_MODEL:
 			sidebarModel = Settings.getInstance().getCurrentSession().sidebarModel;
 			sidebarModel.setHiddenLayers(newValue);
@@ -67,6 +71,10 @@ public class ActionController {
 			Integer maxHiddenLayer = sidebarModel.getHiddenLayers();
 			LayerController<Layer> layerController = LayerController.getInstance();
 
+			String propertyName = evt.getPropertyName();
+			//
+			// Remove
+			//
 			if ((Integer) evt.getOldValue() > newValue) {
 				// remove last
 				if (evt.getPropertyName().equals(SidebarModel.P.hiddenNeurons.name())) {
@@ -88,6 +96,24 @@ public class ActionController {
 					// layerController.addLayer(maxHiddenLayer + 1, newValue);
 				} else if (evt.getPropertyName().equals(SidebarModel.P.outputNeurons.name())) {
 					layerController.addVertex(maxHiddenLayer + 1, newValue);
+				}
+				// HIDDEN NEURON
+				else if (propertyName.equals(SidebarModel.P.hiddenNeurons
+						.name())) {
+					layerController.addVertex(selectedHiddenLayer, newValue,
+							true);
+				}
+				// HIDDEN LAYER
+				else if (propertyName
+						.equals(SidebarModel.P.hiddenLayers.name())) {
+					// TODO layerController.addLayer(maxHiddenLayer + 1,
+					// newValue);
+				}
+				// OUTPUT NEURON
+				else if (propertyName.equals(SidebarModel.P.outputNeurons
+						.name())) {
+					layerController.addVertex(maxHiddenLayer + 1, newValue,
+							true);
 				}
 			}
 

@@ -12,7 +12,10 @@ import javax.swing.JMenuItem;
 import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.Actions;
 import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.gui.graph.GraphLayoutViewer;
+import de.unikassel.ann.gui.sidebar.Sidebar;
 import de.unikassel.ann.io.NetIO;
+import de.unikassel.ann.model.SidebarModel;
 
 public class MainMenu extends JMenuBar {
 
@@ -166,6 +169,17 @@ public class MainMenu extends JMenuBar {
 			switch (action) {
 			case NEW:
 				// TODO
+				// Check if the current session is unsaved -> save?
+				// Create a new Session
+
+				// Clear Graph
+				GraphLayoutViewer.getInstance().clear();
+
+				// Reset Sidebar
+				SidebarModel sidebarModel = Settings.getInstance()
+						.getCurrentSession().sidebarModel;
+				sidebarModel.reset();
+
 				break;
 			case OPEN:
 				// TODO

@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.apache.commons.collections15.Transformer;
 
+import de.unikassel.ann.factory.VertexFactory;
 import de.unikassel.ann.gui.graph.Edge;
 import de.unikassel.ann.gui.graph.GraphLayoutViewer;
 import de.unikassel.ann.gui.graph.Vertex;
@@ -41,12 +42,14 @@ public class VertexController<V> {
 	private Renderer<Vertex, Edge> renderer;
 	private RenderContext<Vertex, Edge> renderContext;
 	private PickedState<Vertex> vertexPickedState;
+	private VertexFactory vertexFactory;
 
 	public void init() {
 		this.viewer = GraphLayoutViewer.getInstance().getViewer();
 		this.renderer = viewer.getRenderer();
 		this.renderContext = viewer.getRenderContext();
 		this.vertexPickedState = viewer.getPickedVertexState();
+		this.vertexFactory = new VertexFactory();
 
 		setVertexLabel();
 		setVertexStrokeHighlight();
@@ -54,6 +57,10 @@ public class VertexController<V> {
 		setVertexColor();
 		setVertexTooltip();
 		setVertexPickListener();
+	}
+
+	public VertexFactory getVertexFactory() {
+		return vertexFactory;
 	}
 
 	/**

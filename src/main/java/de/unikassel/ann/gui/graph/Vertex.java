@@ -7,10 +7,10 @@ import de.unikassel.ann.controller.ActionController;
 import de.unikassel.ann.controller.Actions;
 import de.unikassel.ann.controller.LayerController;
 import de.unikassel.ann.controller.Settings;
-import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.SidebarModel;
+import de.unikassel.ann.model.UserSession;
 
 public class Vertex implements Comparable<Vertex> {
 
@@ -42,38 +42,39 @@ public class Vertex implements Comparable<Vertex> {
 	 * it to the layercontroller.
 	 */
 	public void setup() {
-		// TODO Set current layer index for this vertex (for its neuron model)
-		// int layerIndex = 1;
-		int layerIndex = Settings.getInstance().getCurrentSession().sidebarModel
-				.getMouseInsertLayer();
+		UserSession currentSession = Settings.getInstance().getCurrentSession();
+		LayerController<Layer> layerController = LayerController.getInstance();
+
+		// Set current layer index for this vertex (for its neuron model)
+		int layerIndex = currentSession.sidebarModel.getMouseInsertLayer();
 		setLayer(layerIndex);
 
 		// TODO Set its startvalue to 0
 		// TODO remove later, just for testing purpose
 		setValue(new Double(Math.random()));
 
-		// Add the new vertex to the current jung layer
-		LayerController.getInstance().addVertex(layerIndex, this);
+		// Get the number of vertices in the layer BEFORE adding the new vertex
+		int layerSize = layerController.getVerticesInLayer(layerIndex).size();
 
-		// Update Sidebar config
-		int numVerticesInLayer = LayerController.getInstance()
-				.getNumVerticesInLayer(layerIndex);
+		// Add the new vertex to the current jung layer but DO NOT add the
+		// vertex to the graph at this position!
+		layerController.addVertex(layerIndex, this, false);
 
-		// Input layer
+		// Input layer (index = 0)
 		Actions action = Actions.UPDATE_SIDEBAR_CONFIG_INPUT_NEURON_MODEL;
 		if (layerIndex > 0) {
-			if (layerIndex == LayerController.getInstance().getLayer().size() - 1) {
-				// Output Layer
+			if (layerIndex == layerController.getLayers().size() - 1) {
+				// Output Layer (index = # layers - 1)
 				action = Actions.UPDATE_SIDEBAR_CONFIG_OUTPUT_NEURON_MODEL;
 			} else {
-				// Hidden Layer
+				// Hidden Layer (0 < index < # layers - 1)
 				action = Actions.UPDATE_SIDEBAR_CONFIG_HIDDEN_LAYER_MODEL;
 			}
 		}
 		ActionController.get().doAction(
 				action,
 				new PropertyChangeEvent(this, SidebarModel.P.inputNeurons
-						.name(), numVerticesInLayer - 1, numVerticesInLayer));
+						.name(), layerSize, layerSize + 1));
 	}
 
 	public void setIndex(int index) {
@@ -122,29 +123,25 @@ public class Vertex implements Comparable<Vertex> {
 	}
 
 	public void remove() {
-		// TODO Auto-generated method stub
-		System.out.println(this + " remove()");
-
-		// Update Sidebar config
+		LayerController<Layer> layerController = LayerController.getInstance();
 		int layerIndex = getLayer();
-		int numVerticesInLayer = LayerController.getInstance()
-				.getNumVerticesInLayer(layerIndex);
+		int layerSize = layerController.getVerticesInLayer(layerIndex).size();
 
-		// Input layer
+		// Input layer (index = 0)
 		Actions action = Actions.UPDATE_SIDEBAR_CONFIG_INPUT_NEURON_MODEL;
 		if (layerIndex > 0) {
-			if (layerIndex == LayerController.getInstance().getLayer().size() - 1) {
-				// Output Layer
+			if (layerIndex == layerController.getLayers().size() - 1) {
+				// Output Layer (index = # layers - 1)
 				action = Actions.UPDATE_SIDEBAR_CONFIG_OUTPUT_NEURON_MODEL;
 			} else {
-				// Hidden Layer
+				// Hidden Layer (0 < index < # layers - 1)
 				action = Actions.UPDATE_SIDEBAR_CONFIG_HIDDEN_LAYER_MODEL;
 			}
 		}
 		ActionController.get().doAction(
 				action,
 				new PropertyChangeEvent(this, SidebarModel.P.inputNeurons
-						.name(), numVerticesInLayer, numVerticesInLayer - 1));
+						.name(), layerSize, layerSize - 1));
 	}
 
 	@Override

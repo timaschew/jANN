@@ -25,4 +25,11 @@ public class EdgeFactory implements Factory<Edge> {
 
 		return e;
 	}
+
+	/**
+	 * Reset factory
+	 */
+	public void reset() {
+		index = 0;
+	}
 }

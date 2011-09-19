@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.apache.commons.collections15.Transformer;
 
+import de.unikassel.ann.factory.EdgeFactory;
 import de.unikassel.ann.gui.graph.Edge;
 import de.unikassel.ann.gui.graph.GraphLayoutViewer;
 import de.unikassel.ann.gui.graph.Vertex;
@@ -20,7 +21,7 @@ import edu.uci.ics.jung.visualization.picking.PickedState;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
 
 public class EdgeController<E> {
-	
+
 	private static EdgeController<Edge> instance;
 
 	private EdgeController() {
@@ -37,18 +38,24 @@ public class EdgeController<E> {
 	private Renderer<Vertex, Edge> renderer;
 	private RenderContext<Vertex, Edge> renderContext;
 	private PickedState<Edge> edgePickedState;
+	private EdgeFactory edgeFactory;
 
 	public void init() {
 		this.viewer = GraphLayoutViewer.getInstance().getViewer();
 		this.renderer = viewer.getRenderer();
 		this.renderContext = viewer.getRenderContext();
 		this.edgePickedState = viewer.getPickedEdgeState();
+		this.edgeFactory = new EdgeFactory();
 
 		setEdgeLabel();
 		setEdgeShape();
 		setEdgeStroke();
 		setEdgeTooltip();
 		setEdgePickedListener();
+	}
+
+	public EdgeFactory getEdgeFactory() {
+		return edgeFactory;
 	}
 
 	/**
