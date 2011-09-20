@@ -207,7 +207,7 @@ public class TopologyPanel extends JPanel {
 		buttonGroup.add(mouseOutputRB);
 		mouseHiddenRB = new JRadioButton(Settings.i18n.getString("sidebar.topology.mouse.hidden"));
 		buttonGroup.add(mouseHiddenRB);
-		comboBoxHiddenMausModus = new JComboBox();
+		comboBoxHiddenMausModus = new JComboBox(hiddenLayerComboModel);
 		comboBoxHiddenMausModus.setEnabled(false);
 
 		lblMouseModi = new JLabel(Settings.i18n.getString("sidebar.topology.mouse.lblMouseModi"));

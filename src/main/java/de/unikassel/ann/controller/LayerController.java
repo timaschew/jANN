@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -25,13 +24,13 @@ public class LayerController<T> {
 		return instance;
 	}
 
-	protected LinkedList<JungLayer> layers;
+	protected ArrayList<JungLayer> layers;
 
 	/**
 	 * Constructor
 	 */
 	private LayerController() {
-		layers = new LinkedList<JungLayer>();
+		layers = new ArrayList<JungLayer>();
 	}
 
 	/**
@@ -39,6 +38,10 @@ public class LayerController<T> {
 	 */
 	public void addLayer() {
 		addLayer(layers.size());
+	}
+
+	public List<JungLayer> getLayers() {
+		return layers;
 	}
 
 	/**
@@ -209,7 +212,7 @@ public class LayerController<T> {
 		layer.removeVertex();
 	}
 
-	public Set<Layer> getLayers() {
+	public Set<Layer> getLayersSet() {
 		return getVertices().keySet();
 	}
 

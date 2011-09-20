@@ -260,7 +260,7 @@ public class GraphLayoutViewer {
 				Point2D location;
 
 				// Gap between the layers
-				int gapY = height / layerController.getLayers().size();
+				int gapY = height / layerController.getLayersSet().size();
 
 				Iterator<Entry<Layer, List<Vertex>>> iter;
 				Map.Entry<Layer, List<Vertex>> entry;

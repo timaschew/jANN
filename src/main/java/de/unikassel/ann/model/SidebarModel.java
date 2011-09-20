@@ -268,12 +268,17 @@ public class SidebarModel {
 	 * @param hiddenNeurons
 	 *          the hiddenNeurons to set
 	 */
-	public void addHiddenNeurons(final Integer layer, final Integer neuronCount) {
-		if (layer < 0 || neuronCount < 0) {
+	public void addHiddenNeurons(final Integer layerIndex, final Integer neuronCount) {
+		if (layerIndex < 0 || neuronCount < 0) {
 			return;
 		}
-		Integer oldValue = hiddenNeurons.get(layer);
-		hiddenNeurons.add(layer, neuronCount);
+		Integer oldValue = 0;
+		if (hiddenNeurons.size() <= layerIndex) {
+			hiddenNeurons.add(neuronCount);
+		} else {
+			oldValue = hiddenNeurons.get(layerIndex);
+			hiddenNeurons.add(layerIndex, neuronCount);
+		}
 		pcs.firePropertyChange(P.hiddenNeurons.name(), oldValue, neuronCount);
 	}
 
