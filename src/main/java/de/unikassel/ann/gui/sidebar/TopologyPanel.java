@@ -99,13 +99,6 @@ public class TopologyPanel extends JPanel {
 
 		btnCreateNetwork = new JButton(Settings.i18n.getString("sidebar.topology.btnCreateNetwork"));
 
-		btnCreateNetwork.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent evt) {
-				ac.doAction(Actions.CREATE_NETWORK, new PropertyChangeEvent(btnCreateNetwork, "button", 0, 1));
-			}
-		});
-
 		GroupLayout gl_topologiePanel = new GroupLayout(this);
 		gl_topologiePanel
 				.setHorizontalGroup(gl_topologiePanel.createParallelGroup(Alignment.LEADING)
@@ -214,14 +207,6 @@ public class TopologyPanel extends JPanel {
 		comboBoxMouseModis = new JComboBox();
 		comboBoxMouseModis.setModel(new DefaultComboBoxModel(new String[] { "Editing", "Picking", "Transforming" }));
 
-		comboBoxMouseModis.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				ac.doAction(Actions.CHANGE_MOUSE_MODI,
-						new PropertyChangeEvent(comboBoxMouseModis, "item", "", comboBoxMouseModis.getSelectedIndex()));
-			}
-		});
-
 		GroupLayout gl_mouseModusPanel = new GroupLayout(mouseModusPanel);
 		gl_mouseModusPanel.setHorizontalGroup(gl_mouseModusPanel.createParallelGroup(Alignment.LEADING).addGroup(
 				gl_mouseModusPanel
@@ -271,6 +256,47 @@ public class TopologyPanel extends JPanel {
 	 * 
 	 */
 	private void initActions() {
+
+		btnCreateNetwork.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent evt) {
+				ac.doAction(Actions.CREATE_NETWORK, new PropertyChangeEvent(btnCreateNetwork, "button", 0, 1));
+			}
+		});
+
+		comboBoxMouseModis.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				ac.doAction(Actions.CHANGE_MOUSE_MODI,
+						new PropertyChangeEvent(comboBoxMouseModis, "item", "", comboBoxMouseModis.getSelectedIndex()));
+			}
+		});
+		// input bias
+		inputBiasCB.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				boolean newVal = inputBiasCB.isSelected();
+				ac.doAction(Actions.UPDATE_SIDEBAR_CONFIG_INPUT_BIAS_MODEL, new PropertyChangeEvent(inputBiasCB, "checkbox", !newVal, newVal));
+			}
+		});
+
+		// hidden bias
+		hiddenBiasCB.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				boolean newVal = hiddenBiasCB.isSelected();
+				ac.doAction(Actions.UPDATE_SIDEBAR_CONFIG_HIDDEN_BIAS_MODEL, new PropertyChangeEvent(hiddenBiasCB, "checkbox", !newVal, newVal));
+			}
+		});
+
+		hiddenLayerDropDown.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				Integer item = (Integer) hiddenLayerDropDown.getSelectedItem();
+				ac.doAction(Actions.UPDATE_SIDEBAR_TOPOLOGY_VIEW, new PropertyChangeEvent(hiddenLayerDropDown, "", null, item));
+			}
+		});
+
 		// Input Neuronen
 		JSpinner.DefaultEditor editor = (JSpinner.DefaultEditor) inputNeuroSpinner.getEditor();
 		editor.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {

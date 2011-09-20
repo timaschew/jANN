@@ -8,14 +8,8 @@
 package de.unikassel.ann.controller;
 
 import java.beans.PropertyChangeEvent;
-import java.util.Vector;
+import java.util.List;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.SpinnerModel;
-
-import de.unikassel.ann.controller.ActionControllerTest.MyModel;
 import de.unikassel.ann.factory.NetworkFactory;
 import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.gui.graph.GraphLayoutViewer;
@@ -48,17 +42,18 @@ public class ActionController {
 		System.out.println(evt.getOldValue());
 		System.out.println(evt.getNewValue());
 
+		Sidebar sidebar = Main.instance.sideBar;
 		SidebarModel sidebarModel = Settings.getInstance().getCurrentSession().sidebarModel;
 		switch (a) {
 
 		case UPDATE_SIDEBAR_CONFIG_INPUT_NEURON_MODEL:
 			Integer newValue = (Integer) evt.getNewValue();
-
 			sidebarModel.setInputNeurons(newValue);
 			break;
 
 		case UPDATE_SIDEBAR_CONFIG_HIDDEN_NEURON_MODEL:
-			// TODO sidebarModel.setHiddenNeurons(newValue);
+			Integer selectedHiddenLayer = sidebarModel.getSelectedGlobalHiddenLayerIndex();
+			sidebarModel.setHiddenNeurons(selectedHiddenLayer, (Integer) evt.getNewValue());
 			break;
 
 		case UPDATE_SIDEBAR_CONFIG_HIDDEN_LAYER_MODEL:
@@ -71,11 +66,23 @@ public class ActionController {
 			sidebarModel.setOutputNeurons(newValue);
 			break;
 
+		case UPDATE_SIDEBAR_CONFIG_INPUT_BIAS_MODEL:
+			Boolean bValue = (Boolean) evt.getNewValue();
+			sidebarModel.setInputBias(bValue);
+			break;
+
+		case UPDATE_SIDEBAR_CONFIG_HIDDEN_BIAS_MODEL:
+			bValue = (Boolean) evt.getNewValue();
+			Integer selectedLayer = (Integer) sidebar.topolgyPanel.hiddenLayerDropDown.getSelectedItem();
+			// use relative (hidden) layer index
+			sidebarModel.setHiddenBias(selectedLayer - 1, bValue);
+			break;
+
 		case UPDATE_JUNG_GRAPH:
 			newValue = (Integer) evt.getNewValue();
 			Integer oldValue = (Integer) evt.getOldValue();
 
-			Integer selectedHiddenLayer = sidebarModel.getSelectedGlobalHiddenLayerIndex();
+			selectedHiddenLayer = sidebarModel.getSelectedGlobalHiddenLayerIndex();
 			// sidebarConfig.
 			Integer hiddenLayerSize = sidebarModel.getHiddenLayers();
 			LayerController<Layer> layerController = LayerController.getInstance();
@@ -131,15 +138,48 @@ public class ActionController {
 			}
 
 			break;
+
 		case UPDATE_SIDEBAR_TOPOLOGY_VIEW:
-			Sidebar sidebar = Main.instance.sideBar;
-			// update full topology panel
+			// dont't know which the correct event
+			// update full topology panel, get the values by the sidebar and sidebarModel
 
+			/*
+			 * update input spinner
+			 */
 			sidebar.topolgyPanel.inputNeuroSpinner.setValue(sidebarModel.getInputNeurons());
-			System.out.println("updated the view");
 
+			/*
+			 * update output spinner
+			 */
+			sidebar.topolgyPanel.outputNeuroSpinner.setValue(sidebarModel.getOutputNeurons());
+
+			/*
+			 * update input bias
+			 */
+			sidebar.topolgyPanel.inputBiasCB.setSelected(sidebarModel.getInputBias());
+
+			/*
+			 * update hidden bias for selected hidden layer
+			 */
 			// get last selection from combobox
 			Integer selectedItem = (Integer) sidebar.topolgyPanel.hiddenLayerDropDown.getSelectedItem();
+			if (selectedItem != null) {
+				try {
+					List<Boolean> hiddenBiasList = sidebarModel.getHiddenBias();
+					// use relative hidden layer index
+					Boolean val = hiddenBiasList.get(selectedItem - 1);
+					sidebar.topolgyPanel.hiddenBiasCB.setSelected(val);
+				} catch (IndexOutOfBoundsException e) {
+					// catch when the list is empty, because a new layer will be added
+					// and the this will be called because the layer gets a initial neuron
+					// but not a list with initial bias values yet, have to wait to the next property change
+				}
+			}
+
+			/*
+			 * Update hidden layer combobox and mouse mode combobox
+			 */
+
 			// refresh the comboboxen: remove all and add then again
 			// remove all items
 			sidebar.topolgyPanel.hiddenLayerComboModel.removeAllElements();
@@ -150,7 +190,6 @@ public class ActionController {
 				sidebar.topolgyPanel.hiddenBiasCB.setEnabled(true);
 				sidebar.topolgyPanel.hiddenNeuronSpinner.setEnabled(true);
 				sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(true);
-
 				sidebar.topolgyPanel.hiddenLayerComboModel.addElement(new Integer(i));
 			}
 			// if previous selection was not null, set to old value
@@ -203,39 +242,7 @@ public class ActionController {
 			break;
 
 		case TEST_UPDATEMODEL:
-			newValue = (Integer) evt.getNewValue();
-			Integer value = newValue;
-			MyModel dataModel = ActionControllerTest.instance.dataModel;
-			dataModel.setLayerCount(value);
-			break;
 
-		case TEST_UPDATEVIEW:
-			newValue = (Integer) evt.getNewValue();
-			System.out.println("TEST ACTION: " + evt.getNewValue());
-			// model was changed, upadte everything
-			// property in TEST case is MyModel.layerCount from type Integer
-			Integer layerCount = newValue;
-
-			// update combox box
-			JComboBox cb = ActionControllerTest.instance.comboBox;
-			// create a list with entries for the comboboxModel
-			Vector<Integer> comboBoxEntries = new Vector<Integer>();
-			for (int i = 0; i <= layerCount; i++) {
-				comboBoxEntries.add(i);
-			}
-			// set overwrite the old combobox model
-			cb.setModel(new DefaultComboBoxModel(comboBoxEntries));
-			cb.setSelectedItem(layerCount); // select the last one
-
-			// update Spinner
-			SpinnerModel sm = ActionControllerTest.instance.spinnerModel;
-			sm.setValue(layerCount);
-
-			// update Label
-			JLabel label = ActionControllerTest.instance.label;
-			label.setText("Aktueller Wert: " + layerCount);
-
-			break;
 		}
 
 	}

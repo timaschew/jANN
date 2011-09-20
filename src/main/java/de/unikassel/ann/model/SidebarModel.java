@@ -62,10 +62,6 @@ public class SidebarModel {
 		return selectedSynapse;
 	}
 
-	public void reset() {
-		// TODO set sidebar panels to their default values
-	}
-
 	public void setSelectedSynapse(final Synapse selectedSynapse) {
 		this.selectedSynapse = selectedSynapse;
 	}
@@ -82,28 +78,57 @@ public class SidebarModel {
 		return inputBias;
 	}
 
-	public void setInputBias(final Boolean inputBia) {
-		// wenn der neue Bias true ist, dann heißt es, dass der alte
-		// 0 war, somit wird der oldvalue bestimmt
-		Integer oldValue;
-		if (inputBia) {
-			oldValue = 0;
-			pcs.firePropertyChange(P.inputBias.name(), oldValue, inputBia);
-		} else {
-			oldValue = 1;
-			pcs.firePropertyChange(P.inputBias.name(), oldValue, inputBia);
-		}
-
+	public void setInputBias(final Boolean bias) {
+		Boolean oldValue = !bias;
+		inputBias = bias;
+		pcs.firePropertyChange(P.inputBias.name(), oldValue, bias);
 	}
 
+	/**
+	 * Returns the list with the bias flags for the hiden layer only and with relative index !
+	 * 
+	 * @return
+	 */
 	public List<Boolean> getHiddenBias() {
 		return hiddenBias;
 	}
 
-	public void setHiddenBias(final Integer layer, final Boolean hiddenBia) {
-		Boolean oldValue = hiddenBias.get(layer);
-		hiddenBias.add(layer, hiddenBia);
-		pcs.firePropertyChange(P.hiddenBias.name(), oldValue, hiddenBia);
+	/**
+	 * Returns the bias flag for the global layerIndex
+	 * 
+	 * @param layerIndex
+	 *          global layerIndex
+	 * @return
+	 */
+	public Boolean hasLayerBias(final int layerIndex) {
+		if (layerIndex == 0) {
+			return inputBias;
+		} else if (layerIndex <= hiddenLayers) {
+			// sub the input layer
+			return hiddenBias.get(layerIndex - 1);
+		}
+		return false; // output layer have never a bias
+	}
+
+	/**
+	 * Sets the bias for the relative hidden layer index
+	 * 
+	 * @param layerIndex
+	 *          relative layerIndex
+	 * @param bias
+	 */
+	public void setHiddenBias(final Integer layerIndex, final Boolean bias) {
+		if (layerIndex < 0) {
+			return;
+		}
+		Boolean oldValue = !bias;
+		if (hiddenBias.size() <= layerIndex) {
+			hiddenBias.add(bias);
+		} else {
+			oldValue = hiddenBias.get(layerIndex);
+			hiddenBias.set(layerIndex, bias);
+		}
+		pcs.firePropertyChange(P.hiddenBias.name(), oldValue, bias);
 
 	}
 
@@ -116,7 +141,7 @@ public class SidebarModel {
 		TopologyPanel topoPanel = Main.instance.sideBar.topolgyPanel;
 		// local = relative
 		Integer localHiddenLayerIndex = (Integer) topoPanel.hiddenLayerComboModel.getSelectedItem();
-		// is equals to the global layer index, because its the size of all hidden layers
+		// is equals to the global layer index, because its the size of all hidden layers and starts with 1
 		return localHiddenLayerIndex;
 	}
 
@@ -133,61 +158,6 @@ public class SidebarModel {
 		}
 		throw new IllegalAccessError("radio buttons for insert mode are all deselected");
 	}
-
-	/**
-	 * 
-	 */
-	private void initChangeListener() {
-		// fire for all property changes
-		pcs.addPropertyChangeListener(new PropertyChangeListener() {
-			@Override
-			public void propertyChange(final PropertyChangeEvent evt) {
-				ac.doAction(Actions.UPDATE_SIDEBAR_TOPOLOGY_VIEW, evt);
-			}
-		});
-
-		pcs.addPropertyChangeListener(P.inputNeurons.name(), new PropertyChangeListener() {
-			@Override
-			public void propertyChange(final PropertyChangeEvent evt) {
-				ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
-			}
-		});
-		pcs.addPropertyChangeListener(P.hiddenNeurons.name(), new PropertyChangeListener() {
-			@Override
-			public void propertyChange(final PropertyChangeEvent evt) {
-				ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
-			}
-		});
-		pcs.addPropertyChangeListener(P.outputNeurons.name(), new PropertyChangeListener() {
-			@Override
-			public void propertyChange(final PropertyChangeEvent evt) {
-				ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
-			}
-		});
-		pcs.addPropertyChangeListener(P.hiddenLayers.name(), new PropertyChangeListener() {
-			@Override
-			public void propertyChange(final PropertyChangeEvent evt) {
-				ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
-			}
-		});
-		pcs.addPropertyChangeListener(P.hiddenBias.name(), new PropertyChangeListener() {
-			@Override
-			public void propertyChange(final PropertyChangeEvent evt) {
-				ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
-			}
-		});
-		pcs.addPropertyChangeListener(P.inputBias.name(), new PropertyChangeListener() {
-			@Override
-			public void propertyChange(final PropertyChangeEvent evt) {
-				ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
-			}
-		});
-
-	}
-
-	// public void addPropertyChangeListener(final String propertyName, final PropertyChangeListener listener) {
-	// pcs.addPropertyChangeListener(propertyName, listener);
-	// }
 
 	/**
 	 * @return the inputNeurons
@@ -249,7 +219,9 @@ public class SidebarModel {
 		pcs.firePropertyChange(P.hiddenLayers.name(), oldValue, hiddenLayers);
 		for (int i = oldValue; i < hiddenLayers; i++) {
 			// i is relaltive hidden layer index !!!!!
-			addHiddenNeurons(i, 1);
+			// init values
+			setHiddenNeurons(i, 1);
+			setHiddenBias(i, false);
 		}
 	}
 
@@ -268,7 +240,7 @@ public class SidebarModel {
 	 * @param hiddenNeurons
 	 *          the hiddenNeurons to set
 	 */
-	public void addHiddenNeurons(final Integer layerIndex, final Integer neuronCount) {
+	public void setHiddenNeurons(final Integer layerIndex, final Integer neuronCount) {
 		if (layerIndex < 0 || neuronCount < 0) {
 			return;
 		}
@@ -277,13 +249,64 @@ public class SidebarModel {
 			hiddenNeurons.add(neuronCount);
 		} else {
 			oldValue = hiddenNeurons.get(layerIndex);
-			hiddenNeurons.add(layerIndex, neuronCount);
+			hiddenNeurons.set(layerIndex, neuronCount);
 		}
 		pcs.firePropertyChange(P.hiddenNeurons.name(), oldValue, neuronCount);
 	}
 
 	public void createNetwork() {
 		// TODO create Network
+	}
+
+	/**
+	 * 
+	 */
+	private void initChangeListener() {
+		// fire for all property changes
+		pcs.addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
+				ac.doAction(Actions.UPDATE_SIDEBAR_TOPOLOGY_VIEW, evt);
+			}
+		});
+
+		pcs.addPropertyChangeListener(P.inputNeurons.name(), new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
+				ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
+			}
+		});
+		pcs.addPropertyChangeListener(P.hiddenNeurons.name(), new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
+				ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
+			}
+		});
+		pcs.addPropertyChangeListener(P.outputNeurons.name(), new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
+				ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
+			}
+		});
+		pcs.addPropertyChangeListener(P.hiddenLayers.name(), new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
+				ac.doAction(Actions.UPDATE_JUNG_GRAPH, evt);
+			}
+		});
+		pcs.addPropertyChangeListener(P.hiddenBias.name(), new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
+				ac.doAction(Actions.UPDATE_JUNG_GRAPH_INPUT_BIAS, evt);
+			}
+		});
+		pcs.addPropertyChangeListener(P.inputBias.name(), new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
+				ac.doAction(Actions.UPDATE_JUNG_GRAPH_HIDDEN_BIAS, evt);
+			}
+		});
+
 	}
 
 }
