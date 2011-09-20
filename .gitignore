@@ -9,6 +9,4 @@ test/de/unikassel/threeD/misc/*
 test/org/generation5/*
 test/wireframe/*
 .classpath
-.settings
-.settings/*
 src/test/resources/net_export.csv

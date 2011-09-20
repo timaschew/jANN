@@ -1,14 +1,16 @@
 package de.unikassel.ann.strategy;
 
-
 public class MaxLearnIterationsStrategy extends Strategy {
 
 	private int maxIteration;
 
-	public MaxLearnIterationsStrategy(int iterations) {
-		this.maxIteration = iterations;
+	public MaxLearnIterationsStrategy() {
 	}
-	
+
+	public MaxLearnIterationsStrategy(final int iterations) {
+		maxIteration = iterations;
+	}
+
 	@Override
 	public void preIteration() {
 		// nothing
