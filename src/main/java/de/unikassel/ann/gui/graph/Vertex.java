@@ -42,11 +42,16 @@ public class Vertex implements Comparable<Vertex> {
 	 * it to the layercontroller.
 	 */
 	public void setup() {
+		// Get current selected layer index from the sidebar
 		UserSession currentSession = Settings.getInstance().getCurrentSession();
+		int layerIndex = currentSession.sidebarModel.getMouseInsertLayer();
+		setup(layerIndex);
+	}
+
+	public void setup(int layerIndex) {
 		LayerController<Layer> layerController = LayerController.getInstance();
 
 		// Set current layer index for this vertex (for its neuron model)
-		int layerIndex = currentSession.sidebarModel.getMouseInsertLayer();
 		setLayer(layerIndex);
 
 		// TODO Set its startvalue to 0

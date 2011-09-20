@@ -48,11 +48,12 @@ public class ActionController {
 		System.out.println(evt.getOldValue());
 		System.out.println(evt.getNewValue());
 
+		SidebarModel sidebarModel = Settings.getInstance().getCurrentSession().sidebarModel;
 		switch (a) {
 
 		case UPDATE_SIDEBAR_CONFIG_INPUT_NEURON_MODEL:
 			Integer newValue = (Integer) evt.getNewValue();
-			SidebarModel sidebarModel = Settings.getInstance().getCurrentSession().sidebarModel;
+
 			sidebarModel.setInputNeurons(newValue);
 			break;
 
@@ -62,17 +63,20 @@ public class ActionController {
 
 		case UPDATE_SIDEBAR_CONFIG_HIDDEN_LAYER_MODEL:
 			newValue = (Integer) evt.getNewValue();
-			sidebarModel = Settings.getInstance().getCurrentSession().sidebarModel;
 			sidebarModel.setHiddenLayers(newValue);
+			break;
+
+		case UPDATE_SIDEBAR_CONFIG_OUTPUT_NEURON_MODEL:
+			newValue = (Integer) evt.getNewValue();
+			sidebarModel.setOutputNeurons(newValue);
 			break;
 
 		case UPDATE_JUNG_GRAPH:
 			newValue = (Integer) evt.getNewValue();
 			Integer oldValue = (Integer) evt.getOldValue();
 
-			Integer selectedHiddenLayer = 1; // TODO get selected hidden layer
+			Integer selectedHiddenLayer = sidebarModel.getSelectedGlobalHiddenLayerIndex();
 			// sidebarConfig.
-			sidebarModel = Settings.getInstance().getCurrentSession().sidebarModel;
 			Integer hiddenLayerSize = sidebarModel.getHiddenLayers();
 			LayerController<Layer> layerController = LayerController.getInstance();
 
@@ -128,7 +132,6 @@ public class ActionController {
 
 			break;
 		case UPDATE_SIDEBAR_TOPOLOGY_VIEW:
-			sidebarModel = Settings.getInstance().getCurrentSession().sidebarModel;
 			Sidebar sidebar = Main.instance.sideBar;
 			// update full topology panel
 
@@ -139,8 +142,7 @@ public class ActionController {
 			Integer selectedItem = (Integer) sidebar.topolgyPanel.hiddenLayerDropDown.getSelectedItem();
 			// refresh the comboboxen: remove all and add then again
 			// remove all items
-			sidebar.topolgyPanel.hiddenLayerDropDown.removeAllItems();
-			sidebar.topolgyPanel.comboBoxHiddenMausModus.removeAllItems();
+			sidebar.topolgyPanel.hiddenLayerComboModel.removeAllElements();
 			// add the items
 			for (int i = 1; i <= sidebarModel.getHiddenLayers(); i++) {
 				// if getHiddenayer >= 1 then enable der Elements
@@ -149,8 +151,7 @@ public class ActionController {
 				sidebar.topolgyPanel.hiddenNeuronSpinner.setEnabled(true);
 				sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(true);
 
-				sidebar.topolgyPanel.hiddenLayerDropDown.addItem(new Integer(i));
-				sidebar.topolgyPanel.comboBoxHiddenMausModus.addItem(new Integer(i));
+				sidebar.topolgyPanel.hiddenLayerComboModel.addElement(new Integer(i));
 			}
 			// if previous selection was not null, set to old value
 			if (selectedItem != null) {
@@ -175,7 +176,8 @@ public class ActionController {
 		case CREATE_NETWORK:
 			NetworkFactory factory = new NetworkFactory();
 			System.out.println("Create network");
-			// factory.createSimpleNet(sidebarModel.getInputNeurons(), sidebarModel.getHiddenLayers(),
+			// factory.createSimpleNet(sidebarModel.getInputNeurons(),
+			// sidebarModel.getHiddenLayers(),
 			// sidebarModel.getOutputNeurons(), sidebarModel.getInputBias());
 
 			break;

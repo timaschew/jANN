@@ -107,6 +107,19 @@ public class SidebarModel {
 
 	}
 
+	/**
+	 * Returns the the global index for the selected hidden layer (Mouse Insert Mode)
+	 * 
+	 * @return
+	 */
+	public Integer getSelectedGlobalHiddenLayerIndex() {
+		TopologyPanel topoPanel = Main.instance.sideBar.topolgyPanel;
+		// local = relative
+		Integer localHiddenLayerIndex = (Integer) topoPanel.hiddenLayerComboModel.getSelectedItem();
+		// is equals to the global layer index, because its the size of all hidden layers
+		return localHiddenLayerIndex;
+	}
+
 	public Integer getMouseInsertLayer() {
 		TopologyPanel topoPanel = Main.instance.sideBar.topolgyPanel;
 		if (topoPanel.mouseInputRB.isSelected()) {
