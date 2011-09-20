@@ -97,8 +97,8 @@ public class LayerController<T> {
 	 * @return
 	 */
 	public Layer addVertex(final int layerIndex, boolean addToGraph) {
-		// System.out.println("(2) addVertex(" + layerIndex + ", " + addToGraph
-		// + ")");
+		System.out.println("(2) addVertex(" + layerIndex + ", " + addToGraph
+				+ ")");
 		// Create a new vertex
 		Vertex vertex = VertexController.getInstance().getVertexFactory()
 				.create();
@@ -133,8 +133,9 @@ public class LayerController<T> {
 	 */
 	public Layer addVertex(int layerIndex, int vertexIndex, boolean addToGraph) {
 		int layerSize = getLayerSize(layerIndex);
-		// System.out.println("(4) addVertex: layerSize = " + layerSize
-		// + ", vertexIndex = " + vertexIndex);
+		System.out.println("(4) addVertex() layerIndex = " + layerIndex
+				+ ", layerSize = " + layerSize + ", vertexIndex = "
+				+ vertexIndex);
 		if (layerSize >= vertexIndex) {
 			// Vertex already exists
 			return layers.get(layerIndex).getLayer();
@@ -160,9 +161,8 @@ public class LayerController<T> {
 			addLayer(layerIndex);
 		}
 
-		// System.out.println("(5) addVertex(" + layerIndex + ", " + vertex +
-		// ", "
-		// + addToGraph + ")");
+		System.out.println("(5) addVertex(" + layerIndex + ", " + vertex + ", "
+				+ addToGraph + ")");
 
 		// Add vertex to the layer
 		JungLayer layer = layers.get(layerIndex);
