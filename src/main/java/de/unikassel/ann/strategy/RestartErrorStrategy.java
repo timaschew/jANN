@@ -2,21 +2,28 @@ package de.unikassel.ann.strategy;
 
 public class RestartErrorStrategy extends Strategy {
 
-	private Double error;
-	private Integer iterationForRestart;
+	private Double _error;
+	private Integer _iterationForRestart;
 	private boolean badError;
-	
-	public RestartErrorStrategy(Double maxErrorForRestart, Integer iterationForRestart) {
-		this.error = maxErrorForRestart;
-		this.iterationForRestart = iterationForRestart;
+
+	/**
+	 * Only used for reflection, DONT CALL THIS constructor!
+	 */
+	public RestartErrorStrategy() {
+
 	}
-	
+
+	public RestartErrorStrategy(final Double maxErrorForRestart, final Integer iterationForRestart) {
+		_error = maxErrorForRestart;
+		_iterationForRestart = iterationForRestart;
+	}
+
 	@Override
 	public void reset() {
 		super.reset();
 		badError = false;
 	}
-	
+
 	@Override
 	public void preIteration() {
 		// TODO Auto-generated method stub
@@ -25,10 +32,10 @@ public class RestartErrorStrategy extends Strategy {
 
 	@Override
 	public void postIteration() {
-		if (config.getTrainingModule().getCurrentError() > error) {
+		if (config.getTrainingModule().getCurrentError() > _error) {
 			badError = true;
 		}
-		if (config.getTrainingModule().getCurrentIteration() >= iterationForRestart && badError) {
+		if (config.getTrainingModule().getCurrentIteration() >= _iterationForRestart && badError) {
 			restartTraining = true;
 		}
 	}

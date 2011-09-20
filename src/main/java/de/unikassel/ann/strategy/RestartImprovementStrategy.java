@@ -7,22 +7,29 @@ import java.util.Locale;
 
 public class RestartImprovementStrategy extends Strategy {
 
-	private static NumberFormat fmt = new DecimalFormat("0.00000",  DecimalFormatSymbols.getInstance(Locale.ENGLISH));
-	private Integer iterationForRestart;
-	private Double minimalImprovement;
+	private static NumberFormat fmt = new DecimalFormat("0.00000", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+	private Integer _iterationForRestart;
+	private Double _minimalImprovement;
 	private Integer iterationWithBadImprovement = 0;
 
-	public RestartImprovementStrategy(Double minimalImprovementForRestart, Integer iterationForRestart) {
-		this.minimalImprovement = minimalImprovementForRestart;
-		this.iterationForRestart = iterationForRestart;
+	/**
+	 * Only used for reflection, DONT CALL THIS constructor!
+	 */
+	public RestartImprovementStrategy() {
+
 	}
-	
+
+	public RestartImprovementStrategy(final Double minimalImprovementForRestart, final Integer iterationForRestart) {
+		_minimalImprovement = minimalImprovementForRestart;
+		_iterationForRestart = iterationForRestart;
+	}
+
 	@Override
 	public void reset() {
 		super.reset();
 		iterationWithBadImprovement = 0;
 	}
-	
+
 	@Override
 	public void preIteration() {
 		// TODO Auto-generated method stub
@@ -32,15 +39,16 @@ public class RestartImprovementStrategy extends Strategy {
 	@Override
 	public void postIteration() {
 		Double improvement = config.getTrainingModule().getCurrentImprovement();
-		if (improvement < minimalImprovement) {
+		if (improvement < _minimalImprovement) {
 			iterationWithBadImprovement++;
-//			System.err.println("improvement was: "+fmt.format(improvement));
+			// System.err.println("improvement was: "+fmt.format(improvement));
 		} else {
 			iterationWithBadImprovement = 0;
 		}
-		if (iterationWithBadImprovement >= iterationForRestart) {
+		if (iterationWithBadImprovement >= _iterationForRestart) {
 			restartTraining = true;
-			System.err.println(">>> restart in iteration "+config.getTrainingModule().getCurrentIteration()+ " with error "+ fmt.format(config.getTrainingModule().getCurrentError()));
+			System.err.println(">>> restart in iteration " + config.getTrainingModule().getCurrentIteration() + " with error "
+					+ fmt.format(config.getTrainingModule().getCurrentError()));
 		}
 	}
 

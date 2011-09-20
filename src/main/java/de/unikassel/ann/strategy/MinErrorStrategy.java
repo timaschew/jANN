@@ -2,10 +2,16 @@ package de.unikassel.ann.strategy;
 
 public class MinErrorStrategy extends Strategy {
 
-	private Double minerror;
+	/**
+	 * Only used for reflection, DONT CALL THIS constructor!
+	 */
+	public MinErrorStrategy() {
+	}
 
-	public MinErrorStrategy(Double minimalError) {
-		this.minerror = minimalError;
+	private Double _minerror;
+
+	public MinErrorStrategy(final Double minimalError) {
+		_minerror = minimalError;
 	}
 
 	@Override
@@ -15,12 +21,9 @@ public class MinErrorStrategy extends Strategy {
 
 	@Override
 	public void postIteration() {
-		if (config.getTrainingModule().getCurrentError() <= minerror) {
+		if (config.getTrainingModule().getCurrentError() <= _minerror) {
 			stopTraining = true;
 		}
 	}
-
-	
-	
 
 }

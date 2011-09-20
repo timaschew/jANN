@@ -2,13 +2,16 @@ package de.unikassel.ann.strategy;
 
 public class MaxLearnIterationsStrategy extends Strategy {
 
-	private int maxIteration;
+	private int _maxIteration;
 
+	/**
+	 * Only used for reflection, DONT CALL THIS constructor!
+	 */
 	public MaxLearnIterationsStrategy() {
 	}
 
 	public MaxLearnIterationsStrategy(final int iterations) {
-		maxIteration = iterations;
+		_maxIteration = iterations;
 	}
 
 	@Override
@@ -18,7 +21,7 @@ public class MaxLearnIterationsStrategy extends Strategy {
 
 	@Override
 	public void postIteration() {
-		if (config.getTrainingModule().getCurrentIteration() >= maxIteration) {
+		if (config.getTrainingModule().getCurrentIteration() >= _maxIteration) {
 			stopTraining = true;
 		}
 	}
