@@ -275,7 +275,6 @@ public class TopologyPanel extends JPanel {
 		editor.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
-				System.out.println("############");
 				ac.doAction(Actions.UPDATE_SIDEBAR_CONFIG_OUTPUT_NEURON_MODEL, evt);
 			}
 		});

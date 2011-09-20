@@ -60,18 +60,20 @@ public class LayerController<T> {
 	public void addLayer(final Layer layer) {
 		int index = layer.getIndex();
 
-		// Check if there is already a layer with the same index available
-		if (index < layers.size() && layers.get(index) != null) {
-			// Layer already exists -> Just replace its layer model
-			layers.get(index).setLayer(layer);
-			return;
-		}
-
 		// Create new Junglayer as a wrapper which contains the layer and its
 		// vertices. The Junglayer has the same index as the layer.
 		JungLayer jungLayer = new JungLayer(index);
 		jungLayer.setLayer(layer);
-		layers.add(jungLayer);
+
+		// Check if there is already a layer with the same index available
+		if (index < layers.size() && layers.get(index) != null) {
+			// Layer already exists -> Just replace its layer model
+			// layers.get(index).setLayer(layer);
+			// Add new layer and push all layers behind that layers index
+			layers.add(index, jungLayer);
+		} else {
+			layers.add(jungLayer);
+		}
 	}
 
 	/**
@@ -96,13 +98,11 @@ public class LayerController<T> {
 	 * @param addToGraph
 	 * @return
 	 */
-	public Layer addVertex(final int layerIndex, boolean addToGraph) {
-		System.out.println("(2) addVertex(" + layerIndex + ", " + addToGraph
-				+ ")");
+	public Layer addVertex(final int layerIndex, final boolean addToGraph) {
+		System.out.println("(2) addVertex(" + layerIndex + ", " + addToGraph + ")");
 		// Create a new vertex
-		Vertex vertex = VertexController.getInstance().getVertexFactory()
-				.create();
-		vertex.setup();
+		Vertex vertex = VertexController.getInstance().getVertexFactory().create();
+		vertex.setup(layerIndex);
 
 		return addVertex(layerIndex, vertex, addToGraph);
 	}
@@ -123,19 +123,16 @@ public class LayerController<T> {
 	/**
 	 * Add Vertex (4)
 	 * 
-	 * Add a vertex with the index to the layer with the index and add the
-	 * vertex to the graph.
+	 * Add a vertex with the index to the layer with the index and add the vertex to the graph.
 	 * 
 	 * @param layerIndex
 	 * @param vertexIndex
 	 * @param addToGraph
 	 * @return
 	 */
-	public Layer addVertex(int layerIndex, int vertexIndex, boolean addToGraph) {
+	public Layer addVertex(final int layerIndex, final int vertexIndex, final boolean addToGraph) {
 		int layerSize = getLayerSize(layerIndex);
-		System.out.println("(4) addVertex() layerIndex = " + layerIndex
-				+ ", layerSize = " + layerSize + ", vertexIndex = "
-				+ vertexIndex);
+		System.out.println("(4) addVertex() layerIndex = " + layerIndex + ", layerSize = " + layerSize + ", vertexIndex = " + vertexIndex);
 		if (layerSize >= vertexIndex) {
 			// Vertex already exists
 			return layers.get(layerIndex).getLayer();
@@ -154,15 +151,13 @@ public class LayerController<T> {
 	 * @param addToGraph
 	 * @return Layer
 	 */
-	public Layer addVertex(final int layerIndex, final Vertex vertex,
-			final boolean addToGraph) {
+	public Layer addVertex(final int layerIndex, final Vertex vertex, final boolean addToGraph) {
 		if (layerIndex >= layers.size()) {
 			// Layer with the index does not exist -> Create new Layer
 			addLayer(layerIndex);
 		}
 
-		System.out.println("(5) addVertex(" + layerIndex + ", " + vertex + ", "
-				+ addToGraph + ")");
+		System.out.println("(5) addVertex(" + layerIndex + ", " + vertex + ", " + addToGraph + ")");
 
 		// Add vertex to the layer
 		JungLayer layer = layers.get(layerIndex);
@@ -181,7 +176,10 @@ public class LayerController<T> {
 
 	public void removeLayer() {
 		int index = layers.size() - 1;
+		layers.remove(index);
+	}
 
+	public void removeLayer(final int index) {
 		JungLayer layer = layers.get(index);
 		List<Vertex> vertices = layer.getVertices();
 
@@ -190,12 +188,6 @@ public class LayerController<T> {
 			vertex.remove();
 		}
 		layers.remove(index);
-	}
-
-	public void removeLayer(final Integer index) {
-		layers.remove(index);
-
-		// TODO are the vertices automatically removed as well?
 	}
 
 	public void removeVertex(final int layerIndex, final int vertexIndex) {
@@ -227,7 +219,7 @@ public class LayerController<T> {
 	 * @param layerIndex
 	 * @return
 	 */
-	public int getLayerSize(int layerIndex) {
+	public int getLayerSize(final int layerIndex) {
 		JungLayer jungLayer;
 		try {
 			jungLayer = layers.get(layerIndex);
@@ -276,8 +268,7 @@ public class LayerController<T> {
 	 * @return
 	 */
 	public Vertex getVertexById(final Integer id) {
-		HashMap<Layer, List<Vertex>> vertexMap = LayerController.getInstance()
-				.getVertices();
+		HashMap<Layer, List<Vertex>> vertexMap = LayerController.getInstance().getVertices();
 		Iterator<Entry<Layer, List<Vertex>>> iter;
 		Map.Entry<Layer, List<Vertex>> entry;
 		List<Vertex> vertices;
@@ -359,7 +350,7 @@ public class LayerController<T> {
 			return getIndex() - layer.getIndex();
 		}
 
-		private boolean contains(Vertex vertex) {
+		private boolean contains(final Vertex vertex) {
 			for (Vertex v : vertices) {
 				if (v.getIndex() == vertex.getIndex()) {
 					// Vertex found by its index!
