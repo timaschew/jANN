@@ -13,9 +13,7 @@ import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.Actions;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.gui.graph.GraphLayoutViewer;
-import de.unikassel.ann.gui.sidebar.Sidebar;
 import de.unikassel.ann.io.NetIO;
-import de.unikassel.ann.model.SidebarModel;
 
 public class MainMenu extends JMenuBar {
 
@@ -63,22 +61,18 @@ public class MainMenu extends JMenuBar {
 	private JMenu getDateiMenu() {
 		JMenu mnDatei = new JMenu(Settings.i18n.getString("menu.file"));
 
-		JMenuItem mntmNeu = new ActionMenuItem(
-				Settings.i18n.getString("menu.file.new"), Actions.NEW);
+		JMenuItem mntmNeu = new ActionMenuItem(Settings.i18n.getString("menu.file.new"), Actions.NEW);
 		mnDatei.add(mntmNeu);
 
-		JMenuItem mntmOeffnen = new ActionMenuItem(
-				Settings.i18n.getString("menu.file.open"), Actions.OPEN);
+		JMenuItem mntmOeffnen = new ActionMenuItem(Settings.i18n.getString("menu.file.open"), Actions.OPEN);
 		mnDatei.add(mntmOeffnen);
 
-		JMenuItem mntmSpeichern = new ActionMenuItem(
-				Settings.i18n.getString("menu.file.save"), Actions.SAVE);
+		JMenuItem mntmSpeichern = new ActionMenuItem(Settings.i18n.getString("menu.file.save"), Actions.SAVE);
 		mnDatei.add(mntmSpeichern);
 
 		mnDatei.addSeparator();
 
-		JMenuItem mntmBeenden = new ActionMenuItem(
-				Settings.i18n.getString("menu.file.exit"), Actions.EXIT);
+		JMenuItem mntmBeenden = new ActionMenuItem(Settings.i18n.getString("menu.file.exit"), Actions.EXIT);
 		mnDatei.add(mntmBeenden);
 
 		return mnDatei;
@@ -103,14 +97,10 @@ public class MainMenu extends JMenuBar {
 	private JMenu getAnsichtMenu() {
 		JMenu mnAnsicht = new JMenu(Settings.i18n.getString("menu.view"));
 
-		JMenuItem mntmDatenvisualisierung = new ActionMenuItem(
-				Settings.i18n.getString("menu.view.showTrainingData"),
-				Actions.VIEW_DATA);
+		JMenuItem mntmDatenvisualisierung = new ActionMenuItem(Settings.i18n.getString("menu.view.showTrainingData"), Actions.VIEW_DATA);
 		mnAnsicht.add(mntmDatenvisualisierung);
 
-		JMenuItem mntmTrainingfehlerverlauf = new ActionMenuItem(
-				Settings.i18n.getString("menu.view.showTrainingError"),
-				Actions.VIEW_TRAINING);
+		JMenuItem mntmTrainingfehlerverlauf = new ActionMenuItem(Settings.i18n.getString("menu.view.showTrainingError"), Actions.VIEW_TRAINING);
 		mnAnsicht.add(mntmTrainingfehlerverlauf);
 
 		return mnAnsicht;
@@ -124,9 +114,7 @@ public class MainMenu extends JMenuBar {
 	private JMenu getTestMenu() {
 		JMenu mnTest = new JMenu(Settings.i18n.getString("menu.test"));
 
-		JMenuItem mntmNetzwerk = new ActionMenuItem(
-				Settings.i18n.getString("menu.test.network"),
-				Actions.TEST_NETWORK);
+		JMenuItem mntmNetzwerk = new ActionMenuItem(Settings.i18n.getString("menu.test.network"), Actions.TEST_NETWORK);
 		mnTest.add(mntmNetzwerk);
 
 		return mnTest;
@@ -140,8 +128,7 @@ public class MainMenu extends JMenuBar {
 	private JMenu getHilfeMenu() {
 		JMenu mnHilfe = new JMenu(Settings.i18n.getString("menu.help"));
 
-		JMenuItem mntmUeber = new ActionMenuItem(
-				Settings.i18n.getString("menu.help.about"), Actions.ABOUT);
+		JMenuItem mntmUeber = new ActionMenuItem(Settings.i18n.getString("menu.help.about"), Actions.ABOUT);
 		mnHilfe.add(mntmUeber);
 
 		return mnHilfe;
@@ -176,9 +163,9 @@ public class MainMenu extends JMenuBar {
 				GraphLayoutViewer.getInstance().clear();
 
 				// Reset Sidebar
-				SidebarModel sidebarModel = Settings.getInstance()
-						.getCurrentSession().sidebarModel;
-				sidebarModel.reset();
+				Settings.getInstance().createNewSession("Neu");
+				Main.instance.initSidebarPanel();
+				// sidebarModel.reset();
 
 				break;
 			case OPEN:
@@ -217,8 +204,7 @@ public class MainMenu extends JMenuBar {
 
 		private void testNetwork() throws IOException, ClassNotFoundException {
 			String curDir = System.getProperty("user.dir");
-			File importFile = new File(curDir
-					+ "/src/test/resources/net_cfg.csv");
+			File importFile = new File(curDir + "/src/test/resources/net_cfg.csv");
 
 			NetIO netIO = new NetIO();
 
