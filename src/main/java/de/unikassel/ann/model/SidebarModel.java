@@ -234,9 +234,15 @@ public class SidebarModel {
 		Integer oldValue = this.hiddenLayers;
 		this.hiddenLayers = hiddenLayers;
 		pcs.firePropertyChange(P.hiddenLayers.name(), oldValue, hiddenLayers);
+		for (int i = oldValue; i < hiddenLayers; i++) {
+			// i is relaltive hidden layer index !!!!!
+			addHiddenNeurons(i, 1);
+		}
 	}
 
 	/**
+	 * RELATIVE INDEX FOR HIDDEN LAYER !
+	 * 
 	 * @return the hiddenNeurons
 	 */
 	public List<Integer> getHiddenNeurons() {
@@ -244,6 +250,8 @@ public class SidebarModel {
 	}
 
 	/**
+	 * RELATIVE INDEX FOR HIDDEN LAYER !
+	 * 
 	 * @param hiddenNeurons
 	 *          the hiddenNeurons to set
 	 */
