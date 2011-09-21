@@ -7,11 +7,8 @@ import java.awt.Graphics;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -73,7 +70,7 @@ public class GraphLayoutViewer {
 		return graph;
 	}
 
-	public void setGraph(DirectedGraph<Vertex, Edge> graph) {
+	public void setGraph(final DirectedGraph<Vertex, Edge> graph) {
 		this.graph = graph;
 	}
 
@@ -81,7 +78,7 @@ public class GraphLayoutViewer {
 		return layout;
 	}
 
-	public void setLayout(AbstractLayout<Vertex, Edge> layout) {
+	public void setLayout(final AbstractLayout<Vertex, Edge> layout) {
 		this.layout = layout;
 	}
 
@@ -89,7 +86,7 @@ public class GraphLayoutViewer {
 		return viewer;
 	}
 
-	public void setViewer(VisualizationViewer<Vertex, Edge> viewer) {
+	public void setViewer(final VisualizationViewer<Vertex, Edge> viewer) {
 		this.viewer = viewer;
 	}
 
@@ -124,11 +121,11 @@ public class GraphLayoutViewer {
 		addMouseModeMenu();
 	}
 
-	public void setDimension(Dimension dim) {
+	public void setDimension(final Dimension dim) {
 		this.dim = dim;
 	}
 
-	public void setParent(JPanel parent) {
+	public void setParent(final JPanel parent) {
 		this.parent = parent;
 	}
 
@@ -170,8 +167,7 @@ public class GraphLayoutViewer {
 		// Render Vertices into their Layers
 		//
 		LayerController<Layer> layerController = LayerController.getInstance();
-		VertexController<Vertex> vertexController = VertexController
-				.getInstance();
+		VertexController<Vertex> vertexController = VertexController.getInstance();
 		List<Layer> layers = network.getLayers();
 		for (Layer layer : layers) {
 			layerController.addLayer(layer);
@@ -209,8 +205,7 @@ public class GraphLayoutViewer {
 				continue;
 			}
 
-			if (fromVertex.getModel().getLayer().getIndex() == toVertex.getModel()
-					.getLayer().getIndex()) {
+			if (fromVertex.getModel().getLayer().getIndex() == toVertex.getModel().getLayer().getIndex()) {
 				// Do not conntect two neurons in the same layer with an
 				// edge!
 				continue;
@@ -228,8 +223,7 @@ public class GraphLayoutViewer {
 	}
 
 	/**
-	 * PreRenderer for the Viewer to compute and set the position of each graph
-	 * component.
+	 * PreRenderer for the Viewer to compute and set the position of each graph component.
 	 * 
 	 * @return Paintable
 	 */
@@ -245,49 +239,43 @@ public class GraphLayoutViewer {
 				// Since new vertices are always added at the last position, get
 				// the number of vertices to compute the position for the new
 				// vertex.
-				LayerController<Layer> layerController = LayerController
-						.getInstance();
-				HashMap<Layer, List<Vertex>> vertices = layerController
-						.getVertices();
+				LayerController<Layer> layerController = LayerController.getInstance();
+				ArrayList<ArrayList<Vertex>> layers = layerController.getVertices();
 
 				// System.out.println(vertices);
 
-				// No vertices? -> No fun!
-				if (vertices.size() == 0) {
+				// No layers? -> No fun!
+				if (layers.size() == 0) {
 					return;
 				}
 
+				// Vertex position
 				Point2D location;
 
 				// Gap between the layers
-				int gapY = height / layerController.getLayersSet().size();
+				int gapY = height / layerController.getLayersSize();
 
-				Iterator<Entry<Layer, List<Vertex>>> iter;
-				Map.Entry<Layer, List<Vertex>> entry;
-				Layer layer;
-				List<Vertex> layerVertices;
+				int layerIndex = -1;
+				for (ArrayList<Vertex> vertices : layers) {
+					layerIndex++;
 
-				iter = vertices.entrySet().iterator();
-				while (iter.hasNext()) {
-					entry = iter.next();
-					layer = entry.getKey();
-					layerVertices = entry.getValue();
+					int layerSize = vertices.size();
 
 					// Skip empty layers
-					if (layerVertices.size() == 0) {
+					if (layerSize == 0) {
 						continue;
 					}
 
 					// Compute the gap between two vertices
-					int gapX = width / layerVertices.size();
+					int gapX = width / layerSize;
 
 					int vertexIndex = -1;
-					for (Vertex vertex : layerVertices) {
+					for (Vertex vertex : vertices) {
 						vertexIndex++;
 
 						// Compute location of the vertex
 						int x = vertexIndex * gapX + gapX / 2;
-						int y = layer.getIndex() * gapY + gapY / 2;
+						int y = layerIndex * gapY + gapY / 2;
 						location = new Point2D.Double(x, y);
 
 						// Set vertex location and lock it
@@ -306,8 +294,7 @@ public class GraphLayoutViewer {
 
 	private void initGraphMouse() {
 		// Create Graph Mouse (set in and out parameter to '1f' to disable zoom)
-		graphMouse = new GraphMouse<Vertex, Edge>(viewer.getRenderContext(),
-				VertexController.getInstance().getVertexFactory(),
+		graphMouse = new GraphMouse<Vertex, Edge>(viewer.getRenderContext(), VertexController.getInstance().getVertexFactory(),
 				EdgeController.getInstance().getEdgeFactory(), 1f, 1f);
 
 		viewer.setGraphMouse(graphMouse);
@@ -324,8 +311,7 @@ public class GraphLayoutViewer {
 	}
 
 	/**
-	 * Add MouseMode Menu to the MainMenu of the frame to set the mode of the
-	 * Graph Mouse.
+	 * Add MouseMode Menu to the MainMenu of the frame to set the mode of the Graph Mouse.
 	 */
 	private void addMouseModeMenu() {
 		if (frame == null) {
