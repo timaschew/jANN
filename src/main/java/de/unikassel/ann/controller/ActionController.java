@@ -159,11 +159,21 @@ public class ActionController {
 			sidebar.topolgyPanel.inputBiasCB.setSelected(sidebarModel.getInputBias());
 
 			/*
-			 * update hidden bias for selected hidden layer
+			 * update hidden bias for selected hidden layer AND hidden neuron spinner
 			 */
 			// get last selection from combobox
 			Integer selectedItem = (Integer) sidebar.topolgyPanel.hiddenLayerDropDown.getSelectedItem();
 			if (selectedItem != null) {
+
+				// hidden neuron spinner
+				try {
+					List<Integer> hiddenNeuronList = sidebarModel.getHiddenNeurons();
+					Integer neuronCountForSelectedHiddenLayer = hiddenNeuronList.get(selectedItem - 1);
+					sidebar.topolgyPanel.hiddenNeuronSpinner.setValue(neuronCountForSelectedHiddenLayer);
+				} catch (IndexOutOfBoundsException e) {
+					// see below (prophylactical)
+				}
+				// hidden bias checkbox
 				try {
 					List<Boolean> hiddenBiasList = sidebarModel.getHiddenBias();
 					// use relative hidden layer index
