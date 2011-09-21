@@ -1,660 +1,779 @@
 <mockup version="1.0" skin="sketch" measuredW="1971" measuredH="1916" mockupW="1915" mockupH="1901">
   <controls>
-    <control controlID="123" controlTypeID="com.balsamiq.mockups::Menu" x="533" y="595" w="191" h="-1" measuredW="150" measuredH="193" zOrder="0" locked="false" isInGroup="-1">
+    <control controlID="155" controlTypeID="com.balsamiq.mockups::Menu" x="533" y="595" w="191" h="-1" measuredW="150" measuredH="193" zOrder="0" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Import%0AImport%20Recent%20%3E%0A---%0AExport%0A%3D%0Ax%20Session%3A%20test_network1.csv%0ASession%3A%20test_network2.csv%0ASession%3A%20test_network2.csv%0A---%0AClose%20current%20session%0AExit%2CCTRL+Q</text>
       </controlProperties>
     </control>
-    <control controlID="124" controlTypeID="com.balsamiq.mockups::Canvas" x="683" y="864" w="961" h="760" measuredW="100" measuredH="70" zOrder="1" locked="false" isInGroup="-1"/>
-    <control controlID="125" controlTypeID="com.balsamiq.mockups::MenuBar" x="683" y="864" w="-1" h="-1" measuredW="269" measuredH="29" zOrder="2" locked="false" isInGroup="-1">
+    <control controlID="156" controlTypeID="com.balsamiq.mockups::Canvas" x="683" y="864" w="961" h="760" measuredW="100" measuredH="70" zOrder="1" locked="false" isInGroup="-1"/>
+    <control controlID="157" controlTypeID="com.balsamiq.mockups::MenuBar" x="683" y="864" w="-1" h="-1" measuredW="270" measuredH="29" zOrder="2" locked="false" isInGroup="-1">
       <controlProperties>
         <text>File%2C%20Edit%2C%20View%2C%20Options%2C%20Help</text>
       </controlProperties>
     </control>
-    <control controlID="126" controlTypeID="com.balsamiq.mockups::StickyNote" x="1264" y="1643" w="221" h="199" measuredW="109" measuredH="123" zOrder="100" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Beim%20Klick%20auf%20ein%20Neuron%20oder%20%20eine%20Synapse%20in%20der%20Jung%20View%2C%20soll%20dieses%20Panel%20dargestellt%20werden%2C%20vorher%20versteckt.%0AJe%20nach%20dem%20was%20angeklickt%20wird%2C%20sollen%20die%20entsprechenden%20Felder%20aktiviert%20sind%2C%20die%20nicht%20passenden%20deaktiviert</text>
-      </controlProperties>
-    </control>
-    <control controlID="127" controlTypeID="com.balsamiq.mockups::FieldSet" x="1353" y="876" w="237" h="155" measuredW="200" measuredH="170" zOrder="3" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Topologie</text>
-      </controlProperties>
-    </control>
-    <control controlID="128" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="910" w="-1" h="-1" measuredW="92" measuredH="21" zOrder="4" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Input%20Neuronen</text>
-      </controlProperties>
-    </control>
-    <control controlID="129" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1480" y="909" w="-1" h="-1" measuredW="41" measuredH="24" zOrder="5" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>3</text>
-      </controlProperties>
-    </control>
-    <control controlID="130" controlTypeID="com.balsamiq.mockups::Label" x="1365" y="937" w="-1" h="-1" measuredW="102" measuredH="21" zOrder="6" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Output%20Neuronen</text>
-      </controlProperties>
-    </control>
-    <control controlID="131" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1480" y="935" w="-1" h="-1" measuredW="41" measuredH="24" zOrder="7" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>3</text>
-      </controlProperties>
-    </control>
-    <control controlID="132" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="965" w="-1" h="-1" measuredW="81" measuredH="21" zOrder="8" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Hidden%20Layer</text>
-      </controlProperties>
-    </control>
-    <control controlID="133" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1480" y="964" w="-1" h="-1" measuredW="39" measuredH="24" zOrder="9" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>1</text>
-      </controlProperties>
-    </control>
-    <control controlID="134" controlTypeID="com.balsamiq.mockups::FieldSet" x="1355" y="1103" w="235" h="264" measuredW="200" measuredH="170" zOrder="10" locked="false" isInGroup="-1">
+    <control controlID="165" controlTypeID="com.balsamiq.mockups::FieldSet" x="1355" y="1103" w="235" h="264" measuredW="200" measuredH="170" zOrder="3" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Training</text>
       </controlProperties>
     </control>
-    <control controlID="135" controlTypeID="com.balsamiq.mockups::StickyNote" x="635" y="905" w="278" h="225" measuredW="109" measuredH="123" zOrder="11" locked="false" isInGroup="-1">
+    <control controlID="166" controlTypeID="com.balsamiq.mockups::StickyNote" x="635" y="905" w="278" h="225" measuredW="109" measuredH="123" zOrder="4" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Jung%20View%0AMuss%20synchronisiert%20werden%20mit%20den%20Topologie-Einsetllungen%20rechts%20in%20der%20Sidebar%3A%0A-%20Input%20Neuronen%0A-%20Output%20Neuronen%0A-%20Hidden%20Layer%26Neuronen%0ABei%20Klick%20auf%20ein%20Neuron%20bzw.%20Synapse%20muss%20das%20Panel%20%22Ausgew%E4hltes%20Symbol%22%20synchronisiert%20werden</text>
       </controlProperties>
     </control>
-    <control controlID="136" controlTypeID="com.balsamiq.mockups::Arrow" x="748" y="584" w="24" h="280" measuredW="150" measuredH="100" zOrder="12" locked="false" isInGroup="-1">
+    <control controlID="167" controlTypeID="com.balsamiq.mockups::Arrow" x="748" y="584" w="24" h="280" measuredW="150" measuredH="100" zOrder="5" locked="false" isInGroup="-1">
       <controlProperties>
         <curvature>0</curvature>
         <direction>bottom</direction>
         <text/>
       </controlProperties>
     </control>
-    <control controlID="137" controlTypeID="com.balsamiq.mockups::Menu" x="724" y="528" w="-1" h="-1" measuredW="150" measuredH="52" zOrder="13" locked="false" isInGroup="-1">
+    <control controlID="168" controlTypeID="com.balsamiq.mockups::Menu" x="724" y="528" w="-1" h="-1" measuredW="150" measuredH="52" zOrder="6" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Undo%2C%20CTRL+Z%0ARedo%2CCTRL+Y</text>
       </controlProperties>
     </control>
-    <control controlID="138" controlTypeID="com.balsamiq.mockups::Arrow" x="628" y="771" w="81" h="96" measuredW="150" measuredH="100" zOrder="14" locked="false" isInGroup="-1">
+    <control controlID="169" controlTypeID="com.balsamiq.mockups::Arrow" x="628" y="771" w="81" h="96" measuredW="150" measuredH="100" zOrder="7" locked="false" isInGroup="-1">
       <controlProperties>
         <curvature>0</curvature>
         <direction>top</direction>
         <text/>
       </controlProperties>
     </control>
-    <control controlID="139" controlTypeID="com.balsamiq.mockups::Menu" x="1095" y="744" w="201" h="-1" measuredW="150" measuredH="78" zOrder="15" locked="false" isInGroup="-1">
+    <control controlID="170" controlTypeID="com.balsamiq.mockups::Menu" x="1095" y="744" w="201" h="-1" measuredW="150" measuredH="78" zOrder="8" locked="false" isInGroup="-1">
       <controlProperties>
         <text>o%20Backpropagation%0ASelf%20Organized%20Network%0A---%0ATrainingsdaten%20normalisieren</text>
       </controlProperties>
     </control>
-    <control controlID="140" controlTypeID="com.balsamiq.mockups::Arrow" x="799" y="761" w="101" h="103" measuredW="150" measuredH="100" zOrder="16" locked="false" isInGroup="-1">
+    <control controlID="171" controlTypeID="com.balsamiq.mockups::Arrow" x="799" y="761" w="101" h="103" measuredW="150" measuredH="100" zOrder="9" locked="false" isInGroup="-1">
       <controlProperties>
         <curvature>0</curvature>
         <direction>bottom</direction>
         <text/>
       </controlProperties>
     </control>
-    <control controlID="141" controlTypeID="com.balsamiq.mockups::Menu" x="787" y="709" w="189" h="-1" measuredW="150" measuredH="52" zOrder="17" locked="false" isInGroup="-1">
+    <control controlID="172" controlTypeID="com.balsamiq.mockups::Menu" x="787" y="709" w="189" h="-1" measuredW="150" measuredH="52" zOrder="10" locked="false" isInGroup="-1">
       <controlProperties>
         <text>x%20Trainingsfehler%20anzeigen%0ATrainingsdaten%20anzeigen</text>
       </controlProperties>
     </control>
-    <control controlID="142" controlTypeID="com.balsamiq.mockups::Arrow" x="852" y="791" w="228" h="75" measuredW="150" measuredH="100" zOrder="18" locked="false" isInGroup="-1">
+    <control controlID="173" controlTypeID="com.balsamiq.mockups::Arrow" x="852" y="791" w="228" h="75" measuredW="150" measuredH="100" zOrder="11" locked="false" isInGroup="-1">
       <controlProperties>
         <curvature>0</curvature>
         <direction>bottom</direction>
         <text/>
       </controlProperties>
     </control>
-    <control controlID="143" controlTypeID="com.balsamiq.mockups::TitleWindow" x="56" y="36" w="223" h="219" measuredW="450" measuredH="400" zOrder="19" locked="false" isInGroup="-1">
+    <control controlID="174" controlTypeID="com.balsamiq.mockups::TitleWindow" x="56" y="36" w="223" h="219" measuredW="450" measuredH="400" zOrder="12" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Import%20File</text>
       </controlProperties>
     </control>
-    <control controlID="144" controlTypeID="com.balsamiq.mockups::Arrow" x="279" y="255" w="273" h="352" measuredW="150" measuredH="100" zOrder="20" locked="false" isInGroup="-1">
+    <control controlID="175" controlTypeID="com.balsamiq.mockups::Arrow" x="279" y="255" w="273" h="352" measuredW="150" measuredH="100" zOrder="13" locked="false" isInGroup="-1">
       <controlProperties>
         <curvature>0</curvature>
         <direction>top</direction>
         <text/>
       </controlProperties>
     </control>
-    <control controlID="145" controlTypeID="com.balsamiq.mockups::Label" x="67" y="100" w="-1" h="-1" measuredW="58" measuredH="21" zOrder="21" locked="false" isInGroup="-1">
+    <control controlID="176" controlTypeID="com.balsamiq.mockups::Label" x="67" y="100" w="-1" h="-1" measuredW="58" measuredH="21" zOrder="14" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Topology</text>
       </controlProperties>
     </control>
-    <control controlID="146" controlTypeID="com.balsamiq.mockups::Label" x="67" y="127" w="-1" h="-1" measuredW="54" measuredH="21" zOrder="22" locked="false" isInGroup="-1">
+    <control controlID="177" controlTypeID="com.balsamiq.mockups::Label" x="67" y="127" w="-1" h="-1" measuredW="54" measuredH="21" zOrder="15" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Synapse</text>
       </controlProperties>
     </control>
-    <control controlID="147" controlTypeID="com.balsamiq.mockups::Label" x="67" y="155" w="-1" h="-1" measuredW="80" measuredH="21" zOrder="23" locked="false" isInGroup="-1">
+    <control controlID="178" controlTypeID="com.balsamiq.mockups::Label" x="67" y="155" w="-1" h="-1" measuredW="80" measuredH="21" zOrder="16" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Training%20Data</text>
       </controlProperties>
     </control>
-    <control controlID="148" controlTypeID="com.balsamiq.mockups::PointyButton" x="194" y="191" w="-1" h="-1" measuredW="58" measuredH="27" zOrder="24" locked="false" isInGroup="-1">
+    <control controlID="179" controlTypeID="com.balsamiq.mockups::PointyButton" x="194" y="191" w="-1" h="-1" measuredW="58" measuredH="27" zOrder="17" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Import</text>
       </controlProperties>
     </control>
-    <control controlID="149" controlTypeID="com.balsamiq.mockups::HSplitter" x="1326" y="864" w="-1" h="760" measuredW="12" measuredH="100" zOrder="25" locked="false" isInGroup="-1"/>
-    <control controlID="150" controlTypeID="com.balsamiq.mockups::VSplitter" x="683" y="1445" w="649" h="-1" measuredW="100" measuredH="12" zOrder="26" locked="false" isInGroup="-1"/>
-    <control controlID="151" controlTypeID="com.balsamiq.mockups::StickyNote" x="567" y="1548" w="333" h="168" measuredW="109" measuredH="123" zOrder="27" locked="false" isInGroup="-1">
+    <control controlID="180" controlTypeID="com.balsamiq.mockups::HSplitter" x="1326" y="864" w="-1" h="760" measuredW="12" measuredH="100" zOrder="18" locked="false" isInGroup="-1"/>
+    <control controlID="181" controlTypeID="com.balsamiq.mockups::VSplitter" x="683" y="1445" w="649" h="-1" measuredW="100" measuredH="12" zOrder="19" locked="false" isInGroup="-1"/>
+    <control controlID="182" controlTypeID="com.balsamiq.mockups::StickyNote" x="567" y="1548" w="333" h="168" measuredW="109" measuredH="123" zOrder="20" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Console%20als%20JEditorPane%20%28es%20k%F6nnen%20verschieden%20Farben%20und%20Styles%20benutzt%20werden%29%0AStandard%20Ausgaben%20%28System.out%29%20werden%20hierauf%20umgeleitet%0AEs%20kann%20auch%20System.err%20darauf%20umgeleitet%20werden%20bei%20Bedarf</text>
       </controlProperties>
     </control>
-    <control controlID="152" controlTypeID="com.balsamiq.mockups::CheckBox" x="194" y="99" w="-1" h="-1" measuredW="26" measuredH="22" zOrder="28" locked="false" isInGroup="-1">
+    <control controlID="183" controlTypeID="com.balsamiq.mockups::CheckBox" x="194" y="99" w="-1" h="-1" measuredW="26" measuredH="22" zOrder="21" locked="false" isInGroup="-1">
       <controlProperties>
         <text/>
       </controlProperties>
     </control>
-    <control controlID="153" controlTypeID="com.balsamiq.mockups::CheckBox" x="194" y="133" w="-1" h="-1" measuredW="26" measuredH="22" zOrder="29" locked="false" isInGroup="-1">
+    <control controlID="184" controlTypeID="com.balsamiq.mockups::CheckBox" x="194" y="133" w="-1" h="-1" measuredW="26" measuredH="22" zOrder="22" locked="false" isInGroup="-1">
       <controlProperties>
         <text/>
       </controlProperties>
     </control>
-    <control controlID="154" controlTypeID="com.balsamiq.mockups::CheckBox" x="194" y="163" w="-1" h="-1" measuredW="26" measuredH="22" zOrder="30" locked="false" isInGroup="-1">
+    <control controlID="185" controlTypeID="com.balsamiq.mockups::CheckBox" x="194" y="163" w="-1" h="-1" measuredW="26" measuredH="22" zOrder="23" locked="false" isInGroup="-1">
       <controlProperties>
         <text/>
       </controlProperties>
     </control>
-    <control controlID="155" controlTypeID="com.balsamiq.mockups::SearchBox" x="190" y="67" w="-1" h="-1" measuredW="65" measuredH="25" zOrder="31" locked="false" isInGroup="-1">
+    <control controlID="186" controlTypeID="com.balsamiq.mockups::SearchBox" x="190" y="67" w="-1" h="-1" measuredW="65" measuredH="25" zOrder="24" locked="false" isInGroup="-1">
       <controlProperties>
         <text>search</text>
       </controlProperties>
     </control>
-    <control controlID="156" controlTypeID="com.balsamiq.mockups::Label" x="67" y="71" w="-1" h="-1" measuredW="25" measuredH="21" zOrder="32" locked="false" isInGroup="-1">
+    <control controlID="187" controlTypeID="com.balsamiq.mockups::Label" x="67" y="71" w="-1" h="-1" measuredW="25" measuredH="21" zOrder="25" locked="false" isInGroup="-1">
       <controlProperties>
         <text>File</text>
       </controlProperties>
     </control>
-    <control controlID="157" controlTypeID="com.balsamiq.mockups::TitleWindow" x="56" y="293" w="223" h="219" measuredW="450" measuredH="400" zOrder="33" locked="false" isInGroup="-1">
+    <control controlID="188" controlTypeID="com.balsamiq.mockups::TitleWindow" x="56" y="293" w="223" h="219" measuredW="450" measuredH="400" zOrder="26" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Export%20File</text>
       </controlProperties>
     </control>
-    <control controlID="158" controlTypeID="com.balsamiq.mockups::Label" x="67" y="357" w="-1" h="-1" measuredW="58" measuredH="21" zOrder="34" locked="false" isInGroup="-1">
+    <control controlID="189" controlTypeID="com.balsamiq.mockups::Label" x="67" y="357" w="-1" h="-1" measuredW="58" measuredH="21" zOrder="27" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Topology</text>
       </controlProperties>
     </control>
-    <control controlID="159" controlTypeID="com.balsamiq.mockups::Label" x="67" y="384" w="-1" h="-1" measuredW="54" measuredH="21" zOrder="35" locked="false" isInGroup="-1">
+    <control controlID="190" controlTypeID="com.balsamiq.mockups::Label" x="67" y="384" w="-1" h="-1" measuredW="54" measuredH="21" zOrder="28" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Synapse</text>
       </controlProperties>
     </control>
-    <control controlID="160" controlTypeID="com.balsamiq.mockups::Label" x="67" y="412" w="-1" h="-1" measuredW="80" measuredH="21" zOrder="36" locked="false" isInGroup="-1">
+    <control controlID="191" controlTypeID="com.balsamiq.mockups::Label" x="67" y="412" w="-1" h="-1" measuredW="80" measuredH="21" zOrder="29" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Training%20Data</text>
       </controlProperties>
     </control>
-    <control controlID="161" controlTypeID="com.balsamiq.mockups::PointyButton" x="194" y="448" w="-1" h="-1" measuredW="58" measuredH="27" zOrder="37" locked="false" isInGroup="-1">
+    <control controlID="192" controlTypeID="com.balsamiq.mockups::PointyButton" x="194" y="448" w="-1" h="-1" measuredW="58" measuredH="27" zOrder="30" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Export</text>
       </controlProperties>
     </control>
-    <control controlID="162" controlTypeID="com.balsamiq.mockups::CheckBox" x="194" y="356" w="-1" h="-1" measuredW="26" measuredH="22" zOrder="38" locked="false" isInGroup="-1">
+    <control controlID="193" controlTypeID="com.balsamiq.mockups::CheckBox" x="194" y="356" w="-1" h="-1" measuredW="26" measuredH="22" zOrder="31" locked="false" isInGroup="-1">
       <controlProperties>
         <text/>
       </controlProperties>
     </control>
-    <control controlID="163" controlTypeID="com.balsamiq.mockups::CheckBox" x="194" y="390" w="-1" h="-1" measuredW="26" measuredH="22" zOrder="39" locked="false" isInGroup="-1">
+    <control controlID="194" controlTypeID="com.balsamiq.mockups::CheckBox" x="194" y="390" w="-1" h="-1" measuredW="26" measuredH="22" zOrder="32" locked="false" isInGroup="-1">
       <controlProperties>
         <text/>
       </controlProperties>
     </control>
-    <control controlID="164" controlTypeID="com.balsamiq.mockups::CheckBox" x="194" y="420" w="-1" h="-1" measuredW="26" measuredH="22" zOrder="40" locked="false" isInGroup="-1">
+    <control controlID="195" controlTypeID="com.balsamiq.mockups::CheckBox" x="194" y="420" w="-1" h="-1" measuredW="26" measuredH="22" zOrder="33" locked="false" isInGroup="-1">
       <controlProperties>
         <text/>
       </controlProperties>
     </control>
-    <control controlID="165" controlTypeID="com.balsamiq.mockups::SearchBox" x="190" y="324" w="-1" h="-1" measuredW="65" measuredH="25" zOrder="41" locked="false" isInGroup="-1">
+    <control controlID="196" controlTypeID="com.balsamiq.mockups::SearchBox" x="190" y="324" w="-1" h="-1" measuredW="65" measuredH="25" zOrder="34" locked="false" isInGroup="-1">
       <controlProperties>
         <text>search</text>
       </controlProperties>
     </control>
-    <control controlID="166" controlTypeID="com.balsamiq.mockups::Label" x="67" y="328" w="-1" h="-1" measuredW="25" measuredH="21" zOrder="42" locked="false" isInGroup="-1">
+    <control controlID="197" controlTypeID="com.balsamiq.mockups::Label" x="67" y="328" w="-1" h="-1" measuredW="25" measuredH="21" zOrder="35" locked="false" isInGroup="-1">
       <controlProperties>
         <text>File</text>
       </controlProperties>
     </control>
-    <control controlID="167" controlTypeID="com.balsamiq.mockups::Arrow" x="279" y="512" w="263" h="145" measuredW="150" measuredH="100" zOrder="43" locked="false" isInGroup="-1">
+    <control controlID="198" controlTypeID="com.balsamiq.mockups::Arrow" x="279" y="512" w="263" h="145" measuredW="150" measuredH="100" zOrder="36" locked="false" isInGroup="-1">
       <controlProperties>
         <curvature>0</curvature>
         <direction>top</direction>
         <text/>
       </controlProperties>
     </control>
-    <control controlID="168" controlTypeID="com.balsamiq.mockups::StickyNote" x="56" y="489" w="212" h="157" measuredW="109" measuredH="123" zOrder="44" locked="false" isInGroup="-1">
+    <control controlID="199" controlTypeID="com.balsamiq.mockups::StickyNote" x="56" y="489" w="212" h="157" measuredW="109" measuredH="123" zOrder="37" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Abh%E4ngigkeiten%20beim%20Import%20und%20Export%20beachten%3A%20Topologie%20wird%20automatisch%20aktivviert%2C%20wenn%20Synapsen%20selektiert%20werden%2C%20denn%20Synapse%20ohne%20Topologie%20machen%20keinen%20Sinn%0AEs%20wird%20die%20aktuelle%20Session%20exportiert.</text>
       </controlProperties>
     </control>
-    <control controlID="169" controlTypeID="com.balsamiq.mockups::LineChart" x="913" y="343" w="-1" h="-1" measuredW="187" measuredH="175" zOrder="45" locked="false" isInGroup="-1"/>
-    <control controlID="170" controlTypeID="com.balsamiq.mockups::Arrow" x="935" y="518" w="24" h="200" measuredW="150" measuredH="100" zOrder="46" locked="false" isInGroup="-1">
+    <control controlID="200" controlTypeID="com.balsamiq.mockups::LineChart" x="913" y="343" w="-1" h="-1" measuredW="187" measuredH="175" zOrder="38" locked="false" isInGroup="-1"/>
+    <control controlID="201" controlTypeID="com.balsamiq.mockups::Arrow" x="935" y="518" w="24" h="200" measuredW="150" measuredH="100" zOrder="39" locked="false" isInGroup="-1">
       <controlProperties>
         <curvature>0</curvature>
         <direction>bottom</direction>
         <text/>
       </controlProperties>
     </control>
-    <control controlID="171" controlTypeID="com.balsamiq.mockups::Arrow" x="968" y="516" w="52" h="228" measuredW="150" measuredH="100" zOrder="47" locked="false" isInGroup="-1">
+    <control controlID="202" controlTypeID="com.balsamiq.mockups::Arrow" x="968" y="516" w="52" h="228" measuredW="150" measuredH="100" zOrder="40" locked="false" isInGroup="-1">
       <controlProperties>
         <curvature>0</curvature>
         <direction>bottom</direction>
         <text/>
       </controlProperties>
     </control>
-    <control controlID="172" controlTypeID="com.balsamiq.mockups::StickyNote" x="1046" y="417" w="109" h="86" measuredW="109" measuredH="123" zOrder="48" locked="false" isInGroup="-1">
+    <control controlID="203" controlTypeID="com.balsamiq.mockups::StickyNote" x="1046" y="417" w="109" h="86" measuredW="109" measuredH="123" zOrder="41" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Visualisierung%20mit%20Gnuplot</text>
       </controlProperties>
     </control>
-    <control controlID="173" controlTypeID="com.balsamiq.mockups::Arrow" x="1283" y="638" w="61" h="172" measuredW="150" measuredH="100" zOrder="49" locked="false" isInGroup="-1">
+    <control controlID="204" controlTypeID="com.balsamiq.mockups::Arrow" x="1283" y="638" w="61" h="172" measuredW="150" measuredH="100" zOrder="42" locked="false" isInGroup="-1">
       <controlProperties>
         <curvature>0</curvature>
         <direction>bottom</direction>
         <text/>
       </controlProperties>
     </control>
-    <control controlID="174" controlTypeID="com.balsamiq.mockups::TitleWindow" x="1192" y="343" w="295" h="295" measuredW="450" measuredH="400" zOrder="50" locked="false" isInGroup="-1">
+    <control controlID="205" controlTypeID="com.balsamiq.mockups::TitleWindow" x="1192" y="343" w="295" h="295" measuredW="450" measuredH="400" zOrder="43" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Trainingsdaten%20normalisieren</text>
       </controlProperties>
     </control>
-    <control controlID="175" controlTypeID="com.balsamiq.mockups::Button" x="1200" y="375" w="-1" h="-1" measuredW="162" measuredH="28" zOrder="51" locked="false" isInGroup="-1">
+    <control controlID="206" controlTypeID="com.balsamiq.mockups::Button" x="1200" y="375" w="-1" h="-1" measuredW="162" measuredH="28" zOrder="44" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Trainingsdaten%20Anzeigen</text>
       </controlProperties>
     </control>
-    <control controlID="176" controlTypeID="com.balsamiq.mockups::Label" x="1200" y="435" w="34" h="23" measuredW="34" measuredH="21" zOrder="52" locked="false" isInGroup="-1">
+    <control controlID="207" controlTypeID="com.balsamiq.mockups::Label" x="1200" y="435" w="34" h="23" measuredW="34" measuredH="21" zOrder="45" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Input</text>
       </controlProperties>
     </control>
-    <control controlID="177" controlTypeID="com.balsamiq.mockups::Label" x="1200" y="466" w="47" h="23" measuredW="44" measuredH="21" zOrder="53" locked="false" isInGroup="-1">
+    <control controlID="208" controlTypeID="com.balsamiq.mockups::Label" x="1200" y="466" w="47" h="23" measuredW="44" measuredH="21" zOrder="46" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Output</text>
       </controlProperties>
     </control>
-    <control controlID="182" controlTypeID="com.balsamiq.mockups::CheckBoxGroup" x="1264" y="464" w="103" h="25" measuredW="23" measuredH="21" zOrder="54" locked="false" isInGroup="-1">
+    <control controlID="209" controlTypeID="com.balsamiq.mockups::CheckBoxGroup" x="1264" y="464" w="103" h="25" measuredW="23" measuredH="21" zOrder="47" locked="false" isInGroup="-1">
       <controlProperties>
         <text>%5B%5D%20</text>
       </controlProperties>
     </control>
-    <control controlID="183" controlTypeID="com.balsamiq.mockups::Label" x="1200" y="516" w="177" h="23" measuredW="157" measuredH="21" zOrder="55" locked="false" isInGroup="-1">
+    <control controlID="210" controlTypeID="com.balsamiq.mockups::Label" x="1200" y="516" w="177" h="23" measuredW="157" measuredH="21" zOrder="48" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Ausgabe%20wieder%20umkehren</text>
       </controlProperties>
     </control>
-    <control controlID="184" controlTypeID="com.balsamiq.mockups::RadioButtonGroup" x="1385" y="507" w="-1" h="-1" measuredW="49" measuredH="42" zOrder="56" locked="false" isInGroup="-1">
+    <control controlID="211" controlTypeID="com.balsamiq.mockups::RadioButtonGroup" x="1385" y="507" w="-1" h="-1" measuredW="49" measuredH="42" zOrder="49" locked="false" isInGroup="-1">
       <controlProperties>
         <text>%28o%29%20Ja%0A%28%20%29%20Nein</text>
       </controlProperties>
     </control>
-    <control controlID="185" controlTypeID="com.balsamiq.mockups::CheckBoxGroup" x="1264" y="433" w="103" h="25" measuredW="24" measuredH="21" zOrder="57" locked="false" isInGroup="-1">
+    <control controlID="212" controlTypeID="com.balsamiq.mockups::CheckBoxGroup" x="1264" y="433" w="103" h="25" measuredW="24" measuredH="21" zOrder="50" locked="false" isInGroup="-1">
       <controlProperties>
         <text>%5Bx%5D</text>
       </controlProperties>
     </control>
-    <control controlID="186" controlTypeID="com.balsamiq.mockups::Button" x="1207" y="580" w="-1" h="-1" measuredW="76" measuredH="28" zOrder="58" locked="false" isInGroup="-1">
+    <control controlID="213" controlTypeID="com.balsamiq.mockups::Button" x="1207" y="580" w="-1" h="-1" measuredW="76" measuredH="28" zOrder="51" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Vorschau</text>
       </controlProperties>
     </control>
-    <control controlID="187" controlTypeID="com.balsamiq.mockups::Button" x="1377" y="580" w="-1" h="-1" measuredW="82" measuredH="28" zOrder="59" locked="false" isInGroup="-1">
+    <control controlID="214" controlTypeID="com.balsamiq.mockups::Button" x="1377" y="580" w="-1" h="-1" measuredW="82" measuredH="28" zOrder="52" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Anwenden</text>
       </controlProperties>
     </control>
-    <control controlID="188" controlTypeID="com.balsamiq.mockups::Label" x="1200" y="410" w="34" h="23" measuredW="32" measuredH="21" zOrder="60" locked="false" isInGroup="-1">
+    <control controlID="215" controlTypeID="com.balsamiq.mockups::Label" x="1200" y="410" w="34" h="23" measuredW="32" measuredH="21" zOrder="53" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Was</text>
       </controlProperties>
     </control>
-    <control controlID="189" controlTypeID="com.balsamiq.mockups::Label" x="1264" y="409" w="91" h="23" measuredW="82" measuredH="21" zOrder="61" locked="false" isInGroup="-1">
+    <control controlID="216" controlTypeID="com.balsamiq.mockups::Label" x="1264" y="409" w="91" h="23" measuredW="82" measuredH="21" zOrder="54" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Normalisieren</text>
       </controlProperties>
     </control>
-    <control controlID="190" controlTypeID="com.balsamiq.mockups::Label" x="1377" y="409" w="34" h="23" measuredW="26" measuredH="21" zOrder="62" locked="false" isInGroup="-1">
+    <control controlID="217" controlTypeID="com.balsamiq.mockups::Label" x="1377" y="409" w="34" h="23" measuredW="26" measuredH="21" zOrder="55" locked="false" isInGroup="-1">
       <controlProperties>
         <text>von</text>
       </controlProperties>
     </control>
-    <control controlID="191" controlTypeID="com.balsamiq.mockups::Label" x="1417" y="409" w="34" h="23" measuredW="22" measuredH="21" zOrder="63" locked="false" isInGroup="-1">
+    <control controlID="218" controlTypeID="com.balsamiq.mockups::Label" x="1417" y="409" w="34" h="23" measuredW="22" measuredH="21" zOrder="56" locked="false" isInGroup="-1">
       <controlProperties>
         <text>bis</text>
       </controlProperties>
     </control>
-    <control controlID="192" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="995" w="-1" h="-1" measuredW="102" measuredH="21" zOrder="64" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Hidden%20Neuronen</text>
-      </controlProperties>
-    </control>
-    <control controlID="193" controlTypeID="com.balsamiq.mockups::ComboBox" x="1532" y="995" w="-1" h="-1" measuredW="39" measuredH="23" zOrder="65" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>1</text>
-      </controlProperties>
-    </control>
-    <control controlID="194" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1480" y="995" w="-1" h="-1" measuredW="39" measuredH="24" zOrder="66" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>1</text>
-      </controlProperties>
-    </control>
-    <control controlID="195" controlTypeID="com.balsamiq.mockups::FieldSet" x="1353" y="1033" w="237" h="57" measuredW="200" measuredH="170" zOrder="67" locked="false" isInGroup="-1">
+    <control controlID="222" controlTypeID="com.balsamiq.mockups::FieldSet" x="1353" y="1033" w="237" h="57" measuredW="200" measuredH="170" zOrder="58" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Insert%20Mode</text>
       </controlProperties>
     </control>
-    <control controlID="196" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="1054" w="-1" h="-1" measuredW="39" measuredH="21" zOrder="68" locked="false" isInGroup="-1">
+    <control controlID="223" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="1054" w="-1" h="-1" measuredW="39" measuredH="21" zOrder="59" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Layer</text>
       </controlProperties>
     </control>
-    <control controlID="197" controlTypeID="com.balsamiq.mockups::ComboBox" x="1532" y="1054" w="-1" h="-1" measuredW="39" measuredH="23" zOrder="69" locked="false" isInGroup="-1">
+    <control controlID="224" controlTypeID="com.balsamiq.mockups::ComboBox" x="1532" y="1054" w="-1" h="-1" measuredW="39" measuredH="23" zOrder="60" locked="false" isInGroup="-1">
       <controlProperties>
         <text>1</text>
       </controlProperties>
     </control>
-    <control controlID="198" controlTypeID="com.balsamiq.mockups::StickyNote" x="1611" y="1010" w="337" h="101" measuredW="109" measuredH="123" zOrder="129" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Bestimmt%20in%20welchem%20Layer%20beim%20Linksklick%20ein%20Neuron%20hinzugef%FCgt%20wird.%0A-%3E%20Jung%20und%20Topologie%20muss%20upgedated%20werden</text>
-      </controlProperties>
-    </control>
-    <control controlID="200" controlTypeID="com.balsamiq.mockups::FieldSet" x="1359" y="1277" w="226" h="83" measuredW="200" measuredH="170" zOrder="70" locked="false" isInGroup="-1">
+    <control controlID="225" controlTypeID="com.balsamiq.mockups::FieldSet" x="1359" y="1277" w="226" h="83" measuredW="200" measuredH="170" zOrder="61" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Strategien</text>
       </controlProperties>
     </control>
-    <control controlID="201" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="1122" w="75" h="23" measuredW="71" measuredH="21" zOrder="71" locked="false" isInGroup="-1">
+    <control controlID="226" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="1122" w="75" h="23" measuredW="71" measuredH="21" zOrder="62" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Algorithmus</text>
       </controlProperties>
     </control>
-    <control controlID="205" controlTypeID="com.balsamiq.mockups::ComboBox" x="1448" y="1121" w="-1" h="-1" measuredW="127" measuredH="23" zOrder="72" locked="false" isInGroup="-1">
+    <control controlID="227" controlTypeID="com.balsamiq.mockups::ComboBox" x="1448" y="1121" w="-1" h="-1" measuredW="127" measuredH="23" zOrder="63" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Backpropagation</text>
       </controlProperties>
     </control>
-    <control controlID="208" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="1154" w="56" h="23" measuredW="56" measuredH="21" zOrder="73" locked="false" isInGroup="-1">
+    <control controlID="228" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="1154" w="56" h="23" measuredW="56" measuredH="21" zOrder="64" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Lernrate</text>
       </controlProperties>
     </control>
-    <control controlID="209" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="1187" w="75" h="23" measuredW="68" measuredH="21" zOrder="74" locked="false" isInGroup="-1">
+    <control controlID="229" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="1187" w="75" h="23" measuredW="68" measuredH="21" zOrder="65" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Momentum</text>
       </controlProperties>
     </control>
-    <control controlID="210" controlTypeID="com.balsamiq.mockups::ComboBox" x="1467" y="1290" w="-1" h="-1" measuredW="109" measuredH="23" zOrder="75" locked="false" isInGroup="-1">
+    <control controlID="230" controlTypeID="com.balsamiq.mockups::ComboBox" x="1467" y="1290" w="-1" h="-1" measuredW="109" measuredH="23" zOrder="66" locked="false" isInGroup="-1">
       <controlProperties>
         <text>MaxIterations</text>
       </controlProperties>
     </control>
-    <control controlID="211" controlTypeID="com.balsamiq.mockups::RadioButtonGroup" x="1518" y="1223" w="-1" h="-1" measuredW="60" measuredH="42" zOrder="76" locked="false" isInGroup="-1">
+    <control controlID="231" controlTypeID="com.balsamiq.mockups::RadioButtonGroup" x="1518" y="1223" w="-1" h="-1" measuredW="60" measuredH="42" zOrder="67" locked="false" isInGroup="-1">
       <controlProperties>
         <text>%28o%29%20Online%0A%28%20%29%20Offline</text>
       </controlProperties>
     </control>
-    <control controlID="212" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="1232" w="92" h="23" measuredW="86" measuredH="21" zOrder="77" locked="false" isInGroup="-1">
+    <control controlID="232" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="1232" w="92" h="23" measuredW="86" measuredH="21" zOrder="68" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Trainingmodus</text>
       </controlProperties>
     </control>
-    <control controlID="214" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1506" y="1153" w="72" h="-1" measuredW="60" measuredH="24" zOrder="78" locked="false" isInGroup="-1">
+    <control controlID="233" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1506" y="1153" w="72" h="-1" measuredW="60" measuredH="24" zOrder="69" locked="false" isInGroup="-1">
       <controlProperties>
         <text>0.25</text>
       </controlProperties>
     </control>
-    <control controlID="215" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1506" y="1186" w="72" h="-1" measuredW="60" measuredH="24" zOrder="79" locked="false" isInGroup="-1">
+    <control controlID="234" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1506" y="1186" w="72" h="-1" measuredW="60" measuredH="24" zOrder="70" locked="false" isInGroup="-1">
       <controlProperties>
         <text>0.75</text>
       </controlProperties>
     </control>
-    <control controlID="216" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="1291" w="75" h="23" measuredW="28" measuredH="21" zOrder="80" locked="false" isInGroup="-1">
+    <control controlID="235" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="1291" w="75" h="23" measuredW="28" measuredH="21" zOrder="71" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Typ</text>
       </controlProperties>
     </control>
-    <control controlID="217" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="1322" w="113" h="23" measuredW="101" measuredH="21" zOrder="81" locked="false" isInGroup="-1">
+    <control controlID="236" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="1322" w="113" h="23" measuredW="101" measuredH="21" zOrder="72" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Maximal%20Iteration</text>
       </controlProperties>
     </control>
-    <control controlID="218" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1494" y="1321" w="77" h="-1" measuredW="63" measuredH="24" zOrder="82" locked="false" isInGroup="-1">
+    <control controlID="237" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1494" y="1321" w="77" h="-1" measuredW="63" measuredH="24" zOrder="73" locked="false" isInGroup="-1">
       <controlProperties>
         <text>1000</text>
       </controlProperties>
     </control>
-    <control controlID="219" controlTypeID="com.balsamiq.mockups::FieldSet" x="1356" y="1367" w="273" h="127" measuredW="200" measuredH="170" zOrder="83" locked="false" isInGroup="-1">
+    <control controlID="238" controlTypeID="com.balsamiq.mockups::FieldSet" x="1356" y="1367" w="273" h="127" measuredW="200" measuredH="170" zOrder="74" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Standard-Einstellung</text>
       </controlProperties>
     </control>
-    <control controlID="220" controlTypeID="com.balsamiq.mockups::FieldSet" x="1355" y="1500" w="274" h="158" measuredW="200" measuredH="170" zOrder="84" locked="false" isInGroup="-1">
+    <control controlID="239" controlTypeID="com.balsamiq.mockups::FieldSet" x="1355" y="1500" w="274" h="158" measuredW="200" measuredH="170" zOrder="75" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Ausgew%E4hltes%20Symbol</text>
       </controlProperties>
     </control>
-    <control controlID="221" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="1390" w="120" h="23" measuredW="117" measuredH="21" zOrder="85" locked="false" isInGroup="-1">
+    <control controlID="240" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="1390" w="120" h="23" measuredW="117" measuredH="21" zOrder="76" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Aktivierungsfunktion</text>
       </controlProperties>
     </control>
-    <control controlID="222" controlTypeID="com.balsamiq.mockups::ComboBox" x="1547" y="1389" w="-1" h="-1" measuredW="76" measuredH="23" zOrder="86" locked="false" isInGroup="-1">
+    <control controlID="241" controlTypeID="com.balsamiq.mockups::ComboBox" x="1547" y="1389" w="-1" h="-1" measuredW="76" measuredH="23" zOrder="77" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Sigmoid</text>
       </controlProperties>
     </control>
-    <control controlID="223" controlTypeID="com.balsamiq.mockups::Label" x="1365" y="1443" w="120" h="23" measuredW="78" measuredH="21" zOrder="87" locked="false" isInGroup="-1">
+    <control controlID="242" controlTypeID="com.balsamiq.mockups::Label" x="1365" y="1443" w="120" h="23" measuredW="78" measuredH="21" zOrder="78" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Initialgewicht</text>
       </controlProperties>
     </control>
-    <control controlID="224" controlTypeID="com.balsamiq.mockups::RadioButtonGroup" x="1444" y="1433" w="-1" h="-1" measuredW="62" measuredH="42" zOrder="88" locked="false" isInGroup="-1">
+    <control controlID="243" controlTypeID="com.balsamiq.mockups::RadioButtonGroup" x="1444" y="1433" w="-1" h="-1" measuredW="64" measuredH="42" zOrder="79" locked="false" isInGroup="-1">
       <controlProperties>
         <text>%28o%29%20Zuf%E4llig%0A%28%20%29%20Exakt</text>
       </controlProperties>
     </control>
-    <control controlID="225" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1511" y="1430" w="60" h="-1" measuredW="55" measuredH="24" zOrder="89" locked="false" isInGroup="-1">
+    <control controlID="244" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1511" y="1430" w="60" h="-1" measuredW="55" measuredH="24" zOrder="80" locked="false" isInGroup="-1">
       <controlProperties>
         <text>-1.0</text>
       </controlProperties>
     </control>
-    <control controlID="226" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1571" y="1430" w="53" h="-1" measuredW="50" measuredH="24" zOrder="90" locked="false" isInGroup="-1">
+    <control controlID="245" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1571" y="1430" w="53" h="-1" measuredW="50" measuredH="24" zOrder="81" locked="false" isInGroup="-1">
       <controlProperties>
         <text>1.0</text>
       </controlProperties>
     </control>
-    <control controlID="227" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1511" y="1457" w="60" h="-1" measuredW="59" measuredH="24" zOrder="91" locked="false" isInGroup="-1">
+    <control controlID="246" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1511" y="1457" w="60" h="-1" measuredW="59" measuredH="24" zOrder="82" locked="false" isInGroup="-1">
       <controlProperties>
         <text>1.24</text>
       </controlProperties>
     </control>
-    <control controlID="230" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="1525" w="113" h="23" measuredW="74" measuredH="21" zOrder="92" locked="false" isInGroup="-1">
+    <control controlID="247" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="1525" w="113" h="23" measuredW="74" measuredH="21" zOrder="83" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Ausgew%E4hlt%20</text>
       </controlProperties>
     </control>
-    <control controlID="231" controlTypeID="com.balsamiq.mockups::TextInput" x="1496" y="1523" w="-1" h="-1" measuredW="115" measuredH="27" zOrder="93" locked="false" isInGroup="-1">
+    <control controlID="248" controlTypeID="com.balsamiq.mockups::TextInput" x="1496" y="1523" w="-1" h="-1" measuredW="115" measuredH="27" zOrder="84" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Neuron%20/%20Synapse</text>
       </controlProperties>
     </control>
-    <control controlID="232" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="1554" w="113" h="23" measuredW="104" measuredH="21" zOrder="94" locked="false" isInGroup="-1">
+    <control controlID="249" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="1554" w="113" h="23" measuredW="104" measuredH="21" zOrder="85" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Synapsengewicht</text>
       </controlProperties>
     </control>
-    <control controlID="233" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1494" y="1553" w="117" h="-1" measuredW="83" measuredH="24" zOrder="95" locked="false" isInGroup="-1">
+    <control controlID="250" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1494" y="1553" w="117" h="-1" measuredW="83" measuredH="24" zOrder="86" locked="false" isInGroup="-1">
       <controlProperties>
         <text>-2.3242</text>
       </controlProperties>
     </control>
-    <control controlID="234" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="1620" w="120" h="23" measuredW="117" measuredH="21" zOrder="96" locked="false" isInGroup="-1">
+    <control controlID="251" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="1620" w="120" h="23" measuredW="117" measuredH="21" zOrder="87" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Aktivierungsfunktion</text>
       </controlProperties>
     </control>
-    <control controlID="235" controlTypeID="com.balsamiq.mockups::ComboBox" x="1494" y="1620" w="117" h="-1" measuredW="76" measuredH="23" zOrder="97" locked="false" isInGroup="-1">
+    <control controlID="252" controlTypeID="com.balsamiq.mockups::ComboBox" x="1494" y="1620" w="117" h="-1" measuredW="76" measuredH="23" zOrder="88" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Sigmoid</text>
       </controlProperties>
     </control>
-    <control controlID="236" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="1586" w="113" h="23" measuredW="86" measuredH="21" zOrder="98" locked="false" isInGroup="-1">
+    <control controlID="253" controlTypeID="com.balsamiq.mockups::Label" x="1367" y="1586" w="113" h="23" measuredW="86" measuredH="21" zOrder="89" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Neuroneninput</text>
       </controlProperties>
     </control>
-    <control controlID="237" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1494" y="1585" w="117" h="-1" measuredW="50" measuredH="24" zOrder="99" locked="false" isInGroup="-1">
+    <control controlID="254" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1494" y="1585" w="117" h="-1" measuredW="50" measuredH="24" zOrder="90" locked="false" isInGroup="-1">
       <controlProperties>
         <text>1.0</text>
       </controlProperties>
     </control>
-    <control controlID="238" controlTypeID="com.balsamiq.mockups::StickyNote" x="1629" y="1367" w="175" h="107" measuredW="109" measuredH="123" zOrder="101" locked="false" isInGroup="-1">
+    <control controlID="255" controlTypeID="com.balsamiq.mockups::StickyNote" x="1264" y="1643" w="221" h="199" measuredW="109" measuredH="123" zOrder="91" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Beim%20Klick%20auf%20ein%20Neuron%20oder%20%20eine%20Synapse%20in%20der%20Jung%20View%2C%20soll%20dieses%20Panel%20dargestellt%20werden%2C%20vorher%20versteckt.%0AJe%20nach%20dem%20was%20angeklickt%20wird%2C%20sollen%20die%20entsprechenden%20Felder%20aktiviert%20sind%2C%20die%20nicht%20passenden%20deaktiviert</text>
+      </controlProperties>
+    </control>
+    <control controlID="256" controlTypeID="com.balsamiq.mockups::StickyNote" x="1629" y="1367" w="175" h="107" measuredW="109" measuredH="123" zOrder="92" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Standardeinstellungen%20f%FCr%20neu%20hinzugef%FCgte%20Neuronen</text>
       </controlProperties>
     </control>
-    <control controlID="239" controlTypeID="com.balsamiq.mockups::StickyNote" x="1590" y="1280" w="176" h="87" measuredW="109" measuredH="123" zOrder="102" locked="false" isInGroup="-1">
+    <control controlID="257" controlTypeID="com.balsamiq.mockups::StickyNote" x="1590" y="1280" w="176" h="87" measuredW="109" measuredH="123" zOrder="93" locked="false" isInGroup="-1">
       <controlProperties>
         <text>CardLayout%20umschaltbar%20mit%20JComboBox</text>
       </controlProperties>
     </control>
-    <control controlID="240" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1359" y="434" w="-1" h="-1" measuredW="44" measuredH="24" zOrder="103" locked="false" isInGroup="-1">
+    <control controlID="258" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1359" y="434" w="-1" h="-1" measuredW="44" measuredH="24" zOrder="94" locked="false" isInGroup="-1">
       <controlProperties>
         <text>-1</text>
       </controlProperties>
     </control>
-    <control controlID="241" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1359" y="465" w="-1" h="-1" measuredW="44" measuredH="24" zOrder="104" locked="false" isInGroup="-1">
+    <control controlID="259" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1359" y="465" w="-1" h="-1" measuredW="44" measuredH="24" zOrder="95" locked="false" isInGroup="-1">
       <controlProperties>
         <text>-1</text>
       </controlProperties>
     </control>
-    <control controlID="242" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1417" y="434" w="-1" h="-1" measuredW="39" measuredH="24" zOrder="105" locked="false" isInGroup="-1">
+    <control controlID="260" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1417" y="434" w="-1" h="-1" measuredW="39" measuredH="24" zOrder="96" locked="false" isInGroup="-1">
       <controlProperties>
         <text>1</text>
       </controlProperties>
     </control>
-    <control controlID="243" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1417" y="465" w="-1" h="-1" measuredW="39" measuredH="24" zOrder="106" locked="false" isInGroup="-1">
+    <control controlID="261" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1417" y="465" w="-1" h="-1" measuredW="39" measuredH="24" zOrder="97" locked="false" isInGroup="-1">
       <controlProperties>
         <text>1</text>
       </controlProperties>
     </control>
-    <control controlID="244" controlTypeID="com.balsamiq.mockups::StickyNote" x="1347" y="713" w="458" h="123" measuredW="109" measuredH="123" zOrder="107" locked="false" isInGroup="-1">
+    <control controlID="262" controlTypeID="com.balsamiq.mockups::StickyNote" x="1347" y="713" w="458" h="123" measuredW="109" measuredH="123" zOrder="98" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Die%20folgenden%20Elemente%20mit%20einem%20Rahmen%20drumherum%20sollen%20alle%20als%20eigenst%E4ndige%20JPanel%20Klassen%20implementiert%20werden.%20Wir%20m%FCssen%20noch%20mal%20%FCberlegen%2C%20dass%20wir%20nicht%20alles%20auf%20einmal%20einzeigen%2C%20sondern%20verschiedene%20Gruppen%20umschaltenk%F6nnen%2C%20vielleicht%20mit%20Tabs</text>
       </controlProperties>
     </control>
-    <control controlID="245" controlTypeID="com.balsamiq.mockups::HCurly" x="1333" y="838" w="480" h="80" measuredW="200" measuredH="80" zOrder="108" locked="false" isInGroup="-1">
+    <control controlID="263" controlTypeID="com.balsamiq.mockups::HCurly" x="1333" y="838" w="480" h="80" measuredW="200" measuredH="80" zOrder="99" locked="false" isInGroup="-1">
       <controlProperties>
         <text/>
       </controlProperties>
     </control>
-    <control controlID="246" controlTypeID="com.balsamiq.mockups::FieldSet" x="1652" y="1481" w="274" h="225" measuredW="200" measuredH="170" zOrder="109" locked="false" isInGroup="-1">
+    <control controlID="264" controlTypeID="com.balsamiq.mockups::FieldSet" x="1652" y="1481" w="274" h="225" measuredW="200" measuredH="170" zOrder="100" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Training-Steuerung</text>
       </controlProperties>
     </control>
-    <control controlID="247" controlTypeID="com.balsamiq.mockups::Button" x="1664" y="1507" w="-1" h="-1" measuredW="78" measuredH="28" zOrder="110" locked="false" isInGroup="-1">
+    <control controlID="265" controlTypeID="com.balsamiq.mockups::Button" x="1664" y="1507" w="-1" h="-1" measuredW="78" measuredH="28" zOrder="101" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Schritt%28e%29</text>
       </controlProperties>
     </control>
-    <control controlID="248" controlTypeID="com.balsamiq.mockups::Button" x="1664" y="1546" w="-1" h="-1" measuredW="115" measuredH="28" zOrder="111" locked="false" isInGroup="-1">
+    <control controlID="266" controlTypeID="com.balsamiq.mockups::Button" x="1664" y="1546" w="-1" h="-1" measuredW="115" measuredH="28" zOrder="102" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Trainingspattern</text>
       </controlProperties>
     </control>
-    <control controlID="249" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1794" y="1505" w="73" h="-1" measuredW="39" measuredH="24" zOrder="112" locked="false" isInGroup="-1">
+    <control controlID="267" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1794" y="1505" w="73" h="-1" measuredW="39" measuredH="24" zOrder="103" locked="false" isInGroup="-1">
       <controlProperties>
         <text>1</text>
       </controlProperties>
     </control>
-    <control controlID="250" controlTypeID="com.balsamiq.mockups::Button" x="1666" y="1584" w="-1" h="-1" measuredW="88" measuredH="28" zOrder="113" locked="false" isInGroup="-1">
+    <control controlID="268" controlTypeID="com.balsamiq.mockups::Button" x="1666" y="1584" w="-1" h="-1" measuredW="88" measuredH="28" zOrder="104" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Itertion%28en%29</text>
       </controlProperties>
     </control>
-    <control controlID="251" controlTypeID="com.balsamiq.mockups::Button" x="1671" y="1663" w="-1" h="-1" measuredW="48" measuredH="28" zOrder="114" locked="false" isInGroup="-1">
+    <control controlID="269" controlTypeID="com.balsamiq.mockups::Button" x="1671" y="1663" w="-1" h="-1" measuredW="48" measuredH="28" zOrder="105" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Play</text>
       </controlProperties>
     </control>
-    <control controlID="252" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1794" y="1548" w="73" h="-1" measuredW="39" measuredH="24" zOrder="115" locked="false" isInGroup="-1">
+    <control controlID="270" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1794" y="1548" w="73" h="-1" measuredW="39" measuredH="24" zOrder="106" locked="false" isInGroup="-1">
       <controlProperties>
         <text>1</text>
       </controlProperties>
     </control>
-    <control controlID="253" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1794" y="1586" w="73" h="-1" measuredW="39" measuredH="24" zOrder="116" locked="false" isInGroup="-1">
+    <control controlID="271" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1794" y="1586" w="73" h="-1" measuredW="39" measuredH="24" zOrder="107" locked="false" isInGroup="-1">
       <controlProperties>
         <text>1</text>
       </controlProperties>
     </control>
-    <control controlID="254" controlTypeID="com.balsamiq.mockups::Button" x="1737" y="1663" w="-1" h="-1" measuredW="58" measuredH="28" zOrder="117" locked="false" isInGroup="-1">
+    <control controlID="272" controlTypeID="com.balsamiq.mockups::Button" x="1737" y="1663" w="-1" h="-1" measuredW="58" measuredH="28" zOrder="108" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Pause</text>
       </controlProperties>
     </control>
-    <control controlID="255" controlTypeID="com.balsamiq.mockups::Button" x="1817" y="1663" w="-1" h="-1" measuredW="50" measuredH="28" zOrder="118" locked="false" isInGroup="-1">
+    <control controlID="273" controlTypeID="com.balsamiq.mockups::Button" x="1817" y="1663" w="-1" h="-1" measuredW="50" measuredH="28" zOrder="109" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Stop</text>
       </controlProperties>
     </control>
-    <control controlID="260" controlTypeID="com.balsamiq.mockups::RadioButton" x="1882" y="1549" w="-1" h="-1" measuredW="22" measuredH="22" zOrder="119" locked="false" isInGroup="-1">
+    <control controlID="274" controlTypeID="com.balsamiq.mockups::RadioButton" x="1882" y="1549" w="-1" h="-1" measuredW="22" measuredH="22" zOrder="110" locked="false" isInGroup="-1">
       <controlProperties>
         <text/>
       </controlProperties>
     </control>
-    <control controlID="261" controlTypeID="com.balsamiq.mockups::RadioButton" x="1882" y="1587" w="-1" h="-1" measuredW="22" measuredH="22" zOrder="120" locked="false" isInGroup="-1">
+    <control controlID="275" controlTypeID="com.balsamiq.mockups::RadioButton" x="1882" y="1587" w="-1" h="-1" measuredW="22" measuredH="22" zOrder="111" locked="false" isInGroup="-1">
       <controlProperties>
         <text/>
       </controlProperties>
     </control>
-    <control controlID="263" controlTypeID="com.balsamiq.mockups::RadioButtonGroup" x="1882" y="1506" w="-1" h="-1" measuredW="19" measuredH="21" zOrder="121" locked="false" isInGroup="-1">
+    <control controlID="276" controlTypeID="com.balsamiq.mockups::RadioButtonGroup" x="1882" y="1506" w="-1" h="-1" measuredW="19" measuredH="21" zOrder="112" locked="false" isInGroup="-1">
       <controlProperties>
         <text>%28o%29</text>
       </controlProperties>
     </control>
-    <control controlID="265" controlTypeID="com.balsamiq.mockups::StickyNote" x="1652" y="1693" w="274" h="223" measuredW="109" measuredH="123" zOrder="122" locked="false" isInGroup="-1">
+    <control controlID="277" controlTypeID="com.balsamiq.mockups::StickyNote" x="1652" y="1693" w="274" h="223" measuredW="109" measuredH="123" zOrder="113" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Hiermit%20sollen%20Pausen%20eingestellt%20werden%20k%F6nnen%2C%20mit%20dem%20RadioButton%20legt%20man%20die%20Einheit%20und%20mit%20dem%20passenden%20Textfeld%20die%20Anzahl%20fest.%20Beim%20Klick%20auf%20Play%20wird%20mit%20der%20eingestellten%20Pause%20das%20Training%20durchgef%FChrt.%0A%20%0AEinzelne%20Schritte%20k%F6nnen%20direkt%20mit%20Klicka%20auf%20die%20Buttons%3A%20Schritt%28e%29%2C%20Trainingspattern%20und%20Iteration%28en%29%20get%E4tigt%20werden</text>
       </controlProperties>
     </control>
-    <control controlID="266" controlTypeID="com.balsamiq.mockups::Label" x="1671" y="1624" w="113" h="23" measuredW="81" measuredH="21" zOrder="123" locked="false" isInGroup="-1">
+    <control controlID="278" controlTypeID="com.balsamiq.mockups::Label" x="1671" y="1624" w="113" h="23" measuredW="81" measuredH="21" zOrder="114" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Verz%F6gerung</text>
       </controlProperties>
     </control>
-    <control controlID="267" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1794" y="1623" w="73" h="-1" measuredW="55" measuredH="24" zOrder="124" locked="false" isInGroup="-1">
+    <control controlID="279" controlTypeID="com.balsamiq.mockups::NumericStepper" x="1794" y="1623" w="73" h="-1" measuredW="55" measuredH="24" zOrder="115" locked="false" isInGroup="-1">
       <controlProperties>
         <text>100</text>
       </controlProperties>
     </control>
-    <control controlID="268" controlTypeID="com.balsamiq.mockups::Label" x="1874" y="1623" w="37" h="23" measuredW="24" measuredH="21" zOrder="125" locked="false" isInGroup="-1">
+    <control controlID="280" controlTypeID="com.balsamiq.mockups::Label" x="1874" y="1623" w="37" h="23" measuredW="24" measuredH="21" zOrder="116" locked="false" isInGroup="-1">
       <controlProperties>
         <text>ms</text>
       </controlProperties>
     </control>
-    <control controlID="269" controlTypeID="com.balsamiq.mockups::StickyNote" x="1046" y="810" w="259" h="127" measuredW="109" measuredH="123" zOrder="126" locked="false" isInGroup="-1">
+    <control controlID="281" controlTypeID="com.balsamiq.mockups::StickyNote" x="1046" y="810" w="259" h="127" measuredW="109" measuredH="123" zOrder="117" locked="false" isInGroup="-1">
       <controlProperties>
         <text>F%FCr%20Backprop%20wird%20die%20gesamte%20aktuelle%20GUI%20benutzt%0AF%FCr%20SOM%20muss%20sieht%20die%20GUI%20ganz%20andesr%20aus%20%28kein%20Jung%2C%20etc.%29</text>
       </controlProperties>
     </control>
-    <control controlID="270" controlTypeID="com.balsamiq.mockups::StickyNote" x="259" y="74" w="293" h="143" measuredW="109" measuredH="123" zOrder="127" locked="false" isInGroup="-1">
+    <control controlID="282" controlTypeID="com.balsamiq.mockups::StickyNote" x="259" y="74" w="293" h="143" measuredW="109" measuredH="123" zOrder="118" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Beim%20Import%20wird%20eine%20neue%20Session%20ge%F6ffnet%2C%20diese%20wird%20im%20Men%FC%20dann%20eingeblendet.%0AEs%20k%F6nnen%20mehrere%20Dateien%20gleichzeitig%20ge%F6ffnet%20werden%2C%20man%20kann%20im%20Men%FC%20diese%20dann%20als%20Session%20umschalten</text>
       </controlProperties>
     </control>
-    <control controlID="271" controlTypeID="com.balsamiq.mockups::StickyNote" x="1623" y="875" w="348" h="156" measuredW="109" measuredH="123" zOrder="128" locked="false" isInGroup="-1">
+    <control controlID="283" controlTypeID="com.balsamiq.mockups::StickyNote" x="1623" y="875" w="348" h="156" measuredW="109" measuredH="123" zOrder="119" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Dropdown%20/%20JComboBox%20bei%20%22Hidden%20Neuronen%22%20und%20%22Layer%22%20beim%20Panel%20%22Insert%20Mode%22%20sind%20abh%E4ngig%20von%20der%20Einstellung%20bei%20%22Hidden%20Layer%22%0A%20%0ADaf%FCr%20gibt%20es%20schon%20einen%20Prototyp%20als%20Quellcode%20%28Sidebar.java%20unter%20test%29</text>
       </controlProperties>
     </control>
-    <control controlID="272" controlTypeID="com.balsamiq.mockups::StickyNote" x="717" y="15" w="397" h="190" measuredW="109" measuredH="123" zOrder="130" locked="false" isInGroup="-1">
+    <control controlID="284" controlTypeID="com.balsamiq.mockups::StickyNote" x="1611" y="1010" w="337" h="101" measuredW="109" measuredH="123" zOrder="120" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Bestimmt%20in%20welchem%20Layer%20beim%20Linksklick%20ein%20Neuron%20hinzugef%FCgt%20wird.%0A-%3E%20Jung%20und%20Topologie%20muss%20upgedated%20werden</text>
+      </controlProperties>
+    </control>
+    <control controlID="285" controlTypeID="com.balsamiq.mockups::StickyNote" x="717" y="15" w="397" h="190" measuredW="109" measuredH="123" zOrder="121" locked="false" isInGroup="-1">
       <controlProperties>
         <text>+++++++++++++++%20WICHTIG%20+++++++++++++++++%0A%20%0AS%E4mtliche%20Einstellungen%20in%20der%20GUI%20m%FCssen%20iin%20der%20aktuellen%20Session%20gespeichert%20werden.%20%28f%FCr%20Jung%20nicht%20unbedingt%29.%20Dazu%20ist%20auf%20jeden%20Fall%20ein%20Listener-%28Observer%29-Pattern%20n%F6tig%2C%20realisierbar%20in%20Java%20mit%20%20Property-Change-Listenern%20und%20Property%20Change%20Support.%20Ist%20teilweise%20schon%20als%20Prototyp%20verf%FCgbar%20im%20Ordner%20src/test%2C%20die%20Klasse%20Sidebar.java</text>
+      </controlProperties>
+    </control>
+    <control controlID="286" controlTypeID="__group__" x="1353" y="876" w="237" h="155" measuredW="237" measuredH="155" zOrder="57" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::FieldSet" x="0" y="0" w="237" h="155" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="286">
+          <controlProperties>
+            <text>Topologie</text>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::Label" x="14" y="34" w="-1" h="-1" measuredW="92" measuredH="21" zOrder="1" locked="false" isInGroup="286">
+          <controlProperties>
+            <text>Input%20Neuronen</text>
+          </controlProperties>
+        </control>
+        <control controlID="2" controlTypeID="com.balsamiq.mockups::NumericStepper" x="127" y="33" w="-1" h="-1" measuredW="41" measuredH="24" zOrder="2" locked="false" isInGroup="286">
+          <controlProperties>
+            <text>3</text>
+          </controlProperties>
+        </control>
+        <control controlID="3" controlTypeID="com.balsamiq.mockups::Label" x="12" y="61" w="-1" h="-1" measuredW="102" measuredH="21" zOrder="3" locked="false" isInGroup="286">
+          <controlProperties>
+            <text>Output%20Neuronen</text>
+          </controlProperties>
+        </control>
+        <control controlID="4" controlTypeID="com.balsamiq.mockups::NumericStepper" x="127" y="59" w="-1" h="-1" measuredW="41" measuredH="24" zOrder="4" locked="false" isInGroup="286">
+          <controlProperties>
+            <text>3</text>
+          </controlProperties>
+        </control>
+        <control controlID="5" controlTypeID="com.balsamiq.mockups::Label" x="14" y="89" w="-1" h="-1" measuredW="81" measuredH="21" zOrder="5" locked="false" isInGroup="286">
+          <controlProperties>
+            <text>Hidden%20Layer</text>
+          </controlProperties>
+        </control>
+        <control controlID="6" controlTypeID="com.balsamiq.mockups::NumericStepper" x="127" y="88" w="-1" h="-1" measuredW="39" measuredH="24" zOrder="6" locked="false" isInGroup="286">
+          <controlProperties>
+            <text>1</text>
+          </controlProperties>
+        </control>
+        <control controlID="7" controlTypeID="com.balsamiq.mockups::Label" x="14" y="119" w="-1" h="-1" measuredW="102" measuredH="21" zOrder="7" locked="false" isInGroup="286">
+          <controlProperties>
+            <text>Hidden%20Neuronen</text>
+          </controlProperties>
+        </control>
+        <control controlID="8" controlTypeID="com.balsamiq.mockups::ComboBox" x="179" y="119" w="-1" h="-1" measuredW="39" measuredH="23" zOrder="8" locked="false" isInGroup="286">
+          <controlProperties>
+            <text>1</text>
+          </controlProperties>
+        </control>
+        <control controlID="9" controlTypeID="com.balsamiq.mockups::NumericStepper" x="127" y="119" w="-1" h="-1" measuredW="39" measuredH="24" zOrder="9" locked="false" isInGroup="286">
+          <controlProperties>
+            <text>1</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="290" controlTypeID="com.balsamiq.mockups::FieldSet" x="92" y="999" w="262" h="256" measuredW="200" measuredH="170" zOrder="122" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Topologie</text>
+      </controlProperties>
+    </control>
+    <control controlID="291" controlTypeID="com.balsamiq.mockups::Label" x="104" y="1021" w="-1" h="-1" measuredW="92" measuredH="21" zOrder="123" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Input%20Neuronen</text>
+      </controlProperties>
+    </control>
+    <control controlID="292" controlTypeID="com.balsamiq.mockups::NumericStepper" x="228" y="1019" w="-1" h="-1" measuredW="41" measuredH="24" zOrder="124" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>3</text>
+      </controlProperties>
+    </control>
+    <control controlID="293" controlTypeID="com.balsamiq.mockups::Label" x="104" y="1049" w="-1" h="-1" measuredW="118" measuredH="21" zOrder="125" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Output%20Dimensionen</text>
+      </controlProperties>
+    </control>
+    <control controlID="294" controlTypeID="com.balsamiq.mockups::NumericStepper" x="228" y="1048" w="-1" h="-1" measuredW="42" measuredH="24" zOrder="126" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>2</text>
+      </controlProperties>
+    </control>
+    <control controlID="297" controlTypeID="com.balsamiq.mockups::Label" x="104" y="1075" w="-1" h="-1" measuredW="102" measuredH="21" zOrder="127" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Output%20Neuronen</text>
+      </controlProperties>
+    </control>
+    <control controlID="298" controlTypeID="com.balsamiq.mockups::ComboBox" x="279" y="1073" w="-1" h="-1" measuredW="41" measuredH="23" zOrder="128" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>2</text>
+      </controlProperties>
+    </control>
+    <control controlID="299" controlTypeID="com.balsamiq.mockups::NumericStepper" x="228" y="1073" w="-1" h="-1" measuredW="47" measuredH="24" zOrder="129" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>10</text>
+      </controlProperties>
+    </control>
+    <control controlID="300" controlTypeID="com.balsamiq.mockups::ComboBox" x="228" y="1103" w="111" h="-1" measuredW="90" measuredH="78" zOrder="130" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Linien%20%281D%29%0AQuadrate%20%282D%29%0AW%FCrfel%20%283D%29%0AHyperw%FCrfel%20%284D%29</text>
+      </controlProperties>
+    </control>
+    <control controlID="301" controlTypeID="com.balsamiq.mockups::Label" x="104" y="1103" w="148" h="19" measuredW="94" measuredH="21" zOrder="131" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Nachbarschafts</text>
+      </controlProperties>
+    </control>
+    <control controlID="302" controlTypeID="com.balsamiq.mockups::Label" x="104" y="1196" w="-1" h="-1" measuredW="48" measuredH="21" zOrder="132" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Pattern</text>
+      </controlProperties>
+    </control>
+    <control controlID="303" controlTypeID="com.balsamiq.mockups::Label" x="104" y="1123" w="148" h="19" measuredW="61" measuredH="21" zOrder="133" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Topologie</text>
+      </controlProperties>
+    </control>
+    <control controlID="304" controlTypeID="com.balsamiq.mockups::ComboBox" x="228" y="1196" w="111" h="-1" measuredW="63" measuredH="48" zOrder="134" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Eckig%0ARund</text>
+      </controlProperties>
+    </control>
+    <control controlID="305" controlTypeID="com.balsamiq.mockups::FieldSet" x="92" y="1269" w="262" h="188" measuredW="200" measuredH="170" zOrder="135" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Training</text>
+      </controlProperties>
+    </control>
+    <control controlID="306" controlTypeID="com.balsamiq.mockups::Label" x="104" y="1288" w="75" h="23" measuredW="71" measuredH="21" zOrder="136" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Algorithmus</text>
+      </controlProperties>
+    </control>
+    <control controlID="307" controlTypeID="com.balsamiq.mockups::ComboBox" x="252" y="1288" w="-1" h="-1" measuredW="59" measuredH="48" zOrder="137" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>SOM%0ALVQ</text>
+      </controlProperties>
+    </control>
+    <control controlID="308" controlTypeID="com.balsamiq.mockups::Label" x="104" y="1345" w="133" h="23" measuredW="126" measuredH="21" zOrder="138" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Nachbarschaftsradius</text>
+      </controlProperties>
+    </control>
+    <control controlID="309" controlTypeID="com.balsamiq.mockups::NumericStepper" x="252" y="1344" w="59" h="-1" measuredW="41" measuredH="24" zOrder="139" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>6</text>
+      </controlProperties>
+    </control>
+    <control controlID="310" controlTypeID="com.balsamiq.mockups::StickyNote" x="335" y="1339" w="217" h="118" measuredW="109" measuredH="123" zOrder="140" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Bei%20LVQ%20ist%20der%20Radius%20immer%200%0Abei%20SOM%20kann%20er%20frei%20gew%E4hlt%20werden</text>
+      </controlProperties>
+    </control>
+    <control controlID="311" controlTypeID="com.balsamiq.mockups::Label" x="104" y="1384" w="71" h="23" measuredW="73" measuredH="21" zOrder="141" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Lenrfunktion</text>
+      </controlProperties>
+    </control>
+    <control controlID="312" controlTypeID="com.balsamiq.mockups::ComboBox" x="206" y="1383" w="111" h="-1" measuredW="82" measuredH="23" zOrder="142" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>1+e%5E%28-x%29</text>
+      </controlProperties>
+    </control>
+    <control controlID="313" controlTypeID="com.balsamiq.mockups::Label" x="104" y="1420" w="71" h="20" measuredW="68" measuredH="21" zOrder="143" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Iterationen</text>
+      </controlProperties>
+    </control>
+    <control controlID="314" controlTypeID="com.balsamiq.mockups::NumericStepper" x="252" y="1418" w="59" h="-1" measuredW="57" measuredH="24" zOrder="144" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>200</text>
       </controlProperties>
     </control>
   </controls>
