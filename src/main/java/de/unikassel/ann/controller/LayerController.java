@@ -31,43 +31,27 @@ public class LayerController<T> {
 	}
 
 	/**
-	 * Add a layer and create its layer model.
+	 * Add a layer at the end of the layers list.
 	 */
 	public void addLayer() {
 		addLayer(layers.size());
 	}
 
 	/**
-	 * Add a layer and create its layer model with the given index.
+	 * Add a layer at the given index in the layers list.
 	 * 
 	 * @param index
 	 */
 	public void addLayer(final int index) {
-		Layer layer = new Layer();
-		layer.setIndex(index);
-		addLayer(layer);
-	}
-
-	/**
-	 * Add a layer with an already existing layer model.
-	 * 
-	 * @param layer
-	 */
-	public void addLayer(final Layer layer) {
-		int index = layer.getIndex();
-
 		// Create new Junglayer as a wrapper which contains the layer and its
 		// vertices. The Junglayer has the same index as the layer.
 		JungLayer jungLayer = new JungLayer(index);
 
-		// Check if there is already a layer with the same index available
-		if (index < layers.size() && layers.get(index) != null) {
-			// Layer already exists -> Just replace its layer model
-			// layers.get(index).setLayer(layer);
-			// Add new layer and push all layers behind that layers index
-			layers.add(index, jungLayer);
-		} else {
+		// Check if the index is out of range for the layers list
+		if (index < 0 || index > layers.size()) {
 			layers.add(jungLayer);
+		} else {
+			layers.add(index, jungLayer);
 		}
 	}
 
@@ -94,7 +78,6 @@ public class LayerController<T> {
 	 * @return boolean
 	 */
 	public boolean addVertex(final int layerIndex, final boolean addToGraph) {
-		System.out.println("(2) addVertex(" + layerIndex + ", " + addToGraph + ")");
 		// Create a new vertex
 		Vertex vertex = VertexController.getInstance().getVertexFactory().create();
 		vertex.setup(layerIndex);
@@ -127,9 +110,7 @@ public class LayerController<T> {
 	 */
 	public boolean addVertex(final int layerIndex, final int vertexIndex, final boolean addToGraph) {
 		int layerSize = getLayerSize(layerIndex);
-		// System.out.println("(4) addVertex() layerIndex = " + layerIndex + ", layerSize = " + layerSize + ", vertexIndex = " +
-		// vertexIndex);
-		if (layerSize >= vertexIndex) {
+		if (vertexIndex < layerSize) {
 			// Vertex already exists
 			return false;
 		}
@@ -147,6 +128,8 @@ public class LayerController<T> {
 	 * @return boolean
 	 */
 	public boolean addVertex(final int layerIndex, final Vertex vertex, final boolean addToGraph) {
+		System.out.println("addVertex(" + layerIndex + ", " + vertex + ", " + addToGraph + ")");
+
 		if (layerIndex >= layers.size()) {
 			// Layer with the index does not exist -> Create new Layer
 			addLayer(layerIndex);

@@ -38,9 +38,9 @@ public class ActionController {
 
 	public void doAction(final Actions a, final PropertyChangeEvent evt) {
 
-		System.out.println(a);
-		System.out.println(evt.getOldValue());
-		System.out.println(evt.getNewValue());
+		// System.out.println(a);
+		// System.out.println(evt.getOldValue());
+		// System.out.println(evt.getNewValue());
 
 		Sidebar sidebar = Main.instance.sideBar;
 		SidebarModel sidebarModel = Settings.getInstance().getCurrentSession().sidebarModel;
