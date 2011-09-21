@@ -167,66 +167,7 @@ public class GraphLayoutViewer {
 	 * Compute and set the position of each graph component. Animate the layout changes.
 	 */
 	public void repaint() {
-		final int height = viewer.getHeight();
-		final int width = viewer.getWidth();
-
-		// Position of the vertex depends on the number of vertices that
-		// are already in the same layer.
-		// Since new vertices are always added at the last position, get
-		// the number of vertices to compute the position for the new
-		// vertex.
-		LayerController<Layer> layerController = LayerController.getInstance();
-		ArrayList<ArrayList<Vertex>> layers = layerController.getVertices();
-
-		// System.out.println(layers);
-
-		// No layers? -> No need to positionize anything!
-		if (layers.size() == 0) {
-			viewer.repaint();
-			return;
-		}
-
-		// Vertex position
-		Point2D location;
-
-		// Gap between the layers
-		int gapY = height / layerController.getLayersSize();
-
-		int layerIndex = -1;
-		for (ArrayList<Vertex> vertices : layers) {
-			layerIndex++;
-
-			int layerSize = vertices.size();
-
-			// Skip empty layers
-			if (layerSize == 0) {
-				continue;
-			}
-
-			// Compute the gap between two vertices
-			int gapX = width / layerSize;
-
-			int vertexIndex = -1;
-			for (Vertex vertex : vertices) {
-				vertexIndex++;
-
-				// Compute location of the vertex
-				int x = vertexIndex * gapX + gapX / 2;
-				int y = layerIndex * gapY + gapY / 2;
-				location = new Point2D.Double(x, y);
-
-				// Set vertex location and lock it
-				layout.setLocation(vertex, location);
-				layout.lock(vertex, true);
-			}
-		}
-
-		Layout<Vertex, Edge> startLayout = viewer.getGraphLayout();
-		StaticLayout<Vertex, Edge> endLayout = new StaticLayout<Vertex, Edge>(graph, layout);
-		LayoutTransition<Vertex, Edge> lt = new LayoutTransition<Vertex, Edge>(viewer, startLayout, endLayout);
-		Animator animator = new Animator(lt);
-		animator.start();
-		viewer.repaint();
+		GraphLayoutViewer.repaint(viewer);
 	}
 
 	/**
@@ -354,9 +295,70 @@ public class GraphLayoutViewer {
 	/**
 	 * @param vv
 	 */
-	public static void repaint(final VisualizationViewer<Vertex, Edge> vv) {
-		// TODO Auto-generated method stub
+	public static void repaint(final VisualizationViewer<Vertex, Edge> thisViewer) {
+		final int height = thisViewer.getHeight();
+		final int width = thisViewer.getWidth();
 
+		AbstractLayout<Vertex, Edge> thisLayout = getInstance().getLayout();
+		DirectedGraph<Vertex, Edge> thisGraph = getInstance().getGraph();
+
+		// Position of the vertex depends on the number of vertices that
+		// are already in the same layer.
+		// Since new vertices are always added at the last position, get
+		// the number of vertices to compute the position for the new
+		// vertex.
+		LayerController<Layer> layerController = LayerController.getInstance();
+		ArrayList<ArrayList<Vertex>> layers = layerController.getVertices();
+
+		// System.out.println(layers);
+
+		// No layers? -> No need to positionize anything!
+		if (layers.size() == 0) {
+			thisViewer.repaint();
+			return;
+		}
+
+		// Vertex position
+		Point2D location;
+
+		// Gap between the layers
+		int gapY = height / layerController.getLayersSize();
+
+		int layerIndex = -1;
+		for (ArrayList<Vertex> vertices : layers) {
+			layerIndex++;
+
+			int layerSize = vertices.size();
+
+			// Skip empty layers
+			if (layerSize == 0) {
+				continue;
+			}
+
+			// Compute the gap between two vertices
+			int gapX = width / layerSize;
+
+			int vertexIndex = -1;
+			for (Vertex vertex : vertices) {
+				vertexIndex++;
+
+				// Compute location of the vertex
+				int x = vertexIndex * gapX + gapX / 2;
+				int y = layerIndex * gapY + gapY / 2;
+				location = new Point2D.Double(x, y);
+
+				// Set vertex location and lock it
+				thisLayout.setLocation(vertex, location);
+				thisLayout.lock(vertex, true);
+			}
+		}
+
+		Layout<Vertex, Edge> startLayout = thisViewer.getGraphLayout();
+		StaticLayout<Vertex, Edge> endLayout = new StaticLayout<Vertex, Edge>(thisGraph, thisLayout);
+		LayoutTransition<Vertex, Edge> lt = new LayoutTransition<Vertex, Edge>(thisViewer, startLayout, endLayout);
+		Animator animator = new Animator(lt);
+		animator.start();
+		thisViewer.repaint();
 	}
 
 }

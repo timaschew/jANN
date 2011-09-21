@@ -75,7 +75,8 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 										edge.createModel(fromNeuron, toNeuron);
 										graph.addEdge(edge, other, vertex, EdgeType.DIRECTED);
 									}
-									vv.repaint();
+									// vv.repaint();
+									GraphLayoutViewer.repaint(vv);
 								}
 							});
 						}
@@ -98,7 +99,8 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 										edge.createModel(fromNeuron, toNeuron);
 										graph.addEdge(edge, other, vertex);
 									}
-									vv.repaint();
+									// vv.repaint();
+									GraphLayoutViewer.repaint(vv);
 								}
 							});
 						}
@@ -110,7 +112,8 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 						pickedVertexState.pick(vertex, false);
 						vertex.remove(); // TODO check
 						graph.removeVertex(vertex);
-						vv.repaint();
+						// vv.repaint();
+						GraphLayoutViewer.repaint(vv);
 					}
 				});
 			} else if (edge != null) {
@@ -119,7 +122,8 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 					public void actionPerformed(final ActionEvent e) {
 						pickedEdgeState.pick(edge, false);
 						graph.removeEdge(edge);
-						vv.repaint();
+						// vv.repaint();
+						GraphLayoutViewer.repaint(vv);
 					}
 				});
 			} else {
@@ -135,7 +139,8 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 
 						// layout.setLocation(newVertex, vv.getRenderContext()
 						// .getMultiLayerTransformer().inverseTransform(p));
-						vv.repaint();
+						// vv.repaint();
+						GraphLayoutViewer.repaint(vv);
 					}
 				});
 			}

@@ -96,7 +96,7 @@ public class VertexController<V> {
 			private final Color[] palette = { Color.GREEN, Color.BLUE, Color.RED };
 
 			// Define the delimiter of the color percent ranges
-			private final int delimiter = (100 / palette.length) + 1;
+			private final int delimiter = 100 / palette.length + 1;
 
 			@Override
 			public Paint transform(final Vertex v) {
@@ -107,7 +107,7 @@ public class VertexController<V> {
 				// Sigmoid [0,1] --> faktor = value * 100
 				// TanH [-1,1] --> faktor = (value+1) * 50
 				int factor = (int) (v.getValue() * 100);
-				int range = (factor / delimiter);
+				int range = factor / delimiter;
 				return palette[range];
 			}
 		});
@@ -211,7 +211,7 @@ public class VertexController<V> {
 		@Override
 		public Stroke transform(final Vertex v) {
 			Graph<Vertex, Edge> graph = GraphLayoutViewer.getInstance().getGraph();
-			if (highlight) {
+			if (graph != null && highlight) {
 				if (pi.isPicked(v)) {
 					return heavy;
 				}
