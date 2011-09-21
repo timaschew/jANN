@@ -46,6 +46,9 @@ public class MainMenu extends JMenuBar {
 		JMenu mnAnsicht = getAnsichtMenu();
 		this.add(mnAnsicht);
 
+		JMenu mnOptions = getOptionsMenu();
+		this.add(mnOptions);
+
 		JMenu mnTest = getTestMenu();
 		this.add(mnTest);
 
@@ -100,10 +103,35 @@ public class MainMenu extends JMenuBar {
 		JMenuItem mntmDatenvisualisierung = new ActionMenuItem(Settings.i18n.getString("menu.view.showTrainingData"), Actions.VIEW_DATA);
 		mnAnsicht.add(mntmDatenvisualisierung);
 
-		JMenuItem mntmTrainingfehlerverlauf = new ActionMenuItem(Settings.i18n.getString("menu.view.showTrainingError"), Actions.VIEW_TRAINING);
+		JMenuItem mntmTrainingfehlerverlauf = new ActionMenuItem(Settings.i18n.getString("menu.view.showTrainingError"),
+				Actions.VIEW_TRAINING);
 		mnAnsicht.add(mntmTrainingfehlerverlauf);
 
 		return mnAnsicht;
+	}
+
+	/**
+	 * Options Menu
+	 * 
+	 * @return JMenu
+	 */
+
+	private JMenu getOptionsMenu() {
+		JMenu mnOptions = new JMenu(Settings.i18n.getString("menu.options"));
+
+		JMenuItem mntmBackpropagation = new ActionMenuItem(Settings.i18n.getString("menu.options.backpropagation"),
+				Actions.BACKPROPAGATION_VIEW);
+		mnOptions.add(mntmBackpropagation);
+
+		JMenuItem mntmSOM = new ActionMenuItem(Settings.i18n.getString("menu.options.SOM"), Actions.SOM_VIEW);
+		mnOptions.add(mntmSOM);
+
+		mnOptions.addSeparator();
+
+		JMenuItem mntmTrainData = new ActionMenuItem(Settings.i18n.getString("menu.options.trainData"), Actions.NORMALIZE_TRAIN_DATA);
+		mnOptions.add(mntmTrainData);
+
+		return mnOptions;
 	}
 
 	/**
@@ -194,6 +222,16 @@ public class MainMenu extends JMenuBar {
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
+				break;
+			case BACKPROPAGATION_VIEW:
+				Main.instance.addBackproSidebarPanel();
+				break;
+			case SOM_VIEW:
+				Main.instance.addSOMSidebarPanel();
+				break;
+			case NORMALIZE_TRAIN_DATA:
+				TrainDataPanel trainData = TrainDataPanel.getTrainDataPanelInstance();
+				trainData.setVisible(true);
 				break;
 			case NONE:
 			default:
