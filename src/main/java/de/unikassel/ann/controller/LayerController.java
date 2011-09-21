@@ -110,7 +110,7 @@ public class LayerController<T> {
 	 */
 	public boolean addVertex(final int layerIndex, final int vertexIndex, final boolean addToGraph) {
 		int layerSize = getLayerSize(layerIndex);
-		if (vertexIndex < layerSize) {
+		if (vertexIndex <= layerSize) {
 			// Vertex already exists
 			return false;
 		}
