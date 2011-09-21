@@ -12,7 +12,6 @@ import javax.swing.JPopupMenu;
 import org.apache.commons.collections15.Factory;
 
 import de.unikassel.ann.model.Neuron;
-
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedGraph;
@@ -24,8 +23,7 @@ import edu.uci.ics.jung.visualization.control.AbstractPopupGraphMousePlugin;
 import edu.uci.ics.jung.visualization.picking.PickedState;
 
 /**
- * a plugin that uses popup menus to create vertices, undirected edges, and
- * directed edges.
+ * a plugin that uses popup menus to create vertices, undirected edges, and directed edges.
  */
 public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 
@@ -33,16 +31,15 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 	protected Factory<Edge> edgeFactory;
 	protected JPopupMenu popup = new JPopupMenu();
 
-	public GraphMousePopupPlugin(Factory<Vertex> vertexFactory,
-			Factory<Edge> edgeFactory) {
+	public GraphMousePopupPlugin(final Factory<Vertex> vertexFactory, final Factory<Edge> edgeFactory) {
 		this.vertexFactory = vertexFactory;
 		this.edgeFactory = edgeFactory;
 	}
 
+	@Override
 	@SuppressWarnings({ "unchecked", "serial" })
-	protected void handlePopup(MouseEvent e) {
-		final VisualizationViewer<Vertex, Edge> vv = (VisualizationViewer<Vertex, Edge>) e
-				.getSource();
+	protected void handlePopup(final MouseEvent e) {
+		final VisualizationViewer<Vertex, Edge> vv = (VisualizationViewer<Vertex, Edge>) e.getSource();
 		final Layout<Vertex, Edge> layout = vv.getGraphLayout();
 		final Graph<Vertex, Edge> graph = layout.getGraph();
 		final Point2D p = e.getPoint();
@@ -52,12 +49,9 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 
 			popup.removeAll();
 
-			final Vertex vertex = pickSupport.getVertex(layout, ivp.getX(),
-					ivp.getY());
-			final Edge edge = pickSupport.getEdge(layout, ivp.getX(),
-					ivp.getY());
-			final PickedState<Vertex> pickedVertexState = vv
-					.getPickedVertexState();
+			final Vertex vertex = pickSupport.getVertex(layout, ivp.getX(), ivp.getY());
+			final Edge edge = pickSupport.getEdge(layout, ivp.getX(), ivp.getY());
+			final PickedState<Vertex> pickedVertexState = vv.getPickedVertexState();
 			final PickedState<Edge> pickedEdgeState = vv.getPickedEdgeState();
 
 			if (vertex != null) {
@@ -67,72 +61,75 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 						JMenu directedMenu = new JMenu("Create Directed Edge");
 						popup.add(directedMenu);
 						for (final Vertex other : picked) {
-							directedMenu.add(new AbstractAction("[" + other
-									+ "," + vertex + "]") {
-								public void actionPerformed(ActionEvent e) {
+							directedMenu.add(new AbstractAction("[" + other + "," + vertex + "]") {
+								@Override
+								public void actionPerformed(final ActionEvent e) {
 									// Check if the two neurons are in different
 									// layers
 									Neuron fromNeuron = other.getModel();
 									Neuron toNeuron = vertex.getModel();
-									if (fromNeuron.getLayer().getIndex() != toNeuron
-											.getLayer().getIndex()) {
+									if (fromNeuron.getLayer().getIndex() != toNeuron.getLayer().getIndex()) {
 										// Create edge with its synapse between
 										// the both vertexes
 										Edge edge = edgeFactory.create();
 										edge.createModel(fromNeuron, toNeuron);
-										graph.addEdge(edge, other, vertex,
-												EdgeType.DIRECTED);
+										graph.addEdge(edge, other, vertex, EdgeType.DIRECTED);
 									}
-									vv.repaint();
+									// vv.repaint();
+									GraphLayoutViewer.repaint(vv);
 								}
 							});
 						}
 					}
 					if (graph instanceof DirectedGraph == false) {
-						JMenu undirectedMenu = new JMenu(
-								"Create Undirected Edge");
+						JMenu undirectedMenu = new JMenu("Create Undirected Edge");
 						popup.add(undirectedMenu);
 						for (final Vertex other : picked) {
-							undirectedMenu.add(new AbstractAction("[" + other
-									+ "," + vertex + "]") {
-								public void actionPerformed(ActionEvent e) {
+							undirectedMenu.add(new AbstractAction("[" + other + "," + vertex + "]") {
+								@Override
+								public void actionPerformed(final ActionEvent e) {
 									// Check if the two neurons are in different
 									// layers
 									Neuron fromNeuron = other.getModel();
 									Neuron toNeuron = vertex.getModel();
-									if (fromNeuron.getLayer().getIndex() != toNeuron
-											.getLayer().getIndex()) {
+									if (fromNeuron.getLayer().getIndex() != toNeuron.getLayer().getIndex()) {
 										// Create edge with its synapse between
 										// the both vertexes
 										Edge edge = edgeFactory.create();
 										edge.createModel(fromNeuron, toNeuron);
 										graph.addEdge(edge, other, vertex);
 									}
-									vv.repaint();
+									// vv.repaint();
+									GraphLayoutViewer.repaint(vv);
 								}
 							});
 						}
 					}
 				}
 				popup.add(new AbstractAction("Delete Vertex") {
-					public void actionPerformed(ActionEvent e) {
+					@Override
+					public void actionPerformed(final ActionEvent e) {
 						pickedVertexState.pick(vertex, false);
 						vertex.remove(); // TODO check
 						graph.removeVertex(vertex);
-						vv.repaint();
+						// vv.repaint();
+						GraphLayoutViewer.repaint(vv);
 					}
 				});
 			} else if (edge != null) {
 				popup.add(new AbstractAction("Delete Edge") {
-					public void actionPerformed(ActionEvent e) {
+					@Override
+					public void actionPerformed(final ActionEvent e) {
 						pickedEdgeState.pick(edge, false);
 						graph.removeEdge(edge);
-						vv.repaint();
+						// vv.repaint();
+						GraphLayoutViewer.repaint(vv);
 					}
 				});
 			} else {
 				popup.add(new AbstractAction("Create Vertex") {
-					public void actionPerformed(ActionEvent e) {
+					@Override
+					public void actionPerformed(final ActionEvent e) {
 						// Create a new vertex
 						Vertex newVertex = vertexFactory.create();
 						newVertex.setup();
@@ -142,7 +139,8 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 
 						// layout.setLocation(newVertex, vv.getRenderContext()
 						// .getMultiLayerTransformer().inverseTransform(p));
-						vv.repaint();
+						// vv.repaint();
+						GraphLayoutViewer.repaint(vv);
 					}
 				});
 			}

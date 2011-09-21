@@ -15,7 +15,6 @@ import de.unikassel.ann.factory.VertexFactory;
 import de.unikassel.ann.gui.graph.Edge;
 import de.unikassel.ann.gui.graph.GraphLayoutViewer;
 import de.unikassel.ann.gui.graph.Vertex;
-
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.visualization.RenderContext;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
@@ -68,16 +67,14 @@ public class VertexController<V> {
 	 */
 	private void setVertexLabel() {
 		renderContext.setVertexLabelTransformer(VertexInfo.getInstance());
-		renderer.getVertexLabelRenderer().setPosition(
-				Renderer.VertexLabel.Position.S);
+		renderer.getVertexLabelRenderer().setPosition(Renderer.VertexLabel.Position.S);
 	}
 
 	/**
 	 * Set Vertex Highlight (on Picked)
 	 */
 	private void setVertexStrokeHighlight() {
-		VertexStrokeHighlight<Vertex, Number> vsh = new VertexStrokeHighlight<Vertex, Number>(
-				vertexPickedState);
+		VertexStrokeHighlight<Vertex, Number> vsh = new VertexStrokeHighlight<Vertex, Number>(vertexPickedState);
 		renderContext.setVertexStrokeTransformer(vsh);
 	}
 
@@ -86,8 +83,7 @@ public class VertexController<V> {
 	 */
 	private void setVertexShape() {
 		Graph<Vertex, Edge> graph = GraphLayoutViewer.getInstance().getGraph();
-		VertexTransformer<Vertex, Edge> vt = new VertexTransformer<Vertex, Edge>(
-				graph);
+		VertexTransformer<Vertex, Edge> vt = new VertexTransformer<Vertex, Edge>(graph);
 		renderContext.setVertexShapeTransformer(vt);
 	}
 
@@ -95,27 +91,26 @@ public class VertexController<V> {
 	 * Set Vertex Color
 	 */
 	private void setVertexColor() {
-		renderContext
-				.setVertexFillPaintTransformer(new Transformer<Vertex, Paint>() {
-					// TODO Define colors and their percent range
-					private final Color[] palette = { Color.GREEN, Color.BLUE,
-							Color.RED };
+		renderContext.setVertexFillPaintTransformer(new Transformer<Vertex, Paint>() {
+			// TODO Define colors and their percent range
+			private final Color[] palette = { Color.GREEN, Color.BLUE, Color.RED };
 
-					// Define the delimiter of the color percent ranges
-					private final int delimiter = (int) (100 / palette.length) + 1;
+			// Define the delimiter of the color percent ranges
+			private final int delimiter = 100 / palette.length + 1;
 
-					public Paint transform(Vertex v) {
-						// TODO
-						// Je nachdem welchen Wert das Neuron hat, soll es mit
-						// einer Farbe zu dem entsprechendem Prozentwert
-						// befuellt werden.
-						// Sigmoid [0,1] --> faktor = value * 100
-						// TanH [-1,1] --> faktor = (value+1) * 50
-						int factor = (int) (v.getValue() * 100);
-						int range = (int) (factor / delimiter);
-						return palette[range];
-					}
-				});
+			@Override
+			public Paint transform(final Vertex v) {
+				// TODO
+				// Je nachdem welchen Wert das Neuron hat, soll es mit
+				// einer Farbe zu dem entsprechendem Prozentwert
+				// befuellt werden.
+				// Sigmoid [0,1] --> faktor = value * 100
+				// TanH [-1,1] --> faktor = (value+1) * 50
+				int factor = (int) (v.getValue() * 100);
+				int range = factor / delimiter;
+				return palette[range];
+			}
+		});
 	}
 
 	/**
@@ -132,7 +127,7 @@ public class VertexController<V> {
 		vertexPickedState.addItemListener(new ItemListener() {
 
 			@Override
-			public void itemStateChanged(ItemEvent e) {
+			public void itemStateChanged(final ItemEvent e) {
 				Set<Vertex> picked = vertexPickedState.getPicked();
 				if (picked.isEmpty()) {
 					// No vertex picked
@@ -148,8 +143,7 @@ public class VertexController<V> {
 	/*
 	 * Vertex Info (Label) class
 	 */
-	private final static class VertexInfo<V> implements
-			Transformer<Vertex, String> {
+	private final static class VertexInfo<V> implements Transformer<Vertex, String> {
 
 		private static VertexInfo<Vertex> instance;
 
@@ -161,7 +155,7 @@ public class VertexController<V> {
 		}
 
 		@Override
-		public String transform(Vertex v) {
+		public String transform(final Vertex v) {
 			return v.toString();
 		}
 	}
@@ -169,26 +163,26 @@ public class VertexController<V> {
 	/*
 	 * Vertex Size class
 	 */
-	private final class VertexTransformer<V, E> extends
-			AbstractVertexShapeTransformer<Vertex> implements
-			Transformer<Vertex, Shape> {
+	private final class VertexTransformer<V, E> extends AbstractVertexShapeTransformer<Vertex> implements Transformer<Vertex, Shape> {
 
 		protected Graph<Vertex, Edge> graph;
 
-		public VertexTransformer(Graph<Vertex, Edge> graphIn) {
+		public VertexTransformer(final Graph<Vertex, Edge> graphIn) {
 			this.graph = graphIn;
 
 			// Size
 			setSizeTransformer(new Transformer<Vertex, Integer>() {
 
-				public Integer transform(Vertex v) {
+				@Override
+				public Integer transform(final Vertex v) {
 					return (int) (v.getValue() * 30) + 20;
 				}
 			});
 
 		}
 
-		public Shape transform(Vertex v) {
+		@Override
+		public Shape transform(final Vertex v) {
 			return factory.getEllipse(v);
 		}
 	}
@@ -196,39 +190,37 @@ public class VertexController<V> {
 	/*
 	 * Vertex Stroke Highlight class
 	 */
-	private final class VertexStrokeHighlight<V, E> implements
-			Transformer<Vertex, Stroke> {
+	private final class VertexStrokeHighlight<V, E> implements Transformer<Vertex, Stroke> {
 		protected boolean highlight = false;
 		protected Stroke heavy = new BasicStroke(5);
 		protected Stroke medium = new BasicStroke(3);
 		protected Stroke light = new BasicStroke(1);
 		protected PickedInfo<Vertex> pi;
 
-		public VertexStrokeHighlight(PickedInfo<Vertex> pi) {
+		public VertexStrokeHighlight(final PickedInfo<Vertex> pi) {
 			this.pi = pi;
 
 			// Default enable highlighting
 			setHighlight(true);
 		}
 
-		public void setHighlight(boolean highlight) {
+		public void setHighlight(final boolean highlight) {
 			this.highlight = highlight;
 		}
 
-		public Stroke transform(Vertex v) {
-			Graph<Vertex, Edge> graph = GraphLayoutViewer.getInstance()
-					.getGraph();
-			if (highlight) {
+		@Override
+		public Stroke transform(final Vertex v) {
+			Graph<Vertex, Edge> graph = GraphLayoutViewer.getInstance().getGraph();
+			if (graph != null && highlight) {
 				if (pi.isPicked(v)) {
 					return heavy;
-				} else {
-					for (Vertex w : graph.getNeighbors(v)) {
-						if (pi.isPicked(w)) {
-							return medium;
-						}
-					}
-					return light;
 				}
+				for (Vertex w : graph.getNeighbors(v)) {
+					if (pi.isPicked(w)) {
+						return medium;
+					}
+				}
+				return light;
 			}
 			return light;
 		}
@@ -238,8 +230,7 @@ public class VertexController<V> {
 	/*
 	 * Vertex Tooltip class
 	 */
-	private final static class VertexTooltip<V> implements
-			Transformer<Vertex, String> {
+	private final static class VertexTooltip<V> implements Transformer<Vertex, String> {
 
 		private static VertexTooltip<Vertex> instance;
 
@@ -251,7 +242,7 @@ public class VertexController<V> {
 		}
 
 		@Override
-		public String transform(Vertex v) {
+		public String transform(final Vertex v) {
 			return v.toString();
 		}
 	}
