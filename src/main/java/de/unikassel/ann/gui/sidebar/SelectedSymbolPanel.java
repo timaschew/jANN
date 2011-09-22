@@ -14,7 +14,6 @@ import javax.swing.border.TitledBorder;
 
 import de.unikassel.ann.controller.Settings;
 
-
 public class SelectedSymbolPanel extends JPanel {
 
 	/**
@@ -25,13 +24,13 @@ public class SelectedSymbolPanel extends JPanel {
 	public JComboBox activatedFunktioncomboBox;
 	public JSpinner neuroInputBySelectSpinner;
 	public JSpinner spinnerSynapsWeight;
-	
 
 	/**
 	 * Create the frame.
 	 */
 	public SelectedSymbolPanel() {
-		setBorder(new TitledBorder(null, Settings.i18n.getString("sidebar.selectedSymbol"), TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		setBorder(new TitledBorder(null, Settings.i18n.getString("sidebar.selectedSymbol"), TitledBorder.LEADING, TitledBorder.TOP, null,
+				null));
 		setSize(400, 198);
 
 		JLabel lblSelected = new JLabel(Settings.i18n.getString("sidebar.selectedSymbol.selected"));
@@ -50,48 +49,51 @@ public class SelectedSymbolPanel extends JPanel {
 		activatedFunktioncomboBox.setModel(new DefaultComboBoxModel(new String[] { "Sigmoid", "Test" }));
 
 		neuroInputBySelectSpinner = new JSpinner();
-		neuroInputBySelectSpinner.setModel(new SpinnerNumberModel(new Double(0), null, null, new Double(1)));
+		neuroInputBySelectSpinner.setModel(new SpinnerNumberModel(new Double(0.0), null, null, new Double(0.1)));
 
 		spinnerSynapsWeight = new JSpinner();
+		spinnerSynapsWeight.setModel(new SpinnerNumberModel(new Double(0.0), null, null, new Double(0.1)));
 		GroupLayout gl_SelectedSymbolPanel = new GroupLayout(this);
-		gl_SelectedSymbolPanel.setHorizontalGroup(
-			gl_SelectedSymbolPanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_SelectedSymbolPanel.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(gl_SelectedSymbolPanel.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblActivationFunction)
-						.addComponent(lblNeuroInput)
-						.addComponent(lblSelected)
-						.addComponent(lblSynapseWeight))
-					.addGap(41)
-					.addGroup(gl_SelectedSymbolPanel.createParallelGroup(Alignment.TRAILING, false)
-						.addComponent(neuroInputBySelectSpinner, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
-						.addComponent(spinnerSynapsWeight, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
-						.addComponent(fieldSelected)
-						.addComponent(activatedFunktioncomboBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-					.addGap(62))
-		);
-		gl_SelectedSymbolPanel.setVerticalGroup(
-			gl_SelectedSymbolPanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_SelectedSymbolPanel.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(gl_SelectedSymbolPanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblSelected)
-						.addComponent(fieldSelected, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addGroup(gl_SelectedSymbolPanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblSynapseWeight)
-						.addComponent(spinnerSynapsWeight, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addGroup(gl_SelectedSymbolPanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblNeuroInput)
-						.addComponent(neuroInputBySelectSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addGroup(gl_SelectedSymbolPanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblActivationFunction)
-						.addComponent(activatedFunktioncomboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-		);
+		gl_SelectedSymbolPanel.setHorizontalGroup(gl_SelectedSymbolPanel.createParallelGroup(Alignment.LEADING).addGroup(
+				gl_SelectedSymbolPanel
+						.createSequentialGroup()
+						.addContainerGap()
+						.addGroup(
+								gl_SelectedSymbolPanel.createParallelGroup(Alignment.LEADING).addComponent(lblActivationFunction)
+										.addComponent(lblNeuroInput).addComponent(lblSelected).addComponent(lblSynapseWeight))
+						.addGap(41)
+						.addGroup(
+								gl_SelectedSymbolPanel.createParallelGroup(Alignment.TRAILING, false).addComponent(fieldSelected)
+										.addComponent(activatedFunktioncomboBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+										.addComponent(spinnerSynapsWeight).addComponent(neuroInputBySelectSpinner)).addGap(62)));
+		gl_SelectedSymbolPanel.setVerticalGroup(gl_SelectedSymbolPanel.createParallelGroup(Alignment.LEADING).addGroup(
+				gl_SelectedSymbolPanel
+						.createSequentialGroup()
+						.addContainerGap()
+						.addGroup(
+								gl_SelectedSymbolPanel.createParallelGroup(Alignment.BASELINE).addComponent(lblSelected)
+										.addComponent(fieldSelected, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
+						.addPreferredGap(ComponentPlacement.UNRELATED)
+						.addGroup(
+								gl_SelectedSymbolPanel
+										.createParallelGroup(Alignment.BASELINE)
+										.addComponent(lblSynapseWeight)
+										.addComponent(spinnerSynapsWeight, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+												GroupLayout.PREFERRED_SIZE))
+						.addPreferredGap(ComponentPlacement.UNRELATED)
+						.addGroup(
+								gl_SelectedSymbolPanel
+										.createParallelGroup(Alignment.BASELINE)
+										.addComponent(lblNeuroInput)
+										.addComponent(neuroInputBySelectSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+												GroupLayout.PREFERRED_SIZE))
+						.addPreferredGap(ComponentPlacement.UNRELATED)
+						.addGroup(
+								gl_SelectedSymbolPanel
+										.createParallelGroup(Alignment.BASELINE)
+										.addComponent(lblActivationFunction)
+										.addComponent(activatedFunktioncomboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+												GroupLayout.PREFERRED_SIZE)).addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 		setLayout(gl_SelectedSymbolPanel);
 	}
 

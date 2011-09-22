@@ -10,12 +10,19 @@ package de.unikassel.ann.controller;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
 
+import de.unikassel.ann.algo.BackPropagation;
+import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.factory.NetworkFactory;
 import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.gui.graph.GraphLayoutViewer;
 import de.unikassel.ann.gui.sidebar.Sidebar;
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.SidebarModel;
+import de.unikassel.ann.strategy.MaxLearnIterationsStrategy;
+import de.unikassel.ann.strategy.MinErrorStrategy;
+import de.unikassel.ann.strategy.RestartErrorStrategy;
+import de.unikassel.ann.strategy.RestartImprovementStrategy;
+import de.unikassel.ann.strategy.Strategy;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse.Mode;
 
 /**
@@ -222,6 +229,31 @@ public class ActionController {
 
 			break;
 
+		case UPDATE_SIDEBAR_TRAINSTRATEGY_VIEW:
+			// Update all elements in the TrainstrategyView
+			sidebar.trainStrategyPanel.comboBoxAlgorithm.setSelectedItem(sidebarModel.getAlgorithmCombo());
+			sidebar.trainStrategyPanel.spinnerLearnRate.setValue(sidebarModel.getLearnRate());
+			sidebar.trainStrategyPanel.spinnerMomentum.setValue(sidebarModel.getMomentum());
+
+			// sidebar.trainStrategyPanel.rdbtnOnline.setSelected(sidebarModel.getTrainOnline());
+			// sidebar.trainStrategyPanel.rdbtnOffline.setSelected(sidebarModel.getTrainOffline());
+
+			break;
+
+		case UPDATE_SIDEBAR_TRAINSTRATEGY_ALGOCOMBO_MODEL:
+			String newVal = (String) evt.getNewValue();
+
+			Double learnrate = sidebarModel.getLearnRate();
+			Double momentum = sidebarModel.getMomentum();
+			BackPropagation back = new BackPropagation(learnrate, momentum);
+			sidebarModel.setAlgorithmCombo(newVal);
+			break;
+
+		// case UPDATE_SIDEBAR_TRAINSTRATEGY_LERNRATE_MODEL:
+		// Double newVals = (Double) evt.getNewValue();
+		// sidebarModel.setLernRate(newVals);
+		// break;
+
 		case CREATE_NETWORK:
 			NetworkFactory factory = new NetworkFactory();
 			System.out.println("Create network");
@@ -256,6 +288,42 @@ public class ActionController {
 				sidebar.topolgyPanel.mouseInputRB.setEnabled(false);
 				sidebar.topolgyPanel.mouseOutputRB.setEnabled(false);
 				System.out.println("transforming");
+			}
+
+			break;
+
+		case SET_THE_STRATEGY:
+			sidebar = Main.instance.sideBar;
+			// "MaxIteration", "MinError", "RestartError","RestartImprovement"
+			String selectedStrategy = (String) sidebar.trainStrategyPanel.comboBoxTypStrategien.getSelectedItem();
+			Strategy strategy;
+			NetConfig net = new NetConfig();
+
+			if (selectedStrategy.equals("MaxIteration")) {
+				Integer maxIterationSpinner = (Integer) sidebar.trainStrategyPanel.spinnerMaxIterations.getValue();
+				sidebar.trainStrategyPanel.chckbxActivateStrategie.setSelected(false);
+				strategy = new MaxLearnIterationsStrategy(maxIterationSpinner);
+				net.addOrUpdateExisting(strategy);
+				System.out.println("MaxIteration");
+
+			} else if (selectedStrategy.equals("MinError")) {
+				Double minErrorSpinner = (Double) sidebar.trainStrategyPanel.spinnerMinError.getValue();
+				sidebar.trainStrategyPanel.chckbxActivateStrategie.setSelected(false);
+				strategy = new MinErrorStrategy(minErrorSpinner);
+				System.out.println("MinError");
+
+			} else if (selectedStrategy.equals("RestartError")) {
+				sidebar.trainStrategyPanel.chckbxActivateStrategie.setSelected(false);
+				Double maxErrorForRestartSpinner = (Double) sidebar.trainStrategyPanel.spinnerMaxErrorForRestart.getValue();
+				Integer iterationsForRestartSpinner = (Integer) sidebar.trainStrategyPanel.spinnerIterationsForRestart.getValue();
+				strategy = new RestartErrorStrategy(maxErrorForRestartSpinner, iterationsForRestartSpinner);
+				System.out.println("RestartError");
+
+			} else if (selectedStrategy.equals("RestartImprovement")) {
+				Double minImprovForRestartSpinner = (Double) sidebar.trainStrategyPanel.spinnerMinImprovementForRestart.getValue();
+				Integer iterImprForRestartSpinner = (Integer) sidebar.trainStrategyPanel.spinnerImprIterationsForRestart.getValue();
+				strategy = new RestartImprovementStrategy(minImprovForRestartSpinner, iterImprForRestartSpinner);
+				System.out.println("RestartImprovement");
 			}
 
 			break;

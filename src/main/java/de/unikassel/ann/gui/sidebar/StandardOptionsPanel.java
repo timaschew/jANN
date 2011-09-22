@@ -25,14 +25,15 @@ public class StandardOptionsPanel extends JPanel {
 	public JSpinner RandomInitialWeightSpinner1;
 	public JSpinner RandomInitialWeightSpinner2;
 	public JSpinner exactInitialWeightSpinner;
-	
+
 	public final ButtonGroup buttonGroup = new ButtonGroup();
 
 	/**
 	 * Create the panel.
 	 */
 	public StandardOptionsPanel() {
-		setBorder(new TitledBorder(null, Settings.i18n.getString("sidebar.standardOptions"), TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		setBorder(new TitledBorder(null, Settings.i18n.getString("sidebar.standardOptions"), TitledBorder.LEADING, TitledBorder.TOP, null,
+				null));
 		setSize(400, 160);
 
 		JLabel lblFunktionToActivate = new JLabel(Settings.i18n.getString("sidebar.standardOptions.activatedFunction"));
@@ -47,13 +48,13 @@ public class StandardOptionsPanel extends JPanel {
 		buttonGroup.add(rdbtnExactInitialWeight);
 
 		RandomInitialWeightSpinner1 = new JSpinner();
-		RandomInitialWeightSpinner1.setModel(new SpinnerNumberModel(new Double(0), null, null, new Double(1)));
+		RandomInitialWeightSpinner1.setModel(new SpinnerNumberModel(new Double(0.0), null, null, new Double(0.1)));
 
 		RandomInitialWeightSpinner2 = new JSpinner();
-		RandomInitialWeightSpinner2.setModel(new SpinnerNumberModel(new Double(0), null, null, new Double(1)));
+		RandomInitialWeightSpinner2.setModel(new SpinnerNumberModel(new Double(0.0), null, null, new Double(0.1)));
 
 		exactInitialWeightSpinner = new JSpinner();
-		exactInitialWeightSpinner.setModel(new SpinnerNumberModel(new Double(0), null, null, new Double(1)));
+		exactInitialWeightSpinner.setModel(new SpinnerNumberModel(new Double(0.0), null, null, new Double(0.1)));
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(
 				groupLayout
@@ -66,56 +67,50 @@ public class StandardOptionsPanel extends JPanel {
 						.addGroup(
 								groupLayout
 										.createParallelGroup(Alignment.LEADING, false)
+										.addComponent(funktionToActivateCombo, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 										.addGroup(
 												groupLayout
 														.createSequentialGroup()
-														.addGroup(
-																groupLayout
-																		.createParallelGroup(Alignment.LEADING, false)
-																		.addGroup(
-																				groupLayout
-																						.createSequentialGroup()
-																						.addComponent(rdbtnExactInitialWeight)
-																						.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-																						.addComponent(exactInitialWeightSpinner, GroupLayout.PREFERRED_SIZE, 45,
-																								GroupLayout.PREFERRED_SIZE))
-																		.addGroup(
-																				groupLayout
-																						.createSequentialGroup()
-																						.addComponent(rdbtnRandomInitialWeight)
-																						.addGap(16)
-																						.addComponent(RandomInitialWeightSpinner1, GroupLayout.PREFERRED_SIZE, 45,
-																								GroupLayout.PREFERRED_SIZE))).addGap(18)
-														.addComponent(RandomInitialWeightSpinner2, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE))
-										.addComponent(funktionToActivateCombo, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-						.addContainerGap(26, Short.MAX_VALUE)));
-		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(
-						groupLayout
-								.createSequentialGroup()
-								.addGroup(
-										groupLayout
-												.createParallelGroup(Alignment.BASELINE)
-												.addComponent(lblFunktionToActivate)
-												.addComponent(funktionToActivateCombo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-														GroupLayout.PREFERRED_SIZE))
-								.addPreferredGap(ComponentPlacement.UNRELATED)
-								.addGroup(
-										groupLayout
-												.createParallelGroup(Alignment.BASELINE)
-												.addComponent(lblInitialWeight)
-												.addComponent(rdbtnRandomInitialWeight)
-												.addComponent(RandomInitialWeightSpinner2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-														GroupLayout.PREFERRED_SIZE)
-												.addComponent(RandomInitialWeightSpinner1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-														GroupLayout.PREFERRED_SIZE))
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addGroup(
-										groupLayout
-												.createParallelGroup(Alignment.BASELINE)
-												.addComponent(rdbtnExactInitialWeight)
-												.addComponent(exactInitialWeightSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-														GroupLayout.PREFERRED_SIZE)).addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+														.addComponent(rdbtnExactInitialWeight)
+														.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
+																Short.MAX_VALUE)
+														.addComponent(exactInitialWeightSpinner, GroupLayout.PREFERRED_SIZE, 60,
+																GroupLayout.PREFERRED_SIZE))
+										.addGroup(
+												groupLayout
+														.createSequentialGroup()
+														.addComponent(rdbtnRandomInitialWeight)
+														.addGap(16)
+														.addComponent(RandomInitialWeightSpinner1, GroupLayout.PREFERRED_SIZE, 60,
+																GroupLayout.PREFERRED_SIZE))).addGap(18)
+						.addComponent(RandomInitialWeightSpinner2, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE)
+						.addContainerGap(33, Short.MAX_VALUE)));
+		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(
+				groupLayout
+						.createSequentialGroup()
+						.addGroup(
+								groupLayout
+										.createParallelGroup(Alignment.BASELINE)
+										.addComponent(lblFunktionToActivate)
+										.addComponent(funktionToActivateCombo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+												GroupLayout.PREFERRED_SIZE))
+						.addPreferredGap(ComponentPlacement.UNRELATED)
+						.addGroup(
+								groupLayout
+										.createParallelGroup(Alignment.BASELINE)
+										.addComponent(lblInitialWeight)
+										.addComponent(rdbtnRandomInitialWeight)
+										.addComponent(RandomInitialWeightSpinner2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+												GroupLayout.PREFERRED_SIZE)
+										.addComponent(RandomInitialWeightSpinner1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+												GroupLayout.PREFERRED_SIZE))
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(
+								groupLayout
+										.createParallelGroup(Alignment.BASELINE)
+										.addComponent(rdbtnExactInitialWeight)
+										.addComponent(exactInitialWeightSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+												GroupLayout.PREFERRED_SIZE)).addContainerGap(16, Short.MAX_VALUE)));
 		setLayout(groupLayout);
 	}
 }

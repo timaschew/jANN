@@ -64,64 +64,67 @@ public class SOMTrainingPanel extends JPanel {
 						.createSequentialGroup()
 						.addGroup(
 								groupLayout
-										.createParallelGroup(Alignment.TRAILING)
+										.createParallelGroup(Alignment.LEADING)
 										.addGroup(
 												groupLayout
 														.createSequentialGroup()
 														.addComponent(lblIterations)
-														.addPreferredGap(ComponentPlacement.RELATED, 134, Short.MAX_VALUE)
-														.addComponent(spinnerIterationsSOM, GroupLayout.PREFERRED_SIZE, 45,
+														.addPreferredGap(ComponentPlacement.RELATED, 133, Short.MAX_VALUE)
+														.addComponent(spinnerIterationsSOM, GroupLayout.PREFERRED_SIZE, 60,
 																GroupLayout.PREFERRED_SIZE))
 										.addGroup(
-												Alignment.LEADING,
 												groupLayout
 														.createSequentialGroup()
 														.addComponent(lblAlgorithmSOM)
-														.addPreferredGap(ComponentPlacement.RELATED, 106, Short.MAX_VALUE)
+														.addPreferredGap(ComponentPlacement.RELATED, 105, Short.MAX_VALUE)
 														.addComponent(comboAlgorithmSOM, GroupLayout.PREFERRED_SIZE, 65,
 																GroupLayout.PREFERRED_SIZE))
 										.addGroup(
-												Alignment.LEADING,
 												groupLayout
 														.createSequentialGroup()
 														.addComponent(lblNeighborhoodRadius)
-														.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE,
-																Short.MAX_VALUE)
-														.addComponent(spinnerNeighborhoodRadius, GroupLayout.PREFERRED_SIZE, 45,
+														.addPreferredGap(ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
+														.addComponent(spinnerNeighborhoodRadius, GroupLayout.PREFERRED_SIZE, 60,
 																GroupLayout.PREFERRED_SIZE))
 										.addGroup(
 												groupLayout
 														.createSequentialGroup()
 														.addComponent(lblLernfunction)
-														.addPreferredGap(ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
+														.addPreferredGap(ComponentPlacement.RELATED, 68, Short.MAX_VALUE)
 														.addComponent(comboLernFunction, GroupLayout.PREFERRED_SIZE, 100,
-																GroupLayout.PREFERRED_SIZE))).addContainerGap(138, Short.MAX_VALUE)));
-		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(
-				groupLayout
-						.createSequentialGroup()
-						.addContainerGap()
-						.addGroup(
-								groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(lblAlgorithmSOM)
-										.addComponent(comboAlgorithmSOM, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(ComponentPlacement.UNRELATED)
+																GroupLayout.PREFERRED_SIZE))).addContainerGap(136, Short.MAX_VALUE)));
+		groupLayout
+				.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(
 								groupLayout
-										.createParallelGroup(Alignment.BASELINE)
-										.addComponent(lblNeighborhoodRadius)
-										.addComponent(spinnerNeighborhoodRadius, GroupLayout.PREFERRED_SIZE, 29,
-												GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(ComponentPlacement.UNRELATED)
-						.addGroup(
-								groupLayout.createParallelGroup(Alignment.BASELINE)
-										.addComponent(comboLernFunction, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
-										.addComponent(lblLernfunction))
-						.addPreferredGap(ComponentPlacement.UNRELATED)
-						.addGroup(
-								groupLayout
-										.createParallelGroup(Alignment.BASELINE)
-										.addComponent(spinnerIterationsSOM, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-												GroupLayout.PREFERRED_SIZE).addComponent(lblIterations))
-						.addContainerGap(55, Short.MAX_VALUE)));
+										.createSequentialGroup()
+										.addContainerGap()
+										.addGroup(
+												groupLayout
+														.createParallelGroup(Alignment.BASELINE)
+														.addComponent(lblAlgorithmSOM)
+														.addComponent(comboAlgorithmSOM, GroupLayout.PREFERRED_SIZE, 29,
+																GroupLayout.PREFERRED_SIZE))
+										.addPreferredGap(ComponentPlacement.UNRELATED)
+										.addGroup(
+												groupLayout
+														.createParallelGroup(Alignment.BASELINE)
+														.addComponent(lblNeighborhoodRadius)
+														.addComponent(spinnerNeighborhoodRadius, GroupLayout.PREFERRED_SIZE, 29,
+																GroupLayout.PREFERRED_SIZE))
+										.addPreferredGap(ComponentPlacement.UNRELATED)
+										.addGroup(
+												groupLayout
+														.createParallelGroup(Alignment.BASELINE)
+														.addComponent(comboLernFunction, GroupLayout.PREFERRED_SIZE, 29,
+																GroupLayout.PREFERRED_SIZE).addComponent(lblLernfunction))
+										.addPreferredGap(ComponentPlacement.UNRELATED)
+										.addGroup(
+												groupLayout
+														.createParallelGroup(Alignment.BASELINE)
+														.addComponent(spinnerIterationsSOM, GroupLayout.PREFERRED_SIZE,
+																GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+														.addComponent(lblIterations)).addContainerGap(14, Short.MAX_VALUE)));
 		setLayout(groupLayout);
 
 	}

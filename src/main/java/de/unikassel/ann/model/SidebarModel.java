@@ -17,6 +17,7 @@ import de.unikassel.ann.controller.ActionController;
 import de.unikassel.ann.controller.Actions;
 import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.gui.sidebar.TopologyPanel;
+import de.unikassel.ann.gui.sidebar.TrainStrategyPanel;
 import de.unikassel.ann.model.func.ActivationFunction;
 
 /**
@@ -28,15 +29,25 @@ public class SidebarModel {
 	private PropertyChangeSupport pcs;
 
 	public enum P {
-		inputNeurons, outputNeurons, hiddenLayers, hiddenNeurons, topology, inputBias, hiddenBias, mouseModi
+		inputNeurons, outputNeurons, hiddenLayers, hiddenNeurons, topology, inputBias, hiddenBias, mouseModi, activateStrategy, algorithm, learnrate, momentum, online, offline
 	};
 
+	// Topology Pane
 	private Integer inputNeurons = 0;
 	private Integer outputNeurons = 0;
 	private Integer hiddenLayers = 0;
 	private List<Integer> hiddenNeurons;
 	private List<Boolean> hiddenBias;
 	private boolean inputBias;
+
+	// TrainStrategy Pane
+	private String algorithm;
+	private Double learnrate = 0.0;
+	private Double momentum = 0.0;
+	private Boolean online;
+	private Boolean offline;
+	private Boolean activateStrategy;
+
 	private ActionController ac;
 	public Neuron selectedNeuron;
 	public Synapse selectedSynapse;
@@ -97,7 +108,7 @@ public class SidebarModel {
 	 * Returns the bias flag for the global layerIndex
 	 * 
 	 * @param layerIndex
-	 *          global layerIndex
+	 *            global layerIndex
 	 * @return
 	 */
 	public Boolean hasLayerBias(final int layerIndex) {
@@ -114,7 +125,7 @@ public class SidebarModel {
 	 * Sets the bias for the relative hidden layer index
 	 * 
 	 * @param layerIndex
-	 *          relative layerIndex
+	 *            relative layerIndex
 	 * @param bias
 	 */
 	public void setHiddenBias(final Integer layerIndex, final Boolean bias) {
@@ -168,7 +179,7 @@ public class SidebarModel {
 
 	/**
 	 * @param inputNeurons
-	 *          the inputNeurons to set
+	 *            the inputNeurons to set
 	 */
 	public void setInputNeurons(final Integer inputNeurons) {
 		if (inputNeurons < 0) {
@@ -188,7 +199,7 @@ public class SidebarModel {
 
 	/**
 	 * @param outputNeurons
-	 *          the outputNeurons to set
+	 *            the outputNeurons to set
 	 */
 	public void setOutputNeurons(final Integer outputNeurons) {
 		if (outputNeurons < 0) {
@@ -208,7 +219,7 @@ public class SidebarModel {
 
 	/**
 	 * @param hiddenLayers
-	 *          the hiddenLayers to set
+	 *            the hiddenLayers to set
 	 */
 	public void setHiddenLayers(final Integer hiddenLayers) {
 		if (hiddenLayers < 0) {
@@ -238,7 +249,7 @@ public class SidebarModel {
 	 * RELATIVE INDEX FOR HIDDEN LAYER !
 	 * 
 	 * @param hiddenNeurons
-	 *          the hiddenNeurons to set
+	 *            the hiddenNeurons to set
 	 */
 	public void setHiddenNeurons(final Integer layerIndex, final Integer neuronCount) {
 		if (layerIndex < 0 || neuronCount < 0) {
@@ -257,6 +268,107 @@ public class SidebarModel {
 	public void createNetwork() {
 		// TODO create Network
 	}
+
+	/**
+	 * Training-Strategy panel
+	 */
+
+	/**
+	 * Checkbox that activate the Strategy
+	 * 
+	 * @return the activateStrategy
+	 */
+	public boolean getActivateStrategy() {
+		return activateStrategy;
+	}
+
+	/**
+	 * @param activateStrategy
+	 *            the activateStrategy to set
+	 */
+	public void setActivateStrategy(final Boolean activStrategy) {
+		Boolean oldValue = !activateStrategy;
+		activateStrategy = activStrategy;
+		pcs.firePropertyChange(P.activateStrategy.name(), oldValue, activStrategy);
+
+	}
+
+	/**
+	 * @return
+	 */
+	public String getAlgorithmCombo() {
+		return algorithm;
+	}
+
+	public void setAlgorithmCombo(final String algorithm) {
+		String oldValue = this.algorithm;
+		this.algorithm = algorithm;
+		pcs.firePropertyChange(P.algorithm.name(), oldValue, algorithm);
+
+	}
+
+	/**
+	 * @return
+	 */
+	public Double getLearnRate() {
+		return learnrate;
+	}
+
+	public void setLearnRate(final Double learnrate) {
+		Double oldValue = this.learnrate;
+		this.learnrate = learnrate;
+		pcs.firePropertyChange(P.learnrate.name(), oldValue, learnrate);
+	}
+
+	/**
+	 * @return
+	 */
+	public Double getMomentum() {
+		return momentum;
+	}
+
+	public void setMomentum(final Double momentum) {
+		Double oldValue = this.momentum;
+		this.momentum = momentum;
+		pcs.firePropertyChange(P.momentum.name(), oldValue, momentum);
+	}
+
+	public Boolean setTrainingModus() {
+		TrainStrategyPanel trainStrPanel = Main.instance.sideBar.trainStrategyPanel;
+		if (trainStrPanel.rdbtnOnline.isSelected()) {
+			// TODO Set the Trainingmodus
+		} else if (trainStrPanel.rdbtnOffline.isSelected()) {
+
+		}
+
+		throw new IllegalAccessError("radio buttons for insert mode are all deselected");
+	}
+
+	// /**
+	// * @return
+	// */
+	// public boolean getTrainOnline() {
+	// return online;
+	// }
+	//
+	// public void setTrainOnline(final Boolean online) {
+	// Boolean oldValue = !online;
+	// this.online = online;
+	// pcs.firePropertyChange(P.online.name(), oldValue, online);
+	// }
+	//
+	// /**
+	// * @return
+	// */
+	// public boolean getTrainOffline() {
+	// return offline;
+	// }
+	//
+	// public void setTrainOffline(final Boolean offline) {
+	// Boolean oldValue = !offline;
+	// this.offline = offline;
+	// pcs.firePropertyChange(P.offline.name(), oldValue, offline);
+	// }
 
 	/**
 	 * 
@@ -304,6 +416,49 @@ public class SidebarModel {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
 				ac.doAction(Actions.UPDATE_JUNG_GRAPH_HIDDEN_BIAS, evt);
+			}
+		});
+
+		// TrainStrategy Pane
+		pcs.addPropertyChangeListener(P.algorithm.name(), new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
+				ac.doAction(Actions.UPDATE_SIDEBAR_TRAINSTRATEGY_VIEW, evt);
+			}
+		});
+
+		pcs.addPropertyChangeListener(P.learnrate.name(), new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
+				ac.doAction(Actions.UPDATE_SIDEBAR_TRAINSTRATEGY_VIEW, evt);
+			}
+		});
+
+		pcs.addPropertyChangeListener(P.momentum.name(), new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
+				ac.doAction(Actions.UPDATE_SIDEBAR_TRAINSTRATEGY_VIEW, evt);
+			}
+		});
+
+		// pcs.addPropertyChangeListener(P.online.name(), new PropertyChangeListener() {
+		// @Override
+		// public void propertyChange(final PropertyChangeEvent evt) {
+		// ac.doAction(Actions.UPDATE_SIDEBAR_TRAINSTRATEGY_VIEW, evt);
+		// }
+		// });
+		//
+		// pcs.addPropertyChangeListener(P.offline.name(), new PropertyChangeListener() {
+		// @Override
+		// public void propertyChange(final PropertyChangeEvent evt) {
+		// ac.doAction(Actions.UPDATE_SIDEBAR_TRAINSTRATEGY_VIEW, evt);
+		// }
+		// });
+
+		pcs.addPropertyChangeListener(P.activateStrategy.name(), new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
+				ac.doAction(Actions.UPDATE_SIDEBAR_TRAINSTRATEGY_VIEW, evt);
 			}
 		});
 

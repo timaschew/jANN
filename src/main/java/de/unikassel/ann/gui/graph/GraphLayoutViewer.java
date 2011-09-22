@@ -11,13 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 
 import de.unikassel.ann.controller.EdgeController;
 import de.unikassel.ann.controller.LayerController;
-import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.controller.VertexController;
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.Network;
@@ -148,7 +145,7 @@ public class GraphLayoutViewer {
 		// Graph Mouse
 		//
 		initGraphMouse();
-		addMouseModeMenu();
+		// addMouseModeMenu();
 	}
 
 	public void setDimension(final Dimension dim) {
@@ -277,20 +274,20 @@ public class GraphLayoutViewer {
 		graphMouse.setZoomAtMouse(false);
 	}
 
-	/**
-	 * Add MouseMode Menu to the MainMenu of the frame to set the mode of the Graph Mouse.
-	 */
-	private void addMouseModeMenu() {
-		if (frame == null) {
-			// No frame -> No menu -> No fun!
-			return;
-		}
-		JMenu modeMenu = graphMouse.getModeMenu();
-		modeMenu.setText(Settings.getI18n("menu.mousemode", "Mode"));
-		JMenuBar menu = frame.getJMenuBar();
-		menu.add(modeMenu, menu.getComponentCount() - 1);
-		graphMouse.setMode(ModalGraphMouse.Mode.EDITING);
-	}
+	// /**
+	// * Add MouseMode Menu to the MainMenu of the frame to set the mode of the Graph Mouse.
+	// */
+	// private void addMouseModeMenu() {
+	// if (frame == null) {
+	// // No frame -> No menu -> No fun!
+	// return;
+	// }
+	// JMenu modeMenu = graphMouse.getModeMenu();
+	// modeMenu.setText(Settings.getI18n("menu.mousemode", "Mode"));
+	// JMenuBar menu = frame.getJMenuBar();
+	// menu.add(modeMenu, menu.getComponentCount() - 1);
+	// graphMouse.setMode(ModalGraphMouse.Mode.EDITING);
+	// }
 
 	/**
 	 * @param vv

@@ -8,13 +8,11 @@
 package de.unikassel.ann.gui.sidebar;
 
 import java.awt.Dimension;
-import java.awt.EventQueue;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -40,21 +38,21 @@ public class SOMTopologyPanel extends JPanel {
 	public JComboBox comboNeighborhoodTop;
 	public JComboBox comboPatternSOM;
 
-//	public static void main(final String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			@Override
-//			public void run() {
-//				try {
-//					SOMTopologyPanel panel = new SOMTopologyPanel();
-//					JFrame frame = new JFrame();
-//					frame.setContentPane(panel);
-//					frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
+	// public static void main(final String[] args) {
+	// EventQueue.invokeLater(new Runnable() {
+	// @Override
+	// public void run() {
+	// try {
+	// SOMTopologyPanel panel = new SOMTopologyPanel();
+	// JFrame frame = new JFrame();
+	// frame.setContentPane(panel);
+	// frame.setVisible(true);
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	// }
+	// });
+	// }
 
 	/**
 	 * Create the panel.
@@ -89,37 +87,33 @@ public class SOMTopologyPanel extends JPanel {
 		comboPatternSOM.setModel(new DefaultComboBoxModel(new String[] { "Eckig", "Rund" }));
 
 		GroupLayout groupLayout = new GroupLayout(this);
-		groupLayout
-				.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(
+		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(
 						groupLayout
 								.createSequentialGroup()
 								.addGroup(
 										groupLayout.createParallelGroup(Alignment.LEADING).addComponent(lblOutputNeuronSOM)
 												.addComponent(lblInputNeuronSOM).addComponent(lblOutputDimesionSOM)
 												.addComponent(lblNeighborhoodTopologySOM).addComponent(lblPatternSOM))
-								.addPreferredGap(ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+								.addPreferredGap(ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
 								.addGroup(
 										groupLayout
-												.createParallelGroup(Alignment.LEADING)
-												.addComponent(spinnerInputNeuronSOM, GroupLayout.PREFERRED_SIZE, 50,
+												.createParallelGroup(Alignment.LEADING, false)
+												.addComponent(spinnerInputNeuronSOM, GroupLayout.PREFERRED_SIZE, 60,
 														GroupLayout.PREFERRED_SIZE)
-												.addComponent(spinnerOutputDimensionSOM, GroupLayout.PREFERRED_SIZE, 50,
+												.addComponent(spinnerOutputDimensionSOM, GroupLayout.PREFERRED_SIZE, 60,
 														GroupLayout.PREFERRED_SIZE)
 												.addGroup(
 														groupLayout
 																.createSequentialGroup()
-																.addComponent(spinnerOutputNeuronSOM, GroupLayout.PREFERRED_SIZE, 50,
+																.addComponent(spinnerOutputNeuronSOM, GroupLayout.PREFERRED_SIZE, 60,
 																		GroupLayout.PREFERRED_SIZE)
 																.addGap(18)
-																.addComponent(comboOutputNeuronSOM, GroupLayout.PREFERRED_SIZE, 50,
+																.addComponent(comboOutputNeuronSOM, GroupLayout.PREFERRED_SIZE, 60,
 																		GroupLayout.PREFERRED_SIZE))
-												.addGroup(
-														groupLayout
-																.createParallelGroup(Alignment.TRAILING)
-																.addComponent(comboPatternSOM, GroupLayout.PREFERRED_SIZE, 120,
-																		GroupLayout.PREFERRED_SIZE)
-																.addComponent(comboNeighborhoodTop, GroupLayout.PREFERRED_SIZE, 120,
-																		GroupLayout.PREFERRED_SIZE))).addContainerGap(84, Short.MAX_VALUE)));
+												.addComponent(comboNeighborhoodTop, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+												.addComponent(comboPatternSOM, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+								.addContainerGap(79, Short.MAX_VALUE)));
 		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(
 				groupLayout
 						.createSequentialGroup()
