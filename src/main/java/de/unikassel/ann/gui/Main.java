@@ -120,7 +120,7 @@ public class Main {
 
 		jungConsoleSplitPane = new JSplitPane();
 		jungConsoleSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-		jungConsoleSplitPane.setMinimumSize(new Dimension(625, 50));
+		// jungConsoleSplitPane.setMinimumSize(new Dimension(625, 50));
 		mainSplitPane.setLeftComponent(jungConsoleSplitPane);
 
 		jungPanel = new JPanel(new BorderLayout());
@@ -170,7 +170,7 @@ public class Main {
 	public void addSOMSidebarPanel() {
 		sidebarSom = new SidebarSOM();
 		_3DBoardPane = new JPanel();
-		sidebarSom.setMinimumSize(new Dimension(435, 50));
+		sidebarSom.setMinimumSize(new Dimension(430, 50));
 		mainSplitPane.remove(sideBar);
 		jungConsoleSplitPane.remove(jungPanel);
 		jungConsoleSplitPane.setRightComponent(_3DBoardPane);

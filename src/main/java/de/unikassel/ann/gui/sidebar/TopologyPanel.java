@@ -59,7 +59,7 @@ public class TopologyPanel extends JPanel {
 	public JCheckBox chckbxAllNeuronsBind;
 
 	public JButton btnCreateNetwork;
-	private JLabel lblJungModi;
+	private JLabel lblJungModis;
 
 	/**
 	 * Create the frame.
@@ -200,17 +200,20 @@ public class TopologyPanel extends JPanel {
 		 */
 		mouseInputRB = new JRadioButton(Settings.i18n.getString("sidebar.topology.mouse.input"));
 		mouseInputRB.setSelected(true);
+		mouseInputRB.setEnabled(false);
 		buttonGroup.add(mouseInputRB);
 		mouseOutputRB = new JRadioButton(Settings.i18n.getString("sidebar.topology.mouse.output"));
 		buttonGroup.add(mouseOutputRB);
+		mouseOutputRB.setEnabled(false);
 		mouseHiddenRB = new JRadioButton(Settings.i18n.getString("sidebar.topology.mouse.hidden"));
 		buttonGroup.add(mouseHiddenRB);
+		mouseHiddenRB.setEnabled(false);
 		comboBoxHiddenMausModus = new JComboBox(hiddenLayerComboModel);
 		comboBoxHiddenMausModus.setEnabled(false);
 
-		lblJungModi = new JLabel("Jung Modis");
+		lblJungModis = new JLabel(Settings.i18n.getString("sidebar.topology.mouse.lblJungModis"));
 		comboBoxMouseModis = new JComboBox();
-		comboBoxMouseModis.setModel(new DefaultComboBoxModel(new String[] { "Editing", "Picking", "Transforming" }));
+		comboBoxMouseModis.setModel(new DefaultComboBoxModel(new String[] { "Picking", "Editing", "Transforming" }));
 
 		GroupLayout gl_mouseModusPanel = new GroupLayout(mouseModusPanel);
 		gl_mouseModusPanel.setHorizontalGroup(gl_mouseModusPanel.createParallelGroup(Alignment.LEADING).addGroup(
@@ -223,7 +226,7 @@ public class TopologyPanel extends JPanel {
 										.addGroup(
 												gl_mouseModusPanel
 														.createSequentialGroup()
-														.addComponent(lblJungModi)
+														.addComponent(lblJungModis)
 														.addGap(18)
 														.addComponent(comboBoxMouseModis, GroupLayout.PREFERRED_SIZE,
 																GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
@@ -244,7 +247,7 @@ public class TopologyPanel extends JPanel {
 						.addGroup(
 								gl_mouseModusPanel
 										.createParallelGroup(Alignment.BASELINE)
-										.addComponent(lblJungModi)
+										.addComponent(lblJungModis)
 										.addComponent(comboBoxMouseModis, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 												GroupLayout.PREFERRED_SIZE))
 						.addPreferredGap(ComponentPlacement.RELATED)

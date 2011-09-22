@@ -238,19 +238,19 @@ public class ActionController {
 		case CHANGE_MOUSE_MODI:
 			sidebar = Main.instance.sideBar;
 			String selected = (String) sidebar.topolgyPanel.comboBoxMouseModis.getSelectedItem();
-			if (selected == "Picking") {
+			if (selected.equals("Picking")) {
 				GraphLayoutViewer.getInstance().graphMouse.setMode(Mode.PICKING);
 				System.out.println("picking");
 				sidebar.topolgyPanel.mouseHiddenRB.setEnabled(false);
 				sidebar.topolgyPanel.mouseInputRB.setEnabled(false);
 				sidebar.topolgyPanel.mouseOutputRB.setEnabled(false);
-			} else if (selected == "Editing") {
+			} else if (selected.equals("Editing")) {
 				GraphLayoutViewer.getInstance().graphMouse.setMode(Mode.EDITING);
 				sidebar.topolgyPanel.mouseHiddenRB.setEnabled(true);
 				sidebar.topolgyPanel.mouseInputRB.setEnabled(true);
 				sidebar.topolgyPanel.mouseOutputRB.setEnabled(true);
 				System.out.println("editing");
-			} else if (selected == "Transforming") {
+			} else if (selected.equals("Transforming")) {
 				GraphLayoutViewer.getInstance().graphMouse.setMode(Mode.TRANSFORMING);
 				sidebar.topolgyPanel.mouseHiddenRB.setEnabled(false);
 				sidebar.topolgyPanel.mouseInputRB.setEnabled(false);
