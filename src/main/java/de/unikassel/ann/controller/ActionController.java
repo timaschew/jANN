@@ -10,12 +10,14 @@ package de.unikassel.ann.controller;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
 
+import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.factory.NetworkFactory;
 import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.gui.graph.GraphLayoutViewer;
 import de.unikassel.ann.gui.sidebar.Sidebar;
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.SidebarModel;
+import de.unikassel.ann.model.func.ActivationFunction;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse.Mode;
 
 /**
@@ -224,10 +226,20 @@ public class ActionController {
 
 		case CREATE_NETWORK:
 			NetworkFactory factory = new NetworkFactory();
-			System.out.println("Create network");
-			// factory.createSimpleNet(sidebarModel.getInputNeurons(),
-			// sidebarModel.getHiddenLayers(),
-			// sidebarModel.getOutputNeurons(), sidebarModel.getInputBias());
+			Integer inputNeurons = sidebarModel.getInputNeurons();
+			Boolean inputBias = sidebarModel.getInputBias();
+			Integer outputNeurons = sidebarModel.getOutputNeurons();
+			List<Integer> hiddenNeuronList = sidebarModel.getHiddenNeurons();
+			List<Boolean> hiddenBiasList = sidebarModel.getHiddenBias();
+			ActivationFunction activation = sidebarModel.getSelectedActivation();
+			NetConfig netConfig = factory.createNetwork(inputNeurons, inputBias, hiddenNeuronList, hiddenBiasList, outputNeurons,
+					activation);
+
+			boolean connectAll = sidebar.topolgyPanel.chckbxAllNeuronsBind.isSelected();
+			if (connectAll) {
+				netConfig.getNetwork().finalizeStructure();
+			}
+			Settings.getInstance().getCurrentSession().setNetworkConfig(netConfig);
 
 			break;
 
