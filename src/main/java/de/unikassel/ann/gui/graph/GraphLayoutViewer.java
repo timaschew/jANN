@@ -49,45 +49,17 @@ public class GraphLayoutViewer {
 
 	private static GraphLayoutViewer instance;
 
-	public static GraphLayoutViewer getInstance() {
-		if (instance == null) {
-			instance = new GraphLayoutViewer();
-		}
-		return instance;
-	}
-
 	/**
 	 * Private Constructor
 	 */
 	private GraphLayoutViewer() {
 	}
 
-	/*
-	 * Getter & Setter
-	 */
-
-	public DirectedGraph<Vertex, Edge> getGraph() {
-		return graph;
-	}
-
-	public void setGraph(final DirectedGraph<Vertex, Edge> graph) {
-		this.graph = graph;
-	}
-
-	public AbstractLayout<Vertex, Edge> getLayout() {
-		return layout;
-	}
-
-	public void setLayout(final AbstractLayout<Vertex, Edge> layout) {
-		this.layout = layout;
-	}
-
-	public VisualizationViewer<Vertex, Edge> getViewer() {
-		return viewer;
-	}
-
-	public void setViewer(final VisualizationViewer<Vertex, Edge> viewer) {
-		this.viewer = viewer;
+	public static GraphLayoutViewer getInstance() {
+		if (instance == null) {
+			instance = new GraphLayoutViewer();
+		}
+		return instance;
 	}
 
 	/**
@@ -148,6 +120,34 @@ public class GraphLayoutViewer {
 		// addMouseModeMenu();
 	}
 
+	/*
+	 * Getter & Setter
+	 */
+
+	public DirectedGraph<Vertex, Edge> getGraph() {
+		return graph;
+	}
+
+	public void setGraph(final DirectedGraph<Vertex, Edge> graph) {
+		this.graph = graph;
+	}
+
+	public AbstractLayout<Vertex, Edge> getLayout() {
+		return layout;
+	}
+
+	public void setLayout(final AbstractLayout<Vertex, Edge> layout) {
+		this.layout = layout;
+	}
+
+	public VisualizationViewer<Vertex, Edge> getViewer() {
+		return viewer;
+	}
+
+	public void setViewer(final VisualizationViewer<Vertex, Edge> viewer) {
+		this.viewer = viewer;
+	}
+
 	public void setDimension(final Dimension dim) {
 		this.dim = dim;
 	}
@@ -171,10 +171,6 @@ public class GraphLayoutViewer {
 	 * Remove all vertices and their edges from the graph.
 	 */
 	public void clear() {
-		// Clear picked states
-		viewer.getRenderContext().getPickedVertexState().clear();
-		viewer.getRenderContext().getPickedEdgeState().clear();
-
 		// Reset factories
 		VertexController.getInstance().getVertexFactory().reset();
 		EdgeController.getInstance().getEdgeFactory().reset();
@@ -185,7 +181,8 @@ public class GraphLayoutViewer {
 		// Create new graph
 		graph = new DirectedSparseGraph<Vertex, Edge>();
 		layout.setGraph(graph);
-		repaint();
+		layout.initialize();
+		repaint(viewer);
 	}
 
 	/**

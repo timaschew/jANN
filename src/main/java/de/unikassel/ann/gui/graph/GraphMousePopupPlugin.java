@@ -68,7 +68,7 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 									// layers
 									Neuron fromNeuron = other.getModel();
 									Neuron toNeuron = vertex.getModel();
-									if (fromNeuron.getLayer().getIndex() != toNeuron.getLayer().getIndex()) {
+									if (fromNeuron.getLayer().getIndex() < toNeuron.getLayer().getIndex()) {
 										// Create edge with its synapse between
 										// the both vertexes
 										Edge edge = edgeFactory.create();
@@ -92,7 +92,7 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 									// layers
 									Neuron fromNeuron = other.getModel();
 									Neuron toNeuron = vertex.getModel();
-									if (fromNeuron.getLayer().getIndex() != toNeuron.getLayer().getIndex()) {
+									if (fromNeuron.getLayer().getIndex() < toNeuron.getLayer().getIndex()) {
 										// Create edge with its synapse between
 										// the both vertexes
 										Edge edge = edgeFactory.create();

@@ -11,8 +11,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import de.unikassel.ann.config.NetConfig;
-import de.unikassel.ann.model.func.ActivationFunction;
-import de.unikassel.ann.model.func.SigmoidFunction;
 
 /**
  * @author anton
@@ -20,13 +18,11 @@ import de.unikassel.ann.model.func.SigmoidFunction;
  */
 public class UserSession {
 
-	private ActivationFunction defaultFunction = new SigmoidFunction();
-
-	private Network network;
-
 	public SidebarModel sidebarModel;
 
 	private String name;
+
+	private NetConfig config;
 
 	private static Set<String> names;
 
@@ -36,7 +32,6 @@ public class UserSession {
 
 	public UserSession(final String name) {
 		initName(name);
-		initDefaultNetwork();
 		sidebarModel = new SidebarModel();
 	}
 
@@ -60,49 +55,24 @@ public class UserSession {
 		this.name = realName;
 	}
 
-	/**
-	 * 
-	 */
-	private void initDefaultNetwork() {
-		NetConfig config = new NetConfig();
-		config.addLayer(1, false, defaultFunction); // input
-		config.addLayer(1, false, defaultFunction); // output
-
-	}
-
-	/**
-	 * @return the defaultFunction
-	 */
-	public ActivationFunction getDefaultFunction() {
-		return defaultFunction;
-	}
-
-	/**
-	 * @param defaultFunction
-	 *          the defaultFunction to set
-	 */
-	public void setDefaultFunction(final ActivationFunction defaultFunction) {
-		this.defaultFunction = defaultFunction;
-	}
-
-	/**
-	 * @return the network
-	 */
-	public Network getNetwork() {
-		return network;
-	}
-
-	/**
-	 * @param network
-	 *          the network to set
-	 */
-	public void setNetwork(final Network network) {
-		this.network = network;
-	}
-
 	@Override
 	public String toString() {
 		return name;
+	}
+
+	/**
+	 * @return the config
+	 */
+	public NetConfig getNetworkConfig() {
+		return config;
+	}
+
+	/**
+	 * @param config
+	 *            the config to set
+	 */
+	public void setNetworkConfig(final NetConfig config) {
+		this.config = config;
 	}
 
 }

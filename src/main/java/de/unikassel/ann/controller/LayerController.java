@@ -128,7 +128,7 @@ public class LayerController<T> {
 	 * @return boolean
 	 */
 	public boolean addVertex(final int layerIndex, final Vertex vertex, final boolean addToGraph) {
-		System.out.println("addVertex(" + layerIndex + ", " + vertex + ", " + addToGraph + ")");
+		// System.out.println("addVertex(" + layerIndex + ", " + vertex + ", " + addToGraph + ")");
 
 		if (layerIndex >= layers.size()) {
 			// Layer with the index does not exist -> Create new Layer
@@ -149,11 +149,19 @@ public class LayerController<T> {
 		return true;
 	}
 
+	/**
+	 * Remove last layer.
+	 */
 	public void removeLayer() {
 		int index = layers.size() - 1;
 		layers.remove(index);
 	}
 
+	/**
+	 * Remove layer with the given index.
+	 * 
+	 * @param index
+	 */
 	public void removeLayer(final int index) {
 		JungLayer layer = layers.get(index);
 		List<Vertex> vertices = layer.getVertices();
