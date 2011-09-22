@@ -38,8 +38,7 @@ public class Vertex implements Comparable<Vertex> {
 	}
 
 	/**
-	 * Vertex setup. Sets the current sidebar config values to the layer and add
-	 * it to the layercontroller.
+	 * Vertex setup. Sets the current sidebar config values to the layer and add it to the layercontroller.
 	 */
 	public void setup() {
 		// Get current selected layer index from the sidebar
@@ -48,15 +47,14 @@ public class Vertex implements Comparable<Vertex> {
 		setup(layerIndex);
 	}
 
-	public void setup(int layerIndex) {
+	public void setup(final int layerIndex) {
 		LayerController<Layer> layerController = LayerController.getInstance();
 
 		// Set current layer index for this vertex (for its neuron model)
 		setLayer(layerIndex);
 
-		// TODO Set its startvalue to 0
-		// TODO remove later, just for testing purpose
-		setValue(new Double(Math.random()));
+		// TODO Get standard value set in the sidebar model
+		setValue(0d);
 
 		// Get the number of vertices in the layer BEFORE adding the new vertex
 		int layerSize = layerController.getVerticesInLayer(layerIndex).size();
@@ -67,22 +65,25 @@ public class Vertex implements Comparable<Vertex> {
 
 		// Input layer (index = 0)
 		Actions action = Actions.UPDATE_SIDEBAR_CONFIG_INPUT_NEURON_MODEL;
+		String propertyName = SidebarModel.P.inputNeurons.name();
 		if (layerIndex > 0) {
 			if (layerIndex == layerController.getLayers().size() - 1) {
 				// Output Layer (index = # layers - 1)
 				action = Actions.UPDATE_SIDEBAR_CONFIG_OUTPUT_NEURON_MODEL;
+				propertyName = SidebarModel.P.outputNeurons.name();
 			} else {
 				// Hidden Layer (0 < index < # layers - 1)
-				action = Actions.UPDATE_SIDEBAR_CONFIG_HIDDEN_LAYER_MODEL;
+				action = Actions.UPDATE_SIDEBAR_CONFIG_HIDDEN_NEURON_MODEL;
+				propertyName = SidebarModel.P.hiddenNeurons.name();
 			}
 		}
-		ActionController.get().doAction(
-				action,
-				new PropertyChangeEvent(this, SidebarModel.P.inputNeurons
-						.name(), layerSize, layerSize + 1));
+
+		System.out.println("Vertex.setup(" + layerIndex + ")");
+
+		ActionController.get().doAction(action, new PropertyChangeEvent(this, propertyName, layerSize, layerSize + 1));
 	}
 
-	public void setIndex(int index) {
+	public void setIndex(final int index) {
 		this.index = index;
 	}
 
@@ -94,7 +95,7 @@ public class Vertex implements Comparable<Vertex> {
 	 * Vertex model
 	 */
 
-	public void setModel(Neuron model) {
+	public void setModel(final Neuron model) {
 		this.model = model;
 	}
 
@@ -102,29 +103,29 @@ public class Vertex implements Comparable<Vertex> {
 		return model;
 	}
 
-	public void setLayer(int index) {
+	public void setLayer(final int index) {
 		// TODO Get layer by its index
 		Layer layer = new Layer();
 		layer.setIndex(index);
-		this.model.setLayer(layer);
+		model.setLayer(layer);
 	}
 
 	public int getLayer() {
-		if (this.model == null) {
+		if (model == null) {
 			return -1;
 		}
-		return this.model.getLayer().getIndex();
+		return model.getLayer().getIndex();
 	}
 
-	public void setValue(Double value) {
-		this.model.setOutputValue(value);
+	public void setValue(final Double value) {
+		model.setOutputValue(value);
 	}
 
 	public Double getValue() {
-		if (this.model == null) {
+		if (model == null) {
 			return null;
 		}
-		return this.model.getValue();
+		return model.getValue();
 	}
 
 	public void remove() {
@@ -143,25 +144,21 @@ public class Vertex implements Comparable<Vertex> {
 				action = Actions.UPDATE_SIDEBAR_CONFIG_HIDDEN_LAYER_MODEL;
 			}
 		}
-		ActionController.get().doAction(
-				action,
-				new PropertyChangeEvent(this, SidebarModel.P.inputNeurons
-						.name(), layerSize, layerSize - 1));
+		ActionController.get()
+				.doAction(action, new PropertyChangeEvent(this, SidebarModel.P.inputNeurons.name(), layerSize, layerSize - 1));
 	}
 
 	@Override
 	public String toString() {
 		if (df == null) {
-			df = new DecimalFormat(
-					Settings.properties.getProperty("gui.decimalFormat"),
-					Settings.decimalSymbols);
+			df = new DecimalFormat(Settings.properties.getProperty("gui.decimalFormat"), Settings.decimalSymbols);
 		}
 		String value = df.format(getValue());
 		return "#" + index + " (" + value + ")";
 	}
 
 	@Override
-	public int compareTo(Vertex v) {
+	public int compareTo(final Vertex v) {
 		return getIndex() - v.getIndex();
 	}
 

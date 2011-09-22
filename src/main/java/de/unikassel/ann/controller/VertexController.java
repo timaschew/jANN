@@ -211,7 +211,7 @@ public class VertexController<V> {
 		@Override
 		public Stroke transform(final Vertex v) {
 			Graph<Vertex, Edge> graph = GraphLayoutViewer.getInstance().getGraph();
-			if (graph != null && highlight) {
+			if (highlight) {
 				if (pi.isPicked(v)) {
 					return heavy;
 				}
