@@ -28,6 +28,7 @@ import javax.swing.text.StyledDocument;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.gui.graph.GraphLayoutViewer;
 import de.unikassel.ann.gui.sidebar.Sidebar;
+import de.unikassel.ann.gui.sidebar.SidebarSOM;
 
 public class Main {
 
@@ -62,6 +63,10 @@ public class Main {
 	 */
 	public Sidebar sideBar;
 	public JSplitPane mainSplitPane;
+	public SidebarSOM sidebarSom;
+	public JPanel _3DBoardPane;
+	private JPanel jungPanel;
+	private JSplitPane jungConsoleSplitPane;
 
 	/**
 	 * Create the application.
@@ -113,12 +118,12 @@ public class Main {
 		// makes the right component's size remain fixed
 		mainSplitPane.setResizeWeight(1.0);
 
-		JSplitPane jungConsoleSplitPane = new JSplitPane();
+		jungConsoleSplitPane = new JSplitPane();
 		jungConsoleSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		jungConsoleSplitPane.setMinimumSize(new Dimension(625, 50));
 		mainSplitPane.setLeftComponent(jungConsoleSplitPane);
 
-		JPanel jungPanel = new JPanel(new BorderLayout());
+		jungPanel = new JPanel(new BorderLayout());
 		jungConsoleSplitPane.setLeftComponent(jungPanel);
 
 		JPanel consolePanel = new JPanel(new BorderLayout());
@@ -157,6 +162,28 @@ public class Main {
 		sideBar = new Sidebar();
 		// Provide minimum sizes for the components in the split pane
 		sideBar.setMinimumSize(new Dimension(435, 50));
+		mainSplitPane.setRightComponent(sideBar);
+	}
+
+	// add the SOM sidebar panel for menu "options" to the
+	// Mainsplitpane and remove the sidebar for backpropagation
+	public void addSOMSidebarPanel() {
+		sidebarSom = new SidebarSOM();
+		_3DBoardPane = new JPanel();
+		sidebarSom.setMinimumSize(new Dimension(435, 50));
+		mainSplitPane.remove(sideBar);
+		jungConsoleSplitPane.remove(jungPanel);
+		jungConsoleSplitPane.setRightComponent(_3DBoardPane);
+		mainSplitPane.setRightComponent(sidebarSom);
+	}
+
+	// add the Backprop. sidebar for the menu "options" to the
+	// Mainsplitpane and remove the Som
+	public void addBackproSidebarPanel() {
+		sideBar = new Sidebar();
+		// Provide minimum sizes for the components in the split pane
+		sideBar.setMinimumSize(new Dimension(435, 50));
+		mainSplitPane.remove(sidebarSom);
 		mainSplitPane.setRightComponent(sideBar);
 	}
 

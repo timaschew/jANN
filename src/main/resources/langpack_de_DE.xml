@@ -16,6 +16,8 @@
 	<entry key="menu.view.showTrainingError">Trainingsfehler anzeigen</entry>
 	<entry key="menu.view.showTrainingData">Trainingsdaten anzeigen</entry>
 	<entry key="menu.options">Optionen</entry>
+	<entry key="menu.options.backpropagation">Backpropagation</entry>
+	<entry key="menu.options.SOM">Self Organized Network</entry>
 	<entry key="menu.options.trainData">Trainingsdaten normalisieren</entry>
 	<entry key="menu.options.trainData.lblWhat">Was</entry>
 	<entry key="menu.options.trainData.btnShowTrainingsdata">Trainingsdaten anzeigen</entry>
@@ -79,4 +81,15 @@
 	<entry key="sidebar.trainControl.btnPlay">Play</entry>
 	<entry key="sidebar.trainControl.btnPause">Pause</entry>
 	<entry key="sidebar.trainControl.btnStop">Stop</entry>
+	<entry key="sidebar.topologySOM">Topologie</entry>
+	<entry key="sidebar.topologySOM.lblInputNeuronSOM">Input Neuronen</entry>
+	<entry key="sidebar.topologySOM.lblOutputDimesionSOM">Output Dimensionen</entry>
+	<entry key="sidebar.topologySOM.lblOutputNeuronSOM">Output Neuronen</entry>
+	<entry key="sidebar.topologySOM.lblNeighborhoodTopologySOM">Nachbarschaftstopologie</entry>
+	<entry key="sidebar.topologySOM.lblPatternSOM">Pattern</entry>
+	<entry key="sidebar.trainingSOM">Training</entry>
+	<entry key="sidebar.trainingSOM.lblAlgorithmSOM">Algorithmus</entry>
+	<entry key="sidebar.trainingSOM.lblNeighborhoodRadius">Nachbarschaftsradium</entry>
+	<entry key="sidebar.trainingSOM.lblLernfunction">Lernfunktion</entry>
+	<entry key="sidebar.trainingSOM.lblIterations">Iterationen</entry>
 </properties>

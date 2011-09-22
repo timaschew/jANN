@@ -253,11 +253,20 @@ public class ActionController {
 			if (selected == "Picking") {
 				GraphLayoutViewer.getInstance().graphMouse.setMode(Mode.PICKING);
 				System.out.println("picking");
+				sidebar.topolgyPanel.mouseHiddenRB.setEnabled(false);
+				sidebar.topolgyPanel.mouseInputRB.setEnabled(false);
+				sidebar.topolgyPanel.mouseOutputRB.setEnabled(false);
 			} else if (selected == "Editing") {
 				GraphLayoutViewer.getInstance().graphMouse.setMode(Mode.EDITING);
+				sidebar.topolgyPanel.mouseHiddenRB.setEnabled(true);
+				sidebar.topolgyPanel.mouseInputRB.setEnabled(true);
+				sidebar.topolgyPanel.mouseOutputRB.setEnabled(true);
 				System.out.println("editing");
 			} else if (selected == "Transforming") {
 				GraphLayoutViewer.getInstance().graphMouse.setMode(Mode.TRANSFORMING);
+				sidebar.topolgyPanel.mouseHiddenRB.setEnabled(false);
+				sidebar.topolgyPanel.mouseInputRB.setEnabled(false);
+				sidebar.topolgyPanel.mouseOutputRB.setEnabled(false);
 				System.out.println("transforming");
 			}
 
