@@ -5,13 +5,16 @@
  * 
  * anton
  */
-package de.unikassel.threeD.misc;
+package de.unikassel.ann.threeD;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -20,7 +23,7 @@ import javax.swing.JPanel;
  * @author anton
  * 
  */
-public class Wuerfel extends JPanel {
+public class Cube extends JPanel implements MouseMotionListener {
 
 	// 8 Eckpunkte 1-8
 	// mit je 3 Koordinaten 1,2,3
@@ -40,15 +43,17 @@ public class Wuerfel extends JPanel {
 
 	int x = 1, y = 2, z = 3;
 
+	private Point prevMove = new Point();
+
 	public Double minCorner = -100.0;
 	public Double maxCorner = +100.0;
 
 	Image buffer;
 	Graphics2D gBuffer;
 
-	private WuerfelGUI controller;
+	private CubeGUI controller;
 
-	public Wuerfel(final WuerfelGUI controller) {
+	public Cube(final CubeGUI controller) {
 		this.controller = controller;
 		setBackground(new Color(255, 255, 255));
 		add(new JLabel("Test"));
@@ -79,6 +84,8 @@ public class Wuerfel extends JPanel {
 		p[8][x] = minCorner;
 		p[8][y] = maxCorner;
 		p[8][z] = maxCorner;
+
+		addMouseMotionListener(this);
 
 	}
 
@@ -133,11 +140,31 @@ public class Wuerfel extends JPanel {
 		} catch (InterruptedException e) {
 		}
 
-		double px, py, pz;
+		rotate();
 
-		double angle_x = controller.xRotModel.getNumber().doubleValue();
-		double angle_y = controller.yRotModel.getNumber().doubleValue();
-		double angle_z = controller.zRotModel.getNumber().doubleValue();
+		repaint();
+	}
+
+	/**
+	 * 
+	 */
+	private void rotate() {
+
+		if (controller.chckbxAutoRotation.isSelected()) {
+			double angle_x = controller.xRotModel.getNumber().doubleValue();
+			double angle_y = controller.yRotModel.getNumber().doubleValue();
+			double angle_z = controller.zRotModel.getNumber().doubleValue();
+			rotate(angle_x, angle_y, angle_z);
+		}
+	}
+
+	/**
+	 * @param angle_x
+	 * @param angle_y
+	 * @param angle_z
+	 */
+	private void rotate(final double angle_x, final double angle_y, final double angle_z) {
+		double px, py, pz;
 		for (int i = 1; i < 9; i++) {
 
 			px = p[i][x];
@@ -162,11 +189,26 @@ public class Wuerfel extends JPanel {
 			p[i][y] = py * Math.cos(angle_z) + px * Math.sin(angle_z);
 		}
 
-		repaint();
 	}
 
 	@Override
 	public void update(final Graphics g) {
 		paint(g);
+	}
+
+	@Override
+	public void mouseDragged(final MouseEvent e) {
+		int dx = prevMove.x - e.getX();
+		int dy = prevMove.y - e.getY();
+		double rotY = dx / 100.0;
+		double rotX = dy / 100.0;
+		rotate(rotX, rotY, 0);
+		prevMove = e.getPoint();
+	}
+
+	@Override
+	public void mouseMoved(final MouseEvent e) {
+		prevMove = e.getPoint();
+
 	}
 }

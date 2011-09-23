@@ -5,7 +5,7 @@
  * 
  * anton
  */
-package de.unikassel.threeD.misc;
+package de.unikassel.ann.threeD;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -33,7 +33,7 @@ import javax.swing.SpinnerNumberModel;
  * @author anton
  * 
  */
-public class WuerfelGUI extends JFrame {
+public class CubeGUI extends JFrame {
 	private JSpinner minCorner;
 	private JSpinner maxCorner;
 	private JSpinner worldXoffset;
@@ -101,10 +101,10 @@ public class WuerfelGUI extends JFrame {
 	private JLabel lblFps;
 	private JTextField fpsTF;
 	private SpinnerModel rotationStepModel;
-	private JCheckBox chckbxAutoRotation;
+	public JCheckBox chckbxAutoRotation;
 	private int cunter = 0;
 	private long lastUpdate = System.currentTimeMillis();
-	private Wuerfel w3d;
+	private Cube w3d;
 	protected boolean init = false;
 
 	public static void main(final String[] args) {
@@ -113,8 +113,8 @@ public class WuerfelGUI extends JFrame {
 			@Override
 			public void run() {
 				try {
-					WuerfelGUI w = new WuerfelGUI();
-					w.init = true;
+					CubeGUI w = new CubeGUI();
+					w.init();
 					w.setVisible(true);
 					w.setBounds(100, 100, 1000, 700); // statt 800 1060
 					w.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -124,6 +124,16 @@ public class WuerfelGUI extends JFrame {
 				}
 			}
 		});
+	}
+
+	/**
+	 * 
+	 */
+	protected void init() {
+		w3d = new Cube(this);
+		getContentPane().add(w3d);
+		init = true;
+
 	}
 
 	@Override
@@ -143,12 +153,11 @@ public class WuerfelGUI extends JFrame {
 		lastUpdate = newTime;
 	}
 
-	public WuerfelGUI() {
+	public CubeGUI() {
 		getContentPane().setLayout(new BorderLayout());
 
-		w3d = new Wuerfel(this);
-		// JPanel w3d = new JPanel();
-		getContentPane().add(w3d);
+		chckbxAutoRotation = new JCheckBox("Auto-Rotation");
+		chckbxAutoRotation.setSelected(true);
 
 		rotationStepModel = new SpinnerNumberModel(angle_step, new Double(-1), new Double(1), new Double(0.001));
 		rotStepSpinner = new JSpinner(rotationStepModel);
@@ -208,7 +217,6 @@ public class WuerfelGUI extends JFrame {
 		southPanel.add(fpsTF);
 		fpsTF.setColumns(2);
 
-		chckbxAutoRotation = new JCheckBox("Auto-Rotation");
 		southPanel.add(chckbxAutoRotation);
 		// delayTF.setColumns(3);
 
