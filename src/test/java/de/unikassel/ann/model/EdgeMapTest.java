@@ -22,7 +22,7 @@ public class EdgeMapTest {
 
 	@Test
 	public void test() {
-		EdgeMap edgeMap = new EdgeMap();
+		EdgeMap<Double> edgeMap = new EdgeMap<Double>();
 
 		edgeMap.put(new FromTo(0, 10), 1.23);
 		edgeMap.put(new FromTo(1, 11), 4.56);

@@ -14,30 +14,31 @@ import java.util.Set;
 
 /**
  * @author anton
+ * @param <T>
  * 
  */
-public class EdgeMap {
+public class EdgeMap<T> {
 
 	/**
 	 * A synapse which have a connection from neuron id 2 to neuron id 6 and the weight value 1.23 can put into the map this way: <code>
 	 * synapseMap.put(new FromTo(2,6), 1.23);
 	 * </code
 	 */
-	private Map<FromTo, Double> edgeMap;
+	private Map<FromTo, T> edgeMap;
 
 	public EdgeMap() {
-		edgeMap = new HashMap<FromTo, Double>();
+		edgeMap = new HashMap<FromTo, T>();
 	}
 
-	public Map<FromTo, Double> getMap() {
+	public Map<FromTo, T> getMap() {
 		return edgeMap;
 	}
 
-	public void put(final FromTo key, final Double value) {
+	public void put(final FromTo key, final T value) {
 		edgeMap.put(key, value);
 	}
 
-	public Double get(final FromTo key) {
+	public T get(final FromTo key) {
 		return edgeMap.get(key);
 	}
 
@@ -86,7 +87,7 @@ public class EdgeMap {
 	 * @param from
 	 * @return
 	 */
-	public Map<Integer, Double> getSynapsesToForFrom(final Integer from) {
+	public Map<Integer, T> getSynapsesToForFrom(final Integer from) {
 		return getSynapseMap(from, false, true);
 	}
 
@@ -102,7 +103,7 @@ public class EdgeMap {
 	 * @param from
 	 * @return
 	 */
-	public Map<FromTo, Double> getSynapsesFromToForFrom(final Integer from) {
+	public Map<FromTo, T> getSynapsesFromToForFrom(final Integer from) {
 		return getSynapseMap(from, true, true);
 	}
 
@@ -118,7 +119,7 @@ public class EdgeMap {
 	 * @param to
 	 * @return
 	 */
-	public Map<FromTo, Double> getSynapsesFromForTo(final Integer to) {
+	public Map<FromTo, T> getSynapsesFromForTo(final Integer to) {
 		return getSynapseMap(to, false, false);
 	}
 
@@ -134,7 +135,7 @@ public class EdgeMap {
 	 * @param to
 	 * @return
 	 */
-	public Map<FromTo, Double> getSynapsesFromToForTo(final Integer to) {
+	public Map<FromTo, T> getSynapsesFromToForTo(final Integer to) {
 		return getSynapseMap(to, true, false);
 	}
 
@@ -148,23 +149,23 @@ public class EdgeMap {
 	 *            searching for as 'from' if true, otherwise searching as 'to'
 	 */
 	private Map getSynapseMap(final Integer searchFor, final boolean both, final boolean forward) {
-		Map<Integer, Double> from2toMap = new HashMap<Integer, Double>();
-		Map<FromTo, Double> from2fromToMap = new HashMap<FromTo, Double>();
-		Map<Integer, Double> to2fromMap = new HashMap<Integer, Double>();
-		Map<FromTo, Double> to2fromToMap = new HashMap<FromTo, Double>();
+		Map<Integer, T> from2toMap = new HashMap<Integer, T>();
+		Map<FromTo, T> from2fromToMap = new HashMap<FromTo, T>();
+		Map<Integer, T> to2fromMap = new HashMap<Integer, T>();
+		Map<FromTo, T> to2fromToMap = new HashMap<FromTo, T>();
 
-		for (Entry<FromTo, Double> e : edgeMap.entrySet()) {
+		for (Entry<FromTo, T> e : edgeMap.entrySet()) {
 			FromTo ft = e.getKey();
-			Double weight = e.getValue();
+			T value = e.getValue();
 			if (forward) {
 				if (ft.from.equals(searchFor)) {
-					from2toMap.put(ft.to, weight);
-					from2fromToMap.put(ft, weight);
+					from2toMap.put(ft.to, value);
+					from2fromToMap.put(ft, value);
 				}
 			} else {
 				if (ft.to.equals(searchFor)) {
-					to2fromMap.put(ft.from, weight);
-					to2fromToMap.put(ft, weight);
+					to2fromMap.put(ft.from, value);
+					to2fromToMap.put(ft, value);
 				}
 			}
 
