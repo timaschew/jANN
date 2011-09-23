@@ -24,25 +24,32 @@ public class Wuerfel extends JPanel {
 
 	// 8 Eckpunkte 1-8
 	// mit je 3 Koordinaten 1,2,3
-	public double p[][] = new double[9][4];
+
+	/**
+	 * <pre>
+	 *       8 - - - - - 7
+	 *      / |         / |
+	 *     5 - - - - - 6  |
+	 *     |  |        |  |
+	 *     |  4 - - - -|- 3
+	 *     | /         | /
+	 *     1 - - - - - 2
+	 * </pre>
+	 */
+	public Double p[][] = new Double[9][4];
 
 	int x = 1, y = 2, z = 3;
 
-	public double minCorner = -100;
-	public double maxCorner = +100;
-	public int worldWidthOffset = 200;
-	public int worldHeightOffset = 200;
-
-	// Rotationswinkel in rad
-	public double angle_x = 0.01;
-	public double angle_y = 0.0075;
-	public double angle_z = 0.005;
+	public Double minCorner = -100.0;
+	public Double maxCorner = +100.0;
 
 	Image buffer;
 	Graphics2D gBuffer;
 
-	public Wuerfel() {
+	private WuerfelGUI controller;
 
+	public Wuerfel(final WuerfelGUI controller) {
+		this.controller = controller;
 		setBackground(new Color(255, 255, 255));
 		add(new JLabel("Test"));
 
@@ -73,18 +80,6 @@ public class Wuerfel extends JPanel {
 		p[8][y] = maxCorner;
 		p[8][z] = maxCorner;
 
-		/**
-		 * <pre>
-		 *       8 - - - - - 7
-		 *      / |         / |
-		 *     5 - - - - - 6  |
-		 *     |  |        |  |
-		 *     |  4 - - - -|- 3
-		 *     | /         | /
-		 *     1 - - - - - 2
-		 * </pre>
-		 */
-
 	}
 
 	@Override
@@ -100,43 +95,49 @@ public class Wuerfel extends JPanel {
 		// Antialiasing
 		gBuffer.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+		int worldXoffset = controller.worldXoffsetModel.getNumber().intValue();
+		int worldYOffset = controller.worldYoffsetModel.getNumber().intValue();
+
 		// Lokale Würfel-Koordinaten
 		// in Welt-Koordinaten: +200
-		gBuffer.drawLine((int) p[1][x] + worldWidthOffset, (int) p[1][y] + worldHeightOffset, (int) p[2][x] + worldWidthOffset,
-				(int) p[2][y] + worldHeightOffset);
-		gBuffer.drawLine((int) p[2][x] + worldWidthOffset, (int) p[2][y] + worldHeightOffset, (int) p[3][x] + worldWidthOffset,
-				(int) p[3][y] + worldHeightOffset);
-		gBuffer.drawLine((int) p[3][x] + worldWidthOffset, (int) p[3][y] + worldHeightOffset, (int) p[4][x] + worldWidthOffset,
-				(int) p[4][y] + worldHeightOffset);
-		gBuffer.drawLine((int) p[4][x] + worldWidthOffset, (int) p[4][y] + worldHeightOffset, (int) p[1][x] + worldWidthOffset,
-				(int) p[1][y] + worldHeightOffset);
-		gBuffer.drawLine((int) p[5][x] + worldWidthOffset, (int) p[5][y] + worldHeightOffset, (int) p[6][x] + worldWidthOffset,
-				(int) p[6][y] + worldHeightOffset);
-		gBuffer.drawLine((int) p[6][x] + worldWidthOffset, (int) p[6][y] + worldHeightOffset, (int) p[7][x] + worldWidthOffset,
-				(int) p[7][y] + worldHeightOffset);
-		gBuffer.drawLine((int) p[7][x] + worldWidthOffset, (int) p[7][y] + worldHeightOffset, (int) p[8][x] + worldWidthOffset,
-				(int) p[8][y] + worldHeightOffset);
-		gBuffer.drawLine((int) p[8][x] + worldWidthOffset, (int) p[8][y] + worldHeightOffset, (int) p[5][x] + worldWidthOffset,
-				(int) p[5][y] + worldHeightOffset);
-		gBuffer.drawLine((int) p[1][x] + worldWidthOffset, (int) p[1][y] + worldHeightOffset, (int) p[5][x] + worldWidthOffset,
-				(int) p[5][y] + worldHeightOffset);
-		gBuffer.drawLine((int) p[2][x] + worldWidthOffset, (int) p[2][y] + worldHeightOffset, (int) p[6][x] + worldWidthOffset,
-				(int) p[6][y] + worldHeightOffset);
-		gBuffer.drawLine((int) p[3][x] + worldWidthOffset, (int) p[3][y] + worldHeightOffset, (int) p[7][x] + worldWidthOffset,
-				(int) p[7][y] + worldHeightOffset);
-		gBuffer.drawLine((int) p[4][x] + worldWidthOffset, (int) p[4][y] + worldHeightOffset, (int) p[8][x] + worldWidthOffset,
-				(int) p[8][y] + worldHeightOffset);
+		gBuffer.drawLine(p[1][x].intValue() + worldXoffset, p[1][y].intValue() + worldYOffset, p[2][x].intValue() + worldXoffset,
+				p[2][y].intValue() + worldYOffset);
+		gBuffer.drawLine(p[2][x].intValue() + worldXoffset, p[2][y].intValue() + worldYOffset, p[3][x].intValue() + worldXoffset,
+				p[3][y].intValue() + worldYOffset);
+		gBuffer.drawLine(p[3][x].intValue() + worldXoffset, p[3][y].intValue() + worldYOffset, p[4][x].intValue() + worldXoffset,
+				p[4][y].intValue() + worldYOffset);
+		gBuffer.drawLine(p[4][x].intValue() + worldXoffset, p[4][y].intValue() + worldYOffset, p[1][x].intValue() + worldXoffset,
+				p[1][y].intValue() + worldYOffset);
+		gBuffer.drawLine(p[5][x].intValue() + worldXoffset, p[5][y].intValue() + worldYOffset, p[6][x].intValue() + worldXoffset,
+				p[6][y].intValue() + worldYOffset);
+		gBuffer.drawLine(p[6][x].intValue() + worldXoffset, p[6][y].intValue() + worldYOffset, p[7][x].intValue() + worldXoffset,
+				p[7][y].intValue() + worldYOffset);
+		gBuffer.drawLine(p[7][x].intValue() + worldXoffset, p[7][y].intValue() + worldYOffset, p[8][x].intValue() + worldXoffset,
+				p[8][y].intValue() + worldYOffset);
+		gBuffer.drawLine(p[8][x].intValue() + worldXoffset, p[8][y].intValue() + worldYOffset, p[5][x].intValue() + worldXoffset,
+				p[5][y].intValue() + worldYOffset);
+		gBuffer.drawLine(p[1][x].intValue() + worldXoffset, p[1][y].intValue() + worldYOffset, p[5][x].intValue() + worldXoffset,
+				p[5][y].intValue() + worldYOffset);
+		gBuffer.drawLine(p[2][x].intValue() + worldXoffset, p[2][y].intValue() + worldYOffset, p[6][x].intValue() + worldXoffset,
+				p[6][y].intValue() + worldYOffset);
+		gBuffer.drawLine(p[3][x].intValue() + worldXoffset, p[3][y].intValue() + worldYOffset, p[7][x].intValue() + worldXoffset,
+				p[7][y].intValue() + worldYOffset);
+		gBuffer.drawLine(p[4][x].intValue() + worldXoffset, p[4][y].intValue() + worldYOffset, p[8][x].intValue() + worldXoffset,
+				p[8][y].intValue() + worldYOffset);
 
 		g.drawImage(buffer, 0, 0, this);
 
 		// Verzögerung
 		try {
-			Thread.sleep(10);
+			Thread.sleep(controller.delayModel.getNumber().intValue());
 		} catch (InterruptedException e) {
 		}
 
 		double px, py, pz;
 
+		double angle_x = controller.xRotModel.getNumber().doubleValue();
+		double angle_y = controller.yRotModel.getNumber().doubleValue();
+		double angle_z = controller.zRotModel.getNumber().doubleValue();
 		for (int i = 1; i < 9; i++) {
 
 			px = p[i][x];
