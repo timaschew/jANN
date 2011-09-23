@@ -213,6 +213,21 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 		}
 	}
 
+	/**
+	 * @return the bATCH_LEARNING
+	 */
+	public static boolean isBATCH_LEARNING() {
+		return BATCH_LEARNING;
+	}
+
+	/**
+	 * @param bATCH_LEARNING
+	 *            the bATCH_LEARNING to set
+	 */
+	public static void setBATCH_LEARNING(final boolean bATCH_LEARNING) {
+		BATCH_LEARNING = bATCH_LEARNING;
+	}
+
 	// public static void printStep(Network net, DataPair pair) {
 	// forwardStep(net, pair);
 	//

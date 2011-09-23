@@ -11,13 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 
 import de.unikassel.ann.controller.EdgeController;
 import de.unikassel.ann.controller.LayerController;
-import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.controller.VertexController;
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.Network;
@@ -52,45 +49,17 @@ public class GraphLayoutViewer {
 
 	private static GraphLayoutViewer instance;
 
-	public static GraphLayoutViewer getInstance() {
-		if (instance == null) {
-			instance = new GraphLayoutViewer();
-		}
-		return instance;
-	}
-
 	/**
 	 * Private Constructor
 	 */
 	private GraphLayoutViewer() {
 	}
 
-	/*
-	 * Getter & Setter
-	 */
-
-	public DirectedGraph<Vertex, Edge> getGraph() {
-		return graph;
-	}
-
-	public void setGraph(final DirectedGraph<Vertex, Edge> graph) {
-		this.graph = graph;
-	}
-
-	public AbstractLayout<Vertex, Edge> getLayout() {
-		return layout;
-	}
-
-	public void setLayout(final AbstractLayout<Vertex, Edge> layout) {
-		this.layout = layout;
-	}
-
-	public VisualizationViewer<Vertex, Edge> getViewer() {
-		return viewer;
-	}
-
-	public void setViewer(final VisualizationViewer<Vertex, Edge> viewer) {
-		this.viewer = viewer;
+	public static GraphLayoutViewer getInstance() {
+		if (instance == null) {
+			instance = new GraphLayoutViewer();
+		}
+		return instance;
 	}
 
 	/**
@@ -148,7 +117,35 @@ public class GraphLayoutViewer {
 		// Graph Mouse
 		//
 		initGraphMouse();
-		addMouseModeMenu();
+		// addMouseModeMenu();
+	}
+
+	/*
+	 * Getter & Setter
+	 */
+
+	public DirectedGraph<Vertex, Edge> getGraph() {
+		return graph;
+	}
+
+	public void setGraph(final DirectedGraph<Vertex, Edge> graph) {
+		this.graph = graph;
+	}
+
+	public AbstractLayout<Vertex, Edge> getLayout() {
+		return layout;
+	}
+
+	public void setLayout(final AbstractLayout<Vertex, Edge> layout) {
+		this.layout = layout;
+	}
+
+	public VisualizationViewer<Vertex, Edge> getViewer() {
+		return viewer;
+	}
+
+	public void setViewer(final VisualizationViewer<Vertex, Edge> viewer) {
+		this.viewer = viewer;
 	}
 
 	public void setDimension(final Dimension dim) {
@@ -174,10 +171,6 @@ public class GraphLayoutViewer {
 	 * Remove all vertices and their edges from the graph.
 	 */
 	public void clear() {
-		// Clear picked states
-		viewer.getRenderContext().getPickedVertexState().clear();
-		viewer.getRenderContext().getPickedEdgeState().clear();
-
 		// Reset factories
 		VertexController.getInstance().getVertexFactory().reset();
 		EdgeController.getInstance().getEdgeFactory().reset();
@@ -188,7 +181,8 @@ public class GraphLayoutViewer {
 		// Create new graph
 		graph = new DirectedSparseGraph<Vertex, Edge>();
 		layout.setGraph(graph);
-		repaint();
+		layout.initialize();
+		repaint(viewer);
 	}
 
 	/**
@@ -277,20 +271,20 @@ public class GraphLayoutViewer {
 		graphMouse.setZoomAtMouse(false);
 	}
 
-	/**
-	 * Add MouseMode Menu to the MainMenu of the frame to set the mode of the Graph Mouse.
-	 */
-	private void addMouseModeMenu() {
-		if (frame == null) {
-			// No frame -> No menu -> No fun!
-			return;
-		}
-		JMenu modeMenu = graphMouse.getModeMenu();
-		modeMenu.setText(Settings.getI18n("menu.mousemode", "Mode"));
-		JMenuBar menu = frame.getJMenuBar();
-		menu.add(modeMenu, menu.getComponentCount() - 1);
-		graphMouse.setMode(ModalGraphMouse.Mode.EDITING);
-	}
+	// /**
+	// * Add MouseMode Menu to the MainMenu of the frame to set the mode of the Graph Mouse.
+	// */
+	// private void addMouseModeMenu() {
+	// if (frame == null) {
+	// // No frame -> No menu -> No fun!
+	// return;
+	// }
+	// JMenu modeMenu = graphMouse.getModeMenu();
+	// modeMenu.setText(Settings.getI18n("menu.mousemode", "Mode"));
+	// JMenuBar menu = frame.getJMenuBar();
+	// menu.add(modeMenu, menu.getComponentCount() - 1);
+	// graphMouse.setMode(ModalGraphMouse.Mode.EDITING);
+	// }
 
 	/**
 	 * @param vv

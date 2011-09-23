@@ -157,7 +157,7 @@ public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements 
 					// Check if the two neurons are in different layers
 					Neuron fromNeuron = startVertex.getModel();
 					Neuron toNeuron = vertex.getModel();
-					if (fromNeuron.getLayer().getIndex() != toNeuron.getLayer().getIndex()) {
+					if (fromNeuron.getLayer().getIndex() < toNeuron.getLayer().getIndex()) {
 						// Create edge with its synapse between the both vertexes
 						Edge edge = edgeFactory.create();
 						edge.createModel(fromNeuron, toNeuron);

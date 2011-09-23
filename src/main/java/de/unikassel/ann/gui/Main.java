@@ -56,7 +56,13 @@ public class Main {
 	 */
 	private JFrame frame;
 	private JTextPane textPane;
+	private JTextPane textPaneSOM;
 	private GraphLayoutViewer glv;
+	private JPanel jungPanel;
+	private JSplitPane jungConsoleSplitPane;
+	private JSplitPane _3DBoardSplitPane;
+	private JPanel consolePanel;
+	private JPanel consolePanelSOM;
 
 	/*
 	 * public fields
@@ -65,8 +71,6 @@ public class Main {
 	public JSplitPane mainSplitPane;
 	public SidebarSOM sidebarSom;
 	public JPanel _3DBoardPane;
-	private JPanel jungPanel;
-	private JSplitPane jungConsoleSplitPane;
 
 	/**
 	 * Create the application.
@@ -113,22 +117,17 @@ public class Main {
 		//
 		mainSplitPane = new JSplitPane();
 		frame.getContentPane().add(mainSplitPane, BorderLayout.CENTER);
-
-		initSidebarPanel();
 		// makes the right component's size remain fixed
 		mainSplitPane.setResizeWeight(1.0);
 
+		initSidebarPanel();
+
 		jungConsoleSplitPane = new JSplitPane();
 		jungConsoleSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-		jungConsoleSplitPane.setMinimumSize(new Dimension(625, 50));
-		mainSplitPane.setLeftComponent(jungConsoleSplitPane);
-
+		// jungConsoleSplitPane.setMinimumSize(new Dimension(625, 50));
 		jungPanel = new JPanel(new BorderLayout());
-		jungConsoleSplitPane.setLeftComponent(jungPanel);
 
-		JPanel consolePanel = new JPanel(new BorderLayout());
-		jungConsoleSplitPane.setRightComponent(consolePanel);
-
+		consolePanel = new JPanel(new BorderLayout());
 		textPane = new JTextPane();
 		textPane.setEditable(false);
 		addStylesToDocument(textPane.getStyledDocument());
@@ -136,12 +135,35 @@ public class Main {
 		JScrollPane scrollPane = new JScrollPane(textPane);
 		consolePanel.add(scrollPane, BorderLayout.CENTER);
 
-		mainSplitPane.setContinuousLayout(true);
-		mainSplitPane.setDividerLocation(600);
-		mainSplitPane.setBorder(BorderFactory.createEmptyBorder());
+		// SplitPane for Backpropagation with JUNG
 		jungConsoleSplitPane.setContinuousLayout(true);
 		jungConsoleSplitPane.setDividerLocation(400);
 		jungConsoleSplitPane.setBorder(BorderFactory.createEmptyBorder());
+		jungConsoleSplitPane.setRightComponent(consolePanel);
+		jungConsoleSplitPane.setLeftComponent(jungPanel);
+
+		// SplitPane for SOM with 3DBoard
+		consolePanelSOM = new JPanel(new BorderLayout());
+		textPaneSOM = new JTextPane();
+		textPaneSOM.setEditable(false);
+		addStylesToDocument(textPaneSOM.getStyledDocument());
+		consolePanelSOM.add(textPaneSOM);
+		JScrollPane scrollPanes = new JScrollPane(textPaneSOM);
+		consolePanelSOM.add(scrollPanes, BorderLayout.CENTER);
+
+		_3DBoardSplitPane = new JSplitPane();
+		_3DBoardPane = new JPanel(new BorderLayout());
+		_3DBoardSplitPane.setContinuousLayout(true);
+		_3DBoardSplitPane.setDividerLocation(400);
+		_3DBoardSplitPane.setBorder(BorderFactory.createEmptyBorder());
+		_3DBoardSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		_3DBoardSplitPane.setRightComponent(consolePanelSOM);
+		_3DBoardSplitPane.setLeftComponent(_3DBoardPane);
+
+		mainSplitPane.setLeftComponent(jungConsoleSplitPane);
+		mainSplitPane.setContinuousLayout(true);
+		mainSplitPane.setDividerLocation(600);
+		mainSplitPane.setBorder(BorderFactory.createEmptyBorder());
 
 		//
 		// Graph-Layout-Viewer
@@ -165,26 +187,30 @@ public class Main {
 		mainSplitPane.setRightComponent(sideBar);
 	}
 
-	// add the SOM sidebar panel for menu "options" to the
-	// Mainsplitpane and remove the sidebar for backpropagation
+	/**
+	 * add the SOM sidebar panel for menu "options" to the Mainsplitpane and remove the sidebar for backpropagation
+	 */
 	public void addSOMSidebarPanel() {
 		sidebarSom = new SidebarSOM();
-		_3DBoardPane = new JPanel();
-		sidebarSom.setMinimumSize(new Dimension(435, 50));
-		mainSplitPane.remove(sideBar);
-		jungConsoleSplitPane.remove(jungPanel);
-		jungConsoleSplitPane.setRightComponent(_3DBoardPane);
+		sidebarSom.setMinimumSize(new Dimension(430, 50));
+		textPaneSOM.removeAll();
+		mainSplitPane.removeAll();
 		mainSplitPane.setRightComponent(sidebarSom);
+		mainSplitPane.setLeftComponent(_3DBoardSplitPane);
+
 	}
 
-	// add the Backprop. sidebar for the menu "options" to the
-	// Mainsplitpane and remove the Som
+	/**
+	 * add the Backprop. sidebar for the menu "options" to the Main-splitPane and remove the Som
+	 */
 	public void addBackproSidebarPanel() {
 		sideBar = new Sidebar();
 		// Provide minimum sizes for the components in the split pane
 		sideBar.setMinimumSize(new Dimension(435, 50));
-		mainSplitPane.remove(sidebarSom);
+		textPane.removeAll();
+		mainSplitPane.removeAll();
 		mainSplitPane.setRightComponent(sideBar);
+		mainSplitPane.setLeftComponent(jungConsoleSplitPane);
 	}
 
 	public GraphLayoutViewer getGraphLayoutViewer() {
