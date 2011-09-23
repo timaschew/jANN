@@ -7,11 +7,10 @@
  */
 package de.unikassel.ann.model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * @author anton
@@ -54,9 +53,9 @@ public class EdgeMap {
 	 * @param from
 	 * @return
 	 */
-	public List<Integer> getToForFrom(final Integer from) {
+	public Set<Integer> getToForFrom(final Integer from) {
 		Map map = getSynapseMap(from, false, true);
-		return new ArrayList<Integer>(map.keySet());
+		return map.keySet();
 	}
 
 	/**
@@ -70,9 +69,9 @@ public class EdgeMap {
 	 * @param to
 	 * @return
 	 */
-	public List<Integer> getFromForTo(final Integer to) {
+	public Set<Integer> getFromForTo(final Integer to) {
 		Map map = getSynapseMap(to, false, false);
-		return new ArrayList<Integer>(map.keySet());
+		return map.keySet();
 	}
 
 	/**
@@ -172,15 +171,15 @@ public class EdgeMap {
 		}
 		if (forward) {
 			if (both) {
-				return from2toMap;
+				return from2fromToMap;
 			}
-			return from2fromToMap;
+			return from2toMap;
 		}
 		// backward
 		if (both) {
-			return to2fromMap;
+			return to2fromToMap;
 		}
-		return to2fromToMap;
+		return to2fromMap;
 
 	}
 
