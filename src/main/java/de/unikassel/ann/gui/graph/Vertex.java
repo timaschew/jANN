@@ -59,6 +59,8 @@ public class Vertex implements Comparable<Vertex> {
 		// Get the number of vertices in the layer BEFORE adding the new vertex
 		int layerSize = layerController.getVerticesInLayer(layerIndex).size();
 
+		System.out.println("Vertex.setup(" + layerIndex + ")");
+
 		// Add the new vertex to the current jung layer but DO NOT add the
 		// vertex to the graph at this position!
 		layerController.addVertex(layerIndex, this, false);
@@ -77,8 +79,6 @@ public class Vertex implements Comparable<Vertex> {
 				propertyName = SidebarModel.P.hiddenNeurons.name();
 			}
 		}
-
-		System.out.println("Vertex.setup(" + layerIndex + ")");
 
 		ActionController.get().doAction(action, new PropertyChangeEvent(this, propertyName, layerSize, layerSize + 1));
 	}

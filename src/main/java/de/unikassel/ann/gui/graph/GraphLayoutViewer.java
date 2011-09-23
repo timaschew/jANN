@@ -175,13 +175,20 @@ public class GraphLayoutViewer {
 		VertexController.getInstance().getVertexFactory().reset();
 		EdgeController.getInstance().getEdgeFactory().reset();
 
-		// Clear current LayerController
-		LayerController.getInstance().clear();
+		// Remove all vertices
+		LayerController<Layer> layerController = LayerController.getInstance();
+		ArrayList<JungLayer> layers = layerController.getLayers();
+		for (JungLayer jungLayer : layers) {
+			ArrayList<Vertex> vertices = jungLayer.getVertices();
+			for (Vertex vertex : vertices) {
+				graph.removeVertex(vertex);
+			}
+		}
 
-		// Create new graph
-		graph = new DirectedSparseGraph<Vertex, Edge>();
-		layout.setGraph(graph);
-		layout.initialize();
+		// Clear all layers
+		layerController.clear();
+
+		// Update view
 		repaint(viewer);
 	}
 
