@@ -14,6 +14,8 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.border.TitledBorder;
 
 import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.model.func.SigmoidFunction;
+import de.unikassel.ann.model.func.TanHFunction;
 
 public class StandardOptionsPanel extends JPanel {
 
@@ -40,7 +42,8 @@ public class StandardOptionsPanel extends JPanel {
 		JLabel lblInitialWeight = new JLabel(Settings.i18n.getString("sidebar.standardOptions.initialWeigth"));
 
 		funktionToActivateCombo = new JComboBox();
-		funktionToActivateCombo.setModel(new DefaultComboBoxModel(new String[] { "Sigmoid", "TanH" }));
+		funktionToActivateCombo.setModel(new DefaultComboBoxModel(new String[] { SigmoidFunction.class.getSimpleName(),
+				TanHFunction.class.getSimpleName() }));
 
 		rdbtnRandomInitialWeight = new JRadioButton(Settings.i18n.getString("sidebar.standardOptions.randomRB"));
 		buttonGroup.add(rdbtnRandomInitialWeight);

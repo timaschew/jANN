@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
@@ -21,6 +22,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
+import javax.swing.JSpinner.DefaultEditor;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.TitledBorder;
@@ -340,27 +342,30 @@ public class TrainStrategyPanel extends JPanel {
 		chckbxActivateStrategie.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				System.out.println("geklickt");
-				boolean newVal = chckbxActivateStrategie.isSelected();
+				Boolean newVal = chckbxActivateStrategie.isSelected();
 				ac.doAction(Actions.SET_THE_STRATEGY, new PropertyChangeEvent(chckbxActivateStrategie, "checkbox", !newVal, newVal));
 			}
 		});
-		// Algorithm
-		comboBoxAlgorithm.addActionListener(new ActionListener() {
+		comboBoxTypStrategien.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				ac.doAction(Actions.UPDATE_SIDEBAR_TRAINSTRATEGY_ALGOCOMBO_MODEL, new PropertyChangeEvent(comboBoxAlgorithm, "item", "",
-						comboBoxAlgorithm.getSelectedItem()));
+				ac.doAction(Actions.SET_THE_STRATEGY,
+						new PropertyChangeEvent(comboBoxTypStrategien, "item", "", comboBoxTypStrategien.getSelectedItem()));
 			}
 		});
 
-		// JSpinner.DefaultEditor editor = (JSpinner.DefaultEditor) spinnerLernRate.getEditor();
-		// editor.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {
-		// @Override
-		// public void propertyChange(final PropertyChangeEvent evt) {
-		// ac.doAction(Actions.UPDATE_SIDEBAR_TRAINSTRATEGY_LERNRATE_MODEL, evt);
-		// }
-		// });
+		JSpinner spinners[] = new JSpinner[] { spinnerMaxIterations, spinnerMaxIterations2, spinnerMinError, spinnerMaxErrorForRestart,
+				spinnerIterationsForRestart, spinnerImprIterationsForRestart, spinnerMinImprovementForRestart };
+
+		for (JSpinner s : spinners) {
+			DefaultEditor editor = (JSpinner.DefaultEditor) s.getEditor();
+			editor.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {
+				@Override
+				public void propertyChange(final PropertyChangeEvent evt) {
+					ac.doAction(Actions.SET_THE_STRATEGY, evt);
+				}
+			});
+		}
 
 	}
 

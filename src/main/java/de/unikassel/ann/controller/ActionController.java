@@ -10,7 +10,6 @@ package de.unikassel.ann.controller;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
 
-import de.unikassel.ann.algo.BackPropagation;
 import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.factory.NetworkFactory;
 import de.unikassel.ann.gui.Main;
@@ -236,24 +235,7 @@ public class ActionController {
 			sidebar.trainStrategyPanel.spinnerLearnRate.setValue(sidebarModel.getLearnRate());
 			sidebar.trainStrategyPanel.spinnerMomentum.setValue(sidebarModel.getMomentum());
 
-			// sidebar.trainStrategyPanel.rdbtnOnline.setSelected(sidebarModel.getTrainOnline());
-			// sidebar.trainStrategyPanel.rdbtnOffline.setSelected(sidebarModel.getTrainOffline());
-
 			break;
-
-		case UPDATE_SIDEBAR_TRAINSTRATEGY_ALGOCOMBO_MODEL:
-			String newVal = (String) evt.getNewValue();
-
-			Double learnrate = sidebarModel.getLearnRate();
-			Double momentum = sidebarModel.getMomentum();
-			BackPropagation back = new BackPropagation(learnrate, momentum);
-			sidebarModel.setAlgorithmCombo(newVal);
-			break;
-
-		// case UPDATE_SIDEBAR_TRAINSTRATEGY_LERNRATE_MODEL:
-		// Double newVals = (Double) evt.getNewValue();
-		// sidebarModel.setLernRate(newVals);
-		// break;
 
 		case CREATE_NETWORK:
 			NetworkFactory factory = new NetworkFactory();
@@ -304,36 +286,103 @@ public class ActionController {
 			break;
 
 		case SET_THE_STRATEGY:
+
 			sidebar = Main.instance.sideBar;
 			// "MaxIteration", "MinError", "RestartError","RestartImprovement"
 			String selectedStrategy = (String) sidebar.trainStrategyPanel.comboBoxTypStrategien.getSelectedItem();
 			Strategy strategy;
-			NetConfig net = new NetConfig();
+			NetConfig net = Settings.getInstance().getCurrentSession().getNetworkConfig();
+			List<Strategy> strategyList = net.getStrategies();
+			Object nValue = evt.getNewValue();
+			Boolean checkBoxValue = null;
+			if (nValue instanceof Boolean) {
+				// checkbox
+				checkBoxValue = (Boolean) nValue;
+			}
 
 			if (selectedStrategy.equals("MaxIteration")) {
+				strategy = checkIfExist(strategyList, MaxLearnIterationsStrategy.class);
+				updateCBforCombo(sidebar, strategy);
 				Integer maxIterationSpinner = (Integer) sidebar.trainStrategyPanel.spinnerMaxIterations.getValue();
-				sidebar.trainStrategyPanel.chckbxActivateStrategie.setSelected(false);
-				strategy = new MaxLearnIterationsStrategy(maxIterationSpinner);
-				net.addOrUpdateExisting(strategy);
+				if (strategy == null) {
+					strategy = new MaxLearnIterationsStrategy();
+				}
+				((MaxLearnIterationsStrategy) strategy)._maxIteration = maxIterationSpinner;
+				if (checkBoxValue != null) {
+					if (checkBoxValue) {
+						net.addOrUpdateExisting(strategy);
+						sidebar.trainStrategyPanel.chckbxActivateStrategie.setSelected(true);
+					} else {
+						strategyList.remove(strategy);
+						sidebar.trainStrategyPanel.chckbxActivateStrategie.setSelected(false);
+					}
+				}
+
 				System.out.println("MaxIteration");
 
 			} else if (selectedStrategy.equals("MinError")) {
+				strategy = checkIfExist(strategyList, MinErrorStrategy.class);
+				updateCBforCombo(sidebar, strategy);
 				Double minErrorSpinner = (Double) sidebar.trainStrategyPanel.spinnerMinError.getValue();
-				sidebar.trainStrategyPanel.chckbxActivateStrategie.setSelected(false);
-				strategy = new MinErrorStrategy(minErrorSpinner);
+				if (strategy == null) {
+					strategy = new MinErrorStrategy();
+
+				}
+				((MinErrorStrategy) strategy)._minerror = minErrorSpinner;
+				if (checkBoxValue != null) {
+					if (checkBoxValue) {
+						net.addOrUpdateExisting(strategy);
+						sidebar.trainStrategyPanel.chckbxActivateStrategie.setSelected(true);
+					} else {
+						strategyList.remove(strategy);
+						sidebar.trainStrategyPanel.chckbxActivateStrategie.setSelected(false);
+					}
+				}
 				System.out.println("MinError");
 
 			} else if (selectedStrategy.equals("RestartError")) {
-				sidebar.trainStrategyPanel.chckbxActivateStrategie.setSelected(false);
+
+				strategy = checkIfExist(strategyList, RestartErrorStrategy.class);
+				updateCBforCombo(sidebar, strategy);
 				Double maxErrorForRestartSpinner = (Double) sidebar.trainStrategyPanel.spinnerMaxErrorForRestart.getValue();
 				Integer iterationsForRestartSpinner = (Integer) sidebar.trainStrategyPanel.spinnerIterationsForRestart.getValue();
-				strategy = new RestartErrorStrategy(maxErrorForRestartSpinner, iterationsForRestartSpinner);
+				if (strategy == null) {
+					strategy = new RestartErrorStrategy();
+				}
+				((RestartErrorStrategy) strategy)._iterationForRestart = iterationsForRestartSpinner;
+				((RestartErrorStrategy) strategy)._error = maxErrorForRestartSpinner;
+				if (checkBoxValue != null) {
+					if (checkBoxValue) {
+						net.addOrUpdateExisting(strategy);
+						sidebar.trainStrategyPanel.chckbxActivateStrategie.setSelected(true);
+					} else {
+						strategyList.remove(strategy);
+						sidebar.trainStrategyPanel.chckbxActivateStrategie.setSelected(false);
+					}
+				}
+
 				System.out.println("RestartError");
 
 			} else if (selectedStrategy.equals("RestartImprovement")) {
+
+				strategy = checkIfExist(strategyList, RestartImprovementStrategy.class);
+				updateCBforCombo(sidebar, strategy);
 				Double minImprovForRestartSpinner = (Double) sidebar.trainStrategyPanel.spinnerMinImprovementForRestart.getValue();
 				Integer iterImprForRestartSpinner = (Integer) sidebar.trainStrategyPanel.spinnerImprIterationsForRestart.getValue();
-				strategy = new RestartImprovementStrategy(minImprovForRestartSpinner, iterImprForRestartSpinner);
+				if (strategy == null) {
+					strategy = new RestartImprovementStrategy();
+				}
+				((RestartImprovementStrategy) strategy)._minimalImprovement = minImprovForRestartSpinner;
+				((RestartImprovementStrategy) strategy)._iterationForRestart = iterImprForRestartSpinner;
+				if (checkBoxValue != null) {
+					if (checkBoxValue) {
+						net.addOrUpdateExisting(strategy);
+						sidebar.trainStrategyPanel.chckbxActivateStrategie.setSelected(true);
+					} else {
+						strategyList.remove(strategy);
+						sidebar.trainStrategyPanel.chckbxActivateStrategie.setSelected(false);
+					}
+				}
 				System.out.println("RestartImprovement");
 			}
 
@@ -343,5 +392,31 @@ public class ActionController {
 
 		}
 
+	}
+
+	/**
+	 * @param sidebar
+	 * @param strategy
+	 */
+	private void updateCBforCombo(final Sidebar sidebar, final Strategy strategy) {
+		if (strategy != null) {
+			sidebar.trainStrategyPanel.chckbxActivateStrategie.setSelected(true);
+		} else {
+			sidebar.trainStrategyPanel.chckbxActivateStrategie.setSelected(false);
+		}
+	}
+
+	/**
+	 * @param strategyList
+	 * @param class1
+	 * @return
+	 */
+	private Strategy checkIfExist(final List<Strategy> strategyList, final Class<? extends Strategy> clazz) {
+		for (Strategy s : strategyList) {
+			if (s.getClass().equals(clazz)) {
+				return s;
+			}
+		}
+		return null;
 	}
 }

@@ -2,8 +2,8 @@ package de.unikassel.ann.strategy;
 
 public class RestartErrorStrategy extends Strategy {
 
-	private Double _error;
-	private Integer _iterationForRestart;
+	public Double _error;
+	public Integer _iterationForRestart;
 	private boolean badError;
 
 	/**
