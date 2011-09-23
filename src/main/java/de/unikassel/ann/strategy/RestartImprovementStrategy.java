@@ -8,8 +8,8 @@ import java.util.Locale;
 public class RestartImprovementStrategy extends Strategy {
 
 	private static NumberFormat fmt = new DecimalFormat("0.00000", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
-	private Integer _iterationForRestart;
-	private Double _minimalImprovement;
+	public Integer _iterationForRestart;
+	public Double _minimalImprovement;
 	private Integer iterationWithBadImprovement = 0;
 
 	/**

@@ -2,7 +2,7 @@ package de.unikassel.ann.strategy;
 
 public class MaxLearnIterationsStrategy extends Strategy {
 
-	private int _maxIteration;
+	public int _maxIteration;
 
 	/**
 	 * Only used for reflection, DONT CALL THIS constructor!

@@ -8,7 +8,7 @@ public class MinErrorStrategy extends Strategy {
 	public MinErrorStrategy() {
 	}
 
-	private Double _minerror;
+	public Double _minerror;
 
 	public MinErrorStrategy(final Double minimalError) {
 		_minerror = minimalError;

@@ -33,6 +33,7 @@ public class UserSession {
 	public UserSession(final String name) {
 		initName(name);
 		sidebarModel = new SidebarModel();
+		config = new NetConfig();
 	}
 
 	/**
