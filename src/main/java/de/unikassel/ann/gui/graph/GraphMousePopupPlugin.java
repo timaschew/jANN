@@ -11,6 +11,8 @@ import javax.swing.JPopupMenu;
 
 import org.apache.commons.collections15.Factory;
 
+import de.unikassel.ann.gui.model.Edge;
+import de.unikassel.ann.gui.model.Vertex;
 import de.unikassel.ann.model.Neuron;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;

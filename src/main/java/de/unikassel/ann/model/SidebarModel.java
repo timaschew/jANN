@@ -149,7 +149,7 @@ public class SidebarModel {
 	 * @return
 	 */
 	public Integer getSelectedGlobalHiddenLayerIndex() {
-		TopologyPanel topoPanel = Main.instance.sideBar.topolgyPanel;
+		TopologyPanel topoPanel = Main.instance.sidebar.topolgyPanel;
 		// local = relative
 		Integer localHiddenLayerIndex = (Integer) topoPanel.hiddenLayerComboModel.getSelectedItem();
 		// is equals to the global layer index, because its the size of all hidden layers and starts with 1
@@ -157,7 +157,7 @@ public class SidebarModel {
 	}
 
 	public Integer getMouseInsertLayer() {
-		TopologyPanel topoPanel = Main.instance.sideBar.topolgyPanel;
+		TopologyPanel topoPanel = Main.instance.sidebar.topolgyPanel;
 		if (topoPanel.mouseInputRB.isSelected()) {
 			return 0;
 		} else if (topoPanel.mouseOutputRB.isSelected()) {
@@ -334,7 +334,7 @@ public class SidebarModel {
 	}
 
 	public Boolean setTrainingModus() {
-		TrainStrategyPanel trainStrPanel = Main.instance.sideBar.trainStrategyPanel;
+		TrainStrategyPanel trainStrPanel = Main.instance.sidebar.trainStrategyPanel;
 		if (trainStrPanel.rdbtnOnline.isSelected()) {
 			// TODO Set the Trainingmodus
 		} else if (trainStrPanel.rdbtnOffline.isSelected()) {

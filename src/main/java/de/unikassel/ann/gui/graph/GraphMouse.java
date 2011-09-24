@@ -19,6 +19,9 @@ import javax.swing.plaf.basic.BasicIconFactory;
 
 import org.apache.commons.collections15.Factory;
 
+import de.unikassel.ann.gui.model.Edge;
+import de.unikassel.ann.gui.model.Vertex;
+
 import edu.uci.ics.jung.visualization.MultiLayerTransformer;
 import edu.uci.ics.jung.visualization.RenderContext;
 import edu.uci.ics.jung.visualization.annotations.AnnotatingGraphMousePlugin;

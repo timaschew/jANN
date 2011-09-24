@@ -42,7 +42,7 @@ public class TopologyPanel extends JPanel {
 	public JComboBox comboBoxHiddenMausModus;
 	public JCheckBox inputBiasCB;
 	public JCheckBox hiddenBiasCB;
-	public JComboBox comboBoxMouseModis;
+	public JComboBox comboBoxMouseModes;
 	/**
 	 * Model for hiddenLayerDropDown and comboBoxHiddenMausModus
 	 */
@@ -210,9 +210,9 @@ public class TopologyPanel extends JPanel {
 		comboBoxHiddenMausModus = new JComboBox(hiddenLayerComboModel);
 		comboBoxHiddenMausModus.setEnabled(false);
 
-		lblJungModis = new JLabel(Settings.i18n.getString("sidebar.topology.mouse.lblJungModis"));
-		comboBoxMouseModis = new JComboBox();
-		comboBoxMouseModis.setModel(new DefaultComboBoxModel(new String[] { "Picking", "Editing", "Transforming" }));
+		lblJungModis = new JLabel(Settings.i18n.getString("sidebar.topology.mouse.lblJungModes"));
+		comboBoxMouseModes = new JComboBox();
+		comboBoxMouseModes.setModel(new DefaultComboBoxModel(new String[] { "Picking", "Editing", "Transforming" }));
 
 		GroupLayout gl_mouseModusPanel = new GroupLayout(mouseModusPanel);
 		gl_mouseModusPanel.setHorizontalGroup(gl_mouseModusPanel.createParallelGroup(Alignment.LEADING).addGroup(
@@ -227,7 +227,7 @@ public class TopologyPanel extends JPanel {
 														.createSequentialGroup()
 														.addComponent(lblJungModis)
 														.addGap(18)
-														.addComponent(comboBoxMouseModis, GroupLayout.PREFERRED_SIZE,
+														.addComponent(comboBoxMouseModes, GroupLayout.PREFERRED_SIZE,
 																GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 										.addGroup(
 												gl_mouseModusPanel
@@ -247,7 +247,7 @@ public class TopologyPanel extends JPanel {
 								gl_mouseModusPanel
 										.createParallelGroup(Alignment.BASELINE)
 										.addComponent(lblJungModis)
-										.addComponent(comboBoxMouseModis, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										.addComponent(comboBoxMouseModes, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 												GroupLayout.PREFERRED_SIZE))
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addGroup(
@@ -273,11 +273,11 @@ public class TopologyPanel extends JPanel {
 			}
 		});
 
-		comboBoxMouseModis.addActionListener(new ActionListener() {
+		comboBoxMouseModes.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				ac.doAction(Actions.CHANGE_MOUSE_MODI,
-						new PropertyChangeEvent(comboBoxMouseModis, "item", "", comboBoxMouseModis.getSelectedIndex()));
+						new PropertyChangeEvent(comboBoxMouseModes, "item", "", comboBoxMouseModes.getSelectedIndex()));
 			}
 		});
 		// input bias

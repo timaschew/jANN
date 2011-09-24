@@ -49,7 +49,7 @@ public class ActionController {
 		// System.out.println(evt.getOldValue());
 		// System.out.println(evt.getNewValue());
 
-		Sidebar sidebar = Main.instance.sideBar;
+		Sidebar sidebar = Main.instance.sidebar;
 		SidebarModel sidebarModel = Settings.getInstance().getCurrentSession().sidebarModel;
 		switch (a) {
 
@@ -261,8 +261,8 @@ public class ActionController {
 			break;
 
 		case CHANGE_MOUSE_MODI:
-			sidebar = Main.instance.sideBar;
-			String selected = (String) sidebar.topolgyPanel.comboBoxMouseModis.getSelectedItem();
+			sidebar = Main.instance.sidebar;
+			String selected = (String) sidebar.topolgyPanel.comboBoxMouseModes.getSelectedItem();
 			if (selected.equals("Picking")) {
 				GraphLayoutViewer.getInstance().graphMouse.setMode(Mode.PICKING);
 				System.out.println("picking");
@@ -287,7 +287,7 @@ public class ActionController {
 
 		case SET_THE_STRATEGY:
 
-			sidebar = Main.instance.sideBar;
+			sidebar = Main.instance.sidebar;
 			// "MaxIteration", "MinError", "RestartError","RestartImprovement"
 			String selectedStrategy = (String) sidebar.trainStrategyPanel.comboBoxTypStrategien.getSelectedItem();
 			Strategy strategy;

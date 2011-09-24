@@ -49,8 +49,8 @@
 	<entry key="sidebar.topology.mouse">Mouse Modus</entry>
 	<entry key="sidebar.topology.mouse.input">Input</entry>
 	<entry key="sidebar.topology.mouse.output">Output</entry>
-	<entry key="sidebar.topology.mouse.hidden">Hidden:</entry>
-	<entry key="sidebar.topology.mouse.lblJungModis">Jung Modis:</entry>
+	<entry key="sidebar.topology.mouse.hidden">Hidden</entry>
+	<entry key="sidebar.topology.mouse.lblJungModes">Jung Modi</entry>
 	<entry key="sidebar.trainingsStrategy">Training</entry>
 	<entry key="sidebar.trainingsStrategy.algorithm">Algorithmus</entry>
 	<entry key="sidebar.trainingsStrategy.learnRate">Lernrate</entry>
