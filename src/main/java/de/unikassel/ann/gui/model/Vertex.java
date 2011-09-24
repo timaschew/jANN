@@ -1,4 +1,4 @@
-package de.unikassel.ann.gui.graph;
+package de.unikassel.ann.gui.model;
 
 import java.beans.PropertyChangeEvent;
 import java.text.DecimalFormat;

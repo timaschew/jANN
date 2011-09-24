@@ -16,6 +16,9 @@ import javax.swing.JPanel;
 import de.unikassel.ann.controller.EdgeController;
 import de.unikassel.ann.controller.LayerController;
 import de.unikassel.ann.controller.VertexController;
+import de.unikassel.ann.gui.model.Edge;
+import de.unikassel.ann.gui.model.JungLayer;
+import de.unikassel.ann.gui.model.Vertex;
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.Network;
 import de.unikassel.ann.model.Neuron;
@@ -274,7 +277,7 @@ public class GraphLayoutViewer {
 			}
 		});
 
-		graphMouse.setMode(ModalGraphMouse.Mode.EDITING);
+		graphMouse.setMode(ModalGraphMouse.Mode.PICKING);
 		graphMouse.setZoomAtMouse(false);
 	}
 
@@ -294,7 +297,9 @@ public class GraphLayoutViewer {
 	// }
 
 	/**
-	 * @param vv
+	 * Animate the repaint from the last layout to the new layout. Arrange vertices accordingly to their layer and position.
+	 * 
+	 * @param thisViewer
 	 */
 	public static void repaint(final VisualizationViewer<Vertex, Edge> thisViewer) {
 		final int height = thisViewer.getHeight();
@@ -303,15 +308,13 @@ public class GraphLayoutViewer {
 		AbstractLayout<Vertex, Edge> thisLayout = getInstance().getLayout();
 		DirectedGraph<Vertex, Edge> thisGraph = getInstance().getGraph();
 
-		// Position of the vertex depends on the number of vertices that
-		// are already in the same layer.
+		// The Position of a vertex depends on the number of vertices that
+		// are in the same layer.
 		// Since new vertices are always added at the last position, get
 		// the number of vertices to compute the position for the new
 		// vertex.
 		LayerController<Layer> layerController = LayerController.getInstance();
-		ArrayList<ArrayList<Vertex>> layers = layerController.getVertices();
-
-		// System.out.println(layers);
+		ArrayList<JungLayer> layers = layerController.getLayers();
 
 		// No layers? -> No need to positionize anything!
 		if (layers.size() == 0) {
@@ -319,17 +322,15 @@ public class GraphLayoutViewer {
 			return;
 		}
 
-		// Vertex position
-		Point2D location;
-
 		// Gap between the layers
 		int gapY = height / layerController.getLayersSize();
 
-		int layerIndex = -1;
-		for (ArrayList<Vertex> vertices : layers) {
-			layerIndex++;
-
+		for (JungLayer jungLayer : layers) {
+			ArrayList<Vertex> vertices = jungLayer.getVertices();
+			int layerIndex = jungLayer.getIndex();
 			int layerSize = vertices.size();
+
+			// System.out.println(layerIndex + ": " + vertices);
 
 			// Skip empty layers
 			if (layerSize == 0) {
@@ -346,7 +347,7 @@ public class GraphLayoutViewer {
 				// Compute location of the vertex
 				int x = vertexIndex * gapX + gapX / 2;
 				int y = layerIndex * gapY + gapY / 2;
-				location = new Point2D.Double(x, y);
+				Point2D location = new Point2D.Double(x, y);
 
 				// Set vertex location and lock it
 				thisLayout.setLocation(vertex, location);
@@ -356,8 +357,8 @@ public class GraphLayoutViewer {
 
 		Layout<Vertex, Edge> startLayout = thisViewer.getGraphLayout();
 		StaticLayout<Vertex, Edge> endLayout = new StaticLayout<Vertex, Edge>(thisGraph, thisLayout);
-		LayoutTransition<Vertex, Edge> lt = new LayoutTransition<Vertex, Edge>(thisViewer, startLayout, endLayout);
-		Animator animator = new Animator(lt);
+		LayoutTransition<Vertex, Edge> transition = new LayoutTransition<Vertex, Edge>(thisViewer, startLayout, endLayout);
+		Animator animator = new Animator(transition);
 		animator.start();
 		thisViewer.repaint();
 	}

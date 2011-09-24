@@ -2,7 +2,7 @@ package de.unikassel.ann.factory;
 
 import org.apache.commons.collections15.Factory;
 
-import de.unikassel.ann.gui.graph.Edge;
+import de.unikassel.ann.gui.model.Edge;
 
 /**
  * Edge Factory used by GraphMouse (jung) in order to create edges in the graph

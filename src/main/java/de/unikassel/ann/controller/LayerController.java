@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.List;
 
 import de.unikassel.ann.gui.graph.GraphLayoutViewer;
-import de.unikassel.ann.gui.graph.JungLayer;
-import de.unikassel.ann.gui.graph.Vertex;
+import de.unikassel.ann.gui.model.JungLayer;
+import de.unikassel.ann.gui.model.Vertex;
 import de.unikassel.ann.model.Layer;
 
 public class LayerController<T> {
@@ -47,12 +47,30 @@ public class LayerController<T> {
 		// vertices. The Junglayer has the same index as the layer.
 		JungLayer jungLayer = new JungLayer(index);
 
+		// System.out.println("addLayer(" + index + ")");
+
 		// Check if the index is out of range for the layers list
 		if (index < 0 || index > layers.size()) {
 			layers.add(jungLayer);
 		} else {
 			layers.add(index, jungLayer);
+
+			// Update the index of all layers
+			int layerIndex = -1;
+			for (JungLayer layer : layers) {
+				layerIndex++;
+				layer.setIndex(layerIndex);
+
+				// Update the index of the layer in the vertex model
+				for (Vertex vertex : layer.getVertices()) {
+					vertex.getModel().getLayer().setIndex(layerIndex);
+					vertex.getModel().setLayerIndex(layerIndex);
+				}
+			}
 		}
+
+		// Sort layers accordingly to their index
+		Collections.sort(layers);
 	}
 
 	/**
@@ -193,6 +211,8 @@ public class LayerController<T> {
 	}
 
 	public ArrayList<JungLayer> getLayers() {
+		// Sort layers by their index
+		Collections.sort(layers);
 		return layers;
 	}
 

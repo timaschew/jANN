@@ -67,7 +67,7 @@ public class Main {
 	/*
 	 * public fields
 	 */
-	public Sidebar sideBar;
+	public Sidebar sidebar;
 	public JSplitPane mainSplitPane;
 	public SidebarSOM sidebarSom;
 	public JPanel _3DBoardPane;
@@ -181,10 +181,10 @@ public class Main {
 
 	public void initSidebarPanel() {
 		// SideConfigurationPanel sideBar = new SideConfigurationPanel();
-		sideBar = new Sidebar();
+		sidebar = new Sidebar();
 		// Provide minimum sizes for the components in the split pane
-		sideBar.setMinimumSize(new Dimension(435, 50));
-		mainSplitPane.setRightComponent(sideBar);
+		sidebar.setMinimumSize(new Dimension(435, 50));
+		mainSplitPane.setRightComponent(sidebar);
 	}
 
 	/**
@@ -204,12 +204,12 @@ public class Main {
 	 * add the Backprop. sidebar for the menu "options" to the Main-splitPane and remove the Som
 	 */
 	public void addBackproSidebarPanel() {
-		sideBar = new Sidebar();
+		sidebar = new Sidebar();
 		// Provide minimum sizes for the components in the split pane
-		sideBar.setMinimumSize(new Dimension(435, 50));
+		sidebar.setMinimumSize(new Dimension(435, 50));
 		textPane.removeAll();
 		mainSplitPane.removeAll();
-		mainSplitPane.setRightComponent(sideBar);
+		mainSplitPane.setRightComponent(sidebar);
 		mainSplitPane.setLeftComponent(jungConsoleSplitPane);
 	}
 
