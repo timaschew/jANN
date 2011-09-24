@@ -59,7 +59,8 @@ public class ActionController {
 			break;
 
 		case UPDATE_SIDEBAR_CONFIG_HIDDEN_NEURON_MODEL:
-			Integer selectedHiddenLayer = sidebarModel.getSelectedGlobalHiddenLayerIndex();
+			// need the relative index for hidden layer
+			Integer selectedHiddenLayer = sidebarModel.getSelectedGlobalHiddenLayerIndex() - 1;
 			sidebarModel.setHiddenNeurons(selectedHiddenLayer, (Integer) evt.getNewValue());
 			break;
 

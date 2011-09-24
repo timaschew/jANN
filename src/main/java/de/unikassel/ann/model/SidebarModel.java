@@ -259,7 +259,7 @@ public class SidebarModel {
 		if (hiddenNeurons.size() <= layerIndex) {
 			hiddenNeurons.add(neuronCount);
 		} else {
-			oldValue = hiddenNeurons.get(layerIndex);
+			oldValue = hiddenNeurons.isEmpty() ? null : hiddenNeurons.get(layerIndex);
 			hiddenNeurons.set(layerIndex, neuronCount);
 		}
 		pcs.firePropertyChange(P.hiddenNeurons.name(), oldValue, neuronCount);
