@@ -9,6 +9,8 @@ package de.unikassel.ann.normalize;
 
 import org.apache.commons.lang.ArrayUtils;
 
+import de.unikassel.ann.model.DataPairSet;
+
 /**
  * @author anton
  * 
@@ -49,6 +51,51 @@ public class NormUtil {
 		this.dataHigh = dataHigh;
 		this.normalizedLow = normalizedLow;
 		this.normalizedHigh = normalizedHigh;
+	}
+
+	/**
+	 * @param trainSet
+	 */
+	public static DataPairSet normalize(final DataPairSet trainSet, final double minNormValue, final double maxNormValue) {
+
+		if (trainSet.getInput().length <= 0 || trainSet.getIdeal().length <= 0) {
+			return null;
+		}
+
+		Double[][] inAndOut = trainSet.getInputAndIdeal();
+
+		int fieldLenght = inAndOut[0].length;
+
+		Double[] min = new Double[fieldLenght];
+		Double[] max = new Double[fieldLenght];
+		for (int j = 0; j < fieldLenght; j++) {
+			min[j] = Double.MAX_VALUE;
+			max[j] = Double.MIN_VALUE;
+		}
+
+		// save min, max
+		for (int i = 0; i < inAndOut.length; i++) {
+			for (int j = 0; j < inAndOut[i].length; j++) {
+				min[j] = Math.min(inAndOut[i][j], min[j]);
+				max[j] = Math.max(inAndOut[i][j], max[j]);
+			}
+		}
+
+		NormUtil[] normUtil = new NormUtil[fieldLenght];
+		for (int j = 0; j < fieldLenght; j++) {
+			normUtil[j] = new NormUtil(min[j], max[j], minNormValue, maxNormValue);
+		}
+
+		DataPairSet resultPairSet = new DataPairSet(trainSet);
+		Double[][] resultArray = resultPairSet.getInputAndIdeal();
+
+		for (int i = 0; i < inAndOut.length; i++) {
+			for (int j = 0; j < inAndOut[i].length; j++) {
+				resultArray[i][j] = normUtil[j].normalize(inAndOut[i][j]);
+			}
+		}
+		resultPairSet.setInputAndIdeal(resultArray, trainSet.getInput()[0].length, trainSet.getIdeal()[0].length);
+		return resultPairSet;
 	}
 
 	/**

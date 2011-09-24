@@ -137,6 +137,29 @@ public class DataPairSet {
 		return ideal;
 	}
 
+	public Double[][] getInputAndIdeal() {
+		Double[][] mixed = new Double[input.length][input[0].length + ideal[0].length];
+		for (int i = 0; i < input.length; i++) {
+			mixed[i] = (Double[]) ArrayUtils.addAll(input[i], ideal[i]);
+		}
+		return mixed;
+	}
+
+	public void setInputAndIdeal(final Double[][] inAndOut, final int inputLenght, final int outputLength) {
+		if (inAndOut.length == 0) {
+			return;
+		}
+		if (inAndOut[0].length != inputLenght + outputLength) {
+			return;
+		}
+		input = null;
+		ideal = null;
+		for (int i = 0; i < inAndOut.length; i++) {
+			addRow((Double[]) ArrayUtils.subarray(inAndOut[i], 0, inputLenght),
+					(Double[]) ArrayUtils.subarray(inAndOut[i], inputLenght, inputLenght + outputLength));
+		}
+	}
+
 	public DataPair getPair(final Integer index) {
 		return new DataPair(input[index], ideal[index]);
 	}

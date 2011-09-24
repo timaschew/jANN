@@ -27,7 +27,7 @@ public class NetIOTest {
 		// create network (topology and synapses)
 		NetConfig netConfig = netIO.generateNetwork();
 		// create dataset
-		DataPairSet trainDataSet = netIO.getTrainingSet(0.1, true);
+		DataPairSet trainDataSet = netIO.getTrainingSet();
 
 		DataPairSet testDataSet = new DataPairSet();
 		for (int i = -20; i <= 20; i++) {
