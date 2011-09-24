@@ -104,7 +104,7 @@ public class CubeGUI extends JFrame {
 	public JCheckBox chckbxAutoRotation;
 	private int cunter = 0;
 	private long lastUpdate = System.currentTimeMillis();
-	private Cube w3d;
+	private CubeRenderer w3d;
 	protected boolean init = false;
 
 	public static void main(final String[] args) {
@@ -130,7 +130,7 @@ public class CubeGUI extends JFrame {
 	 * 
 	 */
 	protected void init() {
-		w3d = new Cube(this);
+		w3d = new CubeRenderer(this);
 		getContentPane().add(w3d);
 		init = true;
 

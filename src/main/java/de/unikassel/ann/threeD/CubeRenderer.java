@@ -23,7 +23,7 @@ import javax.swing.JPanel;
  * @author anton
  * 
  */
-public class Cube extends JPanel implements MouseMotionListener {
+public class CubeRenderer extends JPanel implements MouseMotionListener {
 
 	// 8 Eckpunkte 1-8
 	// mit je 3 Koordinaten 1,2,3
@@ -53,7 +53,7 @@ public class Cube extends JPanel implements MouseMotionListener {
 
 	private CubeGUI controller;
 
-	public Cube(final CubeGUI controller) {
+	public CubeRenderer(final CubeGUI controller) {
 		this.controller = controller;
 		setBackground(new Color(255, 255, 255));
 		add(new JLabel("Test"));
@@ -107,6 +107,7 @@ public class Cube extends JPanel implements MouseMotionListener {
 
 		// Lokale Würfel-Koordinaten
 		// in Welt-Koordinaten: +200
+
 		gBuffer.drawLine(p[1][x].intValue() + worldXoffset, p[1][y].intValue() + worldYOffset, p[2][x].intValue() + worldXoffset,
 				p[2][y].intValue() + worldYOffset);
 		gBuffer.drawLine(p[2][x].intValue() + worldXoffset, p[2][y].intValue() + worldYOffset, p[3][x].intValue() + worldXoffset,
