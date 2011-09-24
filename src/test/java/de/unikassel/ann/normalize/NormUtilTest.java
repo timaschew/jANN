@@ -39,8 +39,25 @@ public class NormUtilTest {
 		trainSet.addPair(new DataPair(new Double[] { 0.0, 0.0 }, new Double[] { 6.0 }));
 		trainSet.addPair(new DataPair(new Double[] { 0.0, 10.0 }, new Double[] { 5.0 }));
 
-		DataPairSet normalizedDataSet = NormUtil.normalize(trainSet, 0, +1);
-		System.out.println(normalizedDataSet);
+		/**
+		 * <pre>
+		 * should be xor 
+		 * 0 0 -> 0 
+		 * 0 1 -> 1 
+		 * 1 0 -> 1 
+		 * 1 1 -> 0
+		 * </pre>
+		 */
+		DataPairSet actual = NormUtil.normalize(trainSet, 0, +1);
+		System.out.println(actual);
+
+		DataPairSet expected = new DataPairSet();
+		expected.addPair(new DataPair(new Double[] { 0.0, 0.0 }, new Double[] { 0.0 }));
+		expected.addPair(new DataPair(new Double[] { 0.0, 1.0 }, new Double[] { 1.0 }));
+		expected.addPair(new DataPair(new Double[] { 1.0, 0.0 }, new Double[] { 1.0 }));
+		expected.addPair(new DataPair(new Double[] { 1.0, 1.0 }, new Double[] { 0.0 }));
+
+		Assert.assertEquals(expected, actual);
 	}
 
 }

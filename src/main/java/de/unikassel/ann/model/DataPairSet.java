@@ -222,6 +222,15 @@ public class DataPairSet {
 	}
 
 	@Override
+	public boolean equals(final Object other) {
+		if (other instanceof DataPairSet) {
+			DataPairSet o = (DataPairSet) other;
+			return ArrayUtils.isEquals(input, o.input) && ArrayUtils.isEquals(ideal, o.ideal);
+		}
+		return false;
+	}
+
+	@Override
 	public String toString() {
 		NumberFormat fmt = new DecimalFormat("#.####", Settings.decimalSymbols);
 		StringBuilder sb = new StringBuilder();
