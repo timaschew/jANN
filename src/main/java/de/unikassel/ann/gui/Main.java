@@ -71,6 +71,7 @@ public class Main {
 	public JSplitPane mainSplitPane;
 	public SidebarSOM sidebarSom;
 	public JPanel _3DBoardPane;
+	private JPanel consoleOrChartPanel;
 
 	/**
 	 * Create the application.
@@ -135,11 +136,14 @@ public class Main {
 		JScrollPane scrollPane = new JScrollPane(textPane);
 		consolePanel.add(scrollPane, BorderLayout.CENTER);
 
+		consoleOrChartPanel = new JPanel(new BorderLayout());
+		consoleOrChartPanel.add(consolePanel);
+
 		// SplitPane for Backpropagation with JUNG
 		jungConsoleSplitPane.setContinuousLayout(true);
 		jungConsoleSplitPane.setDividerLocation(400);
 		jungConsoleSplitPane.setBorder(BorderFactory.createEmptyBorder());
-		jungConsoleSplitPane.setRightComponent(consolePanel);
+		jungConsoleSplitPane.setRightComponent(consoleOrChartPanel);
 		jungConsoleSplitPane.setLeftComponent(jungPanel);
 
 		// SplitPane for SOM with 3DBoard
