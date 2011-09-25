@@ -281,14 +281,7 @@ public class GraphController {
 		Neuron fromNeuron = fromVertex.getModel();
 		Neuron toNeuron = toVertex.getModel();
 
-		// The neurons do not have to be connected already
-		if (fromVertex.hasEdgeTo(toVertex)) {
-			System.out.println("Already connected!");
-			return;
-		}
-
-		// The neurons that shall be conntected have to be in different layers
-		if (fromNeuron.getLayer().getIndex() < toNeuron.getLayer().getIndex()) {
+		if (fromVertex.mayHaveEdgeTo(toVertex)) {
 			// Create a new edge with its synapse between the both vertexes
 			Edge edge = edgeFactory.create();
 			edge.createModel(fromNeuron, toNeuron);

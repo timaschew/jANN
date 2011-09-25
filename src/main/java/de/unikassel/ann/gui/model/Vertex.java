@@ -178,4 +178,23 @@ public class Vertex implements Comparable<Vertex> {
 		return false;
 	}
 
+	/**
+	 * @param toVertex
+	 * @return
+	 */
+	public boolean mayHaveEdgeTo(final Vertex toVertex) {
+		// The neurons do not have to be connected already
+		if (hasEdgeTo(toVertex)) {
+			return false;
+		}
+
+		// The "to"-vertex has to be in a layer with a higher index than the "from"-vertex
+		if (toVertex.getModel().getLayer().getIndex() <= getModel().getLayer().getIndex()) {
+			return false;
+		}
+
+		// Connect them dude! May the force be with you!
+		return true;
+	}
+
 }
