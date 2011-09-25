@@ -175,7 +175,6 @@ public class Main {
 		glv = GraphController.getInstance();
 		glv.setDimension(dim);
 		glv.setParent(jungPanel);
-		glv.setFrame(frame);
 		glv.init();
 	}
 
