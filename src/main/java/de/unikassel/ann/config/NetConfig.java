@@ -10,6 +10,7 @@ import de.unikassel.ann.algo.TrainingModule;
 import de.unikassel.ann.algo.WorkModule;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.gui.TrainErrorListener;
+import de.unikassel.ann.model.DataPairSet;
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.NetError;
 import de.unikassel.ann.model.Network;
@@ -29,6 +30,10 @@ public class NetConfig {
 	private List<NetError> errorLogs;
 	private int restartAmount = 0;
 	private List<TrainErrorListener> trainErrorListener;
+
+	private DataPairSet trainingData;
+	private DataPairSet testData;
+	private DataPairSet originalData;
 
 	public NetConfig() {
 		network = new Network();
@@ -189,5 +194,50 @@ public class NetConfig {
 			tel.addError(getTrainingModule().getCurrentIteration(), currentError);
 
 		}
+	}
+
+	/**
+	 * @return the trainingData
+	 */
+	public DataPairSet getTrainingData() {
+		return trainingData;
+	}
+
+	/**
+	 * @param trainingData
+	 *            the trainingData to set
+	 */
+	public void setTrainingData(final DataPairSet trainingData) {
+		this.trainingData = trainingData;
+	}
+
+	/**
+	 * @return the testData
+	 */
+	public DataPairSet getTestData() {
+		return testData;
+	}
+
+	/**
+	 * @param testData
+	 *            the testData to set
+	 */
+	public void setTestData(final DataPairSet testData) {
+		this.testData = testData;
+	}
+
+	/**
+	 * @return the originalData
+	 */
+	public DataPairSet getOriginalData() {
+		return originalData;
+	}
+
+	/**
+	 * @param originalData
+	 *            the originalData to set
+	 */
+	public void setOriginalData(final DataPairSet originalData) {
+		this.originalData = originalData;
 	}
 }

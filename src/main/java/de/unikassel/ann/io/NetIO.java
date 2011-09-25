@@ -109,7 +109,7 @@ public class NetIO {
 			config.addTrainingModule(backProp);
 			config.addWorkModule(backProp);
 			config.addOrUpdateExisting(new MaxLearnIterationsStrategy(100000));
-
+			config.setTrainingData(getTrainingSet());
 			return config;
 
 		}

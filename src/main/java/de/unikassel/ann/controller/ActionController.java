@@ -15,6 +15,7 @@ import de.unikassel.ann.factory.NetworkFactory;
 import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.gui.graph.GraphLayoutViewer;
 import de.unikassel.ann.gui.sidebar.Sidebar;
+import de.unikassel.ann.model.DataPairSet;
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.SidebarModel;
 import de.unikassel.ann.model.func.ActivationFunction;
@@ -204,12 +205,14 @@ public class ActionController {
 			// add the items
 			for (int i = 1; i <= sidebarModel.getHiddenLayers(); i++) {
 				// if getHiddenayer >= 1 then enable der Elements
-				sidebar.topolgyPanel.hiddenLayerDropDown.setEnabled(true);
-				sidebar.topolgyPanel.hiddenBiasCB.setEnabled(true);
-				sidebar.topolgyPanel.hiddenNeuronSpinner.setEnabled(true);
-				sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(true);
 				sidebar.topolgyPanel.hiddenLayerComboModel.addElement(new Integer(i));
 			}
+			// enable some components
+			sidebar.topolgyPanel.hiddenLayerDropDown.setEnabled(true);
+			sidebar.topolgyPanel.hiddenBiasCB.setEnabled(true);
+			sidebar.topolgyPanel.hiddenNeuronSpinner.setEnabled(true);
+			sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(true);
+
 			// if previous selection was not null, set to old value
 			if (selectedItem != null) {
 				// if old value don't exist anymore set to current hidden layer amount,
@@ -257,7 +260,14 @@ public class ActionController {
 
 			break;
 
-		case PLAY_TRAINING:
+		case TRAIN_NETWORK:
+			NetConfig net = Settings.getInstance().getCurrentSession().getNetworkConfig();
+			System.out.println("training started");
+			DataPairSet testData = new DataPairSet(net.getTrainingData());
+			net.getTrainingModule().train(net.getTrainingData());
+			System.out.println("training finished");
+			net.getWorkingModule().work(net.getNetwork(), testData);
+			System.out.println(testData);
 
 			break;
 
@@ -292,7 +302,7 @@ public class ActionController {
 			// "MaxIteration", "MinError", "RestartError","RestartImprovement"
 			String selectedStrategy = (String) sidebar.trainStrategyPanel.comboBoxTypStrategien.getSelectedItem();
 			Strategy strategy;
-			NetConfig net = Settings.getInstance().getCurrentSession().getNetworkConfig();
+			net = Settings.getInstance().getCurrentSession().getNetworkConfig();
 			List<Strategy> strategyList = net.getStrategies();
 			Object nValue = evt.getNewValue();
 			Boolean checkBoxValue = null;
@@ -319,8 +329,6 @@ public class ActionController {
 					}
 				}
 
-				System.out.println("MaxIteration");
-
 			} else if (selectedStrategy.equals("MinError")) {
 				strategy = checkIfExist(strategyList, MinErrorStrategy.class);
 				updateCBforCombo(sidebar, strategy);
@@ -339,7 +347,6 @@ public class ActionController {
 						sidebar.trainStrategyPanel.chckbxActivateStrategie.setSelected(false);
 					}
 				}
-				System.out.println("MinError");
 
 			} else if (selectedStrategy.equals("RestartError")) {
 
@@ -362,8 +369,6 @@ public class ActionController {
 					}
 				}
 
-				System.out.println("RestartError");
-
 			} else if (selectedStrategy.equals("RestartImprovement")) {
 
 				strategy = checkIfExist(strategyList, RestartImprovementStrategy.class);
@@ -384,7 +389,6 @@ public class ActionController {
 						sidebar.trainStrategyPanel.chckbxActivateStrategie.setSelected(false);
 					}
 				}
-				System.out.println("RestartImprovement");
 			}
 
 			break;

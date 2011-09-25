@@ -21,14 +21,6 @@ import de.unikassel.ann.controller.Settings;
 public class TrainControlPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private static TrainControlPanel trainControlPanelInstance;
-
-	public static TrainControlPanel getTrainControlPanelInstance() {
-		if (trainControlPanelInstance == null) {
-			trainControlPanelInstance = new TrainControlPanel();
-		}
-		return trainControlPanelInstance;
-	}
 
 	public JButton btnSteps;
 	public JButton btnTrainingsPattern;
@@ -49,7 +41,7 @@ public class TrainControlPanel extends JPanel {
 	/**
 	 * Create the frame.
 	 */
-	private TrainControlPanel() {
+	public TrainControlPanel() {
 
 		setBorder(new TitledBorder(null, Settings.i18n.getString("sidebar.trainControl"), TitledBorder.LEADING, TitledBorder.TOP, null,
 				null));
@@ -72,12 +64,6 @@ public class TrainControlPanel extends JPanel {
 		btnPlay = new JButton(Settings.i18n.getString("sidebar.trainControl.btnPlay"));
 		btnPause = new JButton(Settings.i18n.getString("sidebar.trainControl.btnPause"));
 		btnStop = new JButton(Settings.i18n.getString("sidebar.trainControl.btnStop"));
-		btnPlay.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent evt) {
-				ac.doAction(Actions.PLAY_TRAINING, new PropertyChangeEvent(btnPlay, "button", 0, 1));
-			}
-		});
 		GroupLayout gl_trainingSteuerungPanel = new GroupLayout(this);
 		gl_trainingSteuerungPanel.setHorizontalGroup(gl_trainingSteuerungPanel.createParallelGroup(Alignment.LEADING).addGroup(
 				gl_trainingSteuerungPanel
@@ -180,6 +166,20 @@ public class TrainControlPanel extends JPanel {
 																		GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 																.addComponent(lblMs))).addContainerGap(18, Short.MAX_VALUE)));
 		setLayout(gl_trainingSteuerungPanel);
+
+		initListeners();
+	}
+
+	/**
+	 * 
+	 */
+	private void initListeners() {
+		btnPlay.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				ac.doAction(Actions.TRAIN_NETWORK, new PropertyChangeEvent(ac, "train", null, "start"));
+			}
+		});
 	}
 
 }

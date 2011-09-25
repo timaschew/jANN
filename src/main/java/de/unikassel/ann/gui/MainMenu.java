@@ -198,7 +198,7 @@ public class MainMenu extends JMenuBar {
 				break;
 			case OPEN:
 				// TODO
-				ImportFilePanel panel = ImportFilePanel.getImportFileInstance();
+				ImportFilePanel panel = new ImportFilePanel();
 				panel.setVisible(true);
 				break;
 			case SAVE:

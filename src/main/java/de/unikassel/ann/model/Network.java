@@ -4,11 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
-import java.util.TreeSet;
-
-import org.apache.commons.lang.ArrayUtils;
 
 import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.io.beans.SynapseBean;
@@ -17,18 +13,17 @@ import de.unikassel.ann.io.beans.TopologyBean;
 /**
  * The network is a container for the layers.<br>
  * The first layer is the inputLayer and the last the outputLayer.<br>
- * When creating a network with the factory,
- *  you need to call {@link #finalizeStructure()} for linking the neurons (set synapses).<br>
- *
+ * When creating a network with the factory, you need to call {@link #finalizeStructure()} for linking the neurons (set synapses).<br>
+ * 
  */
 public class Network extends BasicNetwork {
-	
+
 	private Boolean finalyzed;
 	private NetConfig config;
 	private List<Neuron> flatNet;
 	private Set<Synapse> synapseSet;
 	private SynapseMatrix synapseMatrix;
-	
+
 	public Network() {
 		super();
 		synapseSet = new HashSet<Synapse>();
@@ -36,29 +31,27 @@ public class Network extends BasicNetwork {
 		synapseMatrix = new SynapseMatrix(this, null, null);
 		finalyzed = false;
 	}
-	
 
-	
-	public void finalizeFromFlatNet(List<TopologyBean> topoBeanList, List<SynapseBean> synapsesBanList) {
+	public void finalizeFromFlatNet(final List<TopologyBean> topoBeanList, final List<SynapseBean> synapsesBanList) {
 		if (finalyzed) {
 			return;
 		}
-		
+
 		int maxHiddenIndex = 0;
 		for (TopologyBean b : topoBeanList) {
 			maxHiddenIndex = Math.max(maxHiddenIndex, b.getLayer());
 		}
-		Layer[] hiddenLayer = new Layer[maxHiddenIndex+1];
+		Layer[] hiddenLayer = new Layer[maxHiddenIndex + 1];
 		// add layers to net
 		Layer inputLayer = new Layer();
 		addLayer(inputLayer);
-		for (int i=0; i<maxHiddenIndex+1; i++) {
+		for (int i = 0; i < maxHiddenIndex + 1; i++) {
 			hiddenLayer[i] = new Layer();
 			addLayer(hiddenLayer[i]);
 		}
 		Layer outputLayer = new Layer();
 		addLayer(outputLayer);
-		
+
 		// creating neurons and adding it to flatNet and layers
 		for (TopologyBean b : topoBeanList) {
 			Neuron n = new Neuron(b.getFunction(), b.getBias());
@@ -72,14 +65,14 @@ public class Network extends BasicNetwork {
 				hiddenLayer[b.getLayer()].addNeuron(n);
 			}
 		}
-		
+
 		synapseMatrix.setSize(flatNet.size(), flatNet.size());
-		
+
 		if (synapsesBanList != null) {
 			setFlatSynapses(synapsesBanList);
 		} else {
-			
-			//TODO: extract
+
+			// TODO: extract
 			Layer previousLayer = null;
 			// set synapses (strict forward feedback)
 			for (Layer l : layers) {
@@ -98,13 +91,11 @@ public class Network extends BasicNetwork {
 				previousLayer = l;
 			}
 		}
-		
-		
+
 		finalyzed = true;
 	}
-	
 
-	public void setFlatSynapses(List<SynapseBean> synapsesBanList) {
+	public void setFlatSynapses(final List<SynapseBean> synapsesBanList) {
 		// connect neurons / create synapses
 		for (SynapseBean b : synapsesBanList) {
 			synapseRangeCheck(b);
@@ -120,25 +111,24 @@ public class Network extends BasicNetwork {
 			synapseMatrix.addOrUpdateSynapse(s, fromNeuron.getId(), toNeuron.getId());
 		}
 
-
 	}
 
-	private void neuronRangeCheck(Neuron fromNeuron, Neuron toNeuron) {
+	private void neuronRangeCheck(final Neuron fromNeuron, final Neuron toNeuron) {
 		if (fromNeuron.getId() < 0) {
-			throw new IllegalArgumentException("invalid neuron id, negative value not permitted\n"+fromNeuron);
+			throw new IllegalArgumentException("invalid neuron id, negative value not permitted\n" + fromNeuron);
 		} else if (toNeuron.getId() >= synapseMatrix.getSynapses().length) {
-			throw new IllegalArgumentException("invalid neuron id, don't fit into flat synapse array \n"+toNeuron);
+			throw new IllegalArgumentException("invalid neuron id, don't fit into flat synapse array \n" + toNeuron);
 		}
-		
+
 	}
 
-	private void synapseRangeCheck(SynapseBean b) {
+	private void synapseRangeCheck(final SynapseBean b) {
 		if (b.getFrom() < flatNet.get(0).getId()) {
-			throw new IllegalArgumentException("synapse connections does not match with neuron ids, 1st id is too small\n"+b);
-		} else if (b.getTo() > flatNet.get(flatNet.size()-1).getId()) { 
-			throw new IllegalArgumentException("synapse connections does not match with neuron ids, 2nd id is too high\n"+b);
+			throw new IllegalArgumentException("synapse connections does not match with neuron ids, 1st id is too small\n" + b);
+		} else if (b.getTo() > flatNet.get(flatNet.size() - 1).getId()) {
+			throw new IllegalArgumentException("synapse connections does not match with neuron ids, 2nd id is too high\n" + b);
 		}
-		
+
 	}
 
 	/**
@@ -151,7 +141,7 @@ public class Network extends BasicNetwork {
 
 		Layer previousLayer = null;
 		for (Layer l : layers) {
-			
+
 			// set flat net
 			for (Neuron n : l.getNeurons()) {
 				n.setId(flatNet.size());
@@ -159,8 +149,8 @@ public class Network extends BasicNetwork {
 			}
 		}
 		synapseMatrix.setSize(flatNet.size(), flatNet.size());
-		
-		//TODO: extract
+
+		// TODO: extract
 
 		// set synapses (strict forward feedback)
 		for (Layer l : layers) {
@@ -183,29 +173,31 @@ public class Network extends BasicNetwork {
 	}
 
 	/**
-	 * Sets values for inputLayer.<br> 
+	 * Sets values for inputLayer.<br>
 	 * Lenght of array must match to input layer neuron count!
-	 * @param input for whole input layer
+	 * 
+	 * @param input
+	 *            for whole input layer
 	 */
-	public void setInputLayerValues(Double[] input) {
+	public void setInputLayerValues(final Double[] input) {
 		Layer layer = getInputLayer();
 		List<Neuron> neuronList = layer.getNeurons();
 		int biasOffset = layer.hasBias() ? 1 : 0;
-		if (input.length != neuronList.size()-biasOffset) {
+		if (input.length != neuronList.size() - biasOffset) {
 			throw new IllegalArgumentException("input layer count != input.lenght");
 		}
-		for (int i=biasOffset; i<neuronList.size(); i++) {
-			neuronList.get(i).setOutputValue(input[i-biasOffset]);
+		for (int i = biasOffset; i < neuronList.size(); i++) {
+			neuronList.get(i).setOutputValue(input[i - biasOffset]);
 		}
 	}
-	
-	public void setOutputToPair(Double[] output) {
+
+	public void setOutputToPair(final Double[] output) {
 		Layer layer = getOutputLayer();
 		List<Neuron> neuronList = layer.getNeurons();
 		if (output.length != neuronList.size()) {
 			throw new IllegalArgumentException("output layer count != ouput.length");
 		}
-		for (int i=0; i<neuronList.size(); i++) {
+		for (int i = 0; i < neuronList.size(); i++) {
 			output[i] = neuronList.get(i).getValue();
 		}
 	}
@@ -226,19 +218,23 @@ public class Network extends BasicNetwork {
 		return reversedLayers;
 	}
 
-	public void setConfig(NetConfig config) {
+	public void setConfig(final NetConfig config) {
 		this.config = config;
 	}
+
 	public NetConfig getConfig() {
 		return config;
 	}
 
 	public List<Neuron> getFlatNet() {
-		return flatNet;	
+		return flatNet;
 	}
+
+	@Override
 	public SynapseMatrix getSynapseMatrix() {
 		return synapseMatrix;
 	}
+
 	public Set<Synapse> getSynapseSet() {
 		return synapseSet;
 	}
@@ -247,10 +243,11 @@ public class Network extends BasicNetwork {
 		int biasOffset = getInputLayer().hasBias() ? 1 : 0;
 		return getInputLayer().getNeurons().size() - biasOffset;
 	}
+
 	public int getOutputSize() {
 		return getOutputLayer().getNeurons().size();
-	}	
-	
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -261,9 +258,5 @@ public class Network extends BasicNetwork {
 		sb.append(" layers");
 		return sb.toString();
 	}
-
-
-
-
 
 }
