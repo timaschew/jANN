@@ -229,6 +229,7 @@ public class SidebarModel {
 		this.hiddenLayers = hiddenLayers;
 		pcs.firePropertyChange(P.hiddenLayers.name(), oldValue, hiddenLayers);
 		for (int i = oldValue; i < hiddenLayers; i++) {
+			Main.instance.sidebar.topolgyPanel.hiddenLayerComboModel.setSelectedItem(i + 1);
 			// i is relaltive hidden layer index !!!!!
 			// init values
 			setHiddenNeurons(i, 1);
