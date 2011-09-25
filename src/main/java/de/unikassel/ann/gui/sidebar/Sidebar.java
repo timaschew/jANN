@@ -85,9 +85,12 @@ public class Sidebar extends JPanel {
 
 		JScrollPane scrollPane = new JScrollPane(wrapper);
 
+		JPanel trainTabPanel = new JPanel();
+		TrainControlPanel trainControlPanel = new TrainControlPanel();
+		trainTabPanel.add(trainControlPanel);
+
 		tabbedPane.addTab("Konfiguration", null, scrollPane, null);
-		tabbedPane.addTab("Training", null, new JPanel(), null);
+		tabbedPane.addTab("Training", null, trainTabPanel, null);
 
 	}
-
 }

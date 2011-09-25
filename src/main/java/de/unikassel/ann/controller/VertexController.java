@@ -12,9 +12,8 @@ import java.util.Set;
 import org.apache.commons.collections15.Transformer;
 
 import de.unikassel.ann.factory.VertexFactory;
-import de.unikassel.ann.gui.graph.Edge;
-import de.unikassel.ann.gui.graph.GraphLayoutViewer;
-import de.unikassel.ann.gui.graph.Vertex;
+import de.unikassel.ann.gui.model.Edge;
+import de.unikassel.ann.gui.model.Vertex;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.visualization.RenderContext;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
@@ -44,7 +43,7 @@ public class VertexController<V> {
 	private VertexFactory vertexFactory;
 
 	public void init() {
-		this.viewer = GraphLayoutViewer.getInstance().getViewer();
+		this.viewer = GraphController.getInstance().getViewer();
 		this.renderer = viewer.getRenderer();
 		this.renderContext = viewer.getRenderContext();
 		this.vertexPickedState = viewer.getPickedVertexState();
@@ -82,7 +81,7 @@ public class VertexController<V> {
 	 * Set Vertex Shape (Scaling/size)
 	 */
 	private void setVertexShape() {
-		Graph<Vertex, Edge> graph = GraphLayoutViewer.getInstance().getGraph();
+		Graph<Vertex, Edge> graph = GraphController.getInstance().getGraph();
 		VertexTransformer<Vertex, Edge> vt = new VertexTransformer<Vertex, Edge>(graph);
 		renderContext.setVertexShapeTransformer(vt);
 	}
@@ -210,7 +209,7 @@ public class VertexController<V> {
 
 		@Override
 		public Stroke transform(final Vertex v) {
-			Graph<Vertex, Edge> graph = GraphLayoutViewer.getInstance().getGraph();
+			Graph<Vertex, Edge> graph = GraphController.getInstance().getGraph();
 			if (highlight) {
 				if (pi.isPicked(v)) {
 					return heavy;

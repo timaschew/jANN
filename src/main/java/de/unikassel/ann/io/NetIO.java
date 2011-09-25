@@ -5,27 +5,15 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.supercsv.cellprocessor.Optional;
-import org.supercsv.cellprocessor.ParseDouble;
 import org.supercsv.cellprocessor.ift.CellProcessor;
-import org.supercsv.exception.SuperCSVException;
-import org.supercsv.io.CsvBeanReader;
-import org.supercsv.io.ICsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
 
 import de.unikassel.ann.algo.BackPropagation;
@@ -35,15 +23,10 @@ import de.unikassel.ann.io.beans.TopologyBean;
 import de.unikassel.ann.io.beans.TrainingBean;
 import de.unikassel.ann.model.DataPair;
 import de.unikassel.ann.model.DataPairSet;
-import de.unikassel.ann.model.SynapseMatrix;
-import de.unikassel.ann.model.Layer;
-import de.unikassel.ann.model.Network;
-import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.strategy.MaxLearnIterationsStrategy;
-import de.unikassel.ann.util.gen.DynamicBeanCreator;
 
 public class NetIO {
-	
+
 	public final static String OPEN_TAG = "#<";
 	public final static String CLOSE_TAG = "#>";
 	public final static String TOPOLOGY_TAG = "topology";
@@ -51,139 +34,108 @@ public class NetIO {
 	public final static String TRAINING_TAG = "training";
 	public final static String DATASET = "dataset";
 	static Logger log = Logger.getAnonymousLogger();
-	
-	static final int MAX_BUFFER_SIZE = 1024*1024;
-	
+
+	static final int MAX_BUFFER_SIZE = 1024 * 1024;
 
 	static CsvPreference pref = new CsvPreference('\"', ';', "\r\n");
 	static String[] header2beanMapping;
 	static CellProcessor[] processor;
-	
+
 	List<TrainingBean> trainigBeanList = null;
 	List<TopologyBean> topoBeanList = null;
 	List<SynapseBean> synapsesBanList = null;
 
-	public void readConfigFile(final File file)
-			throws IOException, ClassNotFoundException {
+	public void readConfigFile(final File file) throws IOException, ClassNotFoundException {
 
 		InputStream fis = null;
 		try {
-		  fis = new FileInputStream(file);
+			fis = new FileInputStream(file);
 		} catch (final FileNotFoundException e) {
-		  log.warning("could not open file "+file);
-		  throw e;
+			log.warning("could not open file " + file);
+			throw e;
 		}
 		final InputStream fileInputStream = new BufferedInputStream(fis);
 
 		if (fileInputStream.markSupported() == false) {
-		  log.warning("mark/reset not supported!");
-		  System.exit(0);
+			log.warning("mark/reset not supported!");
+			System.exit(0);
 		}
-		InputStreamReader inputStremReader = new InputStreamReader((fileInputStream));
+		InputStreamReader inputStremReader = new InputStreamReader(fileInputStream);
 		BufferedReader bufferedReader = new BufferedReader(inputStremReader);
-		
+
 		String line;
 
 		while ((line = bufferedReader.readLine()) != null) {
-			if (line != null && line.startsWith(OPEN_TAG+TRAINING_TAG)) {
+			if (line != null && line.startsWith(OPEN_TAG + TRAINING_TAG)) {
 				bufferedReader.mark(MAX_BUFFER_SIZE);
 				trainigBeanList = TrainingRW.readData(bufferedReader);
 				bufferedReader.reset();
-			} else if (line != null && line.startsWith(OPEN_TAG+TOPOLOGY_TAG)) {
+			} else if (line != null && line.startsWith(OPEN_TAG + TOPOLOGY_TAG)) {
 				bufferedReader.mark(MAX_BUFFER_SIZE);
 				topoBeanList = TopologyBeanRW.readData(bufferedReader);
 				bufferedReader.reset();
-			} else if (line != null && line.startsWith(OPEN_TAG+SYNAPSE_TAG)) {
+			} else if (line != null && line.startsWith(OPEN_TAG + SYNAPSE_TAG)) {
 				bufferedReader.mark(MAX_BUFFER_SIZE);
 				synapsesBanList = SynapseBeanRW.readData(bufferedReader);
 				bufferedReader.reset();
-			} 
+			}
 		}
 		bufferedReader.close();
-		
+
 		if (CollectionUtils.isNotEmpty(topoBeanList)) {
 			Collections.sort(topoBeanList);
 			int firstId = topoBeanList.get(0).getId();
 			if (firstId != 0) {
-				throw new IllegalArgumentException("id should start with 0 / zero, but was :"+firstId);
+				throw new IllegalArgumentException("id should start with 0 / zero, but was :" + firstId);
 			}
 
-			for (int i=0; i<topoBeanList.size(); i++) {
+			for (int i = 0; i < topoBeanList.size(); i++) {
 				int id = topoBeanList.get(i).getId();
 				if (id != i) {
-					throw new IllegalArgumentException("ids for neurons must be unique, duplicate id found: "+id);
+					throw new IllegalArgumentException("ids for neurons must be unique, duplicate id found: " + id);
 				}
 			}
 		}
-		
+
 	}
 
 	public NetConfig generateNetwork() {
 		if (CollectionUtils.isNotEmpty(topoBeanList)) {
-					
+
 			NetConfig config = new NetConfig();
 			config.getNetwork().finalizeFromFlatNet(topoBeanList, synapsesBanList);
-		
+
 			BackPropagation backProp = new BackPropagation();
 			config.addTrainingModule(backProp);
 			config.addWorkModule(backProp);
 			config.addOrUpdateExisting(new MaxLearnIterationsStrategy(100000));
-			
+			config.setTrainingData(getTrainingSet());
 			return config;
-			
+
 		}
 		return null;
 	}
 
-	public DataPairSet getTrainingSet(Double normalisation, boolean negative) {
+	public DataPairSet getTrainingSet() {
 		if (CollectionUtils.isNotEmpty(trainigBeanList)) {
 			DataPairSet set = new DataPairSet();
 			for (TrainingBean b : trainigBeanList) {
-				DataPair pair;
-				if (normalisation != null) {
-					// normalisation
-					Double[] outputVector = b.getOutput();
-					for (int i=0;i<outputVector.length; i++) {
-//						if (negative) {
-//							outputVector[i] = (outputVector[i] * normalisation + 1) / 2;
-//						} else {
-//							outputVector[i] = outputVector[i] * normalisation;
-//						}
-						outputVector[i] = outputVector[i] * normalisation;
-					}
-					Double[] inputVector = b.getInput();
-					for (int i=0;i<inputVector.length; i++) {
-						if (negative) {
-							inputVector[i] = (inputVector[i] * 0.1 + 1) / 2;
-						} else {
-							inputVector[i] = inputVector[i] * 0.1;
-						}
-					}
-					pair = new DataPair(inputVector, outputVector);
-				} else {
-					pair = new DataPair(b.getInput(), b.getOutput());
-
-				}
+				DataPair pair = new DataPair(b.getInput(), b.getOutput());
 				set.addPair(pair);
 			}
 			return set;
 		}
 		return null;
 	}
-	
-	public DataPairSet getTrainingSet() {
-		return getTrainingSet(null, false);
-	}
 
-	public void writeDataSet(File file, String title, boolean training, DataPairSet dataSet) {
+	public void writeDataSet(final File file, final String title, final boolean training, final DataPairSet dataSet) {
 		TrainingRW.writeData(dataSet, file, title, training);
 	}
-	
-	public void writeNet(File file, String title, NetConfig netConfig) {
+
+	public void writeNet(final File file, final String title, final NetConfig netConfig) {
 		TopologyBeanRW.writeData(netConfig, file, title);
 		SynapseBeanRW.writeData(netConfig, file);
-		
-	}
 
+	}
 
 }

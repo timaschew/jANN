@@ -1,7 +1,8 @@
-package de.unikassel.ann.gui.graph;
+package de.unikassel.ann.gui.model;
 
 import java.beans.PropertyChangeEvent;
 import java.text.DecimalFormat;
+import java.util.List;
 
 import de.unikassel.ann.controller.ActionController;
 import de.unikassel.ann.controller.Actions;
@@ -10,6 +11,7 @@ import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.SidebarModel;
+import de.unikassel.ann.model.Synapse;
 import de.unikassel.ann.model.UserSession;
 
 public class Vertex implements Comparable<Vertex> {
@@ -59,6 +61,8 @@ public class Vertex implements Comparable<Vertex> {
 		// Get the number of vertices in the layer BEFORE adding the new vertex
 		int layerSize = layerController.getVerticesInLayer(layerIndex).size();
 
+		System.out.println("Vertex.setup(" + layerIndex + ")");
+
 		// Add the new vertex to the current jung layer but DO NOT add the
 		// vertex to the graph at this position!
 		layerController.addVertex(layerIndex, this, false);
@@ -77,8 +81,6 @@ public class Vertex implements Comparable<Vertex> {
 				propertyName = SidebarModel.P.hiddenNeurons.name();
 			}
 		}
-
-		System.out.println("Vertex.setup(" + layerIndex + ")");
 
 		ActionController.get().doAction(action, new PropertyChangeEvent(this, propertyName, layerSize, layerSize + 1));
 	}
@@ -160,6 +162,39 @@ public class Vertex implements Comparable<Vertex> {
 	@Override
 	public int compareTo(final Vertex v) {
 		return getIndex() - v.getIndex();
+	}
+
+	/**
+	 * @param toVertex
+	 * @return
+	 */
+	public boolean hasEdgeTo(final Vertex toVertex) {
+		List<Synapse> outgoingSynapses = getModel().getOutgoingSynapses();
+		for (Synapse synapse : outgoingSynapses) {
+			if (synapse.getToNeuron().equals(toVertex.getModel())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * @param toVertex
+	 * @return
+	 */
+	public boolean mayHaveEdgeTo(final Vertex toVertex) {
+		// The neurons do not have to be connected already
+		if (hasEdgeTo(toVertex)) {
+			return false;
+		}
+
+		// The "to"-vertex has to be in a layer with a higher index than the "from"-vertex
+		if (toVertex.getModel().getLayer().getIndex() <= getModel().getLayer().getIndex()) {
+			return false;
+		}
+
+		// Connect them dude! May the force be with you!
+		return true;
 	}
 
 }

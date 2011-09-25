@@ -104,7 +104,7 @@ public class SideConfigurationPanel extends JTabbedPane {
 		gbc_selectedSymbolPanel.gridy = 0;
 		panelTab2.add(selectedSymbolPanel, gbc_selectedSymbolPanel);
 
-		TrainControlPanel trainingsSteuerungPanel = TrainControlPanel.getTrainControlPanelInstance();
+		TrainControlPanel trainingsSteuerungPanel = new TrainControlPanel();
 		GridBagConstraints gbc_trainingsSteuerungPanel = new GridBagConstraints();
 		gbc_trainingsSteuerungPanel.fill = GridBagConstraints.HORIZONTAL;
 		gbc_trainingsSteuerungPanel.gridx = 0;

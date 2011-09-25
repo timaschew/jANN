@@ -42,7 +42,7 @@ public class TopologyPanel extends JPanel {
 	public JComboBox comboBoxHiddenMausModus;
 	public JCheckBox inputBiasCB;
 	public JCheckBox hiddenBiasCB;
-	public JComboBox comboBoxMouseModis;
+	public JComboBox comboBoxMouseModes;
 	/**
 	 * Model for hiddenLayerDropDown and comboBoxHiddenMausModus
 	 */
@@ -79,7 +79,7 @@ public class TopologyPanel extends JPanel {
 		hiddenLayerCountSpinner = new JSpinner(new SpinnerNumberModel(0, 0, MAX_HIDDEN_LAYER, 1));
 
 		JLabel lblHiddenNeuronen = new JLabel(Settings.i18n.getString("sidebar.topology.hiddenNeurons"));
-		hiddenNeuronSpinner = new JSpinner(new SpinnerNumberModel(0, 0, MAX_NEURONS, 1));
+		hiddenNeuronSpinner = new JSpinner(new SpinnerNumberModel(1, 1, MAX_NEURONS, 1));
 
 		// is with the hiddenLayerCountSpinner associated
 
@@ -210,9 +210,9 @@ public class TopologyPanel extends JPanel {
 		comboBoxHiddenMausModus = new JComboBox(hiddenLayerComboModel);
 		comboBoxHiddenMausModus.setEnabled(false);
 
-		lblJungModis = new JLabel(Settings.i18n.getString("sidebar.topology.mouse.lblJungModis"));
-		comboBoxMouseModis = new JComboBox();
-		comboBoxMouseModis.setModel(new DefaultComboBoxModel(new String[] { "Picking", "Editing", "Transforming" }));
+		lblJungModis = new JLabel(Settings.i18n.getString("sidebar.topology.mouse.lblJungModes"));
+		comboBoxMouseModes = new JComboBox();
+		comboBoxMouseModes.setModel(new DefaultComboBoxModel(new String[] { "Picking", "Editing", "Transforming" }));
 
 		GroupLayout gl_mouseModusPanel = new GroupLayout(mouseModusPanel);
 		gl_mouseModusPanel.setHorizontalGroup(gl_mouseModusPanel.createParallelGroup(Alignment.LEADING).addGroup(
@@ -227,7 +227,7 @@ public class TopologyPanel extends JPanel {
 														.createSequentialGroup()
 														.addComponent(lblJungModis)
 														.addGap(18)
-														.addComponent(comboBoxMouseModis, GroupLayout.PREFERRED_SIZE,
+														.addComponent(comboBoxMouseModes, GroupLayout.PREFERRED_SIZE,
 																GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 										.addGroup(
 												gl_mouseModusPanel
@@ -247,7 +247,7 @@ public class TopologyPanel extends JPanel {
 								gl_mouseModusPanel
 										.createParallelGroup(Alignment.BASELINE)
 										.addComponent(lblJungModis)
-										.addComponent(comboBoxMouseModis, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										.addComponent(comboBoxMouseModes, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 												GroupLayout.PREFERRED_SIZE))
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addGroup(
@@ -269,15 +269,15 @@ public class TopologyPanel extends JPanel {
 		btnCreateNetwork.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
-				ac.doAction(Actions.CREATE_NETWORK, new PropertyChangeEvent(btnCreateNetwork, "button", 0, 1));
+				ac.doAction(Actions.CREATE_NETWORK, new PropertyChangeEvent(btnCreateNetwork, "createNetwork", 0, 1));
 			}
 		});
 
-		comboBoxMouseModis.addActionListener(new ActionListener() {
+		comboBoxMouseModes.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				ac.doAction(Actions.CHANGE_MOUSE_MODI,
-						new PropertyChangeEvent(comboBoxMouseModis, "item", "", comboBoxMouseModis.getSelectedIndex()));
+						new PropertyChangeEvent(comboBoxMouseModes, "mouseMode", "", comboBoxMouseModes.getSelectedIndex()));
 			}
 		});
 		// input bias
@@ -285,7 +285,7 @@ public class TopologyPanel extends JPanel {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				boolean newVal = inputBiasCB.isSelected();
-				ac.doAction(Actions.UPDATE_SIDEBAR_CONFIG_INPUT_BIAS_MODEL, new PropertyChangeEvent(inputBiasCB, "checkbox", !newVal,
+				ac.doAction(Actions.UPDATE_SIDEBAR_CONFIG_INPUT_BIAS_MODEL, new PropertyChangeEvent(inputBiasCB, "inputBias", !newVal,
 						newVal));
 			}
 		});
@@ -295,7 +295,7 @@ public class TopologyPanel extends JPanel {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				boolean newVal = hiddenBiasCB.isSelected();
-				ac.doAction(Actions.UPDATE_SIDEBAR_CONFIG_HIDDEN_BIAS_MODEL, new PropertyChangeEvent(hiddenBiasCB, "checkbox", !newVal,
+				ac.doAction(Actions.UPDATE_SIDEBAR_CONFIG_HIDDEN_BIAS_MODEL, new PropertyChangeEvent(hiddenBiasCB, "hiddenBias", !newVal,
 						newVal));
 			}
 		});
@@ -304,7 +304,11 @@ public class TopologyPanel extends JPanel {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				Integer item = (Integer) hiddenLayerDropDown.getSelectedItem();
-				ac.doAction(Actions.UPDATE_SIDEBAR_TOPOLOGY_VIEW, new PropertyChangeEvent(hiddenLayerDropDown, "", null, item));
+				if (item == null) {
+					return;
+				}
+				ac.doAction(Actions.UPDATE_SIDEBAR_TOPOLOGY_VIEW, new PropertyChangeEvent(hiddenLayerDropDown, "selectedHiddenLayer", "",
+						item));
 			}
 		});
 

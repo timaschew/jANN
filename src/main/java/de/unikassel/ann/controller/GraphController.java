@@ -1,4 +1,4 @@
-package de.unikassel.ann.gui.graph;
+package de.unikassel.ann.controller;
 
 import java.awt.Color;
 import java.awt.Container;
@@ -13,9 +13,12 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import de.unikassel.ann.controller.EdgeController;
-import de.unikassel.ann.controller.LayerController;
-import de.unikassel.ann.controller.VertexController;
+import org.apache.commons.collections15.Factory;
+
+import de.unikassel.ann.gui.model.Edge;
+import de.unikassel.ann.gui.model.JungLayer;
+import de.unikassel.ann.gui.model.Vertex;
+import de.unikassel.ann.gui.mouse.GraphMouse;
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.Network;
 import de.unikassel.ann.model.Neuron;
@@ -33,7 +36,7 @@ import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 import edu.uci.ics.jung.visualization.layout.LayoutTransition;
 import edu.uci.ics.jung.visualization.util.Animator;
 
-public class GraphLayoutViewer {
+public class GraphController {
 
 	/*
 	 * fields
@@ -47,17 +50,17 @@ public class GraphLayoutViewer {
 	private Dimension dim;
 	private Container parent;
 
-	private static GraphLayoutViewer instance;
+	private static GraphController instance;
 
 	/**
 	 * Private Constructor
 	 */
-	private GraphLayoutViewer() {
+	private GraphController() {
 	}
 
-	public static GraphLayoutViewer getInstance() {
+	public static GraphController getInstance() {
 		if (instance == null) {
-			instance = new GraphLayoutViewer();
+			instance = new GraphController();
 		}
 		return instance;
 	}
@@ -93,14 +96,6 @@ public class GraphLayoutViewer {
 				}
 			}
 		});
-
-		// viewer.addComponentListener(new ComponentAdapter() {
-		// @Override
-		// public void componentResized(final ComponentEvent evt) {
-		// super.componentResized(evt);
-		// layout.setSize(evt.getComponent().getSize());
-		// }
-		// });
 
 		//
 		// Controller
@@ -164,7 +159,7 @@ public class GraphLayoutViewer {
 	 * Compute and set the position of each graph component. Animate the layout changes.
 	 */
 	public void repaint() {
-		GraphLayoutViewer.repaint(viewer);
+		GraphController.repaint(viewer);
 	}
 
 	/**
@@ -175,13 +170,20 @@ public class GraphLayoutViewer {
 		VertexController.getInstance().getVertexFactory().reset();
 		EdgeController.getInstance().getEdgeFactory().reset();
 
-		// Clear current LayerController
-		LayerController.getInstance().clear();
+		// Remove all vertices
+		LayerController<Layer> layerController = LayerController.getInstance();
+		ArrayList<JungLayer> layers = layerController.getLayers();
+		for (JungLayer jungLayer : layers) {
+			ArrayList<Vertex> vertices = jungLayer.getVertices();
+			for (Vertex vertex : vertices) {
+				graph.removeVertex(vertex);
+			}
+		}
 
-		// Create new graph
-		graph = new DirectedSparseGraph<Vertex, Edge>();
-		layout.setGraph(graph);
-		layout.initialize();
+		// Clear all layers
+		layerController.clear();
+
+		// Update view
 		repaint(viewer);
 	}
 
@@ -253,6 +255,58 @@ public class GraphLayoutViewer {
 		repaint();
 	}
 
+	/**
+	 * Wrapper function to create and setup a new vertex and adding it to the graph.
+	 * 
+	 * @param vertexFactory
+	 */
+	public void createVertex(final Factory<Vertex> vertexFactory) {
+		// Create a new vertex
+		Vertex newVertex = vertexFactory.create();
+		newVertex.setup();
+
+		// Add the new vertex to the graph
+		graph.addVertex(newVertex);
+		repaint(viewer);
+	}
+
+	/**
+	 * Wrapper function to create and setup a new edge and adding it to the graph.
+	 * 
+	 * @param edgeFactory
+	 * @param toVertex
+	 * @param toVertex
+	 */
+	public void createEdge(final Factory<Edge> edgeFactory, final Vertex fromVertex, final Vertex toVertex) {
+		Neuron fromNeuron = fromVertex.getModel();
+		Neuron toNeuron = toVertex.getModel();
+
+		if (fromVertex.mayHaveEdgeTo(toVertex)) {
+			// Create a new edge with its synapse between the both vertexes
+			Edge edge = edgeFactory.create();
+			edge.createModel(fromNeuron, toNeuron);
+			graph.addEdge(edge, fromVertex, toVertex, EdgeType.DIRECTED);
+			repaint(viewer);
+		}
+	}
+
+	/**
+	 * @param vertex
+	 */
+	public void removeVertex(final Vertex vertex) {
+		vertex.remove();
+		graph.removeVertex(vertex);
+		GraphController.repaint(viewer);
+	}
+
+	/**
+	 * @param edge
+	 */
+	public void removeEdge(final Edge edge) {
+		graph.removeEdge(edge);
+		repaint(viewer);
+	}
+
 	private void initGraphMouse() {
 		// Create Graph Mouse (set in and out parameter to '1f' to disable zoom)
 		graphMouse = new GraphMouse<Vertex, Edge>(viewer.getRenderContext(), VertexController.getInstance().getVertexFactory(),
@@ -267,7 +321,7 @@ public class GraphLayoutViewer {
 			}
 		});
 
-		graphMouse.setMode(ModalGraphMouse.Mode.EDITING);
+		graphMouse.setMode(ModalGraphMouse.Mode.PICKING);
 		graphMouse.setZoomAtMouse(false);
 	}
 
@@ -287,7 +341,9 @@ public class GraphLayoutViewer {
 	// }
 
 	/**
-	 * @param vv
+	 * Animate the repaint from the last layout to the new layout. Arrange vertices accordingly to their layer and position.
+	 * 
+	 * @param thisViewer
 	 */
 	public static void repaint(final VisualizationViewer<Vertex, Edge> thisViewer) {
 		final int height = thisViewer.getHeight();
@@ -296,15 +352,13 @@ public class GraphLayoutViewer {
 		AbstractLayout<Vertex, Edge> thisLayout = getInstance().getLayout();
 		DirectedGraph<Vertex, Edge> thisGraph = getInstance().getGraph();
 
-		// Position of the vertex depends on the number of vertices that
-		// are already in the same layer.
+		// The Position of a vertex depends on the number of vertices that
+		// are in the same layer.
 		// Since new vertices are always added at the last position, get
 		// the number of vertices to compute the position for the new
 		// vertex.
 		LayerController<Layer> layerController = LayerController.getInstance();
-		ArrayList<ArrayList<Vertex>> layers = layerController.getVertices();
-
-		// System.out.println(layers);
+		ArrayList<JungLayer> layers = layerController.getLayers();
 
 		// No layers? -> No need to positionize anything!
 		if (layers.size() == 0) {
@@ -312,17 +366,15 @@ public class GraphLayoutViewer {
 			return;
 		}
 
-		// Vertex position
-		Point2D location;
-
 		// Gap between the layers
 		int gapY = height / layerController.getLayersSize();
 
-		int layerIndex = -1;
-		for (ArrayList<Vertex> vertices : layers) {
-			layerIndex++;
-
+		for (JungLayer jungLayer : layers) {
+			ArrayList<Vertex> vertices = jungLayer.getVertices();
+			int layerIndex = jungLayer.getIndex();
 			int layerSize = vertices.size();
+
+			// System.out.println(layerIndex + ": " + vertices);
 
 			// Skip empty layers
 			if (layerSize == 0) {
@@ -339,7 +391,7 @@ public class GraphLayoutViewer {
 				// Compute location of the vertex
 				int x = vertexIndex * gapX + gapX / 2;
 				int y = layerIndex * gapY + gapY / 2;
-				location = new Point2D.Double(x, y);
+				Point2D location = new Point2D.Double(x, y);
 
 				// Set vertex location and lock it
 				thisLayout.setLocation(vertex, location);
@@ -349,8 +401,8 @@ public class GraphLayoutViewer {
 
 		Layout<Vertex, Edge> startLayout = thisViewer.getGraphLayout();
 		StaticLayout<Vertex, Edge> endLayout = new StaticLayout<Vertex, Edge>(thisGraph, thisLayout);
-		LayoutTransition<Vertex, Edge> lt = new LayoutTransition<Vertex, Edge>(thisViewer, startLayout, endLayout);
-		Animator animator = new Animator(lt);
+		LayoutTransition<Vertex, Edge> transition = new LayoutTransition<Vertex, Edge>(thisViewer, startLayout, endLayout);
+		Animator animator = new Animator(transition);
 		animator.start();
 		thisViewer.repaint();
 	}

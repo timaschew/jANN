@@ -13,8 +13,8 @@ import java.util.List;
 import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.factory.NetworkFactory;
 import de.unikassel.ann.gui.Main;
-import de.unikassel.ann.gui.graph.GraphLayoutViewer;
 import de.unikassel.ann.gui.sidebar.Sidebar;
+import de.unikassel.ann.model.DataPairSet;
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.SidebarModel;
 import de.unikassel.ann.model.func.ActivationFunction;
@@ -44,12 +44,9 @@ public class ActionController {
 	}
 
 	public void doAction(final Actions a, final PropertyChangeEvent evt) {
+		System.out.println(a + " old: " + evt.getOldValue() + ", new: " + evt.getNewValue());
 
-		// System.out.println(a);
-		// System.out.println(evt.getOldValue());
-		// System.out.println(evt.getNewValue());
-
-		Sidebar sidebar = Main.instance.sideBar;
+		Sidebar sidebar = Main.instance.sidebar;
 		SidebarModel sidebarModel = Settings.getInstance().getCurrentSession().sidebarModel;
 		switch (a) {
 
@@ -59,7 +56,8 @@ public class ActionController {
 			break;
 
 		case UPDATE_SIDEBAR_CONFIG_HIDDEN_NEURON_MODEL:
-			Integer selectedHiddenLayer = sidebarModel.getSelectedGlobalHiddenLayerIndex();
+			// need the relative index for hidden layer
+			Integer selectedHiddenLayer = sidebarModel.getSelectedGlobalHiddenLayerIndex() - 1;
 			sidebarModel.setHiddenNeurons(selectedHiddenLayer, (Integer) evt.getNewValue());
 			break;
 
@@ -169,13 +167,13 @@ public class ActionController {
 			 * update hidden bias for selected hidden layer AND hidden neuron spinner
 			 */
 			// get last selection from combobox
-			Integer selectedItem = (Integer) sidebar.topolgyPanel.hiddenLayerDropDown.getSelectedItem();
-			if (selectedItem != null) {
+			selectedHiddenLayer = (Integer) sidebar.topolgyPanel.hiddenLayerDropDown.getSelectedItem();
+			if (selectedHiddenLayer != null) {
 
 				// hidden neuron spinner
 				try {
 					List<Integer> hiddenNeuronList = sidebarModel.getHiddenNeurons();
-					Integer neuronCountForSelectedHiddenLayer = hiddenNeuronList.get(selectedItem - 1);
+					Integer neuronCountForSelectedHiddenLayer = hiddenNeuronList.get(selectedHiddenLayer - 1);
 					sidebar.topolgyPanel.hiddenNeuronSpinner.setValue(neuronCountForSelectedHiddenLayer);
 				} catch (IndexOutOfBoundsException e) {
 					// see below (prophylactical)
@@ -184,7 +182,7 @@ public class ActionController {
 				try {
 					List<Boolean> hiddenBiasList = sidebarModel.getHiddenBias();
 					// use relative hidden layer index
-					Boolean val = hiddenBiasList.get(selectedItem - 1);
+					Boolean val = hiddenBiasList.get(selectedHiddenLayer - 1);
 					sidebar.topolgyPanel.hiddenBiasCB.setSelected(val);
 				} catch (IndexOutOfBoundsException e) {
 					// catch when the list is empty, because a new layer will be added
@@ -203,28 +201,36 @@ public class ActionController {
 			// add the items
 			for (int i = 1; i <= sidebarModel.getHiddenLayers(); i++) {
 				// if getHiddenayer >= 1 then enable der Elements
+				sidebar.topolgyPanel.hiddenLayerComboModel.addElement(new Integer(i));
+			}
+
+			// if previous selection was not null, set to old value
+			if (selectedHiddenLayer != null) {
+				// enable some components
 				sidebar.topolgyPanel.hiddenLayerDropDown.setEnabled(true);
 				sidebar.topolgyPanel.hiddenBiasCB.setEnabled(true);
 				sidebar.topolgyPanel.hiddenNeuronSpinner.setEnabled(true);
-				sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(true);
-				sidebar.topolgyPanel.hiddenLayerComboModel.addElement(new Integer(i));
-			}
-			// if previous selection was not null, set to old value
-			if (selectedItem != null) {
+				if (sidebar.topolgyPanel.comboBoxMouseModes.getSelectedItem().equals("Editing")) {
+					sidebar.topolgyPanel.mouseHiddenRB.setEnabled(true);
+					sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(true);
+				}
 				// if old value don't exist anymore set to current hidden layer amount,
 				// otherwise use the previous selected item
-				if (selectedItem > sidebarModel.getHiddenLayers()) {
+				if (selectedHiddenLayer > sidebarModel.getHiddenLayers()) {
 					sidebar.topolgyPanel.hiddenLayerDropDown.setSelectedItem(sidebarModel.getHiddenLayers());
 					sidebar.topolgyPanel.comboBoxHiddenMausModus.setSelectedItem(sidebarModel.getHiddenLayers());
-
-					sidebar.topolgyPanel.hiddenLayerDropDown.setEnabled(false);
-					sidebar.topolgyPanel.hiddenBiasCB.setEnabled(false);
-					sidebar.topolgyPanel.hiddenNeuronSpinner.setEnabled(false);
-					sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(false);
 				} else {
-					sidebar.topolgyPanel.hiddenLayerDropDown.setSelectedItem(selectedItem);
-					sidebar.topolgyPanel.comboBoxHiddenMausModus.setSelectedItem(selectedItem);
+					sidebar.topolgyPanel.hiddenLayerDropDown.setSelectedItem(selectedHiddenLayer);
+					sidebar.topolgyPanel.comboBoxHiddenMausModus.setSelectedItem(selectedHiddenLayer);
 				}
+			}
+			hiddenLayerSize = sidebarModel.getHiddenLayers();
+			if (hiddenLayerSize == 0) {
+				sidebar.topolgyPanel.hiddenLayerDropDown.setEnabled(false);
+				sidebar.topolgyPanel.hiddenBiasCB.setEnabled(false);
+				sidebar.topolgyPanel.hiddenNeuronSpinner.setEnabled(false);
+				sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(false);
+				sidebar.topolgyPanel.mouseHiddenRB.setEnabled(false);
 			}
 
 			break;
@@ -256,42 +262,55 @@ public class ActionController {
 
 			break;
 
-		case PLAY_TRAINING:
+		case TRAIN_NETWORK:
+			NetConfig net = Settings.getInstance().getCurrentSession().getNetworkConfig();
+			System.out.println("training started");
+			DataPairSet testData = new DataPairSet(net.getTrainingData());
+			net.getTrainingModule().train(net.getTrainingData());
+			System.out.println("training finished");
+			net.getWorkingModule().work(net.getNetwork(), testData);
+			System.out.println(testData);
 
 			break;
 
 		case CHANGE_MOUSE_MODI:
-			sidebar = Main.instance.sideBar;
-			String selected = (String) sidebar.topolgyPanel.comboBoxMouseModis.getSelectedItem();
+			sidebar = Main.instance.sidebar;
+			String selected = (String) sidebar.topolgyPanel.comboBoxMouseModes.getSelectedItem();
 			if (selected.equals("Picking")) {
-				GraphLayoutViewer.getInstance().graphMouse.setMode(Mode.PICKING);
-				System.out.println("picking");
+				GraphController.getInstance().graphMouse.setMode(Mode.PICKING);
 				sidebar.topolgyPanel.mouseHiddenRB.setEnabled(false);
 				sidebar.topolgyPanel.mouseInputRB.setEnabled(false);
+				sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(false);
 				sidebar.topolgyPanel.mouseOutputRB.setEnabled(false);
 			} else if (selected.equals("Editing")) {
-				GraphLayoutViewer.getInstance().graphMouse.setMode(Mode.EDITING);
-				sidebar.topolgyPanel.mouseHiddenRB.setEnabled(true);
+				GraphController.getInstance().graphMouse.setMode(Mode.EDITING);
+				hiddenLayerSize = sidebarModel.getHiddenLayers();
+				if (hiddenLayerSize > 0) {
+					sidebar.topolgyPanel.mouseHiddenRB.setEnabled(true);
+					sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(true);
+				} else {
+					sidebar.topolgyPanel.mouseHiddenRB.setEnabled(false);
+					sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(false);
+				}
 				sidebar.topolgyPanel.mouseInputRB.setEnabled(true);
 				sidebar.topolgyPanel.mouseOutputRB.setEnabled(true);
-				System.out.println("editing");
 			} else if (selected.equals("Transforming")) {
-				GraphLayoutViewer.getInstance().graphMouse.setMode(Mode.TRANSFORMING);
+				GraphController.getInstance().graphMouse.setMode(Mode.TRANSFORMING);
 				sidebar.topolgyPanel.mouseHiddenRB.setEnabled(false);
+				sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(false);
 				sidebar.topolgyPanel.mouseInputRB.setEnabled(false);
 				sidebar.topolgyPanel.mouseOutputRB.setEnabled(false);
-				System.out.println("transforming");
 			}
 
 			break;
 
 		case SET_THE_STRATEGY:
 
-			sidebar = Main.instance.sideBar;
+			sidebar = Main.instance.sidebar;
 			// "MaxIteration", "MinError", "RestartError","RestartImprovement"
 			String selectedStrategy = (String) sidebar.trainStrategyPanel.comboBoxTypStrategien.getSelectedItem();
 			Strategy strategy;
-			NetConfig net = Settings.getInstance().getCurrentSession().getNetworkConfig();
+			net = Settings.getInstance().getCurrentSession().getNetworkConfig();
 			List<Strategy> strategyList = net.getStrategies();
 			Object nValue = evt.getNewValue();
 			Boolean checkBoxValue = null;
@@ -318,8 +337,6 @@ public class ActionController {
 					}
 				}
 
-				System.out.println("MaxIteration");
-
 			} else if (selectedStrategy.equals("MinError")) {
 				strategy = checkIfExist(strategyList, MinErrorStrategy.class);
 				updateCBforCombo(sidebar, strategy);
@@ -338,7 +355,6 @@ public class ActionController {
 						sidebar.trainStrategyPanel.chckbxActivateStrategie.setSelected(false);
 					}
 				}
-				System.out.println("MinError");
 
 			} else if (selectedStrategy.equals("RestartError")) {
 
@@ -361,8 +377,6 @@ public class ActionController {
 					}
 				}
 
-				System.out.println("RestartError");
-
 			} else if (selectedStrategy.equals("RestartImprovement")) {
 
 				strategy = checkIfExist(strategyList, RestartImprovementStrategy.class);
@@ -383,7 +397,6 @@ public class ActionController {
 						sidebar.trainStrategyPanel.chckbxActivateStrategie.setSelected(false);
 					}
 				}
-				System.out.println("RestartImprovement");
 			}
 
 			break;

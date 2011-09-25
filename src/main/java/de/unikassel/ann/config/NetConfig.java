@@ -30,8 +30,10 @@ public class NetConfig {
 	private List<NetError> errorLogs;
 	private int restartAmount = 0;
 	private List<TrainErrorListener> trainErrorListener;
-	private DataPairSet dataPairTest;
-	private DataPairSet dataPairTrain;
+
+	private DataPairSet trainingData;
+	private DataPairSet testData;
+	private DataPairSet originalData;
 
 	public NetConfig() {
 		network = new Network();
@@ -39,8 +41,6 @@ public class NetConfig {
 		strategies = new ArrayList<Strategy>();
 		errorLogs = new ArrayList<NetError>();
 		trainErrorListener = new ArrayList<TrainErrorListener>();
-		dataPairTest = new DataPairSet();
-		dataPairTrain = new DataPairSet();
 	}
 
 	public boolean shouldStopTraining() {
@@ -197,32 +197,47 @@ public class NetConfig {
 	}
 
 	/**
-	 * @return the dataPairTest
+	 * @return the trainingData
 	 */
-	public DataPairSet getDataPairTest() {
-		return dataPairTest;
+	public DataPairSet getTrainingData() {
+		return trainingData;
 	}
 
 	/**
-	 * @param dataPairTest
-	 *            the dataPairTest to set
+	 * @param trainingData
+	 *            the trainingData to set
 	 */
-	public void setDataPairTest(final DataPairSet dataPairTest) {
-		this.dataPairTest = dataPairTest;
+	public void setTrainingData(final DataPairSet trainingData) {
+		this.trainingData = trainingData;
 	}
 
 	/**
-	 * @return the dataPairTrain
+	 * @return the testData
 	 */
-	public DataPairSet getDataPairTrain() {
-		return dataPairTrain;
+	public DataPairSet getTestData() {
+		return testData;
 	}
 
 	/**
-	 * @param dataPairTrain
-	 *            the dataPairTrain to set
+	 * @param testData
+	 *            the testData to set
 	 */
-	public void setDataPairTrain(final DataPairSet dataPairTrain) {
-		this.dataPairTrain = dataPairTrain;
+	public void setTestData(final DataPairSet testData) {
+		this.testData = testData;
+	}
+
+	/**
+	 * @return the originalData
+	 */
+	public DataPairSet getOriginalData() {
+		return originalData;
+	}
+
+	/**
+	 * @param originalData
+	 *            the originalData to set
+	 */
+	public void setOriginalData(final DataPairSet originalData) {
+		this.originalData = originalData;
 	}
 }

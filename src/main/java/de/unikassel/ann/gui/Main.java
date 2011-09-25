@@ -25,8 +25,8 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
+import de.unikassel.ann.controller.GraphController;
 import de.unikassel.ann.controller.Settings;
-import de.unikassel.ann.gui.graph.GraphLayoutViewer;
 import de.unikassel.ann.gui.sidebar.Sidebar;
 import de.unikassel.ann.gui.sidebar.SidebarSOM;
 
@@ -57,7 +57,7 @@ public class Main {
 	private JFrame frame;
 	private JTextPane textPane;
 	private JTextPane textPaneSOM;
-	private GraphLayoutViewer glv;
+	private GraphController glv;
 	private JPanel jungPanel;
 	private JSplitPane jungConsoleSplitPane;
 	private JSplitPane _3DBoardSplitPane;
@@ -67,7 +67,7 @@ public class Main {
 	/*
 	 * public fields
 	 */
-	public Sidebar sideBar;
+	public Sidebar sidebar;
 	public JSplitPane mainSplitPane;
 	public SidebarSOM sidebarSom;
 	public JPanel _3DBoardPane;
@@ -172,7 +172,7 @@ public class Main {
 		// The Dimension is given by the DividerLocation of the mainSplitPane
 		// and the jungConsoleSplitPane minus the scrollbar size
 
-		glv = GraphLayoutViewer.getInstance();
+		glv = GraphController.getInstance();
 		glv.setDimension(dim);
 		glv.setParent(jungPanel);
 		glv.setFrame(frame);
@@ -181,10 +181,10 @@ public class Main {
 
 	public void initSidebarPanel() {
 		// SideConfigurationPanel sideBar = new SideConfigurationPanel();
-		sideBar = new Sidebar();
+		sidebar = new Sidebar();
 		// Provide minimum sizes for the components in the split pane
-		sideBar.setMinimumSize(new Dimension(435, 50));
-		mainSplitPane.setRightComponent(sideBar);
+		sidebar.setMinimumSize(new Dimension(435, 50));
+		mainSplitPane.setRightComponent(sidebar);
 	}
 
 	/**
@@ -204,16 +204,16 @@ public class Main {
 	 * add the Backprop. sidebar for the menu "options" to the Main-splitPane and remove the Som
 	 */
 	public void addBackproSidebarPanel() {
-		sideBar = new Sidebar();
+		sidebar = new Sidebar();
 		// Provide minimum sizes for the components in the split pane
-		sideBar.setMinimumSize(new Dimension(435, 50));
+		sidebar.setMinimumSize(new Dimension(435, 50));
 		textPane.removeAll();
 		mainSplitPane.removeAll();
-		mainSplitPane.setRightComponent(sideBar);
+		mainSplitPane.setRightComponent(sidebar);
 		mainSplitPane.setLeftComponent(jungConsoleSplitPane);
 	}
 
-	public GraphLayoutViewer getGraphLayoutViewer() {
+	public GraphController getGraphLayoutViewer() {
 		return glv;
 	}
 

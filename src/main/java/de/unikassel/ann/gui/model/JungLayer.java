@@ -5,7 +5,7 @@
  * 
  * Way
  */
-package de.unikassel.ann.gui.graph;
+package de.unikassel.ann.gui.model;
 
 import java.util.ArrayList;
 
@@ -22,6 +22,10 @@ public class JungLayer implements Comparable<JungLayer> {
 	public JungLayer(final int index) {
 		this.index = index;
 		vertices = new ArrayList<Vertex>();
+	}
+
+	public void setIndex(final int index) {
+		this.index = index;
 	}
 
 	public int getIndex() {

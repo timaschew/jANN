@@ -1,4 +1,4 @@
-package de.unikassel.ann.gui.graph;
+package de.unikassel.ann.gui.mouse;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -17,7 +17,9 @@ import javax.swing.JComponent;
 
 import org.apache.commons.collections15.Factory;
 
-import de.unikassel.ann.model.Neuron;
+import de.unikassel.ann.controller.GraphController;
+import de.unikassel.ann.gui.model.Edge;
+import de.unikassel.ann.gui.model.Vertex;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedGraph;
@@ -116,24 +118,10 @@ public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements 
 						vv.addPostRenderPaintable(arrowPaintable);
 					}
 				} else {
-					// Create a new vertex
-					Vertex newVertex = vertexFactory.create();
-					newVertex.setup();
-
-					// Add the new vertex to the graph
-					graph.addVertex(newVertex);
-
-					// Set position of the new vertex
-					// Point2D location = vv.getRenderContext()
-					// .getMultiLayerTransformer()
-					// .inverseTransform(e.getPoint());
-					// Layout<Vertex, Edge> layout = vv.getModel()
-					// .getGraphLayout();
-					// layout.setLocation(newVertex, location);
+					GraphController.getInstance().createVertex(vertexFactory);
 				}
 			}
-			// vv.repaint();
-			GraphLayoutViewer.repaint(vv);
+			GraphController.repaint(vv);
 		}
 	}
 
@@ -152,19 +140,7 @@ public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements 
 			if (pickSupport != null) {
 				final Vertex vertex = pickSupport.getVertex(layout, p.getX(), p.getY());
 				if (vertex != null && startVertex != null) {
-					Graph<Vertex, Edge> graph = vv.getGraphLayout().getGraph();
-
-					// Check if the two neurons are in different layers
-					Neuron fromNeuron = startVertex.getModel();
-					Neuron toNeuron = vertex.getModel();
-					if (fromNeuron.getLayer().getIndex() < toNeuron.getLayer().getIndex()) {
-						// Create edge with its synapse between the both vertexes
-						Edge edge = edgeFactory.create();
-						edge.createModel(fromNeuron, toNeuron);
-						graph.addEdge(edge, startVertex, vertex, edgeIsDirected);
-					}
-					// vv.repaint();
-					GraphLayoutViewer.repaint(vv);
+					GraphController.getInstance().createEdge(edgeFactory, startVertex, vertex);
 				}
 			}
 			startVertex = null;
@@ -189,8 +165,7 @@ public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements 
 				}
 			}
 			VisualizationViewer<Vertex, Edge> vv = (VisualizationViewer<Vertex, Edge>) e.getSource();
-			// vv.repaint();
-			GraphLayoutViewer.repaint(vv);
+			GraphController.repaint(vv);
 		}
 	}
 

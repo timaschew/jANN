@@ -1,4 +1,4 @@
-package de.unikassel.ann.gui.graph;
+package de.unikassel.ann.gui.mouse;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
@@ -11,13 +11,17 @@ import javax.swing.JPopupMenu;
 
 import org.apache.commons.collections15.Factory;
 
-import de.unikassel.ann.model.Neuron;
+import de.unikassel.ann.controller.GraphController;
+import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.gui.Main;
+import de.unikassel.ann.gui.model.Edge;
+import de.unikassel.ann.gui.model.Vertex;
+import de.unikassel.ann.gui.sidebar.TopologyPanel;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedGraph;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.UndirectedGraph;
-import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.AbstractPopupGraphMousePlugin;
 import edu.uci.ics.jung.visualization.picking.PickedState;
@@ -58,89 +62,86 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 				Set<Vertex> picked = pickedVertexState.getPicked();
 				if (picked.size() > 0) {
 					if (graph instanceof UndirectedGraph == false) {
-						JMenu directedMenu = new JMenu("Create Directed Edge");
-						popup.add(directedMenu);
+						JMenu directedMenu = new JMenu(Settings.i18n.getString("graph.mouse.createEdgeDirected"));
+						boolean addMenu = false;
 						for (final Vertex other : picked) {
+							// Filter connectable vertices
+							if (other.mayHaveEdgeTo(vertex) == false) {
+								continue;
+							}
 							directedMenu.add(new AbstractAction("[" + other + "," + vertex + "]") {
 								@Override
 								public void actionPerformed(final ActionEvent e) {
-									// Check if the two neurons are in different
-									// layers
-									Neuron fromNeuron = other.getModel();
-									Neuron toNeuron = vertex.getModel();
-									if (fromNeuron.getLayer().getIndex() < toNeuron.getLayer().getIndex()) {
-										// Create edge with its synapse between
-										// the both vertexes
-										Edge edge = edgeFactory.create();
-										edge.createModel(fromNeuron, toNeuron);
-										graph.addEdge(edge, other, vertex, EdgeType.DIRECTED);
-									}
-									// vv.repaint();
-									GraphLayoutViewer.repaint(vv);
+									GraphController.getInstance().createEdge(edgeFactory, other, vertex);
 								}
 							});
+							addMenu = true;
+						}
+
+						// Add the menu only if it has any action
+						if (addMenu) {
+							popup.add(directedMenu);
 						}
 					}
 					if (graph instanceof DirectedGraph == false) {
-						JMenu undirectedMenu = new JMenu("Create Undirected Edge");
-						popup.add(undirectedMenu);
+						JMenu undirectedMenu = new JMenu(Settings.i18n.getString("graph.mouse.createEdgeUnDirected"));
+						boolean addMenu = false;
 						for (final Vertex other : picked) {
+							// Filter connectable vertices
+							if (other.mayHaveEdgeTo(vertex) == false) {
+								continue;
+							}
 							undirectedMenu.add(new AbstractAction("[" + other + "," + vertex + "]") {
 								@Override
 								public void actionPerformed(final ActionEvent e) {
-									// Check if the two neurons are in different
-									// layers
-									Neuron fromNeuron = other.getModel();
-									Neuron toNeuron = vertex.getModel();
-									if (fromNeuron.getLayer().getIndex() < toNeuron.getLayer().getIndex()) {
-										// Create edge with its synapse between
-										// the both vertexes
-										Edge edge = edgeFactory.create();
-										edge.createModel(fromNeuron, toNeuron);
-										graph.addEdge(edge, other, vertex);
-									}
-									// vv.repaint();
-									GraphLayoutViewer.repaint(vv);
+									GraphController.getInstance().createEdge(edgeFactory, other, vertex);
 								}
 							});
+							addMenu = true;
+						}
+
+						// Add the menu only if it has any action
+						if (addMenu) {
+							popup.add(undirectedMenu);
 						}
 					}
 				}
-				popup.add(new AbstractAction("Delete Vertex") {
+				popup.add(new AbstractAction(Settings.i18n.getString("graph.mouse.deleteVertex")) {
 					@Override
 					public void actionPerformed(final ActionEvent e) {
 						pickedVertexState.pick(vertex, false);
-						vertex.remove(); // TODO check
-						graph.removeVertex(vertex);
-						// vv.repaint();
-						GraphLayoutViewer.repaint(vv);
+						GraphController.getInstance().removeVertex(vertex);
 					}
 				});
 			} else if (edge != null) {
-				popup.add(new AbstractAction("Delete Edge") {
+				popup.add(new AbstractAction(Settings.i18n.getString("graph.mouse.deleteEdge")) {
 					@Override
 					public void actionPerformed(final ActionEvent e) {
 						pickedEdgeState.pick(edge, false);
-						graph.removeEdge(edge);
-						// vv.repaint();
-						GraphLayoutViewer.repaint(vv);
+						GraphController.getInstance().removeEdge(edge);
 					}
 				});
 			} else {
-				popup.add(new AbstractAction("Create Vertex") {
+				String actionText = Settings.i18n.getString("graph.mouse.createVertex");
+
+				// Use the current sidebar settings to make the popup text more attractive
+				try {
+					TopologyPanel topoPanel = Main.instance.sidebar.topolgyPanel;
+					if (topoPanel.mouseInputRB.isSelected()) {
+						actionText = Settings.i18n.getString("graph.mouse.createVertexInput");
+					} else if (topoPanel.mouseOutputRB.isSelected()) {
+						actionText = Settings.i18n.getString("graph.mouse.createVertexOutput");
+					} else if (topoPanel.mouseHiddenRB.isSelected()) {
+						Integer selectedHiddenLayer = (Integer) topoPanel.comboBoxHiddenMausModus.getSelectedItem();
+						actionText = String.format(Settings.i18n.getString("graph.mouse.createVertexHidden"), selectedHiddenLayer);
+					}
+				} catch (Exception ex) {
+				}
+
+				popup.add(new AbstractAction(actionText) {
 					@Override
 					public void actionPerformed(final ActionEvent e) {
-						// Create a new vertex
-						Vertex newVertex = vertexFactory.create();
-						newVertex.setup();
-
-						// Add the new vertex to the graph
-						graph.addVertex(newVertex);
-
-						// layout.setLocation(newVertex, vv.getRenderContext()
-						// .getMultiLayerTransformer().inverseTransform(p));
-						// vv.repaint();
-						GraphLayoutViewer.repaint(vv);
+						GraphController.getInstance().createVertex(vertexFactory);
 					}
 				});
 			}
@@ -149,5 +150,4 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 			}
 		}
 	}
-
 }

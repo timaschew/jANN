@@ -12,8 +12,8 @@ import javax.swing.JMenuItem;
 
 import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.Actions;
+import de.unikassel.ann.controller.GraphController;
 import de.unikassel.ann.controller.Settings;
-import de.unikassel.ann.gui.graph.GraphLayoutViewer;
 import de.unikassel.ann.io.NetIO;
 import de.unikassel.ann.model.UserSession;
 
@@ -221,7 +221,7 @@ public class MainMenu extends JMenuBar {
 				// Create a new Session
 
 				// Clear Graph
-				GraphLayoutViewer.getInstance().clear();
+				GraphController.getInstance().clear();
 
 				// Reset Sidebar
 				Settings.getInstance().createNewSession("Session");
@@ -237,7 +237,7 @@ public class MainMenu extends JMenuBar {
 				break;
 			case IMPORT:
 				// TODO
-				ImportFilePanel panel = ImportFilePanel.getImportFileInstance();
+				ImportFilePanel panel = new ImportFilePanel();
 				panel.setVisible(true);
 				break;
 			case IMPORT_RECENT:
@@ -262,7 +262,7 @@ public class MainMenu extends JMenuBar {
 				System.exit(e.getID());
 				break;
 			case LOAD_OR_NETWORK:
-				GraphLayoutViewer.getInstance().clear();
+				GraphController.getInstance().clear();
 				try {
 					createOrNetwork();
 				} catch (IOException e1) {
@@ -274,7 +274,6 @@ public class MainMenu extends JMenuBar {
 				}
 				break;
 			case LOAD_XOR_NETWORK:
-				GraphLayoutViewer.getInstance().clear();
 				try {
 					createXorNetwork();
 				} catch (IOException e1) {
@@ -286,7 +285,6 @@ public class MainMenu extends JMenuBar {
 				}
 				break;
 			case LOAD_AND_NETWORK:
-				GraphLayoutViewer.getInstance().clear();
 				try {
 					createAndNetwork();
 				} catch (IOException e1) {
@@ -298,7 +296,6 @@ public class MainMenu extends JMenuBar {
 				}
 				break;
 			case LOAD_2_BIT_ADDIERER_NETWORK:
-				GraphLayoutViewer.getInstance().clear();
 				try {
 					createTwoBitAddiererNetwork();
 				} catch (IOException e1) {
