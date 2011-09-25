@@ -84,6 +84,7 @@ public class Sidebar extends JPanel {
 		wrapper.add(selectedSymbolsPanel, gbc_selectedSymbolsPanel);
 
 		JScrollPane scrollPane = new JScrollPane(wrapper);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(100);
 
 		JPanel trainTabPanel = new JPanel();
 		TrainControlPanel trainControlPanel = new TrainControlPanel();
