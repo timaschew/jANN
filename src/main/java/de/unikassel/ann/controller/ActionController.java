@@ -84,6 +84,10 @@ public class ActionController {
 			break;
 
 		case UPDATE_JUNG_GRAPH:
+			if (true) {
+				// do update in itself repaint()
+				break;
+			}
 			newValue = (Integer) evt.getNewValue();
 			Integer oldValue = (Integer) evt.getOldValue();
 
@@ -145,6 +149,10 @@ public class ActionController {
 			break;
 
 		case UPDATE_SIDEBAR_TOPOLOGY_VIEW:
+			if (true) {
+				// do update in itself repaint()
+				break;
+			}
 			// dont't know which the correct event
 			// update full topology panel, get the values by the sidebar and sidebarModel
 
