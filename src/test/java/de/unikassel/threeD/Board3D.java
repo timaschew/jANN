@@ -75,7 +75,7 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 
 		som = new SomNetwork(inputSize, dim1, dim2, dim3);
 		som.reset();
-		som.addChangeListener(this);
+		// som.addChangeListener(this);
 
 		quader = new Cube(100, 100, 200);
 		cube = new Cube(100, 100, 100);
@@ -268,9 +268,9 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 			Color cLeft = new Color(left[i]);
 			Color cRight = new Color(right[i]);
 
-			Color gray = new Color((int) (cLeft.getRed() * 0.299 + cLeft.getGreen() * 0.587 + cLeft.getBlue() * 0.114), (int) (cRight.getRed()
-					* 0.299 + cRight.getGreen() * 0.587 + cRight.getBlue() * 0.114),
-					(int) (cRight.getRed() * 0.299 + cRight.getGreen() * 0.587 + cRight.getBlue() * 0.114));
+			Color gray = new Color((int) (cLeft.getRed() * 0.299 + cLeft.getGreen() * 0.587 + cLeft.getBlue() * 0.114),
+					(int) (cRight.getRed() * 0.299 + cRight.getGreen() * 0.587 + cRight.getBlue() * 0.114), (int) (cRight.getRed() * 0.299
+							+ cRight.getGreen() * 0.587 + cRight.getBlue() * 0.114));
 
 			Color color = new Color((int) (cLeft.getGreen() * 0.7 + cLeft.getBlue() * 0.3), cRight.getGreen(), cRight.getBlue());
 			// right[i] = (byte) c.getRGB();
@@ -354,22 +354,22 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 
 	/**
 	 * @param geo
-	 *          list of points / coordinates to transform / project
+	 *            list of points / coordinates to transform / project
 	 * @param thetaX
-	 *          orientation x axis
+	 *            orientation x axis
 	 * @param thetaY
-	 *          orientation y axis
+	 *            orientation y axis
 	 * @param thetaZ
-	 *          orientation z axis
+	 *            orientation z axis
 	 * @param camX
-	 *          x position of camera
+	 *            x position of camera
 	 * @param camY
-	 *          y position of camera
+	 *            y position of camera
 	 * @param camZ
-	 *          z position of camera
+	 *            z position of camera
 	 */
-	public void transform3DTo2D(final GeometryObject3D geo, final double thetaX, final double thetaY, final double thetaZ, final double camX,
-			final double camY, final double camZ) {
+	public void transform3DTo2D(final GeometryObject3D geo, final double thetaX, final double thetaY, final double thetaZ,
+			final double camX, final double camY, final double camZ) {
 		double aX, aY, aZ; // temp point
 
 		for (Point3D p : geo.points) {
