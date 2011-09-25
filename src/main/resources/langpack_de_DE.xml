@@ -4,10 +4,11 @@
 	<comment>Application Configuration</comment>
 	<entry key="menu.file">Datei</entry>
 	<entry key="menu.file.new">Neu</entry>
-	<entry key="menu.file.open">Öffnen</entry>
+	<entry key="menu.file.import">Import</entry>
 	<entry key="menu.file.openRecent">Letzte Öffnen</entry>
+	<entry key="menu.file.export">Export</entry>
 	<entry key="menu.file.save">Speichern</entry>
-	<entry key="menu.file.close">Schließen</entry>
+	<entry key="menu.file.closeCurrentsession">Aktuelle Session schließen</entry>
 	<entry key="menu.file.exit">Beenden</entry>
 	<entry key="menu.edit">Bearbeiten</entry>
 	<entry key="menu.edit.undo">Rückgängig</entry>
@@ -34,8 +35,11 @@
 	<entry key="menu.options.trainData.btnCancel">Abbrechen</entry>
 	<entry key="menu.help">Hilfe</entry>
 	<entry key="menu.help.about">Über</entry>
-	<entry key="menu.test">Test</entry>
-	<entry key="menu.test.network">Netzwerk</entry>
+	<entry key="menu.network">Netzwerk</entry>
+	<entry key="menu.network.or">OR-Netzwerk</entry>
+	<entry key="menu.network.xor">XOR-Netzwerk</entry>
+	<entry key="menu.network.and">AND-Netzwerk</entry>
+	<entry key="menu.network.2bitaddierer">2 Bit Addierer-Netzwerk</entry>
 	<entry key="menu.mousemode">Modus</entry>
 	<entry key="sidebar.topology">Topologie</entry>
 	<entry key="sidebar.topology.inputNeurons">Input Neuronen</entry>

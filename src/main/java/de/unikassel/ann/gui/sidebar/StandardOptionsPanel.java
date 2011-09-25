@@ -1,5 +1,8 @@
 package de.unikassel.ann.gui.sidebar;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
@@ -24,8 +27,8 @@ public class StandardOptionsPanel extends JPanel {
 	public JComboBox funktionToActivateCombo;
 	public JRadioButton rdbtnRandomInitialWeight;
 	public JRadioButton rdbtnExactInitialWeight;
-	public JSpinner RandomInitialWeightSpinner1;
-	public JSpinner RandomInitialWeightSpinner2;
+	public JSpinner randomInitialWeightSpinner1;
+	public JSpinner randomInitialWeightSpinner2;
 	public JSpinner exactInitialWeightSpinner;
 
 	public final ButtonGroup buttonGroup = new ButtonGroup();
@@ -47,17 +50,44 @@ public class StandardOptionsPanel extends JPanel {
 
 		rdbtnRandomInitialWeight = new JRadioButton(Settings.i18n.getString("sidebar.standardOptions.randomRB"));
 		buttonGroup.add(rdbtnRandomInitialWeight);
+		rdbtnRandomInitialWeight.setSelected(true);
+
 		rdbtnExactInitialWeight = new JRadioButton(Settings.i18n.getString("sidebar.standardOptions.exactRB"));
 		buttonGroup.add(rdbtnExactInitialWeight);
+		rdbtnExactInitialWeight.setSelected(false);
 
-		RandomInitialWeightSpinner1 = new JSpinner();
-		RandomInitialWeightSpinner1.setModel(new SpinnerNumberModel(new Double(0.0), null, null, new Double(0.1)));
-
-		RandomInitialWeightSpinner2 = new JSpinner();
-		RandomInitialWeightSpinner2.setModel(new SpinnerNumberModel(new Double(0.0), null, null, new Double(0.1)));
+		randomInitialWeightSpinner1 = new JSpinner();
+		randomInitialWeightSpinner1.setModel(new SpinnerNumberModel(new Double(0.0), null, null, new Double(0.1)));
+		randomInitialWeightSpinner1.setEnabled(true);
+		randomInitialWeightSpinner2 = new JSpinner();
+		randomInitialWeightSpinner2.setModel(new SpinnerNumberModel(new Double(0.0), null, null, new Double(0.1)));
+		randomInitialWeightSpinner2.setEnabled(true);
 
 		exactInitialWeightSpinner = new JSpinner();
 		exactInitialWeightSpinner.setModel(new SpinnerNumberModel(new Double(0.0), null, null, new Double(0.1)));
+		exactInitialWeightSpinner.setEnabled(false);
+
+		rdbtnRandomInitialWeight.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				exactInitialWeightSpinner.setEnabled(false);
+				exactInitialWeightSpinner.setModel(new SpinnerNumberModel(new Double(0.0), null, null, new Double(0.1)));
+				randomInitialWeightSpinner1.setEnabled(true);
+				randomInitialWeightSpinner2.setEnabled(true);
+
+			}
+		});
+		rdbtnExactInitialWeight.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				randomInitialWeightSpinner1.setEnabled(false);
+				randomInitialWeightSpinner1.setModel(new SpinnerNumberModel(new Double(0.0), null, null, new Double(0.1)));
+				randomInitialWeightSpinner2.setEnabled(false);
+				randomInitialWeightSpinner2.setModel(new SpinnerNumberModel(new Double(0.0), null, null, new Double(0.1)));
+				exactInitialWeightSpinner.setEnabled(true);
+			}
+		});
+
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(
 				groupLayout
@@ -84,9 +114,9 @@ public class StandardOptionsPanel extends JPanel {
 														.createSequentialGroup()
 														.addComponent(rdbtnRandomInitialWeight)
 														.addGap(16)
-														.addComponent(RandomInitialWeightSpinner1, GroupLayout.PREFERRED_SIZE, 60,
+														.addComponent(randomInitialWeightSpinner1, GroupLayout.PREFERRED_SIZE, 60,
 																GroupLayout.PREFERRED_SIZE))).addGap(18)
-						.addComponent(RandomInitialWeightSpinner2, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE)
+						.addComponent(randomInitialWeightSpinner2, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE)
 						.addContainerGap(33, Short.MAX_VALUE)));
 		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(
 				groupLayout
@@ -103,9 +133,9 @@ public class StandardOptionsPanel extends JPanel {
 										.createParallelGroup(Alignment.BASELINE)
 										.addComponent(lblInitialWeight)
 										.addComponent(rdbtnRandomInitialWeight)
-										.addComponent(RandomInitialWeightSpinner2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										.addComponent(randomInitialWeightSpinner2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 												GroupLayout.PREFERRED_SIZE)
-										.addComponent(RandomInitialWeightSpinner1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										.addComponent(randomInitialWeightSpinner1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 												GroupLayout.PREFERRED_SIZE))
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addGroup(

@@ -10,6 +10,7 @@ import de.unikassel.ann.algo.TrainingModule;
 import de.unikassel.ann.algo.WorkModule;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.gui.TrainErrorListener;
+import de.unikassel.ann.model.DataPairSet;
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.NetError;
 import de.unikassel.ann.model.Network;
@@ -29,6 +30,8 @@ public class NetConfig {
 	private List<NetError> errorLogs;
 	private int restartAmount = 0;
 	private List<TrainErrorListener> trainErrorListener;
+	private DataPairSet dataPairTest;
+	private DataPairSet dataPairTrain;
 
 	public NetConfig() {
 		network = new Network();
@@ -36,6 +39,8 @@ public class NetConfig {
 		strategies = new ArrayList<Strategy>();
 		errorLogs = new ArrayList<NetError>();
 		trainErrorListener = new ArrayList<TrainErrorListener>();
+		dataPairTest = new DataPairSet();
+		dataPairTrain = new DataPairSet();
 	}
 
 	public boolean shouldStopTraining() {
@@ -189,5 +194,35 @@ public class NetConfig {
 			tel.addError(getTrainingModule().getCurrentIteration(), currentError);
 
 		}
+	}
+
+	/**
+	 * @return the dataPairTest
+	 */
+	public DataPairSet getDataPairTest() {
+		return dataPairTest;
+	}
+
+	/**
+	 * @param dataPairTest
+	 *            the dataPairTest to set
+	 */
+	public void setDataPairTest(final DataPairSet dataPairTest) {
+		this.dataPairTest = dataPairTest;
+	}
+
+	/**
+	 * @return the dataPairTrain
+	 */
+	public DataPairSet getDataPairTrain() {
+		return dataPairTrain;
+	}
+
+	/**
+	 * @param dataPairTrain
+	 *            the dataPairTrain to set
+	 */
+	public void setDataPairTrain(final DataPairSet dataPairTrain) {
+		this.dataPairTrain = dataPairTrain;
 	}
 }

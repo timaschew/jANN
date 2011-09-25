@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -14,6 +15,7 @@ import de.unikassel.ann.controller.Actions;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.gui.graph.GraphLayoutViewer;
 import de.unikassel.ann.io.NetIO;
+import de.unikassel.ann.model.UserSession;
 
 public class MainMenu extends JMenuBar {
 
@@ -22,6 +24,7 @@ public class MainMenu extends JMenuBar {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Main main;
+	private JMenu mnDatei;
 
 	/**
 	 * Constructor
@@ -62,18 +65,38 @@ public class MainMenu extends JMenuBar {
 	 * @return JMenu
 	 */
 	private JMenu getDateiMenu() {
-		JMenu mnDatei = new JMenu(Settings.i18n.getString("menu.file"));
+		mnDatei = new JMenu(Settings.i18n.getString("menu.file"));
 
 		JMenuItem mntmNeu = new ActionMenuItem(Settings.i18n.getString("menu.file.new"), Actions.NEW);
 		mnDatei.add(mntmNeu);
 
-		JMenuItem mntmOeffnen = new ActionMenuItem(Settings.i18n.getString("menu.file.open"), Actions.OPEN);
-		mnDatei.add(mntmOeffnen);
+		JMenuItem mntmImport = new ActionMenuItem(Settings.i18n.getString("menu.file.import"), Actions.IMPORT);
+		mnDatei.add(mntmImport);
 
-		JMenuItem mntmSpeichern = new ActionMenuItem(Settings.i18n.getString("menu.file.save"), Actions.SAVE);
-		mnDatei.add(mntmSpeichern);
+		JMenuItem mntmImportRecent = new ActionMenuItem(Settings.i18n.getString("menu.file.openRecent"), Actions.IMPORT_RECENT);
+		mnDatei.add(mntmImportRecent);
 
 		mnDatei.addSeparator();
+
+		JMenuItem mntmExport = new ActionMenuItem(Settings.i18n.getString("menu.file.export"), Actions.EXPORT);
+		mnDatei.add(mntmExport);
+
+		mnDatei.addSeparator();
+
+		// List<UserSession> liste = Settings.getInstance().getUserSessions();
+		// for (int i = 0; i < liste.size(); i++) {
+		// JMenuItem mntm = new ActionMenuItem(liste.get(i).toString(), Actions.SAVE);
+		// mnDatei.add(mntm);
+		// }
+
+		// JMenuItem mntmSpeichern = new ActionMenuItem(Settings.i18n.getString("menu.file.save"), Actions.SAVE);
+		// mnDatei.add(mntmSpeichern);
+
+		mnDatei.addSeparator();
+
+		JMenuItem mntmCloseCurrentSession = new ActionMenuItem(Settings.i18n.getString("menu.file.closeCurrentsession"),
+				Actions.CLOSE_CURRENT_SESSION);
+		mnDatei.add(mntmCloseCurrentSession);
 
 		JMenuItem mntmBeenden = new ActionMenuItem(Settings.i18n.getString("menu.file.exit"), Actions.EXIT);
 		mnDatei.add(mntmBeenden);
@@ -140,12 +163,22 @@ public class MainMenu extends JMenuBar {
 	 * @return JMenu
 	 */
 	private JMenu getTestMenu() {
-		JMenu mnTest = new JMenu(Settings.i18n.getString("menu.test"));
+		JMenu mntmNetzwerk = new JMenu(Settings.i18n.getString("menu.network"));
 
-		JMenuItem mntmNetzwerk = new ActionMenuItem(Settings.i18n.getString("menu.test.network"), Actions.TEST_NETWORK);
-		mnTest.add(mntmNetzwerk);
+		JMenuItem mntnORNetwork = new ActionMenuItem(Settings.i18n.getString("menu.network.or"), Actions.LOAD_OR_NETWORK);
+		mntmNetzwerk.add(mntnORNetwork);
 
-		return mnTest;
+		JMenuItem mntnXORNetwork = new ActionMenuItem(Settings.i18n.getString("menu.network.xor"), Actions.LOAD_XOR_NETWORK);
+		mntmNetzwerk.add(mntnXORNetwork);
+
+		JMenuItem mntnANDNetwork = new ActionMenuItem(Settings.i18n.getString("menu.network.and"), Actions.LOAD_AND_NETWORK);
+		mntmNetzwerk.add(mntnANDNetwork);
+
+		JMenuItem mntn2BitAddiererNetwork = new ActionMenuItem(Settings.i18n.getString("menu.network.2bitaddierer"),
+				Actions.LOAD_2_BIT_ADDIERER_NETWORK);
+		mntmNetzwerk.add(mntn2BitAddiererNetwork);
+
+		return mntmNetzwerk;
 	}
 
 	/**
@@ -191,15 +224,27 @@ public class MainMenu extends JMenuBar {
 				GraphLayoutViewer.getInstance().clear();
 
 				// Reset Sidebar
-				Settings.getInstance().createNewSession("Neu");
+				Settings.getInstance().createNewSession("Session");
 				Main.instance.initSidebarPanel();
 				// sidebarModel.reset();
 
+				List<UserSession> liste = Settings.getInstance().getUserSessions();
+				for (int i = 0; i < liste.size(); i++) {
+					JMenuItem mntm = new ActionMenuItem(liste.get(i).toString(), Actions.SAVE);
+					mnDatei.add(mntm);
+				}
+
 				break;
-			case OPEN:
+			case IMPORT:
 				// TODO
 				ImportFilePanel panel = ImportFilePanel.getImportFileInstance();
 				panel.setVisible(true);
+				break;
+			case IMPORT_RECENT:
+				break;
+			case EXPORT:
+				break;
+			case CLOSE_CURRENT_SESSION:
 				break;
 			case SAVE:
 				// TODO
@@ -216,13 +261,61 @@ public class MainMenu extends JMenuBar {
 			case EXIT:
 				System.exit(e.getID());
 				break;
-			case TEST_NETWORK:
+			case LOAD_OR_NETWORK:
+				GraphLayoutViewer.getInstance().clear();
 				try {
-					testNetwork();
-				} catch (Exception ex) {
-					ex.printStackTrace();
+					createOrNetwork();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (ClassNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 				break;
+			case LOAD_XOR_NETWORK:
+				GraphLayoutViewer.getInstance().clear();
+				try {
+					createXorNetwork();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (ClassNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				break;
+			case LOAD_AND_NETWORK:
+				GraphLayoutViewer.getInstance().clear();
+				try {
+					createAndNetwork();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (ClassNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				break;
+			case LOAD_2_BIT_ADDIERER_NETWORK:
+				GraphLayoutViewer.getInstance().clear();
+				try {
+					createTwoBitAddiererNetwork();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (ClassNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				break;
+			// case TEST_NETWORK:
+			// try {
+			// testNetwork();
+			// } catch (Exception ex) {
+			// ex.printStackTrace();
+			// }
+			// break;
 			case BACKPROPAGATION_VIEW:
 				Main.instance.addBackproSidebarPanel();
 				break;
@@ -238,6 +331,91 @@ public class MainMenu extends JMenuBar {
 				System.out.println("Unknown command: " + action);
 				break;
 			}
+		}
+
+		/**
+		 * @throws ClassNotFoundException
+		 * @throws IOException
+		 * 
+		 */
+		private void createTwoBitAddiererNetwork() throws IOException, ClassNotFoundException {
+			String curDir = System.getProperty("user.dir");
+			File importFile = new File(curDir + "/src/test/resources/net_cfg_2BitAddierer.csv");
+
+			NetIO netIO = new NetIO();
+
+			// read and parse file
+			netIO.readConfigFile(importFile);
+
+			// create network (topology and synapses)
+			NetConfig netConfig = netIO.generateNetwork();
+
+			// render network as graph
+			main.getGraphLayoutViewer().renderNetwork(netConfig.getNetwork());
+		}
+
+		/**
+		 * @throws ClassNotFoundException
+		 * @throws IOException
+		 * 
+		 */
+		private void createAndNetwork() throws IOException, ClassNotFoundException {
+			String curDir = System.getProperty("user.dir");
+			File importFile = new File(curDir + "/src/test/resources/net_cfg_and.csv");
+
+			NetIO netIO = new NetIO();
+
+			// read and parse file
+			netIO.readConfigFile(importFile);
+
+			// create network (topology and synapses)
+			NetConfig netConfig = netIO.generateNetwork();
+
+			// render network as graph
+			main.getGraphLayoutViewer().renderNetwork(netConfig.getNetwork());
+		}
+
+		/**
+		 * @throws ClassNotFoundException
+		 * @throws IOException
+		 * 
+		 */
+		private void createXorNetwork() throws IOException, ClassNotFoundException {
+			String curDir = System.getProperty("user.dir");
+			File importFile = new File(curDir + "/src/test/resources/net_cfg.csv");
+
+			NetIO netIO = new NetIO();
+
+			// read and parse file
+			netIO.readConfigFile(importFile);
+
+			// create network (topology and synapses)
+			NetConfig netConfig = netIO.generateNetwork();
+
+			// render network as graph
+			main.getGraphLayoutViewer().renderNetwork(netConfig.getNetwork());
+
+		}
+
+		/**
+		 * @throws ClassNotFoundException
+		 * @throws IOException
+		 * 
+		 */
+		private void createOrNetwork() throws IOException, ClassNotFoundException {
+			String curDir = System.getProperty("user.dir");
+			File importFile = new File(curDir + "/src/test/resources/net_cfg_or.csv");
+
+			NetIO netIO = new NetIO();
+
+			// read and parse file
+			netIO.readConfigFile(importFile);
+
+			// create network (topology and synapses)
+			NetConfig netConfig = netIO.generateNetwork();
+
+			// render network as graph
+			main.getGraphLayoutViewer().renderNetwork(netConfig.getNetwork());
 		}
 
 		private void testNetwork() throws IOException, ClassNotFoundException {
