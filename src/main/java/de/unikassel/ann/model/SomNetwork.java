@@ -5,7 +5,6 @@ import java.util.Set;
 
 import de.unikassel.ann.model.func.SigmoidFunction;
 import de.unikassel.mdda.MDDA;
-import de.unikassel.threeD.Board3D;
 
 public class SomNetwork extends BasicNetwork {
 
@@ -21,7 +20,7 @@ public class SomNetwork extends BasicNetwork {
 
 	private int inputLayerSize;
 
-	private Board3D listener;
+	// private Board3D listener;
 
 	/**
 	 * Creates a som with a grid neighborhood relation.<br>
@@ -187,9 +186,9 @@ public class SomNetwork extends BasicNetwork {
 			}
 		}
 
-		if (listener != null) {
-			listener.update();
-		}
+		// if (listener != null) {
+		// listener.update();
+		// }
 
 	}
 
@@ -202,9 +201,9 @@ public class SomNetwork extends BasicNetwork {
 		return randomVector;
 	}
 
-	public void addChangeListener(final Board3D board) {
-		listener = board;
-	}
+	// public void addChangeListener(final Board3D board) {
+	// listener = board;
+	// }
 
 	/**
 	 * 
