@@ -171,13 +171,13 @@ public class ActionController {
 			 * update hidden bias for selected hidden layer AND hidden neuron spinner
 			 */
 			// get last selection from combobox
-			Integer selectedItem = (Integer) sidebar.topolgyPanel.hiddenLayerDropDown.getSelectedItem();
-			if (selectedItem != null) {
+			selectedHiddenLayer = (Integer) sidebar.topolgyPanel.hiddenLayerDropDown.getSelectedItem();
+			if (selectedHiddenLayer != null) {
 
 				// hidden neuron spinner
 				try {
 					List<Integer> hiddenNeuronList = sidebarModel.getHiddenNeurons();
-					Integer neuronCountForSelectedHiddenLayer = hiddenNeuronList.get(selectedItem - 1);
+					Integer neuronCountForSelectedHiddenLayer = hiddenNeuronList.get(selectedHiddenLayer - 1);
 					sidebar.topolgyPanel.hiddenNeuronSpinner.setValue(neuronCountForSelectedHiddenLayer);
 				} catch (IndexOutOfBoundsException e) {
 					// see below (prophylactical)
@@ -186,7 +186,7 @@ public class ActionController {
 				try {
 					List<Boolean> hiddenBiasList = sidebarModel.getHiddenBias();
 					// use relative hidden layer index
-					Boolean val = hiddenBiasList.get(selectedItem - 1);
+					Boolean val = hiddenBiasList.get(selectedHiddenLayer - 1);
 					sidebar.topolgyPanel.hiddenBiasCB.setSelected(val);
 				} catch (IndexOutOfBoundsException e) {
 					// catch when the list is empty, because a new layer will be added
@@ -207,28 +207,34 @@ public class ActionController {
 				// if getHiddenayer >= 1 then enable der Elements
 				sidebar.topolgyPanel.hiddenLayerComboModel.addElement(new Integer(i));
 			}
-			// enable some components
-			sidebar.topolgyPanel.hiddenLayerDropDown.setEnabled(true);
-			sidebar.topolgyPanel.hiddenBiasCB.setEnabled(true);
-			sidebar.topolgyPanel.hiddenNeuronSpinner.setEnabled(true);
-			sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(true);
 
 			// if previous selection was not null, set to old value
-			if (selectedItem != null) {
+			if (selectedHiddenLayer != null) {
+				// enable some components
+				sidebar.topolgyPanel.hiddenLayerDropDown.setEnabled(true);
+				sidebar.topolgyPanel.hiddenBiasCB.setEnabled(true);
+				sidebar.topolgyPanel.hiddenNeuronSpinner.setEnabled(true);
+				if (sidebar.topolgyPanel.comboBoxMouseModes.getSelectedItem().equals("Editing")) {
+					sidebar.topolgyPanel.mouseHiddenRB.setEnabled(true);
+					sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(true);
+				}
 				// if old value don't exist anymore set to current hidden layer amount,
 				// otherwise use the previous selected item
-				if (selectedItem > sidebarModel.getHiddenLayers()) {
+				if (selectedHiddenLayer > sidebarModel.getHiddenLayers()) {
 					sidebar.topolgyPanel.hiddenLayerDropDown.setSelectedItem(sidebarModel.getHiddenLayers());
 					sidebar.topolgyPanel.comboBoxHiddenMausModus.setSelectedItem(sidebarModel.getHiddenLayers());
-
-					sidebar.topolgyPanel.hiddenLayerDropDown.setEnabled(false);
-					sidebar.topolgyPanel.hiddenBiasCB.setEnabled(false);
-					sidebar.topolgyPanel.hiddenNeuronSpinner.setEnabled(false);
-					sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(false);
 				} else {
-					sidebar.topolgyPanel.hiddenLayerDropDown.setSelectedItem(selectedItem);
-					sidebar.topolgyPanel.comboBoxHiddenMausModus.setSelectedItem(selectedItem);
+					sidebar.topolgyPanel.hiddenLayerDropDown.setSelectedItem(selectedHiddenLayer);
+					sidebar.topolgyPanel.comboBoxHiddenMausModus.setSelectedItem(selectedHiddenLayer);
 				}
+			}
+			hiddenLayerSize = sidebarModel.getHiddenLayers();
+			if (hiddenLayerSize == 0) {
+				sidebar.topolgyPanel.hiddenLayerDropDown.setEnabled(false);
+				sidebar.topolgyPanel.hiddenBiasCB.setEnabled(false);
+				sidebar.topolgyPanel.hiddenNeuronSpinner.setEnabled(false);
+				sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(false);
+				sidebar.topolgyPanel.mouseHiddenRB.setEnabled(false);
 			}
 
 			break;
@@ -276,22 +282,28 @@ public class ActionController {
 			String selected = (String) sidebar.topolgyPanel.comboBoxMouseModes.getSelectedItem();
 			if (selected.equals("Picking")) {
 				GraphLayoutViewer.getInstance().graphMouse.setMode(Mode.PICKING);
-				System.out.println("picking");
 				sidebar.topolgyPanel.mouseHiddenRB.setEnabled(false);
 				sidebar.topolgyPanel.mouseInputRB.setEnabled(false);
+				sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(false);
 				sidebar.topolgyPanel.mouseOutputRB.setEnabled(false);
 			} else if (selected.equals("Editing")) {
 				GraphLayoutViewer.getInstance().graphMouse.setMode(Mode.EDITING);
-				sidebar.topolgyPanel.mouseHiddenRB.setEnabled(true);
+				hiddenLayerSize = sidebarModel.getHiddenLayers();
+				if (hiddenLayerSize > 0) {
+					sidebar.topolgyPanel.mouseHiddenRB.setEnabled(true);
+					sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(true);
+				} else {
+					sidebar.topolgyPanel.mouseHiddenRB.setEnabled(false);
+					sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(false);
+				}
 				sidebar.topolgyPanel.mouseInputRB.setEnabled(true);
 				sidebar.topolgyPanel.mouseOutputRB.setEnabled(true);
-				System.out.println("editing");
 			} else if (selected.equals("Transforming")) {
 				GraphLayoutViewer.getInstance().graphMouse.setMode(Mode.TRANSFORMING);
 				sidebar.topolgyPanel.mouseHiddenRB.setEnabled(false);
+				sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(false);
 				sidebar.topolgyPanel.mouseInputRB.setEnabled(false);
 				sidebar.topolgyPanel.mouseOutputRB.setEnabled(false);
-				System.out.println("transforming");
 			}
 
 			break;
