@@ -121,7 +121,7 @@ public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements 
 					GraphController.getInstance().createVertex(vertexFactory);
 				}
 			}
-			GraphController.repaint(vv);
+			GraphController.getInstance().repaint();
 		}
 	}
 
@@ -165,7 +165,7 @@ public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements 
 				}
 			}
 			VisualizationViewer<Vertex, Edge> vv = (VisualizationViewer<Vertex, Edge>) e.getSource();
-			GraphController.repaint(vv);
+			GraphController.getInstance().repaint();
 		}
 	}
 
