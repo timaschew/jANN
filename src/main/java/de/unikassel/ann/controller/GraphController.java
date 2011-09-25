@@ -80,7 +80,6 @@ public class GraphController {
 
 			@Override
 			public boolean useTransform() {
-				// TODO Auto-generated method stub
 				return false;
 			}
 
