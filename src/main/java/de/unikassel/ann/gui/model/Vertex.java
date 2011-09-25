@@ -2,6 +2,7 @@ package de.unikassel.ann.gui.model;
 
 import java.beans.PropertyChangeEvent;
 import java.text.DecimalFormat;
+import java.util.List;
 
 import de.unikassel.ann.controller.ActionController;
 import de.unikassel.ann.controller.Actions;
@@ -10,6 +11,7 @@ import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.SidebarModel;
+import de.unikassel.ann.model.Synapse;
 import de.unikassel.ann.model.UserSession;
 
 public class Vertex implements Comparable<Vertex> {
@@ -160,6 +162,20 @@ public class Vertex implements Comparable<Vertex> {
 	@Override
 	public int compareTo(final Vertex v) {
 		return getIndex() - v.getIndex();
+	}
+
+	/**
+	 * @param toVertex
+	 * @return
+	 */
+	public boolean hasEdgeTo(final Vertex toVertex) {
+		List<Synapse> outgoingSynapses = getModel().getOutgoingSynapses();
+		for (Synapse synapse : outgoingSynapses) {
+			if (synapse.getToNeuron().equals(toVertex.getModel())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

@@ -1,4 +1,4 @@
-package de.unikassel.ann.gui.graph;
+package de.unikassel.ann.gui.mouse;
 
 import java.awt.Component;
 import java.awt.Cursor;

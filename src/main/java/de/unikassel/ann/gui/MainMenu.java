@@ -11,8 +11,8 @@ import javax.swing.JMenuItem;
 
 import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.Actions;
+import de.unikassel.ann.controller.GraphController;
 import de.unikassel.ann.controller.Settings;
-import de.unikassel.ann.gui.graph.GraphLayoutViewer;
 import de.unikassel.ann.io.NetIO;
 
 public class MainMenu extends JMenuBar {
@@ -188,7 +188,7 @@ public class MainMenu extends JMenuBar {
 				// Create a new Session
 
 				// Clear Graph
-				GraphLayoutViewer.getInstance().clear();
+				GraphController.getInstance().clear();
 
 				// Reset Sidebar
 				Settings.getInstance().createNewSession("Neu");

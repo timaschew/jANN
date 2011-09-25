@@ -1,4 +1,4 @@
-package de.unikassel.ann.gui.graph;
+package de.unikassel.ann.gui.mouse;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
@@ -11,15 +11,14 @@ import javax.swing.JPopupMenu;
 
 import org.apache.commons.collections15.Factory;
 
+import de.unikassel.ann.controller.GraphController;
 import de.unikassel.ann.gui.model.Edge;
 import de.unikassel.ann.gui.model.Vertex;
-import de.unikassel.ann.model.Neuron;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedGraph;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.UndirectedGraph;
-import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.AbstractPopupGraphMousePlugin;
 import edu.uci.ics.jung.visualization.picking.PickedState;
@@ -66,19 +65,7 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 							directedMenu.add(new AbstractAction("[" + other + "," + vertex + "]") {
 								@Override
 								public void actionPerformed(final ActionEvent e) {
-									// Check if the two neurons are in different
-									// layers
-									Neuron fromNeuron = other.getModel();
-									Neuron toNeuron = vertex.getModel();
-									if (fromNeuron.getLayer().getIndex() < toNeuron.getLayer().getIndex()) {
-										// Create edge with its synapse between
-										// the both vertexes
-										Edge edge = edgeFactory.create();
-										edge.createModel(fromNeuron, toNeuron);
-										graph.addEdge(edge, other, vertex, EdgeType.DIRECTED);
-									}
-									// vv.repaint();
-									GraphLayoutViewer.repaint(vv);
+									GraphController.getInstance().createEdge(edgeFactory, other, vertex);
 								}
 							});
 						}
@@ -90,19 +77,7 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 							undirectedMenu.add(new AbstractAction("[" + other + "," + vertex + "]") {
 								@Override
 								public void actionPerformed(final ActionEvent e) {
-									// Check if the two neurons are in different
-									// layers
-									Neuron fromNeuron = other.getModel();
-									Neuron toNeuron = vertex.getModel();
-									if (fromNeuron.getLayer().getIndex() < toNeuron.getLayer().getIndex()) {
-										// Create edge with its synapse between
-										// the both vertexes
-										Edge edge = edgeFactory.create();
-										edge.createModel(fromNeuron, toNeuron);
-										graph.addEdge(edge, other, vertex);
-									}
-									// vv.repaint();
-									GraphLayoutViewer.repaint(vv);
+									GraphController.getInstance().createEdge(edgeFactory, other, vertex);
 								}
 							});
 						}
@@ -112,10 +87,7 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 					@Override
 					public void actionPerformed(final ActionEvent e) {
 						pickedVertexState.pick(vertex, false);
-						vertex.remove(); // TODO check
-						graph.removeVertex(vertex);
-						// vv.repaint();
-						GraphLayoutViewer.repaint(vv);
+						GraphController.getInstance().removeVertex(vertex);
 					}
 				});
 			} else if (edge != null) {
@@ -123,26 +95,14 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 					@Override
 					public void actionPerformed(final ActionEvent e) {
 						pickedEdgeState.pick(edge, false);
-						graph.removeEdge(edge);
-						// vv.repaint();
-						GraphLayoutViewer.repaint(vv);
+						GraphController.getInstance().removeEdge(edge);
 					}
 				});
 			} else {
 				popup.add(new AbstractAction("Create Vertex") {
 					@Override
 					public void actionPerformed(final ActionEvent e) {
-						// Create a new vertex
-						Vertex newVertex = vertexFactory.create();
-						newVertex.setup();
-
-						// Add the new vertex to the graph
-						graph.addVertex(newVertex);
-
-						// layout.setLocation(newVertex, vv.getRenderContext()
-						// .getMultiLayerTransformer().inverseTransform(p));
-						// vv.repaint();
-						GraphLayoutViewer.repaint(vv);
+						GraphController.getInstance().createVertex(vertexFactory);
 					}
 				});
 			}

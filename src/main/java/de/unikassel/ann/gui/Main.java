@@ -25,8 +25,8 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
+import de.unikassel.ann.controller.GraphController;
 import de.unikassel.ann.controller.Settings;
-import de.unikassel.ann.gui.graph.GraphLayoutViewer;
 import de.unikassel.ann.gui.sidebar.Sidebar;
 import de.unikassel.ann.gui.sidebar.SidebarSOM;
 
@@ -57,7 +57,7 @@ public class Main {
 	private JFrame frame;
 	private JTextPane textPane;
 	private JTextPane textPaneSOM;
-	private GraphLayoutViewer glv;
+	private GraphController glv;
 	private JPanel jungPanel;
 	private JSplitPane jungConsoleSplitPane;
 	private JSplitPane _3DBoardSplitPane;
@@ -172,7 +172,7 @@ public class Main {
 		// The Dimension is given by the DividerLocation of the mainSplitPane
 		// and the jungConsoleSplitPane minus the scrollbar size
 
-		glv = GraphLayoutViewer.getInstance();
+		glv = GraphController.getInstance();
 		glv.setDimension(dim);
 		glv.setParent(jungPanel);
 		glv.setFrame(frame);
@@ -213,7 +213,7 @@ public class Main {
 		mainSplitPane.setLeftComponent(jungConsoleSplitPane);
 	}
 
-	public GraphLayoutViewer getGraphLayoutViewer() {
+	public GraphController getGraphLayoutViewer() {
 		return glv;
 	}
 

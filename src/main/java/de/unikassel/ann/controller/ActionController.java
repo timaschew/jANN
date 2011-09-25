@@ -13,7 +13,6 @@ import java.util.List;
 import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.factory.NetworkFactory;
 import de.unikassel.ann.gui.Main;
-import de.unikassel.ann.gui.graph.GraphLayoutViewer;
 import de.unikassel.ann.gui.sidebar.Sidebar;
 import de.unikassel.ann.model.DataPairSet;
 import de.unikassel.ann.model.Layer;
@@ -45,10 +44,7 @@ public class ActionController {
 	}
 
 	public void doAction(final Actions a, final PropertyChangeEvent evt) {
-
-		// System.out.println(a);
-		// System.out.println(evt.getOldValue());
-		// System.out.println(evt.getNewValue());
+		System.out.println(a + " old: " + evt.getOldValue() + ", new: " + evt.getNewValue());
 
 		Sidebar sidebar = Main.instance.sidebar;
 		SidebarModel sidebarModel = Settings.getInstance().getCurrentSession().sidebarModel;
@@ -281,13 +277,13 @@ public class ActionController {
 			sidebar = Main.instance.sidebar;
 			String selected = (String) sidebar.topolgyPanel.comboBoxMouseModes.getSelectedItem();
 			if (selected.equals("Picking")) {
-				GraphLayoutViewer.getInstance().graphMouse.setMode(Mode.PICKING);
+				GraphController.getInstance().graphMouse.setMode(Mode.PICKING);
 				sidebar.topolgyPanel.mouseHiddenRB.setEnabled(false);
 				sidebar.topolgyPanel.mouseInputRB.setEnabled(false);
 				sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(false);
 				sidebar.topolgyPanel.mouseOutputRB.setEnabled(false);
 			} else if (selected.equals("Editing")) {
-				GraphLayoutViewer.getInstance().graphMouse.setMode(Mode.EDITING);
+				GraphController.getInstance().graphMouse.setMode(Mode.EDITING);
 				hiddenLayerSize = sidebarModel.getHiddenLayers();
 				if (hiddenLayerSize > 0) {
 					sidebar.topolgyPanel.mouseHiddenRB.setEnabled(true);
@@ -299,7 +295,7 @@ public class ActionController {
 				sidebar.topolgyPanel.mouseInputRB.setEnabled(true);
 				sidebar.topolgyPanel.mouseOutputRB.setEnabled(true);
 			} else if (selected.equals("Transforming")) {
-				GraphLayoutViewer.getInstance().graphMouse.setMode(Mode.TRANSFORMING);
+				GraphController.getInstance().graphMouse.setMode(Mode.TRANSFORMING);
 				sidebar.topolgyPanel.mouseHiddenRB.setEnabled(false);
 				sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(false);
 				sidebar.topolgyPanel.mouseInputRB.setEnabled(false);

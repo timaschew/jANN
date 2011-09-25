@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import de.unikassel.ann.gui.graph.GraphLayoutViewer;
 import de.unikassel.ann.gui.model.JungLayer;
 import de.unikassel.ann.gui.model.Vertex;
 import de.unikassel.ann.model.Layer;
@@ -159,7 +158,7 @@ public class LayerController<T> {
 
 		// Add vertex to the graph
 		if (addToGraph) {
-			GraphLayoutViewer glv = GraphLayoutViewer.getInstance();
+			GraphController glv = GraphController.getInstance();
 			glv.getGraph().addVertex(vertex);
 			glv.repaint();
 		}
