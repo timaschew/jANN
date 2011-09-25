@@ -79,7 +79,7 @@ public class TopologyPanel extends JPanel {
 		hiddenLayerCountSpinner = new JSpinner(new SpinnerNumberModel(0, 0, MAX_HIDDEN_LAYER, 1));
 
 		JLabel lblHiddenNeuronen = new JLabel(Settings.i18n.getString("sidebar.topology.hiddenNeurons"));
-		hiddenNeuronSpinner = new JSpinner(new SpinnerNumberModel(0, 0, MAX_NEURONS, 1));
+		hiddenNeuronSpinner = new JSpinner(new SpinnerNumberModel(1, 1, MAX_NEURONS, 1));
 
 		// is with the hiddenLayerCountSpinner associated
 
@@ -269,7 +269,7 @@ public class TopologyPanel extends JPanel {
 		btnCreateNetwork.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
-				ac.doAction(Actions.CREATE_NETWORK, new PropertyChangeEvent(btnCreateNetwork, "button", 0, 1));
+				ac.doAction(Actions.CREATE_NETWORK, new PropertyChangeEvent(btnCreateNetwork, "createNetwork", 0, 1));
 			}
 		});
 
@@ -277,7 +277,7 @@ public class TopologyPanel extends JPanel {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				ac.doAction(Actions.CHANGE_MOUSE_MODI,
-						new PropertyChangeEvent(comboBoxMouseModes, "item", "", comboBoxMouseModes.getSelectedIndex()));
+						new PropertyChangeEvent(comboBoxMouseModes, "mouseMode", "", comboBoxMouseModes.getSelectedIndex()));
 			}
 		});
 		// input bias
@@ -285,7 +285,7 @@ public class TopologyPanel extends JPanel {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				boolean newVal = inputBiasCB.isSelected();
-				ac.doAction(Actions.UPDATE_SIDEBAR_CONFIG_INPUT_BIAS_MODEL, new PropertyChangeEvent(inputBiasCB, "checkbox", !newVal,
+				ac.doAction(Actions.UPDATE_SIDEBAR_CONFIG_INPUT_BIAS_MODEL, new PropertyChangeEvent(inputBiasCB, "inputBias", !newVal,
 						newVal));
 			}
 		});
@@ -295,7 +295,7 @@ public class TopologyPanel extends JPanel {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				boolean newVal = hiddenBiasCB.isSelected();
-				ac.doAction(Actions.UPDATE_SIDEBAR_CONFIG_HIDDEN_BIAS_MODEL, new PropertyChangeEvent(hiddenBiasCB, "checkbox", !newVal,
+				ac.doAction(Actions.UPDATE_SIDEBAR_CONFIG_HIDDEN_BIAS_MODEL, new PropertyChangeEvent(hiddenBiasCB, "hiddenBias", !newVal,
 						newVal));
 			}
 		});
@@ -304,7 +304,11 @@ public class TopologyPanel extends JPanel {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				Integer item = (Integer) hiddenLayerDropDown.getSelectedItem();
-				ac.doAction(Actions.UPDATE_SIDEBAR_TOPOLOGY_VIEW, new PropertyChangeEvent(hiddenLayerDropDown, "", null, item));
+				if (item == null) {
+					return;
+				}
+				ac.doAction(Actions.UPDATE_SIDEBAR_TOPOLOGY_VIEW, new PropertyChangeEvent(hiddenLayerDropDown, "selectedHiddenLayer", "",
+						item));
 			}
 		});
 
