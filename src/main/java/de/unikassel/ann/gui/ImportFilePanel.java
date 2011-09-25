@@ -17,6 +17,7 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -40,6 +41,8 @@ public class ImportFilePanel extends JDialog {
 
 	private JFileChooser fileopen;
 
+	private JTextArea textAreaFileName;
+
 	/**
 	 * Create the panel.
 	 */
@@ -57,7 +60,7 @@ public class ImportFilePanel extends JDialog {
 		JPanel importDialogPanel = new JPanel();
 
 		JLabel lblImportFile = new JLabel("File Importieren");
-		JButton btnSearch = new JButton("Suchen");
+		JButton btnSearch = new JButton();
 		btnSearch.setIcon(new ImageIcon(this.getClass().getClassLoader().getResource("img/search-icon.png")));
 
 		//
@@ -108,6 +111,8 @@ public class ImportFilePanel extends JDialog {
 			}
 		});
 
+		textAreaFileName = new JTextArea();
+
 		GroupLayout gl_importDialogPanel = new GroupLayout(importDialogPanel);
 		gl_importDialogPanel.setHorizontalGroup(gl_importDialogPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(
@@ -116,39 +121,41 @@ public class ImportFilePanel extends JDialog {
 								.addContainerGap()
 								.addGroup(
 										gl_importDialogPanel
-												.createParallelGroup(Alignment.LEADING)
+												.createParallelGroup(Alignment.TRAILING)
 												.addGroup(
-														Alignment.TRAILING,
 														gl_importDialogPanel.createSequentialGroup().addComponent(btnImport)
-																.addPreferredGap(ComponentPlacement.RELATED, 87, Short.MAX_VALUE)
+																.addPreferredGap(ComponentPlacement.RELATED, 82, Short.MAX_VALUE)
 																.addComponent(btnCancel).addContainerGap())
 												.addGroup(
-														gl_importDialogPanel.createSequentialGroup().addComponent(lblImportFile)
-																.addPreferredGap(ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
-																.addComponent(btnSearch).addContainerGap())
+														gl_importDialogPanel
+																.createSequentialGroup()
+																.addComponent(lblImportFile)
+																.addGap(29)
+																.addComponent(textAreaFileName, GroupLayout.DEFAULT_SIZE, 67,
+																		Short.MAX_VALUE)
+																.addPreferredGap(ComponentPlacement.RELATED)
+																.addComponent(btnSearch, GroupLayout.PREFERRED_SIZE, 35,
+																		GroupLayout.PREFERRED_SIZE).addGap(15))
 												.addGroup(
-														Alignment.TRAILING,
 														gl_importDialogPanel
 																.createSequentialGroup()
 																.addGroup(
 																		gl_importDialogPanel
-																				.createParallelGroup(Alignment.TRAILING)
+																				.createParallelGroup(Alignment.LEADING)
 																				.addGroup(
-																						Alignment.LEADING,
 																						gl_importDialogPanel
 																								.createSequentialGroup()
 																								.addComponent(lblTrainingData)
 																								.addPreferredGap(
-																										ComponentPlacement.RELATED, 140,
+																										ComponentPlacement.RELATED, 101,
 																										Short.MAX_VALUE)
 																								.addComponent(trainigDataCB))
 																				.addGroup(
-																						Alignment.LEADING,
 																						gl_importDialogPanel
 																								.createSequentialGroup()
 																								.addComponent(lblSynapse)
 																								.addPreferredGap(
-																										ComponentPlacement.RELATED, 140,
+																										ComponentPlacement.RELATED, 127,
 																										Short.MAX_VALUE)
 																								.addComponent(synapseCB))
 																				.addGroup(
@@ -156,7 +163,7 @@ public class ImportFilePanel extends JDialog {
 																								.createSequentialGroup()
 																								.addComponent(lblTopology)
 																								.addPreferredGap(
-																										ComponentPlacement.RELATED, 135,
+																										ComponentPlacement.RELATED, 120,
 																										Short.MAX_VALUE)
 																								.addComponent(topologieCB))).addGap(45)))));
 		gl_importDialogPanel.setVerticalGroup(gl_importDialogPanel.createParallelGroup(Alignment.LEADING).addGroup(
@@ -164,8 +171,12 @@ public class ImportFilePanel extends JDialog {
 						.createSequentialGroup()
 						.addGap(10)
 						.addGroup(
-								gl_importDialogPanel.createParallelGroup(Alignment.BASELINE).addComponent(lblImportFile)
-										.addComponent(btnSearch))
+								gl_importDialogPanel
+										.createParallelGroup(Alignment.BASELINE)
+										.addComponent(lblImportFile)
+										.addComponent(btnSearch)
+										.addComponent(textAreaFileName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+												GroupLayout.PREFERRED_SIZE))
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addGroup(
 								gl_importDialogPanel
@@ -181,7 +192,7 @@ public class ImportFilePanel extends JDialog {
 						.addGap(18)
 						.addGroup(
 								gl_importDialogPanel.createParallelGroup(Alignment.BASELINE).addComponent(btnCancel)
-										.addComponent(btnImport)).addContainerGap()));
+										.addComponent(btnImport)).addContainerGap(14, Short.MAX_VALUE)));
 		importDialogPanel.setLayout(gl_importDialogPanel);
 		getContentPane().add(importDialogPanel);
 
@@ -196,7 +207,9 @@ public class ImportFilePanel extends JDialog {
 		int ret = fileopen.showDialog(searchFilePanel, "Open file");
 
 		if (ret == JFileChooser.APPROVE_OPTION) {
+			// textAreaFileName.setText(fileopen.getSelectedFile().toString());
 			// TODO: show choosen file name
+
 		}
 
 	}
