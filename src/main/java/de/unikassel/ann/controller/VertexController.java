@@ -66,6 +66,7 @@ public class VertexController<V> {
 	public void clear() {
 		vertexPickedState.clear();
 		vertexFactory.reset();
+		vertexMap.clear();
 	}
 
 	/**
@@ -73,7 +74,6 @@ public class VertexController<V> {
 	 */
 	public void reset() {
 		clear();
-		vertexMap.clear();
 	}
 
 	public VertexFactory getVertexFactory() {

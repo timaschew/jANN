@@ -233,6 +233,11 @@ public class GraphController implements PropertyChangeListener {
 			Vertex fromVertex = vertexController.getVertexMap().get(fromId);
 			Vertex toVertex = vertexController.getVertexMap().get(toId);
 
+			if (fromVertex == null || toVertex == null) {
+				// maybe one or both vertices has been removed!
+				continue;
+			}
+
 			// Create new edge with its synapse and the both vertices
 			Edge edge = edgeController.getEdgeFactory().create();
 			edge.createModel(fromVertex.getModel(), toVertex.getModel());
