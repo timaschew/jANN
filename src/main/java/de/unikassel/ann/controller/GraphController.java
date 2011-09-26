@@ -7,7 +7,8 @@ import java.awt.Graphics;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Iterator;
 import java.util.List;
 
@@ -16,11 +17,12 @@ import javax.swing.JPanel;
 import org.apache.commons.collections15.Factory;
 
 import de.unikassel.ann.gui.model.Edge;
-import de.unikassel.ann.gui.model.JungLayer;
 import de.unikassel.ann.gui.model.Vertex;
 import de.unikassel.ann.gui.mouse.GraphMouse;
+import de.unikassel.ann.model.FromTo;
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.Network;
+import de.unikassel.ann.model.Network.NetworkLayer;
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.Synapse;
 import edu.uci.ics.jung.algorithms.layout.AbstractLayout;
@@ -36,7 +38,7 @@ import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 import edu.uci.ics.jung.visualization.layout.LayoutTransition;
 import edu.uci.ics.jung.visualization.util.Animator;
 
-public class GraphController {
+public class GraphController implements PropertyChangeListener {
 
 	/*
 	 * fields
@@ -131,15 +133,27 @@ public class GraphController {
 		this.parent = parent;
 	}
 
-	/**
-	 * Animate the repaint from the last layout to the new layout.
-	 */
 	public void repaint() {
-		Layout<Vertex, Edge> startLayout = viewer.getGraphLayout();
+		repaint(false);
+	}
+
+	public void repaint(final boolean animate) {
+		if (animate) {
+			Layout<Vertex, Edge> startLayout = viewer.getGraphLayout();
+			animate(startLayout);
+		}
+		viewer.repaint();
+	}
+
+	/**
+	 * Animate the layout transistion
+	 * 
+	 * @param startLayout
+	 */
+	public void animate(final Layout<Vertex, Edge> startLayout) {
 		LayoutTransition<Vertex, Edge> transition = new LayoutTransition<Vertex, Edge>(viewer, startLayout, layout);
 		Animator animator = new Animator(transition);
 		animator.start();
-		viewer.repaint();
 	}
 
 	/**
@@ -150,18 +164,9 @@ public class GraphController {
 		VertexController.getInstance().getVertexFactory().reset();
 		EdgeController.getInstance().getEdgeFactory().reset();
 
-		// Remove all vertices
-		LayerController<Layer> layerController = LayerController.getInstance();
-		ArrayList<JungLayer> layers = layerController.getLayers();
-		for (JungLayer jungLayer : layers) {
-			ArrayList<Vertex> vertices = jungLayer.getVertices();
-			for (Vertex vertex : vertices) {
-				graph.removeVertex(vertex);
-			}
-		}
-
-		// Clear all layers
-		layerController.clear();
+		// Create new graph
+		graph = new DirectedSparseGraph<Vertex, Edge>();
+		layout.setGraph(graph);
 
 		// Update view
 		repaint();
@@ -179,11 +184,9 @@ public class GraphController {
 		//
 		// Render Vertices into their Layers
 		//
-		LayerController<Layer> layerController = LayerController.getInstance();
 		VertexController<Vertex> vertexController = VertexController.getInstance();
 		List<Layer> layers = network.getLayers();
 		for (Layer layer : layers) {
-			layerController.addLayer(layer.getIndex());
 
 			List<Neuron> neurons = layer.getNeurons();
 			for (Neuron neuron : neurons) {
@@ -193,8 +196,8 @@ public class GraphController {
 				vertex.setIndex(neuron.getId());
 				vertex.setModel(neuron);
 
-				// Add the new vertex to the current jung layer
-				layerController.addVertex(layer.getIndex(), vertex, false);
+				// Add the new vertex with its neuron id as key to the vertex map
+				vertexController.getVertexMap().put(neuron.getId(), vertex);
 
 				// Add the new vertex to the graph
 				graph.addVertex(vertex);
@@ -204,50 +207,60 @@ public class GraphController {
 		//
 		// Render Synapses
 		//
+		EdgeController<Edge> edgeController = EdgeController.getInstance();
 		for (Synapse synapse : network.getSynapseSet()) {
 
 			// Get the vertices of the synapse by their id of the their models
 			Integer fromId = synapse.getFromNeuron().getId();
 			Integer toId = synapse.getToNeuron().getId();
 
-			Vertex fromVertex = layerController.getVertexById(fromId);
-			Vertex toVertex = layerController.getVertexById(toId);
-
+			Vertex fromVertex = vertexController.getVertexMap().get(fromId);
+			Vertex toVertex = vertexController.getVertexMap().get(toId);
 			if (fromVertex == null || toVertex == null) {
 				// Problem! Both vertices are mandatory for the edge!
 				continue;
 			}
 
-			if (fromVertex.getModel().getLayer().getIndex() == toVertex.getModel().getLayer().getIndex()) {
-				// Do not conntect two neurons in the same layer with an
-				// edge!
-				continue;
-			}
-
-			// Create new edge with its synapse and the both vertexes
-			Edge edge = EdgeController.getInstance().getEdgeFactory().create();
+			// Create new edge with its synapse and the both vertices
+			Edge edge = edgeController.getEdgeFactory().create();
 			edge.createModel(fromVertex.getModel(), toVertex.getModel());
+
+			// Add the new edge with the FromTo key and its weight as value to the edgemap
+			edgeController.getEdgeMap().put(new FromTo(fromId, toId), edge.getWeight());
 
 			// Add the new edge to the graph
 			graph.addEdge(edge, fromVertex, toVertex, EdgeType.DIRECTED);
 		}
 
+		// Store current layout before repainting in order to animate the transition
 		repaint();
 	}
 
-	/**
-	 * Wrapper function to create and setup a new vertex and adding it to the graph.
-	 * 
-	 * @param vertexFactory
-	 */
-	public void createVertex(final Factory<Vertex> vertexFactory) {
-		// Create a new vertex
-		Vertex newVertex = vertexFactory.create();
-		newVertex.setup();
+	public void createVertex(final NetworkLayer layer) {
+		createVertex(layer, 0);
+	}
 
-		// Add the new vertex to the graph
-		graph.addVertex(newVertex);
-		repaint();
+	public void createVertex(final NetworkLayer layer, final Integer layerIndex) {
+		System.out.println("createVertex(" + layer + ", " + layerIndex + ")");
+		switch (layer) {
+		case INPUT:
+			Network.getNetwork().addInputNeuron();
+			break;
+		case OUTPUT:
+			Network.getNetwork().addOutputNeuron();
+			break;
+		case HIDDEN:
+			Network.getNetwork().addHiddenNeuron(layerIndex);
+			break;
+		}
+
+		// // Create a new vertex
+		// Vertex newVertex = layers.create();
+		// newVertex.setup();
+		//
+		// // Add the new vertex to the graph
+		// graph.addVertex(newVertex);
+		// repaint();
 	}
 
 	/**
@@ -262,7 +275,7 @@ public class GraphController {
 		Neuron toNeuron = toVertex.getModel();
 
 		if (fromVertex.mayHaveEdgeTo(toVertex)) {
-			// Create a new edge with its synapse between the both vertexes
+			// Create a new edge with its synapse between the both vertices
 			Edge edge = edgeFactory.create();
 			edge.createModel(fromNeuron, toNeuron);
 			graph.addEdge(edge, fromVertex, toVertex, EdgeType.DIRECTED);
@@ -274,9 +287,10 @@ public class GraphController {
 	 * @param vertex
 	 */
 	public void removeVertex(final Vertex vertex) {
-		vertex.remove();
-		graph.removeVertex(vertex);
-		repaint();
+		// vertex.remove();
+		// graph.removeVertex(vertex);
+		// repaint();
+		Network.getNetwork().removeNeuron(vertex.getModel());
 	}
 
 	/**
@@ -304,8 +318,10 @@ public class GraphController {
 				// Since new vertices are always added at the last position, get
 				// the number of vertices to compute the position for the new
 				// vertex.
-				LayerController<Layer> layerController = LayerController.getInstance();
-				ArrayList<JungLayer> layers = layerController.getLayers();
+				// LayerController<Layer> layerController = LayerController.getInstance();
+				// ArrayList<JungLayer> layers = layerController.getLayers();
+
+				List<Layer> layers = Network.getNetwork().getLayers();
 
 				// No layers? -> No need to positionize anything!
 				if (layers.size() == 0) {
@@ -314,17 +330,17 @@ public class GraphController {
 				}
 
 				// Gap between the layers
-				int gapY = height / layerController.getLayersSize();
+				int gapY = height / layers.size();
 
-				Iterator<JungLayer> layerIterator = layers.iterator();
+				Iterator<Layer> layerIterator = layers.iterator();
 				while (layerIterator.hasNext()) {
-					JungLayer jungLayer = layerIterator.next();
+					Layer layer = layerIterator.next();
 					// }
 					//
 					// for (JungLayer jungLayer : layers) {
-					ArrayList<Vertex> vertices = jungLayer.getVertices();
-					int layerIndex = jungLayer.getIndex();
-					int layerSize = vertices.size();
+					List<Neuron> neurons = layer.getNeurons();
+					int layerIndex = layer.getIndex();
+					int layerSize = neurons.size();
 
 					// System.out.println(layerIndex + ": " + vertices);
 
@@ -336,12 +352,13 @@ public class GraphController {
 					// Compute the gap between two vertices
 					int gapX = width / layerSize;
 
-					int vertexIndex = -1;
-					for (Vertex vertex : vertices) {
-						vertexIndex++;
+					int neuronIndex = -1;
+					for (Neuron neuron : neurons) {
+						neuronIndex++;
+						Vertex vertex = VertexController.getInstance().getVertexMap().get(neuron.getId());
 
 						// Compute location of the vertex
-						int x = vertexIndex * gapX + gapX / 2;
+						int x = neuronIndex * gapX + gapX / 2;
 						int y = layerIndex * gapY + gapY / 2;
 						Point2D location = new Point2D.Double(x, y);
 
@@ -375,6 +392,20 @@ public class GraphController {
 
 		graphMouse.setMode(ModalGraphMouse.Mode.PICKING);
 		graphMouse.setZoomAtMouse(false);
+	}
+
+	@Override
+	public void propertyChange(final PropertyChangeEvent evt) {
+		// System.out.println("Source: " + evt.getSource());
+		// System.out.println("PropertyName: " + evt.getPropertyName());
+		// System.out.println("OldValue: " + evt.getOldValue());
+		// System.out.println("NewValue: " + evt.getNewValue());
+
+		if (evt.getSource() instanceof Network) {
+			// Render the changes network
+			Network network = (Network) evt.getSource();
+			renderNetwork(network);
+		}
 	}
 
 	// /**

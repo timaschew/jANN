@@ -2,7 +2,6 @@ package de.unikassel.ann.gui.mouse;
 
 import java.awt.Component;
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.ItemSelectable;
 import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
@@ -11,17 +10,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 import javax.swing.ButtonGroup;
-import javax.swing.Icon;
 import javax.swing.JComboBox;
 import javax.swing.JMenu;
 import javax.swing.JRadioButtonMenuItem;
-import javax.swing.plaf.basic.BasicIconFactory;
 
 import org.apache.commons.collections15.Factory;
 
 import de.unikassel.ann.gui.model.Edge;
 import de.unikassel.ann.gui.model.Vertex;
-
 import edu.uci.ics.jung.visualization.MultiLayerTransformer;
 import edu.uci.ics.jung.visualization.RenderContext;
 import edu.uci.ics.jung.visualization.annotations.AnnotatingGraphMousePlugin;
@@ -36,8 +32,7 @@ import edu.uci.ics.jung.visualization.control.ScalingGraphMousePlugin;
 import edu.uci.ics.jung.visualization.control.ShearingGraphMousePlugin;
 import edu.uci.ics.jung.visualization.control.TranslatingGraphMousePlugin;
 
-public class GraphMouse<V, E> extends AbstractModalGraphMouse implements
-		ModalGraphMouse, ItemSelectable {
+public class GraphMouse<V, E> extends AbstractModalGraphMouse implements ModalGraphMouse, ItemSelectable {
 
 	protected Factory<Vertex> vertexFactory;
 	protected Factory<Edge> edgeFactory;
@@ -52,8 +47,7 @@ public class GraphMouse<V, E> extends AbstractModalGraphMouse implements
 	 * create an instance with default values
 	 * 
 	 */
-	public GraphMouse(RenderContext<Vertex, Edge> rc,
-			Factory<Vertex> vertexFactory, Factory<Edge> edgeFactory) {
+	public GraphMouse(final RenderContext<Vertex, Edge> rc, final Factory<Vertex> vertexFactory, final Factory<Edge> edgeFactory) {
 		this(rc, vertexFactory, edgeFactory, 1.1f, 1 / 1.1f);
 	}
 
@@ -65,9 +59,8 @@ public class GraphMouse<V, E> extends AbstractModalGraphMouse implements
 	 * @param out
 	 *            override value for scale out
 	 */
-	public GraphMouse(RenderContext<Vertex, Edge> rc,
-			Factory<Vertex> vertexFactory, Factory<Edge> edgeFactory, float in,
-			float out) {
+	public GraphMouse(final RenderContext<Vertex, Edge> rc, final Factory<Vertex> vertexFactory, final Factory<Edge> edgeFactory,
+			final float in, final float out) {
 		super(in, out);
 		this.vertexFactory = vertexFactory;
 		this.edgeFactory = edgeFactory;
@@ -85,18 +78,14 @@ public class GraphMouse<V, E> extends AbstractModalGraphMouse implements
 	protected void loadPlugins() {
 		pickingPlugin = new PickingGraphMousePlugin<Vertex, Edge>();
 		animatedPickingPlugin = new AnimatedPickingGraphMousePlugin<Vertex, Edge>();
-		translatingPlugin = new TranslatingGraphMousePlugin(
-				InputEvent.BUTTON1_MASK);
-		scalingPlugin = new ScalingGraphMousePlugin(
-				new CrossoverScalingControl(), 0, in, out);
+		translatingPlugin = new TranslatingGraphMousePlugin(InputEvent.BUTTON1_MASK);
+		scalingPlugin = new ScalingGraphMousePlugin(new CrossoverScalingControl(), 0, in, out);
 		rotatingPlugin = new RotatingGraphMousePlugin();
 		shearingPlugin = new ShearingGraphMousePlugin();
-		editingPlugin = new GraphMousePlugin<Vertex, Edge>(vertexFactory,
-				edgeFactory);
+		editingPlugin = new GraphMousePlugin<Vertex, Edge>(vertexFactory, edgeFactory);
 		labelEditingPlugin = new LabelEditingGraphMousePlugin<Vertex, Edge>();
 		annotatingPlugin = new AnnotatingGraphMousePlugin<Vertex, Edge>(rc);
-		popupEditingPlugin = new GraphMousePopupPlugin<Vertex, Edge>(
-				vertexFactory, edgeFactory);
+		popupEditingPlugin = new GraphMousePopupPlugin<Vertex, Edge>(vertexFactory, edgeFactory);
 		add(scalingPlugin);
 		setMode(Mode.EDITING);
 	}
@@ -105,11 +94,9 @@ public class GraphMouse<V, E> extends AbstractModalGraphMouse implements
 	 * setter for the Mode.
 	 */
 	@Override
-	public void setMode(Mode mode) {
+	public void setMode(final Mode mode) {
 		if (this.mode != mode) {
-			fireItemStateChanged(new ItemEvent(this,
-					ItemEvent.ITEM_STATE_CHANGED, this.mode,
-					ItemEvent.DESELECTED));
+			fireItemStateChanged(new ItemEvent(this, ItemEvent.ITEM_STATE_CHANGED, this.mode, ItemEvent.DESELECTED));
 			this.mode = mode;
 			if (mode == Mode.TRANSFORMING) {
 				setTransformingMode();
@@ -123,8 +110,7 @@ public class GraphMouse<V, E> extends AbstractModalGraphMouse implements
 			if (modeBox != null) {
 				modeBox.setSelectedItem(mode);
 			}
-			fireItemStateChanged(new ItemEvent(this,
-					ItemEvent.ITEM_STATE_CHANGED, mode, ItemEvent.SELECTED));
+			fireItemStateChanged(new ItemEvent(this, ItemEvent.ITEM_STATE_CHANGED, mode, ItemEvent.SELECTED));
 		}
 	}
 
@@ -184,8 +170,7 @@ public class GraphMouse<V, E> extends AbstractModalGraphMouse implements
 	@Override
 	public JComboBox getModeComboBox() {
 		if (modeBox == null) {
-			modeBox = new JComboBox(new Mode[] { Mode.TRANSFORMING,
-					Mode.PICKING, Mode.EDITING, Mode.ANNOTATING });
+			modeBox = new JComboBox(new Mode[] { Mode.TRANSFORMING, Mode.PICKING, Mode.EDITING, Mode.ANNOTATING });
 			modeBox.addItemListener(getModeListener());
 		}
 		modeBox.setSelectedItem(mode);
@@ -201,35 +186,35 @@ public class GraphMouse<V, E> extends AbstractModalGraphMouse implements
 	public JMenu getModeMenu() {
 		if (modeMenu == null) {
 			modeMenu = new JMenu();// {
-			Icon icon = BasicIconFactory.getMenuArrowIcon();
+			// Icon icon = BasicIconFactory.getMenuArrowIcon();
 			// modeMenu.setIcon(BasicIconFactory.getMenuArrowIcon());
 			// modeMenu.setPreferredSize(new Dimension(icon.getIconWidth() + 10,
 			// icon.getIconHeight() + 10));
 
-			final JRadioButtonMenuItem transformingButton = new JRadioButtonMenuItem(
-					Mode.TRANSFORMING.toString());
+			final JRadioButtonMenuItem transformingButton = new JRadioButtonMenuItem(Mode.TRANSFORMING.toString());
 			transformingButton.addItemListener(new ItemListener() {
-				public void itemStateChanged(ItemEvent e) {
+				@Override
+				public void itemStateChanged(final ItemEvent e) {
 					if (e.getStateChange() == ItemEvent.SELECTED) {
 						setMode(Mode.TRANSFORMING);
 					}
 				}
 			});
 
-			final JRadioButtonMenuItem pickingButton = new JRadioButtonMenuItem(
-					Mode.PICKING.toString());
+			final JRadioButtonMenuItem pickingButton = new JRadioButtonMenuItem(Mode.PICKING.toString());
 			pickingButton.addItemListener(new ItemListener() {
-				public void itemStateChanged(ItemEvent e) {
+				@Override
+				public void itemStateChanged(final ItemEvent e) {
 					if (e.getStateChange() == ItemEvent.SELECTED) {
 						setMode(Mode.PICKING);
 					}
 				}
 			});
 
-			final JRadioButtonMenuItem editingButton = new JRadioButtonMenuItem(
-					Mode.EDITING.toString());
+			final JRadioButtonMenuItem editingButton = new JRadioButtonMenuItem(Mode.EDITING.toString());
 			editingButton.addItemListener(new ItemListener() {
-				public void itemStateChanged(ItemEvent e) {
+				@Override
+				public void itemStateChanged(final ItemEvent e) {
 					if (e.getStateChange() == ItemEvent.SELECTED) {
 						setMode(Mode.EDITING);
 					}
@@ -246,7 +231,8 @@ public class GraphMouse<V, E> extends AbstractModalGraphMouse implements
 			modeMenu.add(editingButton);
 			modeMenu.setToolTipText("Menu for setting Mouse Mode");
 			addItemListener(new ItemListener() {
-				public void itemStateChanged(ItemEvent e) {
+				@Override
+				public void itemStateChanged(final ItemEvent e) {
 					if (e.getStateChange() == ItemEvent.SELECTED) {
 						if (e.getItem() == Mode.TRANSFORMING) {
 							transformingButton.setSelected(true);
@@ -269,12 +255,11 @@ public class GraphMouse<V, E> extends AbstractModalGraphMouse implements
 		private char a = 'a';
 		protected ModalGraphMouse graphMouse;
 
-		public ModeKeyAdapter(ModalGraphMouse graphMouse) {
+		public ModeKeyAdapter(final ModalGraphMouse graphMouse) {
 			this.graphMouse = graphMouse;
 		}
 
-		public ModeKeyAdapter(char t, char p, char e, char a,
-				ModalGraphMouse graphMouse) {
+		public ModeKeyAdapter(final char t, final char p, final char e, final char a, final ModalGraphMouse graphMouse) {
 			this.t = t;
 			this.p = p;
 			this.e = e;
@@ -283,23 +268,19 @@ public class GraphMouse<V, E> extends AbstractModalGraphMouse implements
 		}
 
 		@Override
-		public void keyTyped(KeyEvent event) {
+		public void keyTyped(final KeyEvent event) {
 			char keyChar = event.getKeyChar();
 			if (keyChar == t) {
-				((Component) event.getSource()).setCursor(Cursor
-						.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+				((Component) event.getSource()).setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 				graphMouse.setMode(Mode.TRANSFORMING);
 			} else if (keyChar == p) {
-				((Component) event.getSource()).setCursor(Cursor
-						.getPredefinedCursor(Cursor.HAND_CURSOR));
+				((Component) event.getSource()).setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 				graphMouse.setMode(Mode.PICKING);
 			} else if (keyChar == e) {
-				((Component) event.getSource()).setCursor(Cursor
-						.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+				((Component) event.getSource()).setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
 				graphMouse.setMode(Mode.EDITING);
 			} else if (keyChar == a) {
-				((Component) event.getSource()).setCursor(Cursor
-						.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+				((Component) event.getSource()).setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
 				graphMouse.setMode(Mode.ANNOTATING);
 			}
 		}

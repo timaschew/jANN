@@ -7,6 +7,7 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.HashMap;
 import java.util.Set;
 
 import org.apache.commons.collections15.Transformer;
@@ -41,6 +42,7 @@ public class VertexController<V> {
 	private RenderContext<Vertex, Edge> renderContext;
 	private PickedState<Vertex> vertexPickedState;
 	private VertexFactory vertexFactory;
+	private HashMap<Integer, Vertex> vertexMap;
 
 	public void init() {
 		this.viewer = GraphController.getInstance().getViewer();
@@ -48,6 +50,7 @@ public class VertexController<V> {
 		this.renderContext = viewer.getRenderContext();
 		this.vertexPickedState = viewer.getPickedVertexState();
 		this.vertexFactory = new VertexFactory();
+		this.vertexMap = new HashMap<Integer, Vertex>();
 
 		setVertexLabel();
 		setVertexStrokeHighlight();
@@ -137,6 +140,10 @@ public class VertexController<V> {
 			}
 		});
 
+	}
+
+	public HashMap<Integer, Vertex> getVertexMap() {
+		return vertexMap;
 	}
 
 	/*

@@ -73,7 +73,7 @@ public class ActionControllerTest extends JFrame {
 
 		/**
 		 * @param layerCount
-		 *          the layerCount to set
+		 *            the layerCount to set
 		 */
 		public void setLayerCount(final Integer layerCount) {
 			if (layerCount < MIN || layerCount > MAX) {

@@ -17,6 +17,7 @@ import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.gui.model.Edge;
 import de.unikassel.ann.gui.model.Vertex;
 import de.unikassel.ann.gui.sidebar.TopologyPanel;
+import de.unikassel.ann.model.Network.NetworkLayer;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedGraph;
@@ -73,6 +74,7 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 								@Override
 								public void actionPerformed(final ActionEvent e) {
 									GraphController.getInstance().createEdge(edgeFactory, other, vertex);
+									// Network network = Settings.getInstance().getCurrentSession().getNetworkConfig().getNetwork();
 								}
 							});
 							addMenu = true;
@@ -122,28 +124,55 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 					}
 				});
 			} else {
-				String actionText = Settings.i18n.getString("graph.mouse.createVertex");
-
 				// Use the current sidebar settings to make the popup text more attractive
-				try {
-					TopologyPanel topoPanel = Main.instance.sidebar.topolgyPanel;
-					if (topoPanel.mouseInputRB.isSelected()) {
-						actionText = Settings.i18n.getString("graph.mouse.createVertexInput");
-					} else if (topoPanel.mouseOutputRB.isSelected()) {
-						actionText = Settings.i18n.getString("graph.mouse.createVertexOutput");
-					} else if (topoPanel.mouseHiddenRB.isSelected()) {
-						Integer selectedHiddenLayer = (Integer) topoPanel.comboBoxHiddenMausModus.getSelectedItem();
-						actionText = String.format(Settings.i18n.getString("graph.mouse.createVertexHidden"), selectedHiddenLayer);
-					}
-				} catch (Exception ex) {
-				}
+				// String actionText = Settings.i18n.getString("graph.mouse.createVertex");
+				// try {
+				// TopologyPanel topoPanel = Main.instance.sidebar.topolgyPanel;
+				// if (topoPanel.mouseInputRB.isSelected()) {
+				// actionText = Settings.i18n.getString("graph.mouse.createVertexInput");
+				// } else if (topoPanel.mouseOutputRB.isSelected()) {
+				// actionText = Settings.i18n.getString("graph.mouse.createVertexOutput");
+				// } else if (topoPanel.mouseHiddenRB.isSelected()) {
+				// Integer selectedHiddenLayer = (Integer) topoPanel.comboBoxHiddenMausModus.getSelectedItem();
+				// actionText = String.format(Settings.i18n.getString("graph.mouse.createVertexHidden"), selectedHiddenLayer);
+				// }
+				// } catch (Exception ex) {
+				// }
 
-				popup.add(new AbstractAction(actionText) {
+				// Input
+				popup.add(new AbstractAction(Settings.i18n.getString("graph.mouse.createVertexInput")) {
 					@Override
 					public void actionPerformed(final ActionEvent e) {
-						GraphController.getInstance().createVertex(vertexFactory);
+						GraphController.getInstance().createVertex(NetworkLayer.INPUT);
 					}
 				});
+
+				// Output
+				popup.add(new AbstractAction(Settings.i18n.getString("graph.mouse.createVertexOutput")) {
+					@Override
+					public void actionPerformed(final ActionEvent e) {
+						GraphController.getInstance().createVertex(NetworkLayer.OUTPUT);
+					}
+				});
+
+				// Hidden (optional depends on whether there is at least one hidden layer available)
+				TopologyPanel topoPanel = Main.instance.sidebar.topolgyPanel;
+				Integer hiddenLayers = (Integer) topoPanel.hiddenLayerCountSpinner.getValue();
+				if (hiddenLayers > 0) {
+					JMenu hiddenNeuronMenu = new JMenu(Settings.i18n.getString("graph.mouse.createVertexHidden"));
+					// NOTE: Start at index 1 because hidden layers starts with this index. Index 0 = input layer!
+					for (int i = 1; i <= hiddenLayers; i++) {
+						final int layerIndex = i;
+						String actionText = String.format(Settings.i18n.getString("graph.mouse.HiddenLayer"), layerIndex);
+						hiddenNeuronMenu.add(new AbstractAction(actionText) {
+							@Override
+							public void actionPerformed(final ActionEvent e) {
+								GraphController.getInstance().createVertex(NetworkLayer.HIDDEN, layerIndex);
+							}
+						});
+					}
+					popup.add(hiddenNeuronMenu);
+				}
 			}
 			if (popup.getComponentCount() > 0) {
 				popup.show(vv, e.getX(), e.getY());
