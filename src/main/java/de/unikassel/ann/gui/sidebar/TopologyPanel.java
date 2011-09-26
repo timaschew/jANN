@@ -381,7 +381,7 @@ public class TopologyPanel extends JPanel {
 			hiddenNeuronSpinner.setEnabled(false);
 		}
 
-		System.out.println(netConfig.getNetwork().getLayers());
+		// System.out.println(netConfig.getNetwork().getLayers());
 	}
 
 }

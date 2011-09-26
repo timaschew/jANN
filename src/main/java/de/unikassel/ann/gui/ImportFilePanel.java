@@ -23,6 +23,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import de.unikassel.ann.config.NetConfig;
+import de.unikassel.ann.controller.GraphController;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.io.NetIO;
 
@@ -99,7 +100,7 @@ public class ImportFilePanel extends JDialog {
 				NetConfig netConfig = reader.generateNetwork();
 				Settings.getInstance().createNewSession(file.getName());
 				Settings.getInstance().getCurrentSession().setNetworkConfig(netConfig);
-				Main.instance.getGraphLayoutViewer().renderNetwork(netConfig.getNetwork());
+				GraphController.getInstance().renderNetwork(netConfig.getNetwork());
 				dispose();
 			}
 		});

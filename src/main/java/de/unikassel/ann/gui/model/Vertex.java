@@ -166,7 +166,7 @@ public class Vertex implements Comparable<Vertex> {
 	public boolean hasEdgeTo(final Vertex toVertex) {
 		List<Synapse> outgoingSynapses = getModel().getOutgoingSynapses();
 		for (Synapse synapse : outgoingSynapses) {
-			if (synapse.getToNeuron().equals(toVertex.getModel())) {
+			if (synapse.getToNeuron().getId() == toVertex.getModel().getId()) {
 				return true;
 			}
 		}

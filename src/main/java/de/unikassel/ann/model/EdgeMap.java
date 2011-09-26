@@ -42,6 +42,10 @@ public class EdgeMap<T> {
 		return edgeMap.get(key);
 	}
 
+	public T remove(final FromTo key) {
+		return edgeMap.remove(key);
+	}
+
 	/**
 	 * <pre>
 	 * from->to
