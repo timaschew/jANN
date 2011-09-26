@@ -151,12 +151,30 @@ public class Network extends BasicNetwork {
 			// add output layer
 			setOuputLayerSize(1);
 		}
-		for (int i = 0; i < hiddenLayerCount; i++) {
-			int index = i + 1; // skip first (input layer)
-			Layer hiddenLayer = new Layer();
-			layers.add(index, hiddenLayer); // shift the output layer to right
-			setHiddenLayerSize(index, 1); // initial size
+
+		int diff = hiddenLayerCount - (layers.size() - 2);
+		if (diff == 0) {
+			return;
+		} else if (diff > 0) {
+			// add new layers
+			for (int i = 0; i < diff; i++) {
+				int index = layers.size() - 1; // old output index = new hidden index
+				Layer hiddenLayer = new Layer();
+				layers.add(index, hiddenLayer); // shift the output layer to right
+				setHiddenLayerSize(index, 1); // initial size
+			}
+		} else {
+			// remove layers
+			for (int i = 0; i < --diff; i++) {
+				layers.remove(layers.size() - 2); // -1 = output, -2 last hidden
+			}
 		}
+		// for (int i = 0; i < hiddenLayerCount; i++) {
+		// int index = i + 1; // skip first (input layer)
+		// Layer hiddenLayer = new Layer();
+		// layers.add(index, hiddenLayer); // shift the output layer to right
+		// setHiddenLayerSize(index, 1); // initial size
+		// }
 	}
 
 	// TODO: can also used for input layer, is it good?

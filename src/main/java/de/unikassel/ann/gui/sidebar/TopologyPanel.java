@@ -344,6 +344,15 @@ public class TopologyPanel extends JPanel {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
 				netConfig.getNetwork().setSizeOfHiddenLayers((Integer) evt.getNewValue());
+
+				hiddenLayerComboModel.removeAllElements(); // prepare for adding new
+				// start with 1 (its the index for the first hidden layer)
+				ignoreHiddenLayerCombo = true;
+				Integer hiddenLayers = (Integer) hiddenLayerCountSpinner.getValue();
+				for (int i = 1; i <= hiddenLayers; i++) {
+					hiddenLayerComboModel.addElement(new Integer(i));
+				}
+				ignoreHiddenLayerCombo = false;
 				update();
 			}
 		});
@@ -371,14 +380,8 @@ public class TopologyPanel extends JPanel {
 			hiddenBiasCB.setEnabled(false);
 			hiddenNeuronSpinner.setEnabled(false);
 		}
-		hiddenLayerComboModel.removeAllElements(); // prepare for adding new
-		// start with 1 (its the index for the first hidden layer)
-		ignoreHiddenLayerCombo = true;
-		for (int i = 1; i <= hiddenLayers; i++) {
-			hiddenLayerComboModel.addElement(new Integer(i));
-		}
-		ignoreHiddenLayerCombo = false;
 
+		System.out.println(netConfig.getNetwork().getLayers());
 	}
 
 }
