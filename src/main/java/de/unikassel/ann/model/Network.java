@@ -324,6 +324,8 @@ public class Network extends BasicNetwork {
 
 			// set flat net
 			for (Neuron n : l.getNeurons()) {
+				// TODO: flatNet.size() ?!?!?
+				// error?
 				n.setId(flatNet.size());
 				flatNet.add(n);
 			}
