@@ -1,5 +1,7 @@
 package de.unikassel.ann.model;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -19,6 +21,18 @@ import de.unikassel.ann.model.func.ActivationFunction;
  */
 public class Network extends BasicNetwork {
 
+	private PropertyChangeSupport pcs;
+
+	/**
+	 * Neuron or Synapse
+	 * 
+	 * @author anton
+	 * 
+	 */
+	public enum PropertyChanges {
+		NEURONS, SYNAPSES
+	};
+
 	private Boolean finalyzed;
 	private NetConfig config;
 	private List<Neuron> flatNet;
@@ -31,6 +45,24 @@ public class Network extends BasicNetwork {
 		flatNet = new ArrayList<Neuron>();
 		synapseMatrix = new SynapseMatrix(this, null, null);
 		finalyzed = false;
+	}
+
+	/**
+	 * For all property {@link PropertyChanges}
+	 */
+	public void addPropertyChangeListener(final PropertyChangeListener listener) {
+		pcs.addPropertyChangeListener(listener);
+	}
+
+	/**
+	 * For event propertyname
+	 * 
+	 * @param propertyName
+	 *            {@link PropertyChanges}
+	 * @param listener
+	 */
+	public void addPropertyChangeListener(final String propertyName, final PropertyChangeListener listener) {
+		pcs.addPropertyChangeListener(propertyName, listener);
 	}
 
 	public void finalizeFromFlatNet(final List<TopologyBean> topoBeanList, final List<SynapseBean> synapsesBanList) {
@@ -125,9 +157,16 @@ public class Network extends BasicNetwork {
 			layers.add(new Layer());
 		}
 		Layer inputLayer = layers.get(0);
+		int oldValue = inputLayer.getNeurons().size();
 		setLayerSize(inputSize, function, inputLayer);
+		pcs.firePropertyChange(PropertyChanges.NEURONS.name(), oldValue, inputSize);
 	}
 
+	/**
+	 * Creates input with 1 neuron, if not already exist
+	 * 
+	 * @param outputSize
+	 */
 	public void setOuputLayerSize(final int outputSize) {
 		ActivationFunction function = getStandardFunction();
 		if (layers.isEmpty()) {
@@ -139,9 +178,16 @@ public class Network extends BasicNetwork {
 			layers.add(new Layer());
 		}
 		Layer outputLayer = layers.get(layers.size() - 1);
+		int oldValue = outputLayer.getNeurons().size();
 		setLayerSize(outputSize, function, outputLayer);
+		pcs.firePropertyChange(PropertyChanges.NEURONS.name(), oldValue, outputSize);
 	}
 
+	/**
+	 * Creates input and output with 1 neuron, if not already exist
+	 * 
+	 * @param hiddenLayerCount
+	 */
 	public void setSizeOfHiddenLayers(final int hiddenLayerCount) {
 		if (layers.isEmpty()) {
 			// add input layer
@@ -151,8 +197,8 @@ public class Network extends BasicNetwork {
 			// add output layer
 			setOuputLayerSize(1);
 		}
-
-		int diff = hiddenLayerCount - (layers.size() - 2);
+		int oldValue = layers.size() - 2;
+		int diff = hiddenLayerCount - oldValue;
 		if (diff == 0) {
 			return;
 		} else if (diff > 0) {
@@ -169,6 +215,7 @@ public class Network extends BasicNetwork {
 				layers.remove(layers.size() - 2); // -1 = output, -2 last hidden
 			}
 		}
+		pcs.firePropertyChange(PropertyChanges.NEURONS.name(), oldValue, hiddenLayerCount);
 	}
 
 	// TODO: can also used for input layer, is it good?
@@ -176,15 +223,17 @@ public class Network extends BasicNetwork {
 		ActivationFunction function = getStandardFunction();
 		// add only, if the layer already exist
 		// -1 because the the 2nd operand is index, not size
+		Integer oldValue = null;
 		if (layers.size() - 1 >= layerIndex) {
 			// for example layerIndex
+			oldValue = layers.get(layerIndex).getNeurons().size();
 			setLayerSize(layerSize, function, layers.get(layerIndex)); // initial size
 		}
-
+		pcs.firePropertyChange(PropertyChanges.NEURONS.name(), oldValue, new Integer(layerSize));
 	}
 
-	private void setLayerSize(final int inputSize, final ActivationFunction function, final Layer inputLayer) {
-		int currentLayerSize = inputLayer.getNeurons().size();
+	private void setLayerSize(final int inputSize, final ActivationFunction function, final Layer layer) {
+		int currentLayerSize = layer.getNeurons().size();
 		// positive -> add
 		// negative -> remove
 		int diff = inputSize - currentLayerSize;
@@ -193,11 +242,11 @@ public class Network extends BasicNetwork {
 		} else if (diff > 0) {
 			// add neurons
 			for (int i = 0; i < diff; i++) {
-				inputLayer.addNeuron(new Neuron(function, false));
+				layer.addNeuron(new Neuron(function, false));
 			}
 		} else {
 			// delete neurons
-			List<Neuron> inputNeurons = inputLayer.getNeurons();
+			List<Neuron> inputNeurons = layer.getNeurons();
 			for (int i = 0; i < -diff; i++) {
 				inputNeurons.remove(inputNeurons.size() - 1);
 			}
