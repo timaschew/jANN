@@ -31,11 +31,11 @@ public class NetworkFactory {
 			final List<Boolean> hiddenBiasList, final Integer outputNeurons, final ActivationFunction activation) {
 		NetConfig config = new NetConfig();
 
-		config.addLayer(inputNeurons, inputBias, activation);
+		config.getNetwork().addLayer(inputNeurons, inputBias, activation);
 		for (int i = 0; i < hiddenNeuronList.size(); i++) {
-			config.addLayer(hiddenNeuronList.get(i), hiddenBiasList.get(i), activation);
+			config.getNetwork().addLayer(hiddenNeuronList.get(i), hiddenBiasList.get(i), activation);
 		}
-		config.addLayer(outputNeurons, false, activation);
+		config.getNetwork().addLayer(outputNeurons, false, activation);
 
 		return config;
 	}
@@ -59,11 +59,11 @@ public class NetworkFactory {
 			final ActivationFunction func) {
 		NetConfig config = new NetConfig();
 
-		config.addLayer(input, bias, func); // input
+		config.getNetwork().addLayer(input, bias, func); // input
 		for (int i = 0; i < hidden.length; i++) {
-			config.addLayer(hidden[i], bias, func); // hidden
+			config.getNetwork().addLayer(hidden[i], bias, func); // hidden
 		}
-		config.addLayer(output, false, func); // output
+		config.getNetwork().addLayer(output, false, func); // output
 
 		BackPropagation backProp = new BackPropagation();
 		config.addTrainingModule(backProp);

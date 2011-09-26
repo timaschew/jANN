@@ -21,6 +21,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.TitledBorder;
 
+import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.ActionController;
 import de.unikassel.ann.controller.Actions;
 import de.unikassel.ann.controller.Settings;
@@ -52,6 +53,8 @@ public class TopologyPanel extends JPanel {
 
 	private ActionController ac = ActionController.get();
 
+	private NetConfig netConfig = Settings.getInstance().getCurrentSession().getNetworkConfig();
+
 	public JRadioButton mouseInputRB;
 	public JRadioButton mouseOutputRB;
 	public JRadioButton mouseHiddenRB;
@@ -60,6 +63,8 @@ public class TopologyPanel extends JPanel {
 
 	public JButton btnCreateNetwork;
 	private JLabel lblJungModis;
+
+	private boolean ignoreHiddenLayerCombo;
 
 	/**
 	 * Create the frame.
@@ -303,12 +308,12 @@ public class TopologyPanel extends JPanel {
 		hiddenLayerDropDown.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				Integer item = (Integer) hiddenLayerDropDown.getSelectedItem();
-				if (item == null) {
-					return;
+				Integer selectedHiddenLayer = (Integer) hiddenLayerDropDown.getSelectedItem();
+				if (selectedHiddenLayer == null || ignoreHiddenLayerCombo) {
+					return; // the hiddenLayerDropDown are clearing
 				}
-				ac.doAction(Actions.UPDATE_SIDEBAR_TOPOLOGY_VIEW, new PropertyChangeEvent(hiddenLayerDropDown, "selectedHiddenLayer", "",
-						item));
+				int hiddenLayerSize = netConfig.getNetwork().getTotalLayerSize(selectedHiddenLayer);
+				hiddenNeuronSpinner.setValue(hiddenLayerSize);
 			}
 		});
 
@@ -317,7 +322,8 @@ public class TopologyPanel extends JPanel {
 		editor.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
-				ac.doAction(Actions.UPDATE_SIDEBAR_CONFIG_INPUT_NEURON_MODEL, evt);
+				netConfig.getNetwork().setInputLayerSize((Integer) evt.getNewValue());
+				update();
 			}
 		});
 
@@ -326,7 +332,9 @@ public class TopologyPanel extends JPanel {
 		editor.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
-				ac.doAction(Actions.UPDATE_SIDEBAR_CONFIG_HIDDEN_NEURON_MODEL, evt);
+				Integer hiddenLayerIndex = (Integer) hiddenLayerDropDown.getSelectedItem();
+				netConfig.getNetwork().setHiddenLayerSize(hiddenLayerIndex, (Integer) evt.getNewValue());
+				update();
 			}
 		});
 
@@ -335,7 +343,8 @@ public class TopologyPanel extends JPanel {
 		editor.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
-				ac.doAction(Actions.UPDATE_SIDEBAR_CONFIG_HIDDEN_LAYER_MODEL, evt);
+				netConfig.getNetwork().setSizeOfHiddenLayers((Integer) evt.getNewValue());
+				update();
 			}
 		});
 
@@ -344,9 +353,32 @@ public class TopologyPanel extends JPanel {
 		editor.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
-				ac.doAction(Actions.UPDATE_SIDEBAR_CONFIG_OUTPUT_NEURON_MODEL, evt);
+				netConfig.getNetwork().setOuputLayerSize((Integer) evt.getNewValue());
+				update();
 			}
 		});
 
 	}
+
+	public void update() {
+		Integer hiddenLayers = (Integer) hiddenLayerCountSpinner.getValue();
+		if (hiddenLayers > 0) {
+			hiddenLayerDropDown.setEnabled(true);
+			hiddenBiasCB.setEnabled(true);
+			hiddenNeuronSpinner.setEnabled(true);
+		} else {
+			hiddenLayerDropDown.setEnabled(false);
+			hiddenBiasCB.setEnabled(false);
+			hiddenNeuronSpinner.setEnabled(false);
+		}
+		hiddenLayerComboModel.removeAllElements(); // prepare for adding new
+		// start with 1 (its the index for the first hidden layer)
+		ignoreHiddenLayerCombo = true;
+		for (int i = 1; i <= hiddenLayers; i++) {
+			hiddenLayerComboModel.addElement(new Integer(i));
+		}
+		ignoreHiddenLayerCombo = false;
+
+	}
+
 }

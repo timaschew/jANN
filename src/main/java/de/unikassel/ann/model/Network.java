@@ -9,6 +9,7 @@ import java.util.Set;
 import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.io.beans.SynapseBean;
 import de.unikassel.ann.io.beans.TopologyBean;
+import de.unikassel.ann.model.func.ActivationFunction;
 
 /**
  * The network is a container for the layers.<br>
@@ -93,6 +94,110 @@ public class Network extends BasicNetwork {
 		}
 
 		finalyzed = true;
+	}
+
+	/**
+	 * Adds a layer to the end of the layers<br>
+	 * First time it becomes the input layer<br>
+	 * 2nd time it becomes the output layer<br>
+	 * 3rd time and more the new layer becomes output, and the previous becomes hidden layer
+	 * 
+	 * @param neuronCount
+	 * @param bias
+	 * @param function
+	 */
+	public void addLayer(final int neuronCount, final boolean bias, final ActivationFunction function) {
+		Layer l = new Layer();
+		if (bias) {
+			l.addNeuron(new Neuron(function, true));
+		}
+		for (int i = 0; i < neuronCount; i++) {
+			Neuron n = new Neuron(function, false);
+			l.addNeuron(n);
+		}
+		addLayer(l);
+	}
+
+	public void setInputLayerSize(final int inputSize) {
+		ActivationFunction function = getStandardFunction();
+		if (layers.isEmpty()) {
+			// add input layer
+			layers.add(new Layer());
+		}
+		Layer inputLayer = layers.get(0);
+		setLayerSize(inputSize, function, inputLayer);
+	}
+
+	public void setOuputLayerSize(final int outputSize) {
+		ActivationFunction function = getStandardFunction();
+		if (layers.isEmpty()) {
+			// add input layer
+			setInputLayerSize(1);
+		}
+		if (layers.size() == 1) {
+			// add output layer
+			layers.add(new Layer());
+		}
+		Layer outputLayer = layers.get(layers.size() - 1);
+		setLayerSize(outputSize, function, outputLayer);
+	}
+
+	public void setSizeOfHiddenLayers(final int hiddenLayerCount) {
+		if (layers.isEmpty()) {
+			// add input layer
+			setInputLayerSize(1);
+		}
+		if (layers.size() == 1) {
+			// add output layer
+			setOuputLayerSize(1);
+		}
+		for (int i = 0; i < hiddenLayerCount; i++) {
+			int index = i + 1; // skip first (input layer)
+			Layer hiddenLayer = new Layer();
+			layers.add(index, hiddenLayer); // shift the output layer to right
+			setHiddenLayerSize(index, 1); // initial size
+		}
+	}
+
+	// TODO: can also used for input layer, is it good?
+	public void setHiddenLayerSize(final int layerIndex, final int layerSize) {
+		ActivationFunction function = getStandardFunction();
+		// add only, if the layer already exist
+		// -1 because the the 2nd operand is index, not size
+		if (layers.size() - 1 >= layerIndex) {
+			// for example layerIndex
+			setLayerSize(layerSize, function, layers.get(layerIndex)); // initial size
+		}
+
+	}
+
+	private void setLayerSize(final int inputSize, final ActivationFunction function, final Layer inputLayer) {
+		int currentLayerSize = inputLayer.getNeurons().size();
+		// positive -> add
+		// negative -> remove
+		int diff = inputSize - currentLayerSize;
+		if (diff == 0) {
+			return;
+		} else if (diff > 0) {
+			// add neurons
+			for (int i = 0; i < diff; i++) {
+				inputLayer.addNeuron(new Neuron(function, false));
+			}
+		} else {
+			// delete neurons
+			List<Neuron> inputNeurons = inputLayer.getNeurons();
+			for (int i = 0; i < -diff; i++) {
+				inputNeurons.remove(inputNeurons.size() - 1);
+			}
+		}
+	}
+
+	/**
+	 * @return
+	 */
+	private ActivationFunction getStandardFunction() {
+		// TODO: get frmo sidebar
+		return null;
 	}
 
 	public void setFlatSynapses(final List<SynapseBean> synapsesBanList) {
@@ -237,15 +342,6 @@ public class Network extends BasicNetwork {
 
 	public Set<Synapse> getSynapseSet() {
 		return synapseSet;
-	}
-
-	public int getInputSizeIgnoringBias() {
-		int biasOffset = getInputLayer().hasBias() ? 1 : 0;
-		return getInputLayer().getNeurons().size() - biasOffset;
-	}
-
-	public int getOutputSize() {
-		return getOutputLayer().getNeurons().size();
 	}
 
 	@Override

@@ -11,12 +11,9 @@ import de.unikassel.ann.algo.WorkModule;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.gui.TrainErrorListener;
 import de.unikassel.ann.model.DataPairSet;
-import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.NetError;
 import de.unikassel.ann.model.Network;
-import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.Synapse;
-import de.unikassel.ann.model.func.ActivationFunction;
 import de.unikassel.ann.rand.Randomizer;
 import de.unikassel.ann.strategy.Strategy;
 
@@ -101,19 +98,6 @@ public class NetConfig {
 		}
 		strat.setConfig(this);
 		strategies.add(strat);
-	}
-
-	public void addLayer(final int neuronCount, final boolean bias, final ActivationFunction function) {
-		Layer l = new Layer();
-		if (bias) {
-			l.addNeuron(new Neuron(function, true));
-		}
-		for (int i = 0; i < neuronCount; i++) {
-			Neuron n = new Neuron(function, false);
-			l.addNeuron(n);
-		}
-		network.addLayer(l);
-
 	}
 
 	public void addTrainingModule(final TrainingModule train) {
