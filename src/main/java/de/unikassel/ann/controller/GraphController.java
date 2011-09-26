@@ -7,6 +7,8 @@ import java.awt.Graphics;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -36,7 +38,7 @@ import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 import edu.uci.ics.jung.visualization.layout.LayoutTransition;
 import edu.uci.ics.jung.visualization.util.Animator;
 
-public class GraphController {
+public class GraphController implements PropertyChangeListener {
 
 	/*
 	 * fields
@@ -131,14 +133,20 @@ public class GraphController {
 		this.parent = parent;
 	}
 
+	public void repaint() {
+		repaint(false);
+	}
+
 	/**
 	 * Animate the repaint from the last layout to the new layout.
 	 */
-	public void repaint() {
-		Layout<Vertex, Edge> startLayout = viewer.getGraphLayout();
-		LayoutTransition<Vertex, Edge> transition = new LayoutTransition<Vertex, Edge>(viewer, startLayout, layout);
-		Animator animator = new Animator(transition);
-		animator.start();
+	public void repaint(final boolean animate) {
+		if (animate) {
+			Layout<Vertex, Edge> startLayout = viewer.getGraphLayout();
+			LayoutTransition<Vertex, Edge> transition = new LayoutTransition<Vertex, Edge>(viewer, startLayout, layout);
+			Animator animator = new Animator(transition);
+			animator.start();
+		}
 		viewer.repaint();
 	}
 
@@ -375,6 +383,20 @@ public class GraphController {
 
 		graphMouse.setMode(ModalGraphMouse.Mode.PICKING);
 		graphMouse.setZoomAtMouse(false);
+	}
+
+	@Override
+	public void propertyChange(final PropertyChangeEvent evt) {
+		// System.out.println("Source: " + evt.getSource());
+		// System.out.println("PropertyName: " + evt.getPropertyName());
+		// System.out.println("OldValue: " + evt.getOldValue());
+		// System.out.println("NewValue: " + evt.getNewValue());
+
+		if (evt.getSource() instanceof Network) {
+			// Render the changes network
+			Network network = (Network) evt.getSource();
+			renderNetwork(network);
+		}
 	}
 
 	// /**

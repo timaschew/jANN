@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import de.unikassel.ann.config.NetConfig;
+import de.unikassel.ann.controller.GraphController;
 
 /**
  * @author anton
@@ -34,6 +35,9 @@ public class UserSession {
 		initName(name);
 		sidebarModel = new SidebarModel();
 		config = new NetConfig();
+
+		// Add listener
+		config.getNetwork().addPropertyChangeListener(GraphController.getInstance());
 	}
 
 	/**
