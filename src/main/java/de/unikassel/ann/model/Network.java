@@ -287,6 +287,13 @@ public class Network extends BasicNetwork {
 		pcs.firePropertyChange(PropertyChanges.NEURONS.name(), oldValue, outputSize);
 	}
 
+	public int getSizeOfHiddenLayers() {
+		if (layers.size() > 2) {
+			return layers.size() - 2;
+		}
+		return 0;
+	}
+
 	/**
 	 * Creates input and output with 1 neuron, if not already exist
 	 * 

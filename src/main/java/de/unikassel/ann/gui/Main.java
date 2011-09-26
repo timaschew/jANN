@@ -180,6 +180,8 @@ public class Main {
 		glv.setDimension(dim);
 		glv.setParent(jungPanel);
 		glv.init();
+
+		Settings.getInstance().getCurrentSession().getNetworkConfig().getNetwork().addPropertyChangeListener(sidebar.topolgyPanel);
 	}
 
 	public void initSidebarPanel() {

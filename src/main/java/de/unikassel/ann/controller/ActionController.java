@@ -22,7 +22,6 @@ import de.unikassel.ann.strategy.MinErrorStrategy;
 import de.unikassel.ann.strategy.RestartErrorStrategy;
 import de.unikassel.ann.strategy.RestartImprovementStrategy;
 import de.unikassel.ann.strategy.Strategy;
-import edu.uci.ics.jung.visualization.control.ModalGraphMouse.Mode;
 
 /**
  * @author anton
@@ -48,44 +47,56 @@ public class ActionController {
 		Sidebar sidebar = Main.instance.sidebar;
 		SidebarModel sidebarModel = Settings.getInstance().getCurrentSession().sidebarModel;
 
-		Integer newValue;
-
 		switch (a) {
 
-		// case UPDATE_SIDEBAR_CONFIG_INPUT_NEURON_MODEL:
-		// Integer newValue = (Integer) evt.getNewValue();
-		// sidebarModel.setInputNeurons(newValue);
-		// break;
+		case UPDATE_SIDEBAR_CONFIG_INPUT_NEURON_MODEL:
+			System.err.println("UPDATE_SIDEBAR_CONFIG_INPUT_NEURON_MODEL does not exist anymore");
+			// Integer newValue = (Integer) evt.getNewValue();
+			// sidebarModel.setInputNeurons(newValue);
+			break;
 
-		// case UPDATE_SIDEBAR_CONFIG_HIDDEN_NEURON_MODEL:
-		// // need the relative index for hidden layer
-		// Integer selectedHiddenLayer = sidebarModel.getSelectedGlobalHiddenLayerIndex() - 1;
-		// sidebarModel.setHiddenNeurons(selectedHiddenLayer, (Integer) evt.getNewValue());
-		// break;
+		case UPDATE_SIDEBAR_CONFIG_HIDDEN_NEURON_MODEL:
+			System.err.println("UPDATE_SIDEBAR_CONFIG_HIDDEN_NEURON_MODEL does not exist anymore");
 
-		// case UPDATE_SIDEBAR_CONFIG_HIDDEN_LAYER_MODEL:
-		// newValue = (Integer) evt.getNewValue();
-		// sidebarModel.setHiddenLayers(newValue);
-		// break;
+			// // need the relative index for hidden layer
+			// Integer selectedHiddenLayer = sidebarModel.getSelectedGlobalHiddenLayerIndex() - 1;
+			// sidebarModel.setHiddenNeurons(selectedHiddenLayer, (Integer) evt.getNewValue());
+			break;
 
-		// case UPDATE_SIDEBAR_CONFIG_OUTPUT_NEURON_MODEL:
-		// newValue = (Integer) evt.getNewValue();
-		// sidebarModel.setOutputNeurons(newValue);
-		// break;
+		case UPDATE_SIDEBAR_CONFIG_HIDDEN_LAYER_MODEL:
+			System.err.println("UPDATE_SIDEBAR_CONFIG_HIDDEN_LAYER_MODEL does not exist anymore");
 
-		// case UPDATE_SIDEBAR_CONFIG_INPUT_BIAS_MODEL:
-		// Boolean bValue = (Boolean) evt.getNewValue();
-		// sidebarModel.setInputBias(bValue);
-		// break;
+			// newValue = (Integer) evt.getNewValue();
+			// sidebarModel.setHiddenLayers(newValue);
+			break;
 
-		// case UPDATE_SIDEBAR_CONFIG_HIDDEN_BIAS_MODEL:
-		// bValue = (Boolean) evt.getNewValue();
-		// Integer selectedLayer = (Integer) sidebar.topolgyPanel.hiddenLayerDropDown.getSelectedItem();
-		// // use relative (hidden) layer index
-		// sidebarModel.setHiddenBias(selectedLayer - 1, bValue);
-		// break;
+		case UPDATE_SIDEBAR_CONFIG_OUTPUT_NEURON_MODEL:
+			System.err.println("UPDATE_SIDEBAR_CONFIG_OUTPUT_NEURON_MODEL does not exist anymore");
 
-		// case UPDATE_JUNG_GRAPH:
+			// newValue = (Integer) evt.getNewValue();
+			// sidebarModel.setOutputNeurons(newValue);
+			break;
+
+		case UPDATE_SIDEBAR_CONFIG_INPUT_BIAS_MODEL:
+			System.err.println("UPDATE_SIDEBAR_CONFIG_INPUT_BIAS_MODEL does not exist anymore");
+
+			// Boolean bValue = (Boolean) evt.getNewValue();
+			// sidebarModel.setInputBias(bValue);
+			break;
+
+		case UPDATE_SIDEBAR_CONFIG_HIDDEN_BIAS_MODEL:
+			System.err.println("UPDATE_SIDEBAR_CONFIG_HIDDEN_BIAS_MODEL does not exist anymore");
+
+			// bValue = (Boolean) evt.getNewValue();
+			// Integer selectedLayer = (Integer) sidebar.topolgyPanel.hiddenLayerDropDown.getSelectedItem();
+			// // use relative (hidden) layer index
+			// sidebarModel.setHiddenBias(selectedLayer - 1, bValue);
+			break;
+
+		case UPDATE_JUNG_GRAPH:
+			System.err.println("UPDATE_JUNG_GRAPH does not exist anymore");
+			break;
+
 		// newValue = (Integer) evt.getNewValue();
 		// Integer oldValue = (Integer) evt.getOldValue();
 		//
@@ -146,7 +157,9 @@ public class ActionController {
 
 		// break;
 
-		// case UPDATE_SIDEBAR_TOPOLOGY_VIEW:
+		case UPDATE_SIDEBAR_TOPOLOGY_VIEW:
+			System.err.println("UPDATE_SIDEBAR_TOPOLOGY_VIEW does not exist anymore");
+			break;
 		// if (true) {
 		// // do update in itself repaint()
 		// break;
@@ -280,33 +293,34 @@ public class ActionController {
 			break;
 
 		case CHANGE_MOUSE_MODI:
-			sidebar = Main.instance.sidebar;
-			String selected = (String) sidebar.topolgyPanel.comboBoxMouseModes.getSelectedItem();
-			if (selected.equals("Picking")) {
-				GraphController.getInstance().graphMouse.setMode(Mode.PICKING);
-				sidebar.topolgyPanel.mouseHiddenRB.setEnabled(false);
-				sidebar.topolgyPanel.mouseInputRB.setEnabled(false);
-				sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(false);
-				sidebar.topolgyPanel.mouseOutputRB.setEnabled(false);
-			} else if (selected.equals("Editing")) {
-				GraphController.getInstance().graphMouse.setMode(Mode.EDITING);
-				Integer hiddenLayerSize = sidebarModel.getHiddenLayers();
-				if (hiddenLayerSize > 0) {
-					sidebar.topolgyPanel.mouseHiddenRB.setEnabled(true);
-					sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(true);
-				} else {
-					sidebar.topolgyPanel.mouseHiddenRB.setEnabled(false);
-					sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(false);
-				}
-				sidebar.topolgyPanel.mouseInputRB.setEnabled(true);
-				sidebar.topolgyPanel.mouseOutputRB.setEnabled(true);
-			} else if (selected.equals("Transforming")) {
-				GraphController.getInstance().graphMouse.setMode(Mode.TRANSFORMING);
-				sidebar.topolgyPanel.mouseHiddenRB.setEnabled(false);
-				sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(false);
-				sidebar.topolgyPanel.mouseInputRB.setEnabled(false);
-				sidebar.topolgyPanel.mouseOutputRB.setEnabled(false);
-			}
+			System.err.println("CHANGE_MOUSE_MODI does not exist anymore");
+			// sidebar = Main.instance.sidebar;
+			// String selected = (String) sidebar.topolgyPanel.comboBoxMouseModes.getSelectedItem();
+			// if (selected.equals("Picking")) {
+			// GraphController.getInstance().graphMouse.setMode(Mode.PICKING);
+			// sidebar.topolgyPanel.mouseHiddenRB.setEnabled(false);
+			// sidebar.topolgyPanel.mouseInputRB.setEnabled(false);
+			// sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(false);
+			// sidebar.topolgyPanel.mouseOutputRB.setEnabled(false);
+			// } else if (selected.equals("Editing")) {
+			// GraphController.getInstance().graphMouse.setMode(Mode.EDITING);
+			// Integer hiddenLayerSize = sidebarModel.getHiddenLayers();
+			// if (hiddenLayerSize > 0) {
+			// sidebar.topolgyPanel.mouseHiddenRB.setEnabled(true);
+			// sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(true);
+			// } else {
+			// sidebar.topolgyPanel.mouseHiddenRB.setEnabled(false);
+			// sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(false);
+			// }
+			// sidebar.topolgyPanel.mouseInputRB.setEnabled(true);
+			// sidebar.topolgyPanel.mouseOutputRB.setEnabled(true);
+			// } else if (selected.equals("Transforming")) {
+			// GraphController.getInstance().graphMouse.setMode(Mode.TRANSFORMING);
+			// sidebar.topolgyPanel.mouseHiddenRB.setEnabled(false);
+			// sidebar.topolgyPanel.comboBoxHiddenMausModus.setEnabled(false);
+			// sidebar.topolgyPanel.mouseInputRB.setEnabled(false);
+			// sidebar.topolgyPanel.mouseOutputRB.setEnabled(false);
+			// }
 
 			break;
 

@@ -40,7 +40,7 @@ public class UserSession {
 		config.getNetwork().addPropertyChangeListener(GraphController.getInstance());
 
 		// TODO add sidebar as listener
-
+		// not at this time, it does not exist at this time!
 	}
 
 	/**
