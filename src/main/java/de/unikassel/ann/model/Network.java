@@ -12,6 +12,7 @@ import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.io.beans.SynapseBean;
 import de.unikassel.ann.io.beans.TopologyBean;
 import de.unikassel.ann.model.func.ActivationFunction;
+import de.unikassel.ann.model.func.SigmoidFunction;
 
 /**
  * The network is a container for the layers.<br>
@@ -38,9 +39,11 @@ public class Network extends BasicNetwork {
 	private List<Neuron> flatNet;
 	private Set<Synapse> synapseSet;
 	private SynapseMatrix synapseMatrix;
+	private int globalNeuronId = 0;
 
 	public Network() {
 		super();
+		pcs = new PropertyChangeSupport(this);
 		synapseSet = new HashSet<Synapse>();
 		flatNet = new ArrayList<Neuron>();
 		synapseMatrix = new SynapseMatrix(this, null, null);
@@ -154,7 +157,9 @@ public class Network extends BasicNetwork {
 		ActivationFunction function = getStandardFunction();
 		if (layers.isEmpty()) {
 			// add input layer
-			layers.add(new Layer());
+			Layer inputLayer = new Layer();
+			inputLayer.setIndex(0);
+			layers.add(inputLayer);
 		}
 		Layer inputLayer = layers.get(0);
 		int oldValue = inputLayer.getNeurons().size();
@@ -175,7 +180,9 @@ public class Network extends BasicNetwork {
 		}
 		if (layers.size() == 1) {
 			// add output layer
-			layers.add(new Layer());
+			Layer outputLayer = new Layer();
+			outputLayer.setIndex(1);
+			layers.add(outputLayer);
 		}
 		Layer outputLayer = layers.get(layers.size() - 1);
 		int oldValue = outputLayer.getNeurons().size();
@@ -206,7 +213,8 @@ public class Network extends BasicNetwork {
 			for (int i = 0; i < diff; i++) {
 				int index = layers.size() - 1; // old output index = new hidden index
 				Layer hiddenLayer = new Layer();
-				layers.add(index, hiddenLayer); // shift the output layer to right
+				hiddenLayer.setIndex(index);
+				layers.add(index, hiddenLayer); // shift the output layer in the list
 				setHiddenLayerSize(index, 1); // initial size
 			}
 		} else {
@@ -215,6 +223,10 @@ public class Network extends BasicNetwork {
 				layers.remove(layers.size() - 2); // -1 = output, -2 last hidden
 			}
 		}
+		// shift the index attribute of the output layer
+		Layer outputLayer = layers.get(layers.size() - 1);
+		outputLayer.setIndex(layers.size() - 1);
+
 		pcs.firePropertyChange(PropertyChanges.NEURONS.name(), oldValue, hiddenLayerCount);
 	}
 
@@ -242,7 +254,9 @@ public class Network extends BasicNetwork {
 		} else if (diff > 0) {
 			// add neurons
 			for (int i = 0; i < diff; i++) {
-				layer.addNeuron(new Neuron(function, false));
+				Neuron neuron = new Neuron(function, false);
+				neuron.setId(getNextNeuronId());
+				layer.addNeuron(neuron);
 			}
 		} else {
 			// delete neurons
@@ -258,7 +272,7 @@ public class Network extends BasicNetwork {
 	 */
 	private ActivationFunction getStandardFunction() {
 		// TODO: get frmo sidebar
-		return null;
+		return new SigmoidFunction();
 	}
 
 	public void setFlatSynapses(final List<SynapseBean> synapsesBanList) {
@@ -414,6 +428,10 @@ public class Network extends BasicNetwork {
 		sb.append(layers.size());
 		sb.append(" layers");
 		return sb.toString();
+	}
+
+	public int getNextNeuronId() {
+		return globalNeuronId++;
 	}
 
 }
