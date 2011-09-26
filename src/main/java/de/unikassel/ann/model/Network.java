@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import de.unikassel.ann.config.NetConfig;
+import de.unikassel.ann.controller.EdgeController;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.io.beans.SynapseBean;
 import de.unikassel.ann.io.beans.TopologyBean;
@@ -313,6 +314,18 @@ public class Network extends BasicNetwork {
 				hiddenLayer.setIndex(index);
 				layers.add(index, hiddenLayer); // shift the output layer in the list
 				setHiddenLayerSize(index, 1); // initial size
+
+				// Remove the edges between the previous last hidden layer and the output layer
+				EdgeMap<Double> edgeMap = EdgeController.getInstance().getEdgeMap();
+				List<Neuron> outputNeurons = getOutputLayer().getNeurons();
+				for (Neuron n : outputNeurons) {
+					List<Synapse> incomingSynapses = n.getIncomingSynapses();
+					for (Synapse synapse : incomingSynapses) {
+						Integer fromId = synapse.getFromNeuron().getId();
+						Integer toId = synapse.getToNeuron().getId();
+						edgeMap.remove(new FromTo(fromId, toId));
+					}
+				}
 			}
 		} else {
 			// remove layers
