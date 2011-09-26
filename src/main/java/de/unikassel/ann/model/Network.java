@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import de.unikassel.ann.config.NetConfig;
+import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.io.beans.SynapseBean;
 import de.unikassel.ann.io.beans.TopologyBean;
 import de.unikassel.ann.model.func.ActivationFunction;
@@ -26,12 +27,16 @@ public class Network extends BasicNetwork {
 
 	/**
 	 * Neuron or Synapse
-	 * 
-	 * @author anton
-	 * 
 	 */
 	public enum PropertyChanges {
 		NEURONS, SYNAPSES
+	};
+
+	/**
+	 * Layer types
+	 */
+	public enum NetworkLayer {
+		INPUT, OUTPUT, HIDDEN
 	};
 
 	private Boolean finalyzed;
@@ -48,6 +53,16 @@ public class Network extends BasicNetwork {
 		flatNet = new ArrayList<Neuron>();
 		synapseMatrix = new SynapseMatrix(this, null, null);
 		finalyzed = false;
+	}
+
+	/**
+	 * Wrapper to ease the access to the network stored in the current session.<br>
+	 * NOTE: Be sure to use and call this method only if there is a network initiated!
+	 * 
+	 * @return
+	 */
+	public static Network getNetwork() {
+		return Settings.getInstance().getCurrentSession().getNetworkConfig().getNetwork();
 	}
 
 	/**
@@ -151,6 +166,88 @@ public class Network extends BasicNetwork {
 			l.addNeuron(n);
 		}
 		addLayer(l);
+	}
+
+	/**
+	 * @param neuron
+	 */
+	public void removeNeuron(final Neuron neuron) {
+		int layerIndex = neuron.getLayer().getIndex();
+		Layer layer;
+		try {
+			layer = layers.get(layerIndex);
+		} catch (IndexOutOfBoundsException ex) {
+			System.out.println("ERROR: " + ex.getMessage() + ", neuron: " + neuron + ", layerIndex = " + layerIndex);
+			return;
+		}
+
+		if (layer != null) {
+			List<Neuron> neurons = layer.getNeurons();
+			int size = neurons.size();
+			for (int i = 0; i < size; i++) {
+				if (neurons.get(i).getId() == neuron.getId()) {
+					layer.getNeurons().remove(i);
+					pcs.firePropertyChange(PropertyChanges.NEURONS.name(), size, size - 1);
+					return;
+				}
+			}
+		}
+	}
+
+	public void addInputNeuron() {
+		int layerSize = 0;
+		if (!layers.isEmpty()) {
+			// input layer exists
+			layerSize = layers.get(0).getNeurons().size();
+		}
+		setInputLayerSize(layerSize + 1);
+	}
+
+	public void removeInputNeuron() {
+		int layerSize = 0;
+		if (!layers.isEmpty()) {
+			// input layer exists
+			layerSize = layers.get(0).getNeurons().size();
+		}
+		setInputLayerSize(layerSize - 1);
+	}
+
+	public void addOutputNeuron() {
+		int layerSize = 0;
+		// TODO is this check correct? What when there are an input and a hidden layer but no output layer?
+		if (layers.size() > 1) {
+			// output layer exists
+			layerSize = layers.get(layers.size() - 1).getNeurons().size();
+		}
+		setOuputLayerSize(layerSize + 1);
+	}
+
+	public void removeOutputNeuron() {
+		int layerSize = 0;
+		// TODO is this check correct? What when there are an input and a hidden layer but no output layer?
+		if (layers.size() > 1) {
+			// output layer exists
+			layerSize = layers.get(layers.size() - 1).getNeurons().size();
+		}
+		setOuputLayerSize(layerSize - 1);
+	}
+
+	public void addHiddenNeuron(final int layerIndex) {
+		// add only, if the layer already exist
+		int layerSize = 0;
+		if (layers.size() - 1 >= layerIndex) {
+			layerSize = layers.get(layerIndex).getNeurons().size();
+			setHiddenLayerSize(layerIndex, layerSize + 1);
+		}
+	}
+
+	public void removeHiddenNeuron(final int layerIndex) {
+		// add only, if the layer already exist
+		int layerSize = 0;
+		if (layers.size() - 1 >= layerIndex) {
+			layerSize = layers.get(layerIndex).getNeurons().size();
+			setHiddenLayerSize(layerIndex, layerSize - 1);
+		}
 	}
 
 	public void setInputLayerSize(final int inputSize) {

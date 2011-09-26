@@ -11,6 +11,7 @@ import org.apache.commons.collections15.Transformer;
 import de.unikassel.ann.factory.EdgeFactory;
 import de.unikassel.ann.gui.model.Edge;
 import de.unikassel.ann.gui.model.Vertex;
+import de.unikassel.ann.model.EdgeMap;
 import de.unikassel.ann.model.Synapse;
 import edu.uci.ics.jung.visualization.RenderContext;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
@@ -37,6 +38,7 @@ public class EdgeController<E> {
 	private RenderContext<Vertex, Edge> renderContext;
 	private PickedState<Edge> edgePickedState;
 	private EdgeFactory edgeFactory;
+	private EdgeMap<Double> edgeMap;
 
 	public void init() {
 		this.viewer = GraphController.getInstance().getViewer();
@@ -44,6 +46,7 @@ public class EdgeController<E> {
 		this.renderContext = viewer.getRenderContext();
 		this.edgePickedState = viewer.getPickedEdgeState();
 		this.edgeFactory = new EdgeFactory();
+		this.edgeMap = new EdgeMap<Double>();
 
 		setEdgeLabel();
 		setEdgeShape();
@@ -103,6 +106,10 @@ public class EdgeController<E> {
 			}
 		});
 
+	}
+
+	public EdgeMap<Double> getEdgeMap() {
+		return edgeMap;
 	}
 
 	/*

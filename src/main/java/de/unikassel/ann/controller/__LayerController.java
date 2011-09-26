@@ -8,13 +8,13 @@ import de.unikassel.ann.gui.model.JungLayer;
 import de.unikassel.ann.gui.model.Vertex;
 import de.unikassel.ann.model.Layer;
 
-public class LayerController<T> {
+public class __LayerController<T> {
 
-	private static LayerController<Layer> instance;
+	private static __LayerController<Layer> instance;
 
-	public static LayerController<Layer> getInstance() {
+	public static __LayerController<Layer> getInstance() {
 		if (instance == null) {
-			instance = new LayerController<Layer>();
+			instance = new __LayerController<Layer>();
 		}
 		return instance;
 	}
@@ -25,7 +25,7 @@ public class LayerController<T> {
 	/**
 	 * Constructor
 	 */
-	private LayerController() {
+	private __LayerController() {
 		layers = new ArrayList<JungLayer>();
 	}
 

@@ -100,10 +100,12 @@
 	<entry key="graph.mouse.createEdgeUnDirected">Erzeuge Synapse</entry>
 	<entry key="graph.mouse.deleteVertex">Lösche Neuron</entry>
 	<entry key="graph.mouse.deleteEdge">Lösche Synapse</entry>
-	<entry key="graph.mouse.createVertex">Erzeuge Neuron</entry>
-	<entry key="graph.mouse.createVertexInput">Erzeuge Input Neuron</entry>
-	<entry key="graph.mouse.createVertexOutput">Erzeuge Output Neuron</entry>
-	<entry key="graph.mouse.createVertexHidden">Erzeuge Hidden Neuron (Layer %d)</entry>
+	<entry key="graph.mouse.createVertex">Neuron hinzufügen</entry>
+	<entry key="graph.mouse.createVertexInput">Input Neuron hinzufügen</entry>
+	<entry key="graph.mouse.createVertexOutput">Output Neuron hinzufügen</entry>
+	<entry key="graph.mouse.createVertexHidden">Hidden Neuron hinzufügen</entry>
+	<entry key="graph.mouse.createVertexHiddenWithLayer">Hidden Neuron hinzufügen (Layer %d)</entry>
+	<entry key="graph.mouse.HiddenLayer">Hidden Layer %d</entry>
 	
 	
 </properties>

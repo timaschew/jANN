@@ -36,8 +36,11 @@ public class UserSession {
 		sidebarModel = new SidebarModel();
 		config = new NetConfig();
 
-		// Add listener
+		// Add GraphController as listener
 		config.getNetwork().addPropertyChangeListener(GraphController.getInstance());
+
+		// TODO add sidebar as listener
+
 	}
 
 	/**

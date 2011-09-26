@@ -18,8 +18,11 @@ import javax.swing.JComponent;
 import org.apache.commons.collections15.Factory;
 
 import de.unikassel.ann.controller.GraphController;
+import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.gui.model.Edge;
 import de.unikassel.ann.gui.model.Vertex;
+import de.unikassel.ann.gui.sidebar.TopologyPanel;
+import de.unikassel.ann.model.Network.NetworkLayer;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedGraph;
@@ -118,7 +121,18 @@ public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements 
 						vv.addPostRenderPaintable(arrowPaintable);
 					}
 				} else {
-					GraphController.getInstance().createVertex(vertexFactory);
+					TopologyPanel topoPanel = Main.instance.sidebar.topolgyPanel;
+					NetworkLayer layer = null;
+					Integer selectedHiddenLayer = null;
+					if (topoPanel.mouseInputRB.isSelected()) {
+						layer = NetworkLayer.INPUT;
+					} else if (topoPanel.mouseOutputRB.isSelected()) {
+						layer = NetworkLayer.OUTPUT;
+					} else if (topoPanel.mouseHiddenRB.isSelected()) {
+						layer = NetworkLayer.HIDDEN;
+						selectedHiddenLayer = (Integer) topoPanel.comboBoxHiddenMausModus.getSelectedItem();
+					}
+					GraphController.getInstance().createVertex(layer, selectedHiddenLayer);
 				}
 			}
 			GraphController.getInstance().repaint();
@@ -155,7 +169,6 @@ public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements 
 	 * If startVertex is non-null, stretch an edge shape between startVertex and the mouse pointer to simulate edge creation
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	public void mouseDragged(final MouseEvent e) {
 		if (checkModifiers(e)) {
 			if (startVertex != null) {
@@ -164,7 +177,6 @@ public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements 
 					transformArrowShape(down, e.getPoint());
 				}
 			}
-			VisualizationViewer<Vertex, Edge> vv = (VisualizationViewer<Vertex, Edge>) e.getSource();
 			GraphController.getInstance().repaint();
 		}
 	}
