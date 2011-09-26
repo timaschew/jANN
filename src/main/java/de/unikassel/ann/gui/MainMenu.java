@@ -221,7 +221,7 @@ public class MainMenu extends JMenuBar {
 				// Create a new Session
 
 				// Clear Graph
-				GraphController.getInstance().clear();
+				GraphController.getInstance().reset();
 
 				// Reset Sidebar
 				Settings.getInstance().createNewSession("Session");
@@ -348,7 +348,7 @@ public class MainMenu extends JMenuBar {
 			NetConfig netConfig = netIO.generateNetwork();
 
 			// render network as graph
-			main.getGraphLayoutViewer().renderNetwork(netConfig.getNetwork());
+			GraphController.getInstance().renderNetwork(netConfig.getNetwork());
 		}
 
 		/**
@@ -369,7 +369,7 @@ public class MainMenu extends JMenuBar {
 			NetConfig netConfig = netIO.generateNetwork();
 
 			// render network as graph
-			main.getGraphLayoutViewer().renderNetwork(netConfig.getNetwork());
+			GraphController.getInstance().renderNetwork(netConfig.getNetwork());
 		}
 
 		/**
@@ -390,7 +390,7 @@ public class MainMenu extends JMenuBar {
 			NetConfig netConfig = netIO.generateNetwork();
 
 			// render network as graph
-			main.getGraphLayoutViewer().renderNetwork(netConfig.getNetwork());
+			GraphController.getInstance().renderNetwork(netConfig.getNetwork());
 
 		}
 
@@ -412,7 +412,7 @@ public class MainMenu extends JMenuBar {
 			NetConfig netConfig = netIO.generateNetwork();
 
 			// render network as graph
-			main.getGraphLayoutViewer().renderNetwork(netConfig.getNetwork());
+			GraphController.getInstance().renderNetwork(netConfig.getNetwork());
 		}
 
 		private void testNetwork() throws IOException, ClassNotFoundException {
@@ -428,7 +428,7 @@ public class MainMenu extends JMenuBar {
 			NetConfig netConfig = netIO.generateNetwork();
 
 			// render network as graph
-			main.getGraphLayoutViewer().renderNetwork(netConfig.getNetwork());
+			GraphController.getInstance().renderNetwork(netConfig.getNetwork());
 		}
 
 	}

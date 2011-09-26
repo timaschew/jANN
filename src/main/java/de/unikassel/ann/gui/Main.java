@@ -57,7 +57,6 @@ public class Main {
 	private JFrame frame;
 	private JTextPane textPane;
 	private JTextPane textPaneSOM;
-	private GraphController glv;
 	private JPanel jungPanel;
 	private JSplitPane jungConsoleSplitPane;
 	private JSplitPane _3DBoardSplitPane;
@@ -176,10 +175,10 @@ public class Main {
 		// The Dimension is given by the DividerLocation of the mainSplitPane
 		// and the jungConsoleSplitPane minus the scrollbar size
 
-		glv = GraphController.getInstance();
-		glv.setDimension(dim);
-		glv.setParent(jungPanel);
-		glv.init();
+		GraphController graphController = GraphController.getInstance();
+		graphController.setDimension(dim);
+		graphController.setParent(jungPanel);
+		graphController.init();
 
 		Settings.getInstance().getCurrentSession().getNetworkConfig().getNetwork().addPropertyChangeListener(sidebar.topolgyPanel);
 	}
@@ -216,10 +215,6 @@ public class Main {
 		mainSplitPane.removeAll();
 		mainSplitPane.setRightComponent(sidebar);
 		mainSplitPane.setLeftComponent(jungConsoleSplitPane);
-	}
-
-	public GraphController getGraphLayoutViewer() {
-		return glv;
 	}
 
 	private void updateTextArea(final String text) {

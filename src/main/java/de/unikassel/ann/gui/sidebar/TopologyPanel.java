@@ -445,7 +445,7 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 			mouseOutputRB.setEnabled(false);
 		}
 
-		System.out.println(netConfig.getNetwork().getLayers());
+		// System.out.println(netConfig.getNetwork().getLayers());
 
 	}
 
