@@ -31,10 +31,16 @@ public abstract class BasicNetwork {
 	}
 
 	public Layer getInputLayer() {
+		if (layers.isEmpty()) {
+			return null;
+		}
 		return layers.get(0);
 	}
 
 	public Layer getOutputLayer() {
+		if (layers.isEmpty()) {
+			return null;
+		}
 		return layers.get(layers.size() - 1);
 	}
 
@@ -43,6 +49,9 @@ public abstract class BasicNetwork {
 	}
 
 	public Layer getLayer(final Integer i) {
+		if (layers.size() <= i) {
+			return null;
+		}
 		return layers.get(i);
 	}
 
@@ -52,6 +61,9 @@ public abstract class BasicNetwork {
 	 * @return
 	 */
 	public int getInputSizeIgnoringBias() {
+		if (layers.isEmpty()) {
+			return 0;
+		}
 		int biasOffset = getInputLayer().hasBias() ? 1 : 0;
 		return getInputLayer().getNeurons().size() - biasOffset;
 	}
@@ -62,14 +74,23 @@ public abstract class BasicNetwork {
 	 * @return
 	 */
 	public int getTotalInputSize() {
+		if (getInputLayer() == null) {
+			return 0;
+		}
 		return getInputLayer().getNeurons().size();
 	}
 
 	public int getTotalLayerSize(final int layerIndex) {
+		if (getLayer(layerIndex) == null) {
+			return 0;
+		}
 		return getLayer(layerIndex).getNeurons().size();
 	}
 
 	public int getOutputSize() {
+		if (getOutputLayer() == null) {
+			return 0;
+		}
 		return getOutputLayer().getNeurons().size();
 	}
 

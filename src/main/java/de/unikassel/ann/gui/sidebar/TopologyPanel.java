@@ -394,9 +394,7 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 		// update hdiden layer dependect components
 		// selected hidden layer, hidden bias checkbox,
 		// neuron spinner for selected hidden layer
-		//
 
-		// Integer hiddenLayers = (Integer) hiddenLayerCountSpinner.getValue(); // thats not the model!
 		Integer hiddenLayers = netConfig.getNetwork().getSizeOfHiddenLayers();
 
 		if (hiddenLayers > 0) {
@@ -417,8 +415,14 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 		int outputSize = netConfig.getNetwork().getOutputSize();
 		outputNeuroSpinner.setValue(outputSize);
 
-		// update mouse mode
+		// update hidden neurons
+		Integer selectedHiddenLayer = (Integer) hiddenLayerDropDown.getSelectedItem();
+		if (selectedHiddenLayer != null) {
+			int sizeForSelectedHiddenLayer = netConfig.getNetwork().getLayer(selectedHiddenLayer).getNeurons().size();
+			hiddenNeuronSpinner.setValue(sizeForSelectedHiddenLayer);
+		}
 
+		// update mouse mode
 		String selected = (String) comboBoxMouseModes.getSelectedItem();
 		if (selected.equals("Picking")) {
 			GraphController.getInstance().graphMouse.setMode(Mode.PICKING);
@@ -445,7 +449,7 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 			mouseOutputRB.setEnabled(false);
 		}
 
-		// System.out.println(netConfig.getNetwork().getLayers());
+		System.out.println(netConfig.getNetwork().getLayers());
 
 	}
 
