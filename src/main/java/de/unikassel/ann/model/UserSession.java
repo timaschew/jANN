@@ -19,8 +19,6 @@ import de.unikassel.ann.controller.GraphController;
  */
 public class UserSession {
 
-	public SidebarModel sidebarModel;
-
 	private String name;
 
 	private NetConfig config;
@@ -33,7 +31,6 @@ public class UserSession {
 
 	public UserSession(final String name) {
 		initName(name);
-		sidebarModel = new SidebarModel();
 		config = new NetConfig();
 
 		// Add GraphController as listener

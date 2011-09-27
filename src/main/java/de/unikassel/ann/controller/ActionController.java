@@ -11,12 +11,9 @@ import java.beans.PropertyChangeEvent;
 import java.util.List;
 
 import de.unikassel.ann.config.NetConfig;
-import de.unikassel.ann.factory.NetworkFactory;
 import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.gui.sidebar.Sidebar;
 import de.unikassel.ann.model.DataPairSet;
-import de.unikassel.ann.model.SidebarModel;
-import de.unikassel.ann.model.func.ActivationFunction;
 import de.unikassel.ann.strategy.MaxLearnIterationsStrategy;
 import de.unikassel.ann.strategy.MinErrorStrategy;
 import de.unikassel.ann.strategy.RestartErrorStrategy;
@@ -45,7 +42,6 @@ public class ActionController {
 		System.out.println(a + " old: " + evt.getOldValue() + ", new: " + evt.getNewValue());
 
 		Sidebar sidebar = Main.instance.sidebar;
-		SidebarModel sidebarModel = Settings.getInstance().getCurrentSession().sidebarModel;
 
 		switch (a) {
 
@@ -255,29 +251,12 @@ public class ActionController {
 		// break;
 
 		case UPDATE_SIDEBAR_TRAINSTRATEGY_VIEW:
-			// Update all elements in the TrainstrategyView
-			sidebar.trainStrategyPanel.comboBoxAlgorithm.setSelectedItem(sidebarModel.getAlgorithmCombo());
-			sidebar.trainStrategyPanel.spinnerLearnRate.setValue(sidebarModel.getLearnRate());
-			sidebar.trainStrategyPanel.spinnerMomentum.setValue(sidebarModel.getMomentum());
+			System.err.println("UPDATE_SIDEBAR_TRAINSTRATEGY_VIEW does not exist anymore");
 
 			break;
 
 		case CREATE_NETWORK:
-			NetworkFactory factory = new NetworkFactory();
-			Integer inputNeurons = sidebarModel.getInputNeurons();
-			Boolean inputBias = sidebarModel.getInputBias();
-			Integer outputNeurons = sidebarModel.getOutputNeurons();
-			List<Integer> hiddenNeuronList = sidebarModel.getHiddenNeurons();
-			List<Boolean> hiddenBiasList = sidebarModel.getHiddenBias();
-			ActivationFunction activation = sidebarModel.getSelectedActivation();
-			NetConfig netConfig = factory.createNetwork(inputNeurons, inputBias, hiddenNeuronList, hiddenBiasList, outputNeurons,
-					activation);
-
-			boolean connectAll = sidebar.topolgyPanel.chckbxAllNeuronsBind.isSelected();
-			if (connectAll) {
-				netConfig.getNetwork().finalizeStructure();
-			}
-			Settings.getInstance().getCurrentSession().setNetworkConfig(netConfig);
+			System.err.println("CREATE_NETWORK does not exist anymore");
 
 			break;
 

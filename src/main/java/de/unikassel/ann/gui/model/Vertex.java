@@ -6,7 +6,6 @@ import java.util.List;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.Synapse;
-import de.unikassel.ann.model.UserSession;
 
 public class Vertex implements Comparable<Vertex> {
 
@@ -33,15 +32,15 @@ public class Vertex implements Comparable<Vertex> {
 		model = new Neuron(activateFunc, bias);
 	}
 
-	/**
-	 * Vertex setup. Sets the current sidebar config values to the layer and add it to the layercontroller.
-	 */
-	public void setup() {
-		// Get current selected layer index from the sidebar
-		UserSession currentSession = Settings.getInstance().getCurrentSession();
-		int layerIndex = currentSession.sidebarModel.getMouseInsertLayer();
-		setup(layerIndex);
-	}
+	// /**
+	// * Vertex setup. Sets the current sidebar config values to the layer and add it to the layercontroller.
+	// */
+	// public void setup() {
+	// // Get current selected layer index from the sidebar
+	// UserSession currentSession = Settings.getInstance().getCurrentSession();
+	// int layerIndex = currentSession.sidebarModel.getMouseInsertLayer();
+	// setup(layerIndex);
+	// }
 
 	public void setup(final int layerIndex) {
 		// // LayerController<Layer> layerController = LayerController.getInstance();

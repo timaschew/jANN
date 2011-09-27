@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
@@ -23,10 +25,14 @@ import javax.swing.border.TitledBorder;
 
 import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.ActionController;
-import de.unikassel.ann.controller.Actions;
 import de.unikassel.ann.controller.GraphController;
 import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.factory.NetworkFactory;
 import de.unikassel.ann.model.Layer;
+import de.unikassel.ann.model.Network;
+import de.unikassel.ann.model.Neuron;
+import de.unikassel.ann.model.func.ActivationFunction;
+import de.unikassel.ann.model.func.SigmoidFunction;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse.Mode;
 
 public class TopologyPanel extends JPanel implements PropertyChangeListener {
@@ -69,10 +75,16 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 
 	private boolean ignoreHiddenLayerCombo;
 
+	private Sidebar sidebar;
+
 	/**
 	 * Create the frame.
 	 */
-	public TopologyPanel() {
+	public TopologyPanel(final JPanel parentSidebar) {
+		if (parentSidebar instanceof Sidebar == false) {
+			throw new IllegalArgumentException("parent should be Sidebar but is " + parentSidebar.getClass().getName());
+		}
+		sidebar = (Sidebar) parentSidebar;
 		setBorder(new TitledBorder(null, Settings.i18n.getString("sidebar.topology"), TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		// setSize(400, 240);
 		setPreferredSize(new Dimension(400, 342));
@@ -277,7 +289,36 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 		btnCreateNetwork.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
-				ac.doAction(Actions.CREATE_NETWORK, new PropertyChangeEvent(btnCreateNetwork, "createNetwork", 0, 1));
+				NetworkFactory factory = new NetworkFactory();
+				Network network = netConfig.getNetwork();
+				Integer inputNeurons = network.getInputSizeIgnoringBias();
+				Boolean inputBias = network.getInputLayer().hasBias();
+				Integer outputNeurons = network.getOutputSize();
+				List<Integer> hiddenNeuronList = new ArrayList<Integer>();
+				List<Boolean> hiddenBiasList = new ArrayList<Boolean>();
+
+				for (int i = 1; i <= network.getSizeOfHiddenLayers(); i++) {
+					hiddenNeuronList.add(network.getLayer(i).getNeurons().size());
+					hiddenBiasList.add(network.getLayer(i).hasBias());
+				}
+				String activationFunctionName = (String) sidebar.standardOptionsPanel.funktionToActivateCombo.getSelectedItem();
+				ActivationFunction activation = new SigmoidFunction();
+				Class<?> clazz;
+				try {
+					clazz = Class.forName(Neuron.functionPackage + "." + activationFunctionName);
+					activation = (ActivationFunction) clazz.newInstance();
+				} catch (Exception e) {
+					System.err.println("could not instantiate function with name: " + activationFunctionName);
+				}
+
+				NetConfig netConfig = factory.createNetwork(inputNeurons, inputBias, hiddenNeuronList, hiddenBiasList, outputNeurons,
+						activation);
+
+				boolean connectAll = sidebar.topolgyPanel.chckbxAllNeuronsBind.isSelected();
+				if (connectAll) {
+					netConfig.getNetwork().finalizeStructure();
+				}
+				Settings.getInstance().getCurrentSession().setNetworkConfig(netConfig);
 			}
 		});
 

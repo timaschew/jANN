@@ -30,7 +30,7 @@ public class Neuron {
 
 	private boolean bias;
 
-	private static String functionPackage = SigmoidFunction.class.getPackage().getName();
+	public static final String functionPackage = SigmoidFunction.class.getPackage().getName();
 
 	public Neuron(final ActivationFunction standardFunc, final double outputValue, final boolean bias) {
 		set(standardFunc, outputValue, bias);
