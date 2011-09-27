@@ -432,8 +432,10 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 		}
 
 		// input bias
-		boolean inputBias = netConfig.getNetwork().getInputLayer().hasBias();
-		inputBiasCB.setSelected(inputBias);
+		if (netConfig.getNetwork().getInputLayer() != null) {
+			boolean inputBias = netConfig.getNetwork().getInputLayer().hasBias();
+			inputBiasCB.setSelected(inputBias);
+		}
 
 		// update mouse mode
 		String selected = (String) comboBoxMouseModes.getSelectedItem();

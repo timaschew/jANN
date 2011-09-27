@@ -28,15 +28,19 @@ public class Layer {
 		if (layerWithBias && n.isBias()) {
 			throw new IllegalArgumentException("second bias neuron not allowed");
 		}
-		// TODO: neurons.size() !?!?!?
-		// error?
+		// set local index for layer scope
 		n.setLayerIndex(neurons.size());
-		neurons.add(0, n);
+
+		if (n.isBias()) {
+			// add bias neuron at first position an shift all others
+			neurons.add(0, n);
+			layerWithBias = true;
+		} else {
+			// add to the end
+			neurons.add(n);
+		}
 		if ((n.getLayer() != null && n.getLayer().equals(this)) == false) {
 			n.setLayer(this);
-		}
-		if (n.isBias()) {
-			layerWithBias = true;
 		}
 	}
 
