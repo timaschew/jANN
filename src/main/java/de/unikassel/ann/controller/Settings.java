@@ -18,6 +18,10 @@ import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import javax.swing.ButtonGroup;
+import javax.swing.JMenuItem;
+import javax.swing.JRadioButtonMenuItem;
+
 import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.io.NetIO;
@@ -101,6 +105,29 @@ public class Settings {
 		}
 		sessionList.add(session);
 		currentSession = session;
+		updateSesionInMenu();
+		updateCurrentSession();
+		return session;
+	}
+
+	/**
+	 * @param actionCommand
+	 */
+	public void loadSesson(final String sessionName) {
+		for (UserSession s : sessionList) {
+			if (s.getName().equals(sessionName)) {
+				currentSession = s;
+				updateCurrentSession();
+				return;
+			}
+		}
+		System.err.println("Session: " + sessionName + " nicht gefunden");
+	}
+
+	/**
+	 * 
+	 */
+	public void updateCurrentSession() {
 
 		// create new instances for jung and sidebar
 		// and update
@@ -116,7 +143,30 @@ public class Settings {
 			GraphController.getInstance().renderNetwork(currentSession.getNetworkConfig().getNetwork());
 		}
 		currentSession.getNetworkConfig().getNetwork().addPropertyChangeListener(GraphController.getInstance());
-		return session;
+
+	}
+
+	private void updateSesionInMenu() {
+		// skip, ignore first initial call
+		if (Main.instance == null) {
+			return;
+		}
+		Main.instance.mainMenu.subMenuSession.removeAll();
+		ButtonGroup group = new ButtonGroup();
+		// rbMenuItem = new JRadioButtonMenuItem("A radio button menu item");
+
+		for (UserSession s : sessionList) {
+			String name = s.getName();
+			JMenuItem mtSession = new JRadioButtonMenuItem(name);
+			mtSession.addActionListener(new ActionJMenuItem(name, Actions.CHANGE_BETWEEN_SESSIONS));
+			group.add(mtSession);
+			if (s.equals(currentSession)) {
+				mtSession.setSelected(true);
+			} else {
+				mtSession.setSelected(false);
+			}
+			Main.instance.mainMenu.subMenuSession.add(mtSession);
+		}
 	}
 
 	public void loadNetworkFromFile(final File file) {

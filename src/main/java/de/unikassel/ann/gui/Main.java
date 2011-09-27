@@ -9,9 +9,10 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
-import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextPane;
@@ -72,6 +73,7 @@ public class Main {
 	public SidebarSOM sidebarSom;
 	public JPanel _3DBoardPane;
 	private JPanel consoleOrChartPanel;
+	public MainMenu mainMenu;
 
 	/**
 	 * Create the application.
@@ -110,7 +112,7 @@ public class Main {
 		//
 		// Main Menu(Bar)
 		//
-		JMenuBar mainMenu = new MainMenu();
+		mainMenu = new MainMenu();
 		frame.setJMenuBar(mainMenu);
 
 		//
@@ -180,6 +182,12 @@ public class Main {
 		graphController.setDimension(dim);
 		graphController.setParent(jungPanel);
 		graphController.init();
+
+		ButtonGroup group = new ButtonGroup();
+		JRadioButtonMenuItem mtSession = new JRadioButtonMenuItem(Settings.getInstance().getCurrentSession().getName());
+		group.add(mtSession);
+		mtSession.setSelected(true);
+		mainMenu.subMenuSession.add(mtSession);
 
 	}
 
