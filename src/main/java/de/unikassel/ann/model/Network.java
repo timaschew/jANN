@@ -24,8 +24,6 @@ import de.unikassel.ann.model.func.SigmoidFunction;
  */
 public class Network extends BasicNetwork {
 
-	private PropertyChangeSupport pcs;
-
 	/**
 	 * Neuron or Synapse
 	 */
@@ -40,6 +38,8 @@ public class Network extends BasicNetwork {
 		INPUT, OUTPUT, HIDDEN
 	};
 
+	private PropertyChangeSupport pcs;
+	private List<PropertyChangeListener> listeners;
 	private Boolean finalyzed;
 	private NetConfig config;
 	private List<Neuron> flatNet;
@@ -49,6 +49,7 @@ public class Network extends BasicNetwork {
 	public Network() {
 		super();
 		pcs = new PropertyChangeSupport(this);
+		listeners = new ArrayList<PropertyChangeListener>();
 		synapseSet = new HashSet<Synapse>();
 		flatNet = new ArrayList<Neuron>();
 		synapseMatrix = new SynapseMatrix(this, null, null);
@@ -74,6 +75,7 @@ public class Network extends BasicNetwork {
 	 */
 	public void addPropertyChangeListener(final PropertyChangeListener listener) {
 		pcs.addPropertyChangeListener(listener);
+		listeners.add(listener);
 	}
 
 	/**
@@ -85,6 +87,7 @@ public class Network extends BasicNetwork {
 	 */
 	public void addPropertyChangeListener(final String propertyName, final PropertyChangeListener listener) {
 		pcs.addPropertyChangeListener(propertyName, listener);
+		listeners.add(listener);
 	}
 
 	public void finalizeFromFlatNet(final List<TopologyBean> topoBeanList, final List<SynapseBean> synapsesBanList) {
@@ -581,4 +584,13 @@ public class Network extends BasicNetwork {
 		return sb.toString();
 	}
 
+	/**
+	 * 
+	 */
+	public void removeAllPropertyChangeListeners() {
+		for (PropertyChangeListener l : listeners) {
+			pcs.removePropertyChangeListener(l);
+		}
+		listeners.clear();
+	}
 }

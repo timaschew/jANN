@@ -24,10 +24,8 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import de.unikassel.ann.controller.GraphController;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.io.NetIO;
-import de.unikassel.ann.model.UserSession;
 
 public class ImportFilePanel extends JDialog {
 
@@ -122,9 +120,8 @@ public class ImportFilePanel extends JDialog {
 					JFrame frame = new JFrame();
 					JOptionPane.showMessageDialog(frame, "Sie haben keine Datei ausgewählt", "Warnung", JOptionPane.WARNING_MESSAGE);
 				} else {
-					UserSession session = Settings.getInstance().getCurrentSession();
-					session.loadNetworkFromFile(fileopen.getSelectedFile(), topologieCB.isSelected(), synapseCB.isSelected(),
-							trainigDataCB.isSelected());
+					Settings.getInstance().loadNetworkFromFile(fileopen.getSelectedFile(), topologieCB.isSelected(),
+							synapseCB.isSelected(), trainigDataCB.isSelected());
 					dispose();
 				}
 

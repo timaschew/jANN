@@ -53,6 +53,7 @@ public class GraphController implements PropertyChangeListener {
 
 	private Dimension dim;
 	private Container parent;
+	private boolean init;
 
 	private static GraphController instance;
 
@@ -98,6 +99,11 @@ public class GraphController implements PropertyChangeListener {
 		//
 		initGraphMouse();
 		// addMouseModeMenu();
+		init = true;
+	}
+
+	public boolean isInitialized() {
+		return init;
 	}
 
 	/*

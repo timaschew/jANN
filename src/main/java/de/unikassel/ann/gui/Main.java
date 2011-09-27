@@ -29,6 +29,7 @@ import de.unikassel.ann.controller.GraphController;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.gui.sidebar.Sidebar;
 import de.unikassel.ann.gui.sidebar.SidebarSOM;
+import de.unikassel.ann.model.Network;
 
 public class Main {
 
@@ -180,12 +181,14 @@ public class Main {
 		graphController.setParent(jungPanel);
 		graphController.init();
 
-		Settings.getInstance().getCurrentSession().getNetworkConfig().getNetwork().addPropertyChangeListener(sidebar.topolgyPanel);
 	}
 
 	public void initSidebarPanel() {
-		// SideConfigurationPanel sideBar = new SideConfigurationPanel();
 		sidebar = new Sidebar();
+		Network net = Settings.getInstance().getCurrentSession().getNetworkConfig().getNetwork();
+		// old listeners are already removed in UserSession constructor
+		net.addPropertyChangeListener(Network.PropertyChanges.NEURONS.name(), sidebar.topolgyPanel);
+
 		// Provide minimum sizes for the components in the split pane
 		sidebar.setMinimumSize(new Dimension(435, 50));
 		mainSplitPane.setRightComponent(sidebar);

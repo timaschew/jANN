@@ -106,6 +106,6 @@
 	<entry key="graph.mouse.createVertexHidden">Hidden Neuron hinzufügen</entry>
 	<entry key="graph.mouse.createVertexHiddenWithLayer">Hidden Neuron hinzufügen (Layer %d)</entry>
 	<entry key="graph.mouse.HiddenLayer">Hidden Layer %d</entry>
-	
+	<entry key="session.initial.name">Neu</entry>
 	
 </properties>

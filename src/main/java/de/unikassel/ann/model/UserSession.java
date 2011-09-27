@@ -7,16 +7,10 @@
  */
 package de.unikassel.ann.model;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Set;
 import java.util.TreeSet;
 
 import de.unikassel.ann.config.NetConfig;
-import de.unikassel.ann.controller.GraphController;
-import de.unikassel.ann.controller.Settings;
-import de.unikassel.ann.gui.Main;
-import de.unikassel.ann.io.NetIO;
 
 /**
  * @author anton
@@ -35,12 +29,13 @@ public class UserSession {
 	 * 
 	 * @param name
 	 */
-	public UserSession(final String name) {
+	public UserSession(final String name, final NetConfig cfg) {
 		initName(name);
-		config = new NetConfig();
-
-		// Add GraphController as listener
-		config.getNetwork().addPropertyChangeListener(GraphController.getInstance());
+		if (cfg == null) {
+			config = new NetConfig();
+		} else {
+			config = cfg;
+		}
 
 		// TODO add sidebar as listener
 		// not at this time, it does not exist at this time!
@@ -53,11 +48,16 @@ public class UserSession {
 	 * @param name
 	 */
 	private void initName(final String name) {
+		String realName;
+		if (name == null) {
+			realName = "Session";
+		} else {
+			realName = name;
+		}
 		if (names == null) {
 			names = new TreeSet<String>();
 		}
 		int count = 1;
-		String realName = name;
 		while (names.contains(realName)) {
 			realName = name + "(" + count + ")";
 			count++;
@@ -78,44 +78,19 @@ public class UserSession {
 		return config;
 	}
 
-	/**
-	 * @param config
-	 *            the config to set
-	 */
-	public void setNetworkConfig(final NetConfig config) {
-		this.config = config;
-	}
-
-	public void loadNetworkFromFile(final File file) {
-		loadNetworkFromFile(file, true, true, true);
-	}
-
-	/**
-	 * @param file
-	 * @param training
-	 * @param synapse
-	 * @param topo
-	 */
-	public void loadNetworkFromFile(final File file, final boolean topo, final boolean synapse, final boolean training) {
-		NetIO reader = new NetIO();
-		try {
-			reader.readConfigFile(file);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (ClassNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		NetConfig netConfig = reader.generateNetwork(topo, synapse, training);
-		if (topo) {
-			Settings.getInstance().createNewSession(file.getName());
-		}
-
-		Settings.getInstance().getCurrentSession().setNetworkConfig(netConfig);
-		GraphController.getInstance().renderNetwork(netConfig.getNetwork());
-		Main.instance.initSidebarPanel();
-
-	}
+	// /**
+	// * @param config
+	// * the config to set
+	// */
+	// public void setNetworkConfig(final NetConfig config) {
+	// NetConfig oldConfig = this.config;
+	// oldConfig.getNetwork().removeAllPropertyChangeListeners();
+	// this.config = config;
+	// GraphController.getInstance().reset();
+	// config.getNetwork().addPropertyChangeListener(GraphController.getInstance());
+	// config.getNetwork().addPropertyChangeListener(Network.PropertyChanges.NEURONS.name(), Main.instance.sidebar.topolgyPanel);
+	// GraphController.getInstance().renderNetwork(config.getNetwork());
+	// Main.instance.sidebar.topolgyPanel.update();
+	// }
 
 }

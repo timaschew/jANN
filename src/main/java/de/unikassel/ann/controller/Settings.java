@@ -7,6 +7,7 @@
  */
 package de.unikassel.ann.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormatSymbols;
@@ -17,6 +18,9 @@ import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import de.unikassel.ann.config.NetConfig;
+import de.unikassel.ann.gui.Main;
+import de.unikassel.ann.io.NetIO;
 import de.unikassel.ann.model.UserSession;
 import de.unikassel.ann.util.XMLResourceBundleControl;
 
@@ -81,19 +85,65 @@ public class Settings {
 
 		sessionList = new ArrayList<UserSession>();
 
-		createNewSession("Session");
+		createNewSession(getI18n("session.initial.name"));
 	}
 
 	public UserSession createNewSession(final String name) {
+		return createNewSession(name, null);
+	}
+
+	public UserSession createNewSession(final String name, final NetConfig cfg) {
 		UserSession session = null;
 		if (name != null) {
-			session = new UserSession(name);
+			session = new UserSession(name, cfg);
 		} else {
-			session = new UserSession("Neu");
+			session = new UserSession(getI18n("session.initial.name"), cfg);
 		}
 		sessionList.add(session);
 		currentSession = session;
+
+		// create new instances for jung and sidebar
+		// and update
+
+		currentSession.getNetworkConfig().getNetwork().removeAllPropertyChangeListeners();
+		if (Main.instance != null) {
+			Main.instance.initSidebarPanel();
+		}
+
+		// Add GraphController as listener
+		if (GraphController.getInstance().isInitialized()) {
+			GraphController.getInstance().reset();
+			GraphController.getInstance().renderNetwork(currentSession.getNetworkConfig().getNetwork());
+		}
+		currentSession.getNetworkConfig().getNetwork().addPropertyChangeListener(GraphController.getInstance());
 		return session;
+	}
+
+	public void loadNetworkFromFile(final File file) {
+		loadNetworkFromFile(file, true, true, true);
+	}
+
+	/**
+	 * @param file
+	 * @param training
+	 * @param synapse
+	 * @param topo
+	 */
+	public void loadNetworkFromFile(final File file, final boolean topo, final boolean synapse, final boolean training) {
+		NetIO reader = new NetIO();
+		try {
+			reader.readConfigFile(file);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		NetConfig netConfig = reader.generateNetwork(topo, synapse, training);
+		if (topo) {
+			Settings.getInstance().createNewSession(file.getName(), netConfig);
+		}
 	}
 
 	public List<UserSession> getUserSessions() {

@@ -221,9 +221,7 @@ public class MainMenu extends JMenuBar {
 				GraphController.getInstance().reset();
 
 				// Reset Sidebar
-				Settings.getInstance().createNewSession("Session");
-				Main.instance.initSidebarPanel();
-				// sidebarModel.reset();
+				Settings.getInstance().createNewSession(Settings.getI18n("session.initial.name"));
 
 				break;
 			case IMPORT:
@@ -313,20 +311,20 @@ public class MainMenu extends JMenuBar {
 	 */
 	private void loadNetworkFromFile(final String name) {
 		String curDir = System.getProperty("user.dir");
-		UserSession session = Settings.getInstance().getCurrentSession();
+		Settings settings = Settings.getInstance();
 		File importFile;
 		if (name.equals("or") || name.equals("net_cfg_or.csv")) {
 			importFile = new File(curDir + "/src/test/resources/net_cfg_or.csv");
-			session.loadNetworkFromFile(importFile);
+			settings.loadNetworkFromFile(importFile);
 		} else if (name.equals("xor") || name.equals("net_cfg.csv")) {
 			importFile = new File(curDir + "/src/test/resources/net_cfg.csv");
-			session.loadNetworkFromFile(importFile);
+			settings.loadNetworkFromFile(importFile);
 		} else if (name.equals("and")) {
 			importFile = new File(curDir + "/src/test/resources/net_cfg_and.csv");
-			session.loadNetworkFromFile(importFile);
+			settings.loadNetworkFromFile(importFile);
 		} else if (name.equals("2-bit-addierer")) {
 			importFile = new File(curDir + "/src/test/resources/net_cfg_2BitAddierer.csv");
-			session.loadNetworkFromFile(importFile);
+			settings.loadNetworkFromFile(importFile);
 		}
 		addToMenu();
 	}

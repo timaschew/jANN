@@ -275,6 +275,9 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 		mouseModusPanel.setLayout(gl_mouseModusPanel);
 		setLayout(gl_topologiePanel);
 
+		// update netConfig
+		netConfig = Settings.getInstance().getCurrentSession().getNetworkConfig();
+
 		initActions();
 	}
 
@@ -315,7 +318,6 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 				if (connectAll) {
 					netConfig.getNetwork().finalizeStructure();
 				}
-				Settings.getInstance().getCurrentSession().setNetworkConfig(netConfig);
 			}
 		});
 
@@ -351,11 +353,12 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 				if (selectedHiddenLayer == null || ignoreHiddenLayerCombo) {
 					return; // the hiddenLayerDropDown are clearing
 				}
-				int hiddenLayerSize = netConfig.getNetwork().getTotalLayerSize(selectedHiddenLayer);
-				hiddenNeuronSpinner.setValue(hiddenLayerSize);
+				Layer layer = netConfig.getNetwork().getLayer(selectedHiddenLayer);
+				// ignore bias neuron for size
+				int sizeForSelectedHiddenLayer = layer.getNeurons().size() - (layer.hasBias() ? 1 : 0);
+				hiddenNeuronSpinner.setValue(sizeForSelectedHiddenLayer);
 
 				// update hidden bias
-				Layer layer = netConfig.getNetwork().getLayer(selectedHiddenLayer);
 				hiddenBiasCB.setSelected(layer.hasBias());
 			}
 		});
@@ -386,31 +389,10 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 			public void propertyChange(final PropertyChangeEvent evt) {
 				netConfig.getNetwork().setSizeOfHiddenLayers((Integer) evt.getNewValue());
 				Integer oldSelected = (Integer) hiddenLayerComboModel.getSelectedItem();
+				refreshHiddenLayerCombo(oldSelected);
 
-				ignoreHiddenLayerCombo = true;
-				hiddenLayerComboModel.removeAllElements(); // prepare for adding new
-
-				// Integer hiddenLayers = (Integer) hiddenLayerCountSpinner.getValue(); // that is not the model
-				int hiddenLayers = netConfig.getNetwork().getSizeOfHiddenLayers();
-				if (hiddenLayers > 0) {
-					// start with 1 (its the index for the first hidden layer)
-					for (int i = 1; i <= hiddenLayers; i++) {
-						hiddenLayerComboModel.addElement(new Integer(i));
-					}
-					// try to set the old value, if not exist, try to set previous layer
-					if (oldSelected != null) { // first initializing time
-						while (oldSelected >= 1) {
-							hiddenLayerDropDown.setSelectedItem(oldSelected);
-							if (hiddenLayerDropDown.getSelectedItem().equals(oldSelected)) {
-								break;
-							}
-							oldSelected--;
-						}
-					}
-				}
-
-				ignoreHiddenLayerCombo = false;
 			}
+
 		});
 
 		// Output Neuronen
@@ -429,15 +411,41 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 		update();
 	}
 
+	private void refreshHiddenLayerCombo(Integer oldSelected) {
+		ignoreHiddenLayerCombo = true;
+		hiddenLayerComboModel.removeAllElements(); // prepare for adding new
+
+		int hiddenLayers = netConfig.getNetwork().getSizeOfHiddenLayers();
+		if (hiddenLayers > 0) {
+			// start with 1 (its the index for the first hidden layer)
+			for (int i = 1; i <= hiddenLayers; i++) {
+				hiddenLayerComboModel.addElement(new Integer(i));
+			}
+			// try to set the old value, if not exist, try to set previous layer
+			if (oldSelected != null) { // first initializing time
+				while (oldSelected >= 1) {
+					hiddenLayerDropDown.setSelectedItem(oldSelected);
+					if (hiddenLayerDropDown.getSelectedItem().equals(oldSelected)) {
+						break;
+					}
+					oldSelected--;
+				}
+			}
+		}
+		ignoreHiddenLayerCombo = false;
+	}
+
 	/**
 	 * Updates the components
 	 */
-	private void update() {
+	public void update() {
 		// update hdiden layer dependect components
 		// selected hidden layer, hidden bias checkbox,
 		// neuron spinner for selected hidden layer
 
+		// update hidden layer count
 		Integer hiddenLayers = netConfig.getNetwork().getSizeOfHiddenLayers();
+		hiddenLayerCountSpinner.setValue(hiddenLayers);
 
 		if (hiddenLayers > 0) {
 			hiddenLayerDropDown.setEnabled(true);
@@ -457,8 +465,15 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 		int outputSize = netConfig.getNetwork().getOutputSize();
 		outputNeuroSpinner.setValue(outputSize);
 
-		// update hidden neurons
+		// update hidden neuron combobox
 		Integer selectedHiddenLayer = (Integer) hiddenLayerDropDown.getSelectedItem();
+		// if network was importet, the hiddenLayerDropDown is null, but there are some hidden neurons!
+		if (selectedHiddenLayer == null && hiddenLayers > 0) {
+			refreshHiddenLayerCombo(null);
+			selectedHiddenLayer = (Integer) hiddenLayerDropDown.getSelectedItem();
+		}
+
+		// update hidden neuron spinner
 		if (selectedHiddenLayer != null) {
 			Layer layer = netConfig.getNetwork().getLayer(selectedHiddenLayer);
 			// ignore bias neuron for size
@@ -477,29 +492,31 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 
 		// update mouse mode
 		String selected = (String) comboBoxMouseModes.getSelectedItem();
-		if (selected.equals("Picking")) {
-			GraphController.getInstance().graphMouse.setMode(Mode.PICKING);
-			mouseHiddenRB.setEnabled(false);
-			mouseInputRB.setEnabled(false);
-			comboBoxHiddenMausModus.setEnabled(false);
-			mouseOutputRB.setEnabled(false);
-		} else if (selected.equals("Editing")) {
-			GraphController.getInstance().graphMouse.setMode(Mode.EDITING);
-			if (hiddenLayers > 0) {
-				mouseHiddenRB.setEnabled(true);
-				comboBoxHiddenMausModus.setEnabled(true);
-			} else {
+		if (GraphController.getInstance().isInitialized()) {
+			if (selected.equals("Picking")) {
+				GraphController.getInstance().graphMouse.setMode(Mode.PICKING);
+				mouseHiddenRB.setEnabled(false);
+				mouseInputRB.setEnabled(false);
+				comboBoxHiddenMausModus.setEnabled(false);
+				mouseOutputRB.setEnabled(false);
+			} else if (selected.equals("Editing")) {
+				GraphController.getInstance().graphMouse.setMode(Mode.EDITING);
+				if (hiddenLayers > 0) {
+					mouseHiddenRB.setEnabled(true);
+					comboBoxHiddenMausModus.setEnabled(true);
+				} else {
+					mouseHiddenRB.setEnabled(false);
+					comboBoxHiddenMausModus.setEnabled(false);
+				}
+				mouseInputRB.setEnabled(true);
+				mouseOutputRB.setEnabled(true);
+			} else if (selected.equals("Transforming")) {
+				GraphController.getInstance().graphMouse.setMode(Mode.TRANSFORMING);
 				mouseHiddenRB.setEnabled(false);
 				comboBoxHiddenMausModus.setEnabled(false);
+				mouseInputRB.setEnabled(false);
+				mouseOutputRB.setEnabled(false);
 			}
-			mouseInputRB.setEnabled(true);
-			mouseOutputRB.setEnabled(true);
-		} else if (selected.equals("Transforming")) {
-			GraphController.getInstance().graphMouse.setMode(Mode.TRANSFORMING);
-			mouseHiddenRB.setEnabled(false);
-			comboBoxHiddenMausModus.setEnabled(false);
-			mouseInputRB.setEnabled(false);
-			mouseOutputRB.setEnabled(false);
 		}
 
 		System.out.println(netConfig.getNetwork().getLayers());
