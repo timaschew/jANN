@@ -24,6 +24,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import de.unikassel.ann.controller.GraphController;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.io.NetIO;
 import de.unikassel.ann.model.UserSession;

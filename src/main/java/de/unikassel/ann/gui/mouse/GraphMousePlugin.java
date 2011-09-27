@@ -162,6 +162,7 @@ public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements 
 			edgeIsDirected = EdgeType.UNDIRECTED;
 			vv.removePostRenderPaintable(edgePaintable);
 			vv.removePostRenderPaintable(arrowPaintable);
+			GraphController.getInstance().repaint();
 		}
 	}
 

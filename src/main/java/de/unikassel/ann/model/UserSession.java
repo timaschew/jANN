@@ -24,8 +24,6 @@ import de.unikassel.ann.io.NetIO;
  */
 public class UserSession {
 
-	public SidebarModel sidebarModel;
-
 	private String name;
 
 	private NetConfig config;
@@ -39,14 +37,13 @@ public class UserSession {
 	 */
 	public UserSession(final String name) {
 		initName(name);
-		sidebarModel = new SidebarModel();
 		config = new NetConfig();
 
 		// Add GraphController as listener
 		config.getNetwork().addPropertyChangeListener(GraphController.getInstance());
 
 		// TODO add sidebar as listener
-
+		// not at this time, it does not exist at this time!
 	}
 
 	/**
@@ -116,7 +113,7 @@ public class UserSession {
 		}
 
 		Settings.getInstance().getCurrentSession().setNetworkConfig(netConfig);
-		Main.instance.getGraphLayoutViewer().renderNetwork(netConfig.getNetwork());
+		GraphController.getInstance().renderNetwork(netConfig.getNetwork());
 		Main.instance.initSidebarPanel();
 
 	}

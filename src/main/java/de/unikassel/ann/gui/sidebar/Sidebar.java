@@ -49,7 +49,7 @@ public class Sidebar extends JPanel {
 		wrapper.setLayout(gbl_wrapper);
 
 		// topology Panel
-		topolgyPanel = new TopologyPanel();
+		topolgyPanel = new TopologyPanel(this);
 		GridBagConstraints gbc_topolgyPanel = new GridBagConstraints();
 		gbc_topolgyPanel.anchor = GridBagConstraints.NORTH;
 		gbc_topolgyPanel.fill = GridBagConstraints.HORIZONTAL;

@@ -55,6 +55,22 @@ public class EdgeController<E> {
 		setEdgePickedListener();
 	}
 
+	/**
+	 * Clear picked state and reset the factory.
+	 */
+	public void clear() {
+		edgePickedState.clear();
+		edgeFactory.reset();
+	}
+
+	/**
+	 * Reset controller to its initial state.
+	 */
+	public void reset() {
+		clear();
+		edgeMap.getMap().clear();
+	}
+
 	public EdgeFactory getEdgeFactory() {
 		return edgeFactory;
 	}
@@ -78,6 +94,7 @@ public class EdgeController<E> {
 	 */
 	private void setEdgeStroke() {
 		EdgeWeightStroke<Edge> ews = new EdgeWeightStroke<Edge>();
+		// ews.setWeighted(true);
 		renderContext.setEdgeStrokeTransformer(ews);
 	}
 
@@ -165,7 +182,6 @@ public class EdgeController<E> {
 		protected boolean weighted = false;
 
 		public EdgeWeightStroke() {
-			this.weighted = true;
 		}
 
 		public void setWeighted(final boolean weighted) {
@@ -175,22 +191,21 @@ public class EdgeController<E> {
 		@Override
 		public Stroke transform(final Edge e) {
 			if (weighted) {
-				if (drawHeavy(e)) {
-					return heavy;
-				}
-				return dotted;
+				return drawWeighted(e);
 			}
 			return basic;
 		}
 
-		protected boolean drawHeavy(final Edge e) {
+		protected Stroke drawWeighted(final Edge e) {
 			Synapse model = e.getModel();
 			if (model == null) {
-				return false;
+				return basic;
 			}
-			double value = model.getWeight();
-			return value > 0.7;
+			// stroke width depends on the edges weight
+			double weight = model.getWeight();
+			return new BasicStroke((float) weight);
 		}
 
 	}
+
 }

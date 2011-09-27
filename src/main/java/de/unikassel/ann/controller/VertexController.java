@@ -60,6 +60,22 @@ public class VertexController<V> {
 		setVertexPickListener();
 	}
 
+	/**
+	 * Clear picked state and reset the factory.
+	 */
+	public void clear() {
+		vertexPickedState.clear();
+		vertexFactory.reset();
+		vertexMap.clear();
+	}
+
+	/**
+	 * Reset controller to its initial state.
+	 */
+	public void reset() {
+		clear();
+	}
+
 	public VertexFactory getVertexFactory() {
 		return vertexFactory;
 	}
@@ -252,4 +268,5 @@ public class VertexController<V> {
 			return v.toString();
 		}
 	}
+
 }

@@ -40,6 +40,7 @@ public class SomNetwork extends BasicNetwork {
 		neuronIdCounter = 0;
 		inputLayerSize = inputSize;
 		inputLayer = new Layer();
+		inputLayer.setNet(this);
 		addLayer(inputLayer);
 		outputLayer = new Layer();
 		addLayer(outputLayer);

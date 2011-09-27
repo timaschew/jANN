@@ -62,7 +62,7 @@ public class SideConfigurationPanel extends JTabbedPane {
 		setMnemonicAt(0, KeyEvent.VK_1);
 		panelTab1.setLayout(new GridBagLayout());
 
-		TopologyPanel topologiePanel = new TopologyPanel();
+		TopologyPanel topologiePanel = new TopologyPanel(new Sidebar());
 		GridBagConstraints gbc_topologiePanel = new GridBagConstraints();
 		gbc_topologiePanel.fill = GridBagConstraints.HORIZONTAL;
 		gbc_topologiePanel.gridx = 0;

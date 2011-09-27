@@ -218,7 +218,7 @@ public class MainMenu extends JMenuBar {
 				// Create a new Session
 
 				// Clear Graph
-				GraphController.getInstance().clear();
+				GraphController.getInstance().reset();
 
 				// Reset Sidebar
 				Settings.getInstance().createNewSession("Session");

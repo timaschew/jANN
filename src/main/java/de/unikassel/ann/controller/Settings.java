@@ -80,6 +80,7 @@ public class Settings {
 		decimalSymbols = DecimalFormatSymbols.getInstance(locale);
 
 		sessionList = new ArrayList<UserSession>();
+
 		createNewSession("Session");
 	}
 

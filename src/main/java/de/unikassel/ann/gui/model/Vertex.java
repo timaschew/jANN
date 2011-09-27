@@ -4,10 +4,8 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 import de.unikassel.ann.controller.Settings;
-import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.Synapse;
-import de.unikassel.ann.model.UserSession;
 
 public class Vertex implements Comparable<Vertex> {
 
@@ -34,15 +32,15 @@ public class Vertex implements Comparable<Vertex> {
 		model = new Neuron(activateFunc, bias);
 	}
 
-	/**
-	 * Vertex setup. Sets the current sidebar config values to the layer and add it to the layercontroller.
-	 */
-	public void setup() {
-		// Get current selected layer index from the sidebar
-		UserSession currentSession = Settings.getInstance().getCurrentSession();
-		int layerIndex = currentSession.sidebarModel.getMouseInsertLayer();
-		setup(layerIndex);
-	}
+	// /**
+	// * Vertex setup. Sets the current sidebar config values to the layer and add it to the layercontroller.
+	// */
+	// public void setup() {
+	// // Get current selected layer index from the sidebar
+	// UserSession currentSession = Settings.getInstance().getCurrentSession();
+	// int layerIndex = currentSession.sidebarModel.getMouseInsertLayer();
+	// setup(layerIndex);
+	// }
 
 	public void setup(final int layerIndex) {
 		// // LayerController<Layer> layerController = LayerController.getInstance();
@@ -100,12 +98,13 @@ public class Vertex implements Comparable<Vertex> {
 		return model;
 	}
 
-	public void setLayer(final int index) {
-		// TODO Get layer by its index
-		Layer layer = new Layer();
-		layer.setIndex(index);
-		model.setLayer(layer);
-	}
+	// public void setLayer(final int index) {
+	// // TODO Get layer by its index
+	// ! when you crate a a layer you have to call layer.setNetowrk(network); !
+	// Layer layer = new Layer();
+	// layer.setIndex(index);
+	// model.setLayer(layer);
+	// }
 
 	public int getLayer() {
 		if (model == null) {
@@ -166,7 +165,7 @@ public class Vertex implements Comparable<Vertex> {
 	public boolean hasEdgeTo(final Vertex toVertex) {
 		List<Synapse> outgoingSynapses = getModel().getOutgoingSynapses();
 		for (Synapse synapse : outgoingSynapses) {
-			if (synapse.getToNeuron().equals(toVertex.getModel())) {
+			if (synapse.getToNeuron().getId() == toVertex.getModel().getId()) {
 				return true;
 			}
 		}

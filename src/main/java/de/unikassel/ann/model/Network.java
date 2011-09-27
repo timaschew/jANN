@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import de.unikassel.ann.config.NetConfig;
+import de.unikassel.ann.controller.EdgeController;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.io.beans.SynapseBean;
 import de.unikassel.ann.io.beans.TopologyBean;
@@ -44,7 +45,6 @@ public class Network extends BasicNetwork {
 	private List<Neuron> flatNet;
 	private Set<Synapse> synapseSet;
 	private SynapseMatrix synapseMatrix;
-	private int globalNeuronId = 0;
 
 	public Network() {
 		super();
@@ -55,9 +55,13 @@ public class Network extends BasicNetwork {
 		finalyzed = false;
 	}
 
+	public PropertyChangeSupport getPCS() {
+		return pcs;
+	}
+
 	/**
 	 * Wrapper to ease the access to the network stored in the current session.<br>
-	 * NOTE: Be sure to use and call this method only if there is a network initiated!
+	 * NOTE: Be sure to use and call this method only if there is a network and session initiated!
 	 * 
 	 * @return
 	 */
@@ -196,38 +200,36 @@ public class Network extends BasicNetwork {
 
 	public void addInputNeuron() {
 		int layerSize = 0;
-		if (!layers.isEmpty()) {
+		if (getInputLayer() != null) {
 			// input layer exists
-			layerSize = layers.get(0).getNeurons().size();
+			layerSize = getInputLayer().getNeurons().size();
 		}
 		setInputLayerSize(layerSize + 1);
 	}
 
 	public void removeInputNeuron() {
 		int layerSize = 0;
-		if (!layers.isEmpty()) {
+		if (getInputLayer() != null) {
 			// input layer exists
-			layerSize = layers.get(0).getNeurons().size();
+			layerSize = getInputLayer().getNeurons().size();
 		}
 		setInputLayerSize(layerSize - 1);
 	}
 
 	public void addOutputNeuron() {
 		int layerSize = 0;
-		// TODO is this check correct? What when there are an input and a hidden layer but no output layer?
-		if (layers.size() > 1) {
+		if (getOutputLayer() != null) {
 			// output layer exists
-			layerSize = layers.get(layers.size() - 1).getNeurons().size();
+			layerSize = getOutputLayer().getNeurons().size();
 		}
 		setOuputLayerSize(layerSize + 1);
 	}
 
 	public void removeOutputNeuron() {
 		int layerSize = 0;
-		// TODO is this check correct? What when there are an input and a hidden layer but no output layer?
-		if (layers.size() > 1) {
+		if (getOutputLayer() != null) {
 			// output layer exists
-			layerSize = layers.get(layers.size() - 1).getNeurons().size();
+			layerSize = getOutputLayer().getNeurons().size();
 		}
 		setOuputLayerSize(layerSize - 1);
 	}
@@ -250,12 +252,21 @@ public class Network extends BasicNetwork {
 		}
 	}
 
+	public void setInputSizeIgnoringBias(final int inputSize) {
+		boolean hasBias = false;
+		if (getInputLayer() != null) {
+			hasBias = getInputLayer().hasBias();
+		}
+		setInputLayerSize(inputSize + (hasBias ? 1 : 0));
+	}
+
 	public void setInputLayerSize(final int inputSize) {
 		ActivationFunction function = getStandardFunction();
 		if (layers.isEmpty()) {
 			// add input layer
 			Layer inputLayer = new Layer();
 			inputLayer.setIndex(0);
+			inputLayer.setNet(this);
 			layers.add(inputLayer);
 		}
 		Layer inputLayer = layers.get(0);
@@ -270,6 +281,9 @@ public class Network extends BasicNetwork {
 	 * @param outputSize
 	 */
 	public void setOuputLayerSize(final int outputSize) {
+		if (outputSize < 0) {
+			return;
+		}
 		ActivationFunction function = getStandardFunction();
 		if (layers.isEmpty()) {
 			// add input layer
@@ -279,6 +293,7 @@ public class Network extends BasicNetwork {
 			// add output layer
 			Layer outputLayer = new Layer();
 			outputLayer.setIndex(1);
+			outputLayer.setNet(this);
 			layers.add(outputLayer);
 		}
 		Layer outputLayer = layers.get(layers.size() - 1);
@@ -287,12 +302,22 @@ public class Network extends BasicNetwork {
 		pcs.firePropertyChange(PropertyChanges.NEURONS.name(), oldValue, outputSize);
 	}
 
+	public int getSizeOfHiddenLayers() {
+		if (layers.size() > 2) {
+			return layers.size() - 2;
+		}
+		return 0;
+	}
+
 	/**
 	 * Creates input and output with 1 neuron, if not already exist
 	 * 
 	 * @param hiddenLayerCount
 	 */
 	public void setSizeOfHiddenLayers(final int hiddenLayerCount) {
+		if (hiddenLayerCount < 0) {
+			return;
+		}
 		if (layers.isEmpty()) {
 			// add input layer
 			setInputLayerSize(1);
@@ -310,9 +335,22 @@ public class Network extends BasicNetwork {
 			for (int i = 0; i < diff; i++) {
 				int index = layers.size() - 1; // old output index = new hidden index
 				Layer hiddenLayer = new Layer();
+				hiddenLayer.setNet(this);
 				hiddenLayer.setIndex(index);
 				layers.add(index, hiddenLayer); // shift the output layer in the list
 				setHiddenLayerSize(index, 1); // initial size
+
+				// Remove the edges between the previous last hidden layer and the output layer
+				EdgeMap<Double> edgeMap = EdgeController.getInstance().getEdgeMap();
+				List<Neuron> outputNeurons = getOutputLayer().getNeurons();
+				for (Neuron n : outputNeurons) {
+					List<Synapse> incomingSynapses = n.getIncomingSynapses();
+					for (Synapse synapse : incomingSynapses) {
+						Integer fromId = synapse.getFromNeuron().getId();
+						Integer toId = synapse.getToNeuron().getId();
+						edgeMap.remove(new FromTo(fromId, toId));
+					}
+				}
 			}
 		} else {
 			// remove layers
@@ -327,8 +365,19 @@ public class Network extends BasicNetwork {
 		pcs.firePropertyChange(PropertyChanges.NEURONS.name(), oldValue, hiddenLayerCount);
 	}
 
+	public void setHiddenLayerSizeIgnoreingBias(final int layerIndex, final int layerSize) {
+		boolean hasBias = false;
+		if (getLayer(layerIndex) != null) {
+			hasBias = getLayer(layerIndex).hasBias();
+		}
+		setHiddenLayerSize(layerIndex, layerSize + (hasBias ? 1 : 0));
+	}
+
 	// TODO: can also used for input layer, is it good?
 	public void setHiddenLayerSize(final int layerIndex, final int layerSize) {
+		if (layerSize < 0) {
+			return;
+		}
 		ActivationFunction function = getStandardFunction();
 		// add only, if the layer already exist
 		// -1 because the the 2nd operand is index, not size
@@ -341,11 +390,14 @@ public class Network extends BasicNetwork {
 		pcs.firePropertyChange(PropertyChanges.NEURONS.name(), oldValue, new Integer(layerSize));
 	}
 
-	private void setLayerSize(final int inputSize, final ActivationFunction function, final Layer layer) {
+	private void setLayerSize(final int layerSize, final ActivationFunction function, final Layer layer) {
+		if (layerSize < 0) {
+			return;
+		}
 		int currentLayerSize = layer.getNeurons().size();
 		// positive -> add
 		// negative -> remove
-		int diff = inputSize - currentLayerSize;
+		int diff = layerSize - currentLayerSize;
 		if (diff == 0) {
 			return;
 		} else if (diff > 0) {
@@ -421,7 +473,9 @@ public class Network extends BasicNetwork {
 
 			// set flat net
 			for (Neuron n : l.getNeurons()) {
-				n.setId(flatNet.size());
+				if (n.getId() == -1) {
+					n.setId(flatNet.size());
+				}
 				flatNet.add(n);
 			}
 		}
@@ -525,10 +579,6 @@ public class Network extends BasicNetwork {
 		sb.append(layers.size());
 		sb.append(" layers");
 		return sb.toString();
-	}
-
-	public int getNextNeuronId() {
-		return globalNeuronId++;
 	}
 
 }
