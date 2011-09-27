@@ -28,12 +28,14 @@ public class Sidebar extends JPanel {
 	public TrainStrategyPanel trainStrategyPanel;
 	public StandardOptionsPanel standardOptionsPanel;
 	public SelectedSymbolPanel selectedSymbolsPanel;
+	public WorkPanel manualTestPanel;
 
 	/**
 	 * Create the panel.
 	 */
 	public Sidebar() {
 		setLayout(new BorderLayout());
+		setSize(412, 800);
 
 		JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.TOP);
 		tabbedPane.setBorder(null);
@@ -87,11 +89,35 @@ public class Sidebar extends JPanel {
 		scrollPane.getVerticalScrollBar().setUnitIncrement(100);
 
 		JPanel trainTabPanel = new JPanel();
+
+		JScrollPane scrollPaneTrain = new JScrollPane(trainTabPanel);
+		GridBagLayout gbl_trainTabPanel = new GridBagLayout();
+		gbl_trainTabPanel.columnWidths = new int[] { 407, 0 };
+		gbl_trainTabPanel.rowHeights = new int[] { 235, 350, 0 };
+		gbl_trainTabPanel.columnWeights = new double[] { 0.0, Double.MIN_VALUE };
+		gbl_trainTabPanel.rowWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
+		trainTabPanel.setLayout(gbl_trainTabPanel);
+
 		TrainControlPanel trainControlPanel = new TrainControlPanel();
-		trainTabPanel.add(trainControlPanel);
+		GridBagConstraints gbc_trainControlPanel = new GridBagConstraints();
+		gbc_trainControlPanel.anchor = GridBagConstraints.NORTHWEST;
+		gbc_trainControlPanel.insets = new Insets(0, 0, 5, 0);
+		gbc_trainControlPanel.gridx = 0;
+		gbc_trainControlPanel.gridy = 0;
+		trainTabPanel.add(trainControlPanel, gbc_trainControlPanel);
+
+		manualTestPanel = new WorkPanel();
+		GridBagConstraints gbc_manualTestPanel = new GridBagConstraints();
+		gbc_manualTestPanel.fill = GridBagConstraints.HORIZONTAL;
+		gbc_manualTestPanel.anchor = GridBagConstraints.NORTH;
+		gbc_manualTestPanel.insets = new Insets(0, 0, 5, 0);
+		gbc_manualTestPanel.gridx = 0;
+		gbc_manualTestPanel.gridy = 1;
+		trainTabPanel.add(manualTestPanel, gbc_manualTestPanel);
+		scrollPaneTrain.getVerticalScrollBar().setUnitIncrement(100);
 
 		tabbedPane.addTab("Konfiguration", null, scrollPane, null);
-		tabbedPane.addTab("Training", null, trainTabPanel, null);
+		tabbedPane.addTab("Training", null, scrollPaneTrain, null);
 
 		topolgyPanel.update();
 	}

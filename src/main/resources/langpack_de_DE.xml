@@ -5,14 +5,10 @@
 	<entry key="menu.file">Datei</entry>
 	<entry key="menu.file.new">Neu</entry>
 	<entry key="menu.file.import">Import</entry>
-	<entry key="menu.file.openRecent">Letzte Öffnen</entry>
 	<entry key="menu.file.export">Export</entry>
-	<entry key="menu.file.save">Speichern</entry>
 	<entry key="menu.file.closeCurrentsession">Aktuelle Session schließen</entry>
 	<entry key="menu.file.exit">Beenden</entry>
-	<entry key="menu.edit">Bearbeiten</entry>
-	<entry key="menu.edit.undo">Rückgängig</entry>
-	<entry key="menu.edit.redo">Wiederholen</entry>
+	<entry key="menu.file.submenu.sessions">Sessions</entry>
 	<entry key="menu.view">Ansicht</entry>
 	<entry key="menu.view.showTrainingError">Trainingsfehler anzeigen</entry>
 	<entry key="menu.view.showTrainingData">Trainingsdaten anzeigen</entry>

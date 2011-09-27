@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -22,7 +24,7 @@ public class MainMenu extends JMenuBar {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JMenu fileMenu;
-	public static final int SESSION_MAIN_MENU_POSITION = 6;
+	private JMenu subMenuSession;
 
 	/**
 	 * Constructor
@@ -39,9 +41,6 @@ public class MainMenu extends JMenuBar {
 	private void addMenus() {
 		initFileMenu();
 		this.add(fileMenu);
-
-		JMenu mnBearbeiten = getBearbeitenMenu();
-		this.add(mnBearbeiten);
 
 		JMenu mnAnsicht = getAnsichtMenu();
 		this.add(mnAnsicht);
@@ -69,11 +68,6 @@ public class MainMenu extends JMenuBar {
 		JMenuItem mntmImport = new ActionMenuItem(Settings.i18n.getString("menu.file.import"), Actions.IMPORT);
 		fileMenu.add(mntmImport);
 
-		JMenuItem mntmImportRecent = new ActionMenuItem(Settings.i18n.getString("menu.file.openRecent"), Actions.IMPORT_RECENT);
-		fileMenu.add(mntmImportRecent);
-
-		fileMenu.addSeparator();
-
 		JMenuItem mntmExport = new ActionMenuItem(Settings.i18n.getString("menu.file.export"), Actions.EXPORT);
 		fileMenu.add(mntmExport);
 
@@ -81,6 +75,8 @@ public class MainMenu extends JMenuBar {
 
 		// hier is the Position, if sessions exists
 		// addItemToMenu()
+		subMenuSession = new JMenu(Settings.i18n.getString("menu.file.submenu.sessions"));
+		fileMenu.add(subMenuSession);
 
 		fileMenu.addSeparator();
 
@@ -91,25 +87,6 @@ public class MainMenu extends JMenuBar {
 		JMenuItem mntmBeenden = new ActionMenuItem(Settings.i18n.getString("menu.file.exit"), Actions.EXIT);
 		mntmBeenden.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
 		fileMenu.add(mntmBeenden, -1);
-	}
-
-	/**
-	 * Edit menu
-	 * 
-	 * @return JMenu
-	 */
-	private JMenu getBearbeitenMenu() {
-		JMenu mnBearbeiten = new JMenu(Settings.i18n.getString("menu.edit"));
-
-		JMenuItem mntmUndo = new ActionMenuItem(Settings.i18n.getString("menu.edit.undo"), Actions.UNDO);
-		mntmUndo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, ActionEvent.CTRL_MASK));
-		mnBearbeiten.add(mntmUndo);
-
-		JMenuItem mntmRedo = new ActionMenuItem(Settings.i18n.getString("menu.edit.redo"), Actions.REDO);
-		mntmRedo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, ActionEvent.CTRL_MASK));
-		mnBearbeiten.add(mntmRedo);
-
-		return mnBearbeiten;
 	}
 
 	/**
@@ -227,10 +204,6 @@ public class MainMenu extends JMenuBar {
 			case IMPORT:
 				ImportFilePanel panel = new ImportFilePanel();
 				panel.setVisible(true);
-				break;
-			case IMPORT_RECENT:
-				// TODO
-				break;
 			case EXPORT:
 				ExportFilePanel export = new ExportFilePanel();
 				export.setVisible(true);
@@ -249,12 +222,6 @@ public class MainMenu extends JMenuBar {
 				// NetConfig netConfig = new NetConfig();
 				// Settings.getInstance().getCurrentSession().setNetworkConfig(netConfig);
 				// Main.instance.getGraphLayoutViewer().renderNetwork(netConfig.getNetwork());
-				break;
-			case UNDO:
-				// TODO
-				break;
-			case REDO:
-				// TODO
 				break;
 			case VIEW_DATA:
 				// TODO
@@ -280,13 +247,6 @@ public class MainMenu extends JMenuBar {
 			case LOAD_2_BIT_ADDIERER_NETWORK:
 				loadNetworkFromFile("2-bit-addierer");
 				break;
-			// case TEST_NETWORK:
-			// try {
-			// testNetwork();
-			// } catch (Exception ex) {
-			// ex.printStackTrace();
-			// }
-			// break;
 			case BACKPROPAGATION_VIEW:
 				Main.instance.addBackproSidebarPanel();
 				break;
@@ -310,28 +270,51 @@ public class MainMenu extends JMenuBar {
 	 * @param string
 	 */
 	private void loadNetworkFromFile(final String name) {
-		String curDir = System.getProperty("user.dir");
 		Settings settings = Settings.getInstance();
 		File importFile;
-		if (name.equals("or") || name.equals("net_cfg_or.csv")) {
-			importFile = new File(curDir + "/src/test/resources/net_cfg_or.csv");
-			settings.loadNetworkFromFile(importFile);
-		} else if (name.equals("xor") || name.equals("net_cfg.csv")) {
-			importFile = new File(curDir + "/src/test/resources/net_cfg.csv");
-			settings.loadNetworkFromFile(importFile);
+		if (name.equals("or")) {
+			try {
+				importFile = new File(new URI(MainMenu.class.getClassLoader().getResource("net_cfg_or.csv").toString()));
+				settings.loadNetworkFromFile(importFile);
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		} else if (name.equals("xor")) {
+			try {
+				importFile = new File(new URI(MainMenu.class.getClassLoader().getResource("net_cfg.csv").toString()));
+				settings.loadNetworkFromFile(importFile);
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 		} else if (name.equals("and")) {
-			importFile = new File(curDir + "/src/test/resources/net_cfg_and.csv");
-			settings.loadNetworkFromFile(importFile);
+			try {
+				importFile = new File(new URI(MainMenu.class.getClassLoader().getResource("net_cfg_and.csv").toString()));
+				settings.loadNetworkFromFile(importFile);
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 		} else if (name.equals("2-bit-addierer")) {
-			importFile = new File(curDir + "/src/test/resources/net_cfg_2BitAddierer.csv");
-			settings.loadNetworkFromFile(importFile);
+			try {
+				importFile = new File(new URI(MainMenu.class.getClassLoader().getResource("net_cfg_2BitAddierer.csv").toString()));
+				settings.loadNetworkFromFile(importFile);
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 		}
-		addToMenu();
+		addSessionToSubMenu();
 	}
 
-	public void addToMenu() {
+	public void addSessionToSubMenu() {
 		String name = Settings.getInstance().getCurrentSession().toString();
 		JMenuItem mtSession = new ActionMenuItem(name, Actions.CHANGE_BETWEEN_SESSIONS);
-		fileMenu.add(mtSession, SESSION_MAIN_MENU_POSITION);
+		subMenuSession.add(mtSession);
 	}
 }

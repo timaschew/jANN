@@ -369,6 +369,7 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
 				netConfig.getNetwork().setInputSizeIgnoringBias((Integer) evt.getNewValue());
+				WorkPanel test = new WorkPanel();
 			}
 		});
 
