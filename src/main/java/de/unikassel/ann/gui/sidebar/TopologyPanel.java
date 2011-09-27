@@ -26,6 +26,7 @@ import de.unikassel.ann.controller.ActionController;
 import de.unikassel.ann.controller.Actions;
 import de.unikassel.ann.controller.GraphController;
 import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.model.Layer;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse.Mode;
 
 public class TopologyPanel extends JPanel implements PropertyChangeListener {
@@ -291,8 +292,7 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				boolean newVal = inputBiasCB.isSelected();
-				ac.doAction(Actions.UPDATE_SIDEBAR_CONFIG_INPUT_BIAS_MODEL, new PropertyChangeEvent(inputBiasCB, "inputBias", !newVal,
-						newVal));
+				netConfig.getNetwork().getInputLayer().setBias(newVal);
 			}
 		});
 
@@ -301,8 +301,8 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				boolean newVal = hiddenBiasCB.isSelected();
-				ac.doAction(Actions.UPDATE_SIDEBAR_CONFIG_HIDDEN_BIAS_MODEL, new PropertyChangeEvent(hiddenBiasCB, "hiddenBias", !newVal,
-						newVal));
+				Integer selectedHiddenLayer = (Integer) hiddenLayerDropDown.getSelectedItem();
+				netConfig.getNetwork().getLayer(selectedHiddenLayer).setBias(newVal);
 			}
 		});
 
@@ -315,6 +315,10 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 				}
 				int hiddenLayerSize = netConfig.getNetwork().getTotalLayerSize(selectedHiddenLayer);
 				hiddenNeuronSpinner.setValue(hiddenLayerSize);
+
+				// update hidden bias
+				Layer layer = netConfig.getNetwork().getLayer(selectedHiddenLayer);
+				hiddenBiasCB.setSelected(layer.hasBias());
 			}
 		});
 
@@ -323,7 +327,7 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 		editor.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
-				netConfig.getNetwork().setInputLayerSize((Integer) evt.getNewValue());
+				netConfig.getNetwork().setInputSizeIgnoringBias((Integer) evt.getNewValue());
 			}
 		});
 
@@ -333,7 +337,7 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
 				Integer hiddenLayerIndex = (Integer) hiddenLayerDropDown.getSelectedItem();
-				netConfig.getNetwork().setHiddenLayerSize(hiddenLayerIndex, (Integer) evt.getNewValue());
+				netConfig.getNetwork().setHiddenLayerSizeIgnoreingBias(hiddenLayerIndex, (Integer) evt.getNewValue());
 			}
 		});
 
@@ -418,9 +422,18 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 		// update hidden neurons
 		Integer selectedHiddenLayer = (Integer) hiddenLayerDropDown.getSelectedItem();
 		if (selectedHiddenLayer != null) {
-			int sizeForSelectedHiddenLayer = netConfig.getNetwork().getLayer(selectedHiddenLayer).getNeurons().size();
+			Layer layer = netConfig.getNetwork().getLayer(selectedHiddenLayer);
+			// ignore bias neuron for size
+			int sizeForSelectedHiddenLayer = layer.getNeurons().size() - (layer.hasBias() ? 1 : 0);
 			hiddenNeuronSpinner.setValue(sizeForSelectedHiddenLayer);
+
+			// hidden bias
+			hiddenBiasCB.setSelected(layer.hasBias());
 		}
+
+		// input bias
+		boolean inputBias = netConfig.getNetwork().getInputLayer().hasBias();
+		inputBiasCB.setSelected(inputBias);
 
 		// update mouse mode
 		String selected = (String) comboBoxMouseModes.getSelectedItem();

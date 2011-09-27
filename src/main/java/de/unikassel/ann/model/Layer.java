@@ -2,7 +2,11 @@ package de.unikassel.ann.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
+
+import de.unikassel.ann.model.func.ActivationFunction;
+import de.unikassel.ann.model.func.SigmoidFunction;
 
 public class Layer {
 
@@ -27,7 +31,7 @@ public class Layer {
 		// TODO: neurons.size() !?!?!?
 		// error?
 		n.setLayerIndex(neurons.size());
-		neurons.add(n);
+		neurons.add(0, n);
 		if ((n.getLayer() != null && n.getLayer().equals(this)) == false) {
 			n.setLayer(this);
 		}
@@ -84,9 +88,6 @@ public class Layer {
 
 	public void setNet(final BasicNetwork net) {
 		network = net;
-		if (net.getLayers().contains(this) == false) {
-			throw new IllegalAccessError("should use addLayer() in Network class");
-		}
 	}
 
 	public BasicNetwork getNet() {
@@ -98,8 +99,34 @@ public class Layer {
 	}
 
 	public void setBias(final boolean bias) {
+		if (layerWithBias == bias) {
+			// already contains a bias or not
+			return;
+		}
+		boolean oldValue = layerWithBias;
+		if (bias) {
+			Neuron n = new Neuron(getStandardFunction(), true);
+			n.setId(network.getNextNeuronId());
+			addNeuron(n);
+		} else {
+			for (Neuron n : new CopyOnWriteArrayList<Neuron>(neurons)) {
+				if (n.isBias()) {
+					neurons.remove(n);
+				}
+			}
+		}
 		layerWithBias = bias;
+		if (network instanceof Network) {
+			((Network) network).getPCS().firePropertyChange(Network.PropertyChanges.NEURONS.name(), oldValue, bias);
+		}
+	}
 
+	/**
+	 * @return
+	 */
+	private ActivationFunction getStandardFunction() {
+		// TODO: get from side bar
+		return new SigmoidFunction();
 	}
 
 }

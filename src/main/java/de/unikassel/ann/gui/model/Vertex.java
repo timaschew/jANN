@@ -4,7 +4,6 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 import de.unikassel.ann.controller.Settings;
-import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.Synapse;
 import de.unikassel.ann.model.UserSession;
@@ -100,12 +99,13 @@ public class Vertex implements Comparable<Vertex> {
 		return model;
 	}
 
-	public void setLayer(final int index) {
-		// TODO Get layer by its index
-		Layer layer = new Layer();
-		layer.setIndex(index);
-		model.setLayer(layer);
-	}
+	// public void setLayer(final int index) {
+	// // TODO Get layer by its index
+	// ! when you crate a a layer you have to call layer.setNetowrk(network); !
+	// Layer layer = new Layer();
+	// layer.setIndex(index);
+	// model.setLayer(layer);
+	// }
 
 	public int getLayer() {
 		if (model == null) {

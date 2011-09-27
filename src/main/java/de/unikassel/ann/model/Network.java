@@ -45,7 +45,6 @@ public class Network extends BasicNetwork {
 	private List<Neuron> flatNet;
 	private Set<Synapse> synapseSet;
 	private SynapseMatrix synapseMatrix;
-	private int globalNeuronId = 0;
 
 	public Network() {
 		super();
@@ -56,9 +55,13 @@ public class Network extends BasicNetwork {
 		finalyzed = false;
 	}
 
+	public PropertyChangeSupport getPCS() {
+		return pcs;
+	}
+
 	/**
 	 * Wrapper to ease the access to the network stored in the current session.<br>
-	 * NOTE: Be sure to use and call this method only if there is a network initiated!
+	 * NOTE: Be sure to use and call this method only if there is a network and session initiated!
 	 * 
 	 * @return
 	 */
@@ -251,12 +254,21 @@ public class Network extends BasicNetwork {
 		}
 	}
 
+	public void setInputSizeIgnoringBias(final int inputSize) {
+		boolean hasBias = false;
+		if (getInputLayer() != null) {
+			hasBias = getInputLayer().hasBias();
+		}
+		setInputLayerSize(inputSize + (hasBias ? 1 : 0));
+	}
+
 	public void setInputLayerSize(final int inputSize) {
 		ActivationFunction function = getStandardFunction();
 		if (layers.isEmpty()) {
 			// add input layer
 			Layer inputLayer = new Layer();
 			inputLayer.setIndex(0);
+			inputLayer.setNet(this);
 			layers.add(inputLayer);
 		}
 		Layer inputLayer = layers.get(0);
@@ -280,6 +292,7 @@ public class Network extends BasicNetwork {
 			// add output layer
 			Layer outputLayer = new Layer();
 			outputLayer.setIndex(1);
+			outputLayer.setNet(this);
 			layers.add(outputLayer);
 		}
 		Layer outputLayer = layers.get(layers.size() - 1);
@@ -318,6 +331,7 @@ public class Network extends BasicNetwork {
 			for (int i = 0; i < diff; i++) {
 				int index = layers.size() - 1; // old output index = new hidden index
 				Layer hiddenLayer = new Layer();
+				hiddenLayer.setNet(this);
 				hiddenLayer.setIndex(index);
 				layers.add(index, hiddenLayer); // shift the output layer in the list
 				setHiddenLayerSize(index, 1); // initial size
@@ -345,6 +359,14 @@ public class Network extends BasicNetwork {
 		outputLayer.setIndex(layers.size() - 1);
 
 		pcs.firePropertyChange(PropertyChanges.NEURONS.name(), oldValue, hiddenLayerCount);
+	}
+
+	public void setHiddenLayerSizeIgnoreingBias(final int layerIndex, final int layerSize) {
+		boolean hasBias = false;
+		if (getLayer(layerIndex) != null) {
+			hasBias = getLayer(layerIndex).hasBias();
+		}
+		setHiddenLayerSize(layerIndex, layerSize + (hasBias ? 1 : 0));
 	}
 
 	// TODO: can also used for input layer, is it good?
@@ -547,10 +569,6 @@ public class Network extends BasicNetwork {
 		sb.append(layers.size());
 		sb.append(" layers");
 		return sb.toString();
-	}
-
-	public int getNextNeuronId() {
-		return globalNeuronId++;
 	}
 
 }

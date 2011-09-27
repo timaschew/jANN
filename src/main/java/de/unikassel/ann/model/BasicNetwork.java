@@ -5,6 +5,8 @@ import java.util.List;
 
 public abstract class BasicNetwork {
 
+	protected int globalNeuronId = 0;
+
 	protected SynapseMatrix synapseMatrix;
 
 	protected List<Layer> layers;
@@ -100,6 +102,10 @@ public abstract class BasicNetwork {
 			tempSize = Math.max(tempSize, l.getNeurons().size());
 		}
 		return tempSize;
+	}
+
+	public int getNextNeuronId() {
+		return globalNeuronId++;
 	}
 
 	public void printSynapses() {
