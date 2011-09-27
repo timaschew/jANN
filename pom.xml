@@ -20,6 +20,11 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+		<repository>
+			<id>thirdparty-releases</id>
+			<name>JBoss Thirdparty Releases</name>
+			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
+		</repository>
 	</repositories>
 	<dependencies>
 
@@ -128,7 +133,7 @@
 				<executions>
 					<execution>
 						<id>installFileSuperCSV</id>
-						<phase>validate</phase>
+						<phase>verify</phase>
 						<configuration>
 							<file>${basedir}/libs/SuperCSV-with_src-1.52.jar</file>
 							<repositoryLayout>default</repositoryLayout>
@@ -144,7 +149,7 @@
 					</execution>
 					<execution>
 						<id>installFileSpiffy</id>
-						<phase>validate</phase>
+						<phase>verify</phase>
 						<configuration>
 							<file>${basedir}/libs/spiffy-with_source-all-0.05.jar</file>
 							<repositoryLayout>default</repositoryLayout>
@@ -160,7 +165,7 @@
 					</execution>
 					<execution>
 						<id>installFileMDAAJ</id>
-						<phase>validate</phase>
+						<phase>verify</phase>
 						<configuration>
 							<file>${basedir}/libs/MDAAJ-0.0.5.jar</file>
 							<repositoryLayout>default</repositoryLayout>
@@ -176,7 +181,7 @@
 					</execution>
 					<execution>
 						<id>installFileJavaPlot</id>
-						<phase>validate</phase>
+						<phase>verify</phase>
 						<configuration>
 							<file>${basedir}/libs/JavaPlot.jar</file>
 							<repositoryLayout>default</repositoryLayout>
