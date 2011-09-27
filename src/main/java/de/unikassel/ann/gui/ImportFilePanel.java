@@ -15,16 +15,18 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.io.NetIO;
+import de.unikassel.ann.model.UserSession;
 
 public class ImportFilePanel extends JDialog {
 
@@ -41,7 +43,7 @@ public class ImportFilePanel extends JDialog {
 
 	private JFileChooser fileopen;
 
-	private JTextArea textAreaFileName;
+	private JTextField textFieldFileName;
 
 	/**
 	 * Create the panel.
@@ -52,7 +54,7 @@ public class ImportFilePanel extends JDialog {
 		searchFilePanel.setLayout(new BorderLayout());
 
 		setTitle("Import");
-		setSize(250, 210);
+		setSize(272, 210);
 		setLocationRelativeTo(null);
 		setModal(true);
 		setResizable(false);
@@ -74,36 +76,60 @@ public class ImportFilePanel extends JDialog {
 
 		JLabel lblTopology = new JLabel("Topologie");
 		topologieCB = new JCheckBox("");
+		topologieCB.setEnabled(false);
 		JLabel lblSynapse = new JLabel("Synapse");
 		synapseCB = new JCheckBox("");
+		synapseCB.setEnabled(false);
 		JLabel lblTrainingData = new JLabel("Training Data");
 		trainigDataCB = new JCheckBox("");
+		trainigDataCB.setEnabled(false);
 		JButton btnImport = new JButton("Import");
 		// TODO Nach Import JungView Aktualisieren
 		JButton btnCancel = new JButton("Abbrechen");
 
-		btnImport.addActionListener(new ActionListener() {
+		textFieldFileName = new JTextField(10);
+		textFieldFileName.setEditable(false);
+
+		topologieCB.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				File file = fileopen.getSelectedFile();
-				NetIO reader = new NetIO();
-				try {
-					reader.readConfigFile(file);
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (ClassNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				if (topologieCB.isSelected()) {
+					synapseCB.setEnabled(true);
+				} else {
+					if (synapseCB.isSelected()) {
+						synapseCB.setSelected(false);
+						synapseCB.setEnabled(false);
+					}
+					synapseCB.setEnabled(false);
 				}
-				NetConfig netConfig = reader.generateNetwork();
-				Settings.getInstance().createNewSession(file.getName());
-				Settings.getInstance().getCurrentSession().setNetworkConfig(netConfig);
-				Main.instance.getGraphLayoutViewer().renderNetwork(netConfig.getNetwork());
-				dispose();
 			}
 		});
 
+		synapseCB.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				if (synapseCB.isSelected() && !topologieCB.isSelected()) {
+					topologieCB.setSelected(true);
+				}
+			}
+		});
+
+		btnImport.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				if (textFieldFileName.getText().equals("")) {
+					JFrame frame = new JFrame();
+					JOptionPane.showMessageDialog(frame, "Sie haben keine Datei ausgewählt", "Warnung", JOptionPane.WARNING_MESSAGE);
+				} else {
+					UserSession session = Settings.getInstance().getCurrentSession();
+					session.loadNetworkFromFile(fileopen.getSelectedFile(), topologieCB.isSelected(), synapseCB.isSelected(),
+							trainigDataCB.isSelected());
+					dispose();
+				}
+
+			}
+
+		});
 		btnCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent event) {
@@ -111,61 +137,51 @@ public class ImportFilePanel extends JDialog {
 			}
 		});
 
-		textAreaFileName = new JTextArea();
-
 		GroupLayout gl_importDialogPanel = new GroupLayout(importDialogPanel);
-		gl_importDialogPanel.setHorizontalGroup(gl_importDialogPanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(
-						gl_importDialogPanel
-								.createSequentialGroup()
-								.addContainerGap()
-								.addGroup(
-										gl_importDialogPanel
-												.createParallelGroup(Alignment.TRAILING)
-												.addGroup(
-														gl_importDialogPanel.createSequentialGroup().addComponent(btnImport)
-																.addPreferredGap(ComponentPlacement.RELATED, 82, Short.MAX_VALUE)
-																.addComponent(btnCancel).addContainerGap())
-												.addGroup(
-														gl_importDialogPanel
-																.createSequentialGroup()
-																.addComponent(lblImportFile)
-																.addGap(29)
-																.addComponent(textAreaFileName, GroupLayout.DEFAULT_SIZE, 67,
-																		Short.MAX_VALUE)
-																.addPreferredGap(ComponentPlacement.RELATED)
-																.addComponent(btnSearch, GroupLayout.PREFERRED_SIZE, 35,
-																		GroupLayout.PREFERRED_SIZE).addGap(15))
-												.addGroup(
-														gl_importDialogPanel
-																.createSequentialGroup()
-																.addGroup(
-																		gl_importDialogPanel
-																				.createParallelGroup(Alignment.LEADING)
-																				.addGroup(
-																						gl_importDialogPanel
-																								.createSequentialGroup()
-																								.addComponent(lblTrainingData)
-																								.addPreferredGap(
-																										ComponentPlacement.RELATED, 101,
-																										Short.MAX_VALUE)
-																								.addComponent(trainigDataCB))
-																				.addGroup(
-																						gl_importDialogPanel
-																								.createSequentialGroup()
-																								.addComponent(lblSynapse)
-																								.addPreferredGap(
-																										ComponentPlacement.RELATED, 127,
-																										Short.MAX_VALUE)
-																								.addComponent(synapseCB))
-																				.addGroup(
-																						gl_importDialogPanel
-																								.createSequentialGroup()
-																								.addComponent(lblTopology)
-																								.addPreferredGap(
-																										ComponentPlacement.RELATED, 120,
-																										Short.MAX_VALUE)
-																								.addComponent(topologieCB))).addGap(45)))));
+		gl_importDialogPanel
+				.setHorizontalGroup(gl_importDialogPanel.createParallelGroup(Alignment.LEADING)
+						.addGroup(
+								gl_importDialogPanel
+										.createSequentialGroup()
+										.addContainerGap()
+										.addGroup(
+												gl_importDialogPanel
+														.createParallelGroup(Alignment.LEADING)
+														.addGroup(
+																gl_importDialogPanel
+																		.createParallelGroup(Alignment.TRAILING)
+																		.addComponent(btnImport)
+																		.addGroup(
+																				gl_importDialogPanel.createParallelGroup(Alignment.LEADING)
+																						.addComponent(lblTopology).addComponent(lblSynapse)
+																						.addComponent(lblTrainingData)))
+														.addComponent(lblImportFile))
+										.addPreferredGap(ComponentPlacement.RELATED)
+										.addGroup(
+												gl_importDialogPanel
+														.createParallelGroup(Alignment.LEADING)
+														.addGroup(
+																Alignment.TRAILING,
+																gl_importDialogPanel
+																		.createSequentialGroup()
+																		.addGroup(
+																				gl_importDialogPanel.createParallelGroup(Alignment.LEADING)
+																						.addComponent(synapseCB).addComponent(topologieCB)
+																						.addComponent(trainigDataCB)).addGap(96))
+														.addGroup(
+																gl_importDialogPanel
+																		.createSequentialGroup()
+																		.addGroup(
+																				gl_importDialogPanel
+																						.createParallelGroup(Alignment.TRAILING)
+																						.addComponent(textFieldFileName,
+																								GroupLayout.PREFERRED_SIZE,
+																								GroupLayout.DEFAULT_SIZE,
+																								GroupLayout.PREFERRED_SIZE)
+																						.addComponent(btnCancel))
+																		.addPreferredGap(ComponentPlacement.RELATED)
+																		.addComponent(btnSearch, GroupLayout.PREFERRED_SIZE, 35,
+																				GroupLayout.PREFERRED_SIZE).addGap(15)))));
 		gl_importDialogPanel.setVerticalGroup(gl_importDialogPanel.createParallelGroup(Alignment.LEADING).addGroup(
 				gl_importDialogPanel
 						.createSequentialGroup()
@@ -173,10 +189,9 @@ public class ImportFilePanel extends JDialog {
 						.addGroup(
 								gl_importDialogPanel
 										.createParallelGroup(Alignment.BASELINE)
-										.addComponent(lblImportFile)
 										.addComponent(btnSearch)
-										.addComponent(textAreaFileName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-												GroupLayout.PREFERRED_SIZE))
+										.addComponent(textFieldFileName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+												GroupLayout.PREFERRED_SIZE).addComponent(lblImportFile))
 						.addPreferredGap(ComponentPlacement.RELATED)
 						.addGroup(
 								gl_importDialogPanel
@@ -207,11 +222,52 @@ public class ImportFilePanel extends JDialog {
 		int ret = fileopen.showDialog(searchFilePanel, "Open file");
 
 		if (ret == JFileChooser.APPROVE_OPTION) {
-			// textAreaFileName.setText(fileopen.getSelectedFile().toString());
-			// TODO: show choosen file name
+			textFieldFileName.setText(fileopen.getSelectedFile().getName());
+
+			NetIO reader = new NetIO();
+			try {
+				reader.readConfigFile(fileopen.getSelectedFile());
+				if (reader.topoBeanList != null) {
+					topologieCB.setEnabled(true);
+					topologieCB.setSelected(true);
+					System.out.println("topo");
+				}
+				if (reader.synapsesBanList != null) {
+					// Falls in der gelesene Datei keine topology existiert
+					if (checkingIfTopologyIsSelected()) {
+						synapseCB.setEnabled(true);
+						synapseCB.setSelected(true);
+					} else {
+						synapseCB.setEnabled(true);
+						synapseCB.setSelected(true);
+					}
+
+				}
+				if (reader.trainigBeanList != null) {
+					trainigDataCB.setEnabled(true);
+					trainigDataCB.setSelected(true);
+				}
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (ClassNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 
 		}
 
+	}
+
+	/**
+	 * @return
+	 */
+	private boolean checkingIfTopologyIsSelected() {
+		if (topologieCB.isSelected()) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private String readFile(final File file) {

@@ -41,9 +41,9 @@ public class NetIO {
 	static String[] header2beanMapping;
 	static CellProcessor[] processor;
 
-	List<TrainingBean> trainigBeanList = null;
-	List<TopologyBean> topoBeanList = null;
-	List<SynapseBean> synapsesBanList = null;
+	public List<TrainingBean> trainigBeanList = null;
+	public List<TopologyBean> topoBeanList = null;
+	public List<SynapseBean> synapsesBanList = null;
 
 	public void readConfigFile(final File file) throws IOException, ClassNotFoundException {
 
@@ -100,16 +100,26 @@ public class NetIO {
 	}
 
 	public NetConfig generateNetwork() {
+		return generateNetwork(true, true, true);
+	}
+
+	public NetConfig generateNetwork(final boolean topo, final boolean synapse, final boolean training) {
 		if (CollectionUtils.isNotEmpty(topoBeanList)) {
 
 			NetConfig config = new NetConfig();
-			config.getNetwork().finalizeFromFlatNet(topoBeanList, synapsesBanList);
+			if (topo && synapse) {
+				config.getNetwork().finalizeFromFlatNet(topoBeanList, synapsesBanList);
+			} else if (topo && !synapse) {
+				config.getNetwork().finalizeFromFlatNet(topoBeanList, null);
+			}
 
 			BackPropagation backProp = new BackPropagation();
 			config.addTrainingModule(backProp);
 			config.addWorkModule(backProp);
-			config.addOrUpdateExisting(new MaxLearnIterationsStrategy(100000));
-			config.setTrainingData(getTrainingSet());
+			config.addOrUpdateExisting(new MaxLearnIterationsStrategy(1000));
+			if (training) {
+				config.setTrainingData(getTrainingSet());
+			}
 			return config;
 
 		}

@@ -7,11 +7,16 @@
  */
 package de.unikassel.ann.model;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Set;
 import java.util.TreeSet;
 
 import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.GraphController;
+import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.gui.Main;
+import de.unikassel.ann.io.NetIO;
 
 /**
  * @author anton
@@ -27,10 +32,11 @@ public class UserSession {
 
 	private static Set<String> names;
 
-	public UserSession() {
-		this("Neu");
-	}
-
+	/**
+	 * Should only called by Settings class
+	 * 
+	 * @param name
+	 */
 	public UserSession(final String name) {
 		initName(name);
 		sidebarModel = new SidebarModel();
@@ -81,6 +87,38 @@ public class UserSession {
 	 */
 	public void setNetworkConfig(final NetConfig config) {
 		this.config = config;
+	}
+
+	public void loadNetworkFromFile(final File file) {
+		loadNetworkFromFile(file, true, true, true);
+	}
+
+	/**
+	 * @param file
+	 * @param training
+	 * @param synapse
+	 * @param topo
+	 */
+	public void loadNetworkFromFile(final File file, final boolean topo, final boolean synapse, final boolean training) {
+		NetIO reader = new NetIO();
+		try {
+			reader.readConfigFile(file);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		NetConfig netConfig = reader.generateNetwork(topo, synapse, training);
+		if (topo) {
+			Settings.getInstance().createNewSession(file.getName());
+		}
+
+		Settings.getInstance().getCurrentSession().setNetworkConfig(netConfig);
+		Main.instance.getGraphLayoutViewer().renderNetwork(netConfig.getNetwork());
+		Main.instance.initSidebarPanel();
+
 	}
 
 }

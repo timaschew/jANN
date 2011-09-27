@@ -28,6 +28,7 @@ public class Sidebar extends JPanel {
 	public TrainStrategyPanel trainStrategyPanel;
 	public StandardOptionsPanel standardOptionsPanel;
 	public SelectedSymbolPanel selectedSymbolsPanel;
+	public ManualTestPanel manuell;
 
 	/**
 	 * Create the panel.
@@ -89,6 +90,9 @@ public class Sidebar extends JPanel {
 		JPanel trainTabPanel = new JPanel();
 		TrainControlPanel trainControlPanel = new TrainControlPanel();
 		trainTabPanel.add(trainControlPanel);
+
+		manuell = new ManualTestPanel();
+		trainTabPanel.add(manuell);
 
 		tabbedPane.addTab("Konfiguration", null, scrollPane, null);
 		tabbedPane.addTab("Training", null, trainTabPanel, null);

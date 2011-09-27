@@ -88,7 +88,7 @@ public class Settings {
 		if (name != null) {
 			session = new UserSession(name);
 		} else {
-			session = new UserSession();
+			session = new UserSession("Neu");
 		}
 		sessionList.add(session);
 		currentSession = session;

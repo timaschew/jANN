@@ -110,7 +110,7 @@ public class Main {
 		//
 		// Main Menu(Bar)
 		//
-		JMenuBar mainMenu = new MainMenu(this);
+		JMenuBar mainMenu = new MainMenu();
 		frame.setJMenuBar(mainMenu);
 
 		//
