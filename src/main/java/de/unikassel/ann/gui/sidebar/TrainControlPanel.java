@@ -2,7 +2,6 @@ package de.unikassel.ann.gui.sidebar;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -14,9 +13,9 @@ import javax.swing.JSpinner;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.TitledBorder;
 
-import de.unikassel.ann.controller.ActionController;
-import de.unikassel.ann.controller.Actions;
+import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.model.DataPairSet;
 
 public class TrainControlPanel extends JPanel {
 
@@ -35,8 +34,6 @@ public class TrainControlPanel extends JPanel {
 	public JButton btnPlay;
 	public JButton btnPause;
 	public JButton btnStop;
-
-	private ActionController ac = ActionController.get();
 
 	/**
 	 * Create the frame.
@@ -177,7 +174,13 @@ public class TrainControlPanel extends JPanel {
 		btnPlay.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				ac.doAction(Actions.TRAIN_NETWORK, new PropertyChangeEvent(ac, "train", null, "start"));
+				NetConfig net = Settings.getInstance().getCurrentSession().getNetworkConfig();
+				System.out.println("training started");
+				DataPairSet testData = new DataPairSet(net.getTrainingData());
+				net.getTrainingModule().train(net.getTrainingData());
+				System.out.println("training finished");
+				net.getWorkingModule().work(net.getNetwork(), testData);
+				System.out.println(testData);
 			}
 		});
 	}

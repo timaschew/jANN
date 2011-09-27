@@ -10,6 +10,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
@@ -27,9 +28,13 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.TitledBorder;
 
-import de.unikassel.ann.controller.ActionController;
-import de.unikassel.ann.controller.Actions;
+import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.strategy.MaxLearnIterationsStrategy;
+import de.unikassel.ann.strategy.MinErrorStrategy;
+import de.unikassel.ann.strategy.RestartErrorStrategy;
+import de.unikassel.ann.strategy.RestartImprovementStrategy;
+import de.unikassel.ann.strategy.Strategy;
 
 public class TrainStrategyPanel extends JPanel {
 
@@ -46,7 +51,6 @@ public class TrainStrategyPanel extends JPanel {
 	public JComboBox comboBoxTypStrategien;
 	public JCheckBox chckbxActivateStrategie;
 
-	private ActionController ac = ActionController.get();
 	private JLabel lblAlgorithm;
 	private JLabel lblLearnrate;
 	private JLabel lblMomentum;
@@ -343,14 +347,14 @@ public class TrainStrategyPanel extends JPanel {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				Boolean newVal = chckbxActivateStrategie.isSelected();
-				ac.doAction(Actions.SET_THE_STRATEGY, new PropertyChangeEvent(chckbxActivateStrategie, "checkbox", !newVal, newVal));
+				updatePanel(newVal);
 			}
+
 		});
 		comboBoxTypStrategien.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				ac.doAction(Actions.SET_THE_STRATEGY,
-						new PropertyChangeEvent(comboBoxTypStrategien, "item", "", comboBoxTypStrategien.getSelectedItem()));
+				updatePanel();
 			}
 		});
 
@@ -362,7 +366,7 @@ public class TrainStrategyPanel extends JPanel {
 			editor.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {
 				@Override
 				public void propertyChange(final PropertyChangeEvent evt) {
-					ac.doAction(Actions.SET_THE_STRATEGY, evt);
+					updatePanel();
 				}
 			});
 		}
@@ -445,6 +449,105 @@ public class TrainStrategyPanel extends JPanel {
 						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 		return groupLayout;
+	}
+
+	private void updatePanel() {
+		updatePanel(null);
+	}
+
+	private void updatePanel(final Boolean valueFiredFromCheckBox) {
+		// "MaxIteration", "MinError", "RestartError","RestartImprovement"
+		String selectedStrategy = (String) comboBoxTypStrategien.getSelectedItem();
+		Strategy strategy;
+		NetConfig net = Settings.getInstance().getCurrentSession().getNetworkConfig();
+		List<Strategy> strategyList = net.getStrategies();
+		Boolean checkBoxValue = valueFiredFromCheckBox;
+
+		if (selectedStrategy.equals("MaxIteration")) {
+			strategy = checkIfExist(strategyList, MaxLearnIterationsStrategy.class);
+			updateCBforCombo(strategy);
+			Integer maxIterationSpinner = (Integer) spinnerMaxIterations.getValue();
+			if (strategy == null) {
+				strategy = new MaxLearnIterationsStrategy();
+			}
+			((MaxLearnIterationsStrategy) strategy)._maxIteration = maxIterationSpinner;
+			updateStrategy(strategy, net, strategyList, checkBoxValue);
+
+		} else if (selectedStrategy.equals("MinError")) {
+			strategy = checkIfExist(strategyList, MinErrorStrategy.class);
+			updateCBforCombo(strategy);
+			Double minErrorSpinner = (Double) spinnerMinError.getValue();
+			if (strategy == null) {
+				strategy = new MinErrorStrategy();
+
+			}
+			((MinErrorStrategy) strategy)._minerror = minErrorSpinner;
+			updateStrategy(strategy, net, strategyList, checkBoxValue);
+
+		} else if (selectedStrategy.equals("RestartError")) {
+
+			strategy = checkIfExist(strategyList, RestartErrorStrategy.class);
+			updateCBforCombo(strategy);
+			Double maxErrorForRestartSpinner = (Double) spinnerMaxErrorForRestart.getValue();
+			Integer iterationsForRestartSpinner = (Integer) spinnerIterationsForRestart.getValue();
+			if (strategy == null) {
+				strategy = new RestartErrorStrategy();
+			}
+			((RestartErrorStrategy) strategy)._iterationForRestart = iterationsForRestartSpinner;
+			((RestartErrorStrategy) strategy)._error = maxErrorForRestartSpinner;
+			updateStrategy(strategy, net, strategyList, checkBoxValue);
+
+		} else if (selectedStrategy.equals("RestartImprovement")) {
+
+			strategy = checkIfExist(strategyList, RestartImprovementStrategy.class);
+			updateCBforCombo(strategy);
+			Double minImprovForRestartSpinner = (Double) spinnerMinImprovementForRestart.getValue();
+			Integer iterImprForRestartSpinner = (Integer) spinnerImprIterationsForRestart.getValue();
+			if (strategy == null) {
+				strategy = new RestartImprovementStrategy();
+			}
+			((RestartImprovementStrategy) strategy)._minimalImprovement = minImprovForRestartSpinner;
+			((RestartImprovementStrategy) strategy)._iterationForRestart = iterImprForRestartSpinner;
+			updateStrategy(strategy, net, strategyList, checkBoxValue);
+		}
+	}
+
+	private void updateStrategy(final Strategy strategy, final NetConfig net, final List<Strategy> strategyList, final Boolean checkBoxValue) {
+		if (checkBoxValue != null) {
+			if (checkBoxValue) {
+				net.addOrUpdateExisting(strategy);
+				chckbxActivateStrategie.setSelected(true);
+			} else {
+				strategyList.remove(strategy);
+				chckbxActivateStrategie.setSelected(false);
+			}
+		}
+	}
+
+	/**
+	 * @param sidebar
+	 * @param strategy
+	 */
+	private void updateCBforCombo(final Strategy strategy) {
+		if (strategy != null) {
+			chckbxActivateStrategie.setSelected(true);
+		} else {
+			chckbxActivateStrategie.setSelected(false);
+		}
+	}
+
+	/**
+	 * @param strategyList
+	 * @param class1
+	 * @return
+	 */
+	private Strategy checkIfExist(final List<Strategy> strategyList, final Class<? extends Strategy> clazz) {
+		for (Strategy s : strategyList) {
+			if (s.getClass().equals(clazz)) {
+				return s;
+			}
+		}
+		return null;
 	}
 
 }

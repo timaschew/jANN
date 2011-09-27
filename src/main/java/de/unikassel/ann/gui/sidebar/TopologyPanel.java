@@ -24,7 +24,6 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.border.TitledBorder;
 
 import de.unikassel.ann.config.NetConfig;
-import de.unikassel.ann.controller.ActionController;
 import de.unikassel.ann.controller.GraphController;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.factory.NetworkFactory;
@@ -59,8 +58,6 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 	public DefaultComboBoxModel hiddenLayerComboModel = new DefaultComboBoxModel();
 
 	private final ButtonGroup buttonGroup = new ButtonGroup();
-
-	private ActionController ac = ActionController.get();
 
 	private NetConfig netConfig = Settings.getInstance().getCurrentSession().getNetworkConfig();
 
