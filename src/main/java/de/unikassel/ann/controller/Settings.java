@@ -135,6 +135,7 @@ public class Settings {
 		currentSession.getNetworkConfig().getNetwork().removeAllPropertyChangeListeners();
 		if (Main.instance != null) {
 			Main.instance.initSidebarPanel();
+			Main.instance.sidebar.trainStrategyPanel.updatePanel();
 		}
 
 		// Add GraphController as listener

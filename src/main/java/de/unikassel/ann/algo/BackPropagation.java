@@ -213,18 +213,48 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 	}
 
 	/**
-	 * @return the bATCH_LEARNING
+	 * @return the if online or offline training (batch)
 	 */
 	public boolean isBatchMode() {
 		return batchLearning;
 	}
 
 	/**
-	 * @param bATCH_LEARNING
-	 *            the bATCH_LEARNING to set
+	 * @param batchmode
+	 *            / offline training
 	 */
 	public void setBatchMode(final boolean batchMode) {
 		batchLearning = batchMode;
+	}
+
+	/**
+	 * @return the momentum
+	 */
+	public Double getMomentum() {
+		return momentum;
+	}
+
+	/**
+	 * @param momentum
+	 *            the momentum to set
+	 */
+	public void setMomentum(final Double momentum) {
+		this.momentum = momentum;
+	}
+
+	/**
+	 * @return the learnRate
+	 */
+	public Double getLearnRate() {
+		return learnRate;
+	}
+
+	/**
+	 * @param learnRate
+	 *            the learnRate to set
+	 */
+	public void setLearnRate(final Double learnRate) {
+		this.learnRate = learnRate;
 	}
 
 	// public static void printStep(Network net, DataPair pair) {

@@ -16,14 +16,12 @@ import org.apache.commons.collections.CollectionUtils;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.prefs.CsvPreference;
 
-import de.unikassel.ann.algo.BackPropagation;
 import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.io.beans.SynapseBean;
 import de.unikassel.ann.io.beans.TopologyBean;
 import de.unikassel.ann.io.beans.TrainingBean;
 import de.unikassel.ann.model.DataPair;
 import de.unikassel.ann.model.DataPairSet;
-import de.unikassel.ann.strategy.MaxLearnIterationsStrategy;
 
 public class NetIO {
 
@@ -113,10 +111,6 @@ public class NetIO {
 				config.getNetwork().createTopology(topoBeanList, null);
 			}
 
-			BackPropagation backProp = new BackPropagation();
-			config.addTrainingModule(backProp);
-			config.addWorkModule(backProp);
-			config.addOrUpdateExisting(new MaxLearnIterationsStrategy(1000));
 			if (training) {
 				config.setTrainingData(getTrainingSet());
 			}
