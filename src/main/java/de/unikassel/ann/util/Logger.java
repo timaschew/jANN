@@ -29,12 +29,13 @@ public class Logger {
 
 	private static Map<String, Integer> map = new HashMap<String, Integer>();
 
-	private static Main instance = null;
-
 	private static int DEFAULT_LOG_LEVEL;
+	private static boolean init = false;
 
 	public static void init() {
-		instance = Main.instance;
+		if (init) {
+			return;
+		}
 		Properties properties = new Properties();
 		try {
 			InputStream inputStream = Logger.class.getClassLoader().getResourceAsStream("log.properties");
@@ -59,6 +60,7 @@ public class Logger {
 			map.put((String) e.getKey(), value);
 		}
 		DEFAULT_LOG_LEVEL = map.get("default");
+		init = true;
 	}
 
 	private static void log(final Class<?> clazz, final Integer level, final String message, final Object... params) {
@@ -79,16 +81,16 @@ public class Logger {
 			StringBuilder sb = new StringBuilder();
 			if (level == WARN) {
 				sb.append("Warn: ").append(msg).append("\n");
-				instance.updateTextArea(sb.toString(), "warn");
+				Main.instance.updateTextArea(sb.toString(), "warn");
 			} else if (level == ERROR) {
 				sb.append("Error: ").append(msg).append("\n");
-				instance.updateTextArea(sb.toString(), "error");
+				Main.instance.updateTextArea(sb.toString(), "error");
 			} else if (level == DEBUG) {
 				sb.append("Debug: ").append(msg).append("\n");
-				instance.updateTextArea(sb.toString(), "regular");
+				Main.instance.updateTextArea(sb.toString(), "regular");
 			} else if (level == INFO) {
 				sb.append("Info: ").append(msg).append("\n");
-				instance.updateTextArea(sb.toString(), "regular");
+				Main.instance.updateTextArea(sb.toString(), "regular");
 			}
 		}
 	}

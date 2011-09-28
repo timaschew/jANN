@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
@@ -36,7 +35,7 @@ import de.unikassel.ann.util.Logger;
 
 public class Main {
 
-	public static Main instance = new Main();
+	public static Main instance = getInstance();
 
 	/**
 	 * Launch the application.
@@ -53,6 +52,13 @@ public class Main {
 				}
 			}
 		});
+	}
+
+	private static Main getInstance() {
+		if (instance == null) {
+			instance = new Main();
+		}
+		return instance;
 	}
 
 	/*
@@ -333,9 +339,9 @@ public class Main {
 		// if (Settings.properties.get("redirect.std.out").equals("1")) {
 		// System.setOut(new PrintStream(out, true));
 		// }
-		if (Settings.properties.get("redirect.std.err").equals("1")) {
-			System.setErr(new PrintStream(errorOut, true));
-		}
+		// if (Settings.properties.get("redirect.std.err").equals("1")) {
+		// System.setErr(new PrintStream(errorOut, true));
+		// }
 
 	}
 
