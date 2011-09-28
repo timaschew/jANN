@@ -6,7 +6,9 @@ import java.awt.event.ActionListener;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
@@ -172,15 +174,22 @@ public class TrainControlPanel extends JPanel {
 	 */
 	private void initListeners() {
 		btnPlay.addActionListener(new ActionListener() {
+			@SuppressWarnings("unused")
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				NetConfig net = Settings.getInstance().getCurrentSession().getNetworkConfig();
 				System.out.println("training started");
-				DataPairSet testData = new DataPairSet(net.getTrainingData());
-				net.getTrainingModule().train(net.getTrainingData());
-				System.out.println("training finished");
-				net.getWorkingModule().work(net.getNetwork(), testData);
-				System.out.println(testData);
+				if (net.getTrainingData() == null) {
+					JFrame frame = new JFrame();
+					JOptionPane.showMessageDialog(frame, "Es existieren keine Trainingsdaten ", "Warnung", JOptionPane.WARNING_MESSAGE);
+				} else {
+					DataPairSet testData = new DataPairSet(net.getTrainingData());
+					net.getTrainingModule().train(net.getTrainingData());
+					System.out.println("training finished");
+					net.getWorkingModule().work(net.getNetwork(), testData);
+					System.out.println(testData);
+				}
+
 			}
 		});
 	}

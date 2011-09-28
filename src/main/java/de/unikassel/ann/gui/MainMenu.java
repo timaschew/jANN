@@ -1,5 +1,6 @@
 package de.unikassel.ann.gui;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -7,9 +8,11 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
 import de.unikassel.ann.controller.Actions;
@@ -204,8 +207,9 @@ public class MainMenu extends JMenuBar {
 			case IMPORT:
 				ImportFilePanel panel = new ImportFilePanel();
 				panel.setVisible(true);
+				break;
 			case EXPORT:
-				ExportFilePanel export = new ExportFilePanel();
+				ExportSaveFilePanel export = new ExportSaveFilePanel();
 				export.setVisible(true);
 				break;
 			case CLOSE_CURRENT_SESSION:
@@ -230,10 +234,25 @@ public class MainMenu extends JMenuBar {
 				// TODO
 				break;
 			case ABOUT:
+				JFrame dialog = new JFrame();
+				JOptionPane.showMessageDialog(dialog, "Anton Wilhelm, \n" + "Alexander Vey, \n" + "Sofia Daskalou, 26201618 \n",
+						"Teilnehmer", JOptionPane.INFORMATION_MESSAGE);
 				// TODO
 				break;
 			case EXIT:
-				System.exit(e.getID());
+
+				Object[] options = { "Speichern", "Nein", "Abbrechen" };
+				Component frame = new JFrame();
+				int n = JOptionPane.showOptionDialog(frame, "Die aktuelle Session ist nicht gespeichert \n" + "Möchten Sie speichern?",
+						"Speichern", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[2]);
+
+				if (n == JOptionPane.YES_OPTION) {
+					// TODO call Export panel
+				} else if (n == JOptionPane.NO_OPTION) {
+					System.exit(e.getID());
+				} else if (n == JOptionPane.CANCEL_OPTION) {
+				}
+
 				break;
 			case LOAD_OR_NETWORK:
 				loadNetworkFromFile("or");
@@ -277,7 +296,6 @@ public class MainMenu extends JMenuBar {
 				importFile = new File(new URI(MainMenu.class.getClassLoader().getResource("net_cfg_or.csv").toString()));
 				settings.loadNetworkFromFile(importFile);
 			} catch (URISyntaxException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -286,7 +304,6 @@ public class MainMenu extends JMenuBar {
 				importFile = new File(new URI(MainMenu.class.getClassLoader().getResource("net_cfg.csv").toString()));
 				settings.loadNetworkFromFile(importFile);
 			} catch (URISyntaxException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -295,7 +312,6 @@ public class MainMenu extends JMenuBar {
 				importFile = new File(new URI(MainMenu.class.getClassLoader().getResource("net_cfg_and.csv").toString()));
 				settings.loadNetworkFromFile(importFile);
 			} catch (URISyntaxException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -304,7 +320,6 @@ public class MainMenu extends JMenuBar {
 				importFile = new File(new URI(MainMenu.class.getClassLoader().getResource("net_cfg_2BitAddierer.csv").toString()));
 				settings.loadNetworkFromFile(importFile);
 			} catch (URISyntaxException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
