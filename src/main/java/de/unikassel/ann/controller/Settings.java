@@ -133,7 +133,7 @@ public class Settings {
 		// and update
 
 		currentSession.getNetworkConfig().getNetwork().removeAllPropertyChangeListeners();
-		if (Main.instance != null) {
+		if (Main.instance.isInit()) {
 			Main.instance.initSidebarPanel();
 			Main.instance.sidebar.trainStrategyPanel.updatePanel();
 		}
@@ -149,7 +149,7 @@ public class Settings {
 
 	private void updateSesionInMenu() {
 		// skip, ignore first initial call
-		if (Main.instance == null) {
+		if (Main.instance.isInit() == false) {
 			return;
 		}
 		Main.instance.mainMenu.subMenuSession.removeAll();
