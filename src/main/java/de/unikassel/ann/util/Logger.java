@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import de.unikassel.ann.gui.Main;
 
@@ -22,10 +24,11 @@ import de.unikassel.ann.gui.Main;
  */
 public class Logger {
 
-	public final static int DEBUG = 0;
-	public final static int INFO = 2;
-	public final static int WARN = 3;
-	public final static int ERROR = 4;
+	private final static String REGEX = "([{][}])";
+	private final static int DEBUG = 0;
+	private final static int INFO = 2;
+	private final static int WARN = 3;
+	private final static int ERROR = 4;
 
 	private static Map<String, Integer> map = new HashMap<String, Integer>();
 
@@ -66,13 +69,24 @@ public class Logger {
 	private static void log(final Class<?> clazz, final Integer level, final String message, final Object... params) {
 		String finalMsg = message;
 		for (Object o : params) {
-			finalMsg = finalMsg.replaceFirst("[{][}]", o.toString());
+			try {
+				// quoteReplacement
+				Matcher m = Pattern.compile(REGEX).matcher(finalMsg);
+				String escaped = Matcher.quoteReplacement(o.toString());
+				// Pattern.compile("([{][}])").matcher(finalMsg).
+				finalMsg = finalMsg.replaceFirst("([{][}])", escaped);
+			} catch (Exception e) {
+				System.err.println("could not parse parameter message '" + message + "' with param: " + o);
+				e.printStackTrace();
+			}
 		}
 		log(clazz, level, finalMsg);
 	}
 
 	private static void log(final Class<?> clazz, final Integer level, final String msg) {
-		Integer configLevel = map.get(clazz.getName());
+		// ignore inner classes
+		String className = clazz.getName().replaceFirst("\\$.*", "");
+		Integer configLevel = map.get(className);
 		if (configLevel == null) {
 			configLevel = DEFAULT_LOG_LEVEL;
 		}
