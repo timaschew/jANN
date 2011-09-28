@@ -21,6 +21,7 @@ import javax.swing.JOptionPane;
 import de.unikassel.ann.gui.ExportSaveFilePanel;
 import de.unikassel.ann.gui.ImportFilePanel;
 import de.unikassel.ann.gui.Main;
+import de.unikassel.ann.gui.Main.Panel;
 import de.unikassel.ann.gui.MainMenu;
 import de.unikassel.ann.gui.TrainDataPanel;
 
@@ -114,6 +115,16 @@ public class ActionJMenuItem extends JMenuItem implements ActionListener {
 		case NORMALIZE_TRAIN_DATA:
 			TrainDataPanel trainData = TrainDataPanel.getTrainDataPanelInstance();
 			trainData.setVisible(true);
+			break;
+
+		case SWITCH_CONSOLE:
+			Main.instance.switchBottomPanel(Panel.CONSOLE);
+			break;
+		case SWITCH_TRAINDATA:
+			Main.instance.switchBottomPanel(Panel.TRAIN_DATA_CHART);
+			break;
+		case SWITCH_TRAINERROR:
+			Main.instance.switchBottomPanel(Panel.TRAINERROR_CHART);
 			break;
 		case NONE:
 		default:

@@ -28,12 +28,17 @@ import javax.swing.text.StyledDocument;
 
 import de.unikassel.ann.controller.GraphController;
 import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.gui.chart.ChartTrainingErrorPanel;
 import de.unikassel.ann.gui.sidebar.Sidebar;
 import de.unikassel.ann.gui.sidebar.SidebarSOM;
 import de.unikassel.ann.model.Network;
 import de.unikassel.ann.util.Logger;
 
 public class Main {
+
+	public enum Panel {
+		CONSOLE, TRAINERROR_CHART, TRAIN_DATA_CHART
+	};
 
 	public static Main instance = getInstance();
 
@@ -72,17 +77,18 @@ public class Main {
 	private JSplitPane _3DBoardSplitPane;
 	private JPanel consolePanel;
 	private JPanel consolePanelSOM;
+	private boolean initialized = false;
 
 	/*
 	 * public fields
 	 */
+	public MainMenu mainMenu;
 	public Sidebar sidebar;
 	public JSplitPane mainSplitPane;
 	public SidebarSOM sidebarSom;
 	public JPanel _3DBoardPane;
-	private JPanel consoleOrChartPanel;
-	public MainMenu mainMenu;
-	private boolean initialized = false;
+	public JPanel consoleOrChartPanel;
+	public ChartTrainingErrorPanel trainingChartPanel;
 
 	/**
 	 * Create the application.
@@ -111,6 +117,24 @@ public class Main {
 		initialize();
 		initialized = true;
 		Logger.info(this.getClass(), "initializing finished at {}", new Date().toString());
+	}
+
+	public void switchBottomPanel(final Panel panel) {
+		switch (panel) {
+		case CONSOLE:
+			consoleOrChartPanel.removeAll();
+			consoleOrChartPanel.add(consolePanel);
+			break;
+		case TRAIN_DATA_CHART:
+
+			break;
+		case TRAINERROR_CHART:
+			consoleOrChartPanel.removeAll();
+			consoleOrChartPanel.add(trainingChartPanel);
+			break;
+		}
+		consoleOrChartPanel.revalidate();
+		consoleOrChartPanel.repaint();
 	}
 
 	/**
@@ -154,10 +178,10 @@ public class Main {
 		jungPanel = new JPanel(new BorderLayout());
 
 		consolePanel = new JPanel(new BorderLayout());
+		trainingChartPanel = new ChartTrainingErrorPanel();
 
 		textPane.setEditable(false);
 		addStylesToDocument(textPane.getStyledDocument());
-		consolePanel.add(textPane);
 		JScrollPane scrollPane = new JScrollPane(textPane);
 		consolePanel.add(scrollPane, BorderLayout.CENTER);
 
@@ -338,7 +362,7 @@ public class Main {
 
 		// if (Settings.properties.get("redirect.std.out").equals("1")) {
 		// System.setOut(new PrintStream(out, true));
-		// }
+		// // }
 		// if (Settings.properties.get("redirect.std.err").equals("1")) {
 		// System.setErr(new PrintStream(errorOut, true));
 		// }
