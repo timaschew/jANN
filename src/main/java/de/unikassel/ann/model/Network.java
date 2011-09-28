@@ -28,7 +28,7 @@ public class Network extends BasicNetwork {
 	 * Neuron or Synapse
 	 */
 	public enum PropertyChanges {
-		NEURONS, SYNAPSES
+		NEURONS, SYNAPSES, INPUT_NEURON
 	};
 
 	/**
@@ -140,6 +140,9 @@ public class Network extends BasicNetwork {
 				if (neurons.get(i).getId() == neuron.getId()) {
 					layer.getNeurons().remove(i);
 					pcs.firePropertyChange(PropertyChanges.NEURONS.name(), size, size - 1);
+					if (layer.equals(getInputLayer())) {
+						pcs.firePropertyChange(PropertyChanges.INPUT_NEURON.name(), size, size - 1);
+					}
 					return;
 				}
 			}
@@ -221,6 +224,7 @@ public class Network extends BasicNetwork {
 		int oldValue = inputLayer.getNeurons().size();
 		setLayerSize(inputSize, function, inputLayer);
 		pcs.firePropertyChange(PropertyChanges.NEURONS.name(), oldValue, inputSize);
+		pcs.firePropertyChange(PropertyChanges.INPUT_NEURON.name(), oldValue, inputSize);
 	}
 
 	/**

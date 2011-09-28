@@ -17,6 +17,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
+import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.model.Network;
+import de.unikassel.ann.model.Network.PropertyChanges;
+
 /**
  * @author anton
  * 
@@ -88,15 +92,15 @@ public class Sidebar extends JPanel {
 		JScrollPane scrollPane = new JScrollPane(wrapper);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(100);
 
-		JPanel trainTabPanel = new JPanel();
+		JPanel trainControlWrappter = new JPanel();
 
-		JScrollPane scrollPaneTrain = new JScrollPane(trainTabPanel);
+		JScrollPane scrollPaneTrain = new JScrollPane(trainControlWrappter);
 		GridBagLayout gbl_trainTabPanel = new GridBagLayout();
 		gbl_trainTabPanel.columnWidths = new int[] { 407, 0 };
 		gbl_trainTabPanel.rowHeights = new int[] { 235, 350, 0 };
 		gbl_trainTabPanel.columnWeights = new double[] { 0.0, Double.MIN_VALUE };
 		gbl_trainTabPanel.rowWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
-		trainTabPanel.setLayout(gbl_trainTabPanel);
+		trainControlWrappter.setLayout(gbl_trainTabPanel);
 
 		TrainControlPanel trainControlPanel = new TrainControlPanel();
 		GridBagConstraints gbc_trainControlPanel = new GridBagConstraints();
@@ -104,7 +108,7 @@ public class Sidebar extends JPanel {
 		gbc_trainControlPanel.insets = new Insets(0, 0, 5, 0);
 		gbc_trainControlPanel.gridx = 0;
 		gbc_trainControlPanel.gridy = 0;
-		trainTabPanel.add(trainControlPanel, gbc_trainControlPanel);
+		trainControlWrappter.add(trainControlPanel, gbc_trainControlPanel);
 
 		manualTestPanel = new WorkPanel();
 		GridBagConstraints gbc_manualTestPanel = new GridBagConstraints();
@@ -113,12 +117,16 @@ public class Sidebar extends JPanel {
 		gbc_manualTestPanel.insets = new Insets(0, 0, 5, 0);
 		gbc_manualTestPanel.gridx = 0;
 		gbc_manualTestPanel.gridy = 1;
-		trainTabPanel.add(manualTestPanel, gbc_manualTestPanel);
+		trainControlWrappter.add(manualTestPanel, gbc_manualTestPanel);
 		scrollPaneTrain.getVerticalScrollBar().setUnitIncrement(100);
 
 		tabbedPane.addTab("Konfiguration", null, scrollPane, null);
 		tabbedPane.addTab("Training", null, scrollPaneTrain, null);
 
+		// subsribe for changes
+		tabbedPane.addChangeListener(manualTestPanel);
+		Network network = Settings.getInstance().getCurrentSession().getNetworkConfig().getNetwork();
+		network.addPropertyChangeListener(PropertyChanges.INPUT_NEURON.name(), manualTestPanel);
 		topolgyPanel.update();
 		trainStrategyPanel.updatePanel();
 	}
