@@ -11,15 +11,15 @@ import java.util.Set;
 import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.EdgeController;
 import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.io.beans.SynapseBean;
 import de.unikassel.ann.io.beans.TopologyBean;
 import de.unikassel.ann.model.func.ActivationFunction;
-import de.unikassel.ann.model.func.SigmoidFunction;
 
 /**
  * The network is a container for the layers.<br>
  * The first layer is the inputLayer and the last the outputLayer.<br>
- * When creating a network with the factory, you need to call {@link #finalizeStructure()} for linking the neurons (set synapses).<br>
+ * When creating a network with the factory, you need to call {@link #connectFeedForward()} for linking the neurons (set synapses).<br>
  * 
  */
 public class Network extends BasicNetwork {
@@ -40,10 +40,19 @@ public class Network extends BasicNetwork {
 
 	private PropertyChangeSupport pcs;
 	private List<PropertyChangeListener> listeners;
-	private Boolean finalyzed;
+
 	private NetConfig config;
+	/**
+	 * List of all neurons of the network
+	 */
 	private List<Neuron> flatNet;
+	/**
+	 * All synapses of the network as a set
+	 */
 	private Set<Synapse> synapseSet;
+	/**
+	 * Matrix of synapses for importing/exporting from/to file
+	 */
 	private SynapseMatrix synapseMatrix;
 
 	public Network() {
@@ -53,7 +62,6 @@ public class Network extends BasicNetwork {
 		synapseSet = new HashSet<Synapse>();
 		flatNet = new ArrayList<Neuron>();
 		synapseMatrix = new SynapseMatrix(this, null, null);
-		finalyzed = false;
 	}
 
 	public PropertyChangeSupport getPCS() {
@@ -88,69 +96,6 @@ public class Network extends BasicNetwork {
 	public void addPropertyChangeListener(final String propertyName, final PropertyChangeListener listener) {
 		pcs.addPropertyChangeListener(propertyName, listener);
 		listeners.add(listener);
-	}
-
-	public void finalizeFromFlatNet(final List<TopologyBean> topoBeanList, final List<SynapseBean> synapsesBanList) {
-		if (finalyzed) {
-			return;
-		}
-
-		int maxHiddenIndex = 0;
-		for (TopologyBean b : topoBeanList) {
-			maxHiddenIndex = Math.max(maxHiddenIndex, b.getLayer());
-		}
-		Layer[] hiddenLayer = new Layer[maxHiddenIndex + 1];
-		// add layers to net
-		Layer inputLayer = new Layer();
-		addLayer(inputLayer);
-		for (int i = 0; i < maxHiddenIndex + 1; i++) {
-			hiddenLayer[i] = new Layer();
-			addLayer(hiddenLayer[i]);
-		}
-		Layer outputLayer = new Layer();
-		addLayer(outputLayer);
-
-		// creating neurons and adding it to flatNet and layers
-		for (TopologyBean b : topoBeanList) {
-			Neuron n = new Neuron(b.getFunction(), b.getBias());
-			n.setId(b.getId());
-			flatNet.add(n);
-			if (b.getLayer() == -1) {
-				inputLayer.addNeuron(n);
-			} else if (b.getLayer() == -2) {
-				outputLayer.addNeuron(n);
-			} else {
-				hiddenLayer[b.getLayer()].addNeuron(n);
-			}
-		}
-
-		synapseMatrix.setSize(flatNet.size(), flatNet.size());
-
-		if (synapsesBanList != null) {
-			setFlatSynapses(synapsesBanList);
-		} else {
-
-			// TODO: extract
-			Layer previousLayer = null;
-			// set synapses (strict forward feedback)
-			for (Layer l : layers) {
-				if (previousLayer != null) {
-					for (Neuron fromNeuron : previousLayer.getNeurons()) {
-						for (Neuron toNeuron : l.getNeurons()) {
-							if (toNeuron.isBias() == false) {
-								Synapse s = new Synapse(fromNeuron, toNeuron);
-								synapseSet.add(s);
-								// in this type of network use global ids for synapse matrix
-								synapseMatrix.addOrUpdateSynapse(s, fromNeuron.getId(), toNeuron.getId());
-							}
-						}
-					}
-				}
-				previousLayer = l;
-			}
-		}
-
-		finalyzed = true;
 	}
 
 	/**
@@ -423,10 +368,106 @@ public class Network extends BasicNetwork {
 	 * @return
 	 */
 	private ActivationFunction getStandardFunction() {
-		// TODO: get frmo sidebar
-		return new SigmoidFunction();
+		return Main.instance.sidebar.standardOptionsPanel.getStandardActivationFunction();
 	}
 
+	/**
+	 * Creates the network with the given topology structure.<br>
+	 * If the synapseBeanList is not null, the neurons will be connected, otherwise no connections / synapses will be created.<br>
+	 * Sets the {@link #flatNet}, if given synapsesBanList is not null also the {@link #synapseSet} and the {@link #synapseMatrix}
+	 * 
+	 * @param topoBeanList
+	 * @param synapsesBanList
+	 */
+	public void createTopology(final List<TopologyBean> topoBeanList, final List<SynapseBean> synapsesBanList) {
+
+		int maxHiddenIndex = 0;
+		for (TopologyBean b : topoBeanList) {
+			maxHiddenIndex = Math.max(maxHiddenIndex, b.getLayer());
+		}
+		Layer[] hiddenLayer = new Layer[maxHiddenIndex + 1];
+		// add layers to net
+		Layer inputLayer = new Layer();
+		addLayer(inputLayer);
+		for (int i = 0; i < maxHiddenIndex + 1; i++) {
+			hiddenLayer[i] = new Layer();
+			addLayer(hiddenLayer[i]);
+		}
+		Layer outputLayer = new Layer();
+		addLayer(outputLayer);
+
+		// creating neurons and adding it to flatNet and layers
+		for (TopologyBean b : topoBeanList) {
+			Neuron n = new Neuron(b.getFunction(), b.getBias());
+			n.setId(b.getId());
+			flatNet.add(n);
+			if (b.getLayer() == -1) {
+				inputLayer.addNeuron(n);
+			} else if (b.getLayer() == -2) {
+				outputLayer.addNeuron(n);
+			} else {
+				hiddenLayer[b.getLayer()].addNeuron(n);
+			}
+		}
+
+		synapseMatrix.setSize(flatNet.size(), flatNet.size());
+
+		if (synapsesBanList != null) {
+			setFlatSynapses(synapsesBanList);
+		}
+		// else: do not connect anything
+	}
+
+	/**
+	 * Creates the synapses between all neurons. From layer x-1 to layer x, from x to x+1, ...<br>
+	 * Sets the {@link #flatNet}
+	 */
+	private void initFlatNet() {
+		for (Layer l : layers) {
+			// set flat net
+			for (Neuron n : l.getNeurons()) {
+				if (n.getId() == -1) {
+					n.setId(flatNet.size());
+				}
+				flatNet.add(n);
+			}
+		}
+		synapseMatrix.setSize(flatNet.size(), flatNet.size());
+	}
+
+	/**
+	 * Creates the synapses between all neurons. From layer x-1 to layer x, from x to x+1, ...<br>
+	 * Sets the {@link #flatNet}, the {@link #synapseSet} and the {@link #synapseMatrix}
+	 */
+	public void connectFeedForward() {
+
+		initFlatNet();
+
+		Layer previousLayer = null;
+		// set synapses (strict forward feedback)
+		for (Layer l : layers) {
+			if (previousLayer != null) {
+				for (Neuron fromNeuron : previousLayer.getNeurons()) {
+					for (Neuron toNeuron : l.getNeurons()) {
+						if (toNeuron.isBias() == false) {
+							Synapse s = new Synapse(fromNeuron, toNeuron);
+							synapseSet.add(s);
+							// in this type of network use global ids for synapse matrix
+							synapseMatrix.addOrUpdateSynapse(s, fromNeuron.getId(), toNeuron.getId());
+						}
+					}
+				}
+			}
+			previousLayer = l;
+		}
+		pcs.firePropertyChange(PropertyChanges.SYNAPSES.name(), null, "feedForward");
+	}
+
+	/**
+	 * NOTE: {@link #flatNet} have to be already created! Sets the the {@link #synapseSet} and the {@link #synapseMatrix}
+	 * 
+	 * @param synapsesBanList
+	 */
 	public void setFlatSynapses(final List<SynapseBean> synapsesBanList) {
 		// connect neurons / create synapses
 		for (SynapseBean b : synapsesBanList) {
@@ -442,6 +483,7 @@ public class Network extends BasicNetwork {
 			// in this type of network use global ids for synapse matrix
 			synapseMatrix.addOrUpdateSynapse(s, fromNeuron.getId(), toNeuron.getId());
 		}
+		pcs.firePropertyChange(PropertyChanges.SYNAPSES.name(), null, "setSynapses");
 
 	}
 
@@ -461,49 +503,6 @@ public class Network extends BasicNetwork {
 			throw new IllegalArgumentException("synapse connections does not match with neuron ids, 2nd id is too high\n" + b);
 		}
 
-	}
-
-	/**
-	 * Creates the synapses between all neurons. After this call you can train the network.
-	 */
-	public void finalizeStructure() {
-		if (finalyzed) {
-			return;
-		}
-
-		Layer previousLayer = null;
-		for (Layer l : layers) {
-
-			// set flat net
-			for (Neuron n : l.getNeurons()) {
-				if (n.getId() == -1) {
-					n.setId(flatNet.size());
-				}
-				flatNet.add(n);
-			}
-		}
-		synapseMatrix.setSize(flatNet.size(), flatNet.size());
-
-		// TODO: extract
-
-		// set synapses (strict forward feedback)
-		for (Layer l : layers) {
-			if (previousLayer != null) {
-				for (Neuron fromNeuron : previousLayer.getNeurons()) {
-					for (Neuron toNeuron : l.getNeurons()) {
-						if (toNeuron.isBias() == false) {
-							Synapse s = new Synapse(fromNeuron, toNeuron);
-							synapseSet.add(s);
-							// in this type of network use global ids for synapse matrix
-							synapseMatrix.addOrUpdateSynapse(s, fromNeuron.getId(), toNeuron.getId());
-						}
-					}
-				}
-			}
-			previousLayer = l;
-		}
-
-		finalyzed = true;
 	}
 
 	/**
@@ -537,13 +536,6 @@ public class Network extends BasicNetwork {
 	}
 
 	/**
-	 * @return true if {@link #finalizeStructure()} was called; otherwise false
-	 */
-	public boolean isFinalized() {
-		return finalyzed;
-	}
-
-	/**
 	 * @return the network in reverse order for backpropagation
 	 */
 	public List<Layer> reverse() {
@@ -560,15 +552,28 @@ public class Network extends BasicNetwork {
 		return config;
 	}
 
+	/**
+	 * {@link #flatNet}
+	 * 
+	 * @return
+	 */
 	public List<Neuron> getFlatNet() {
 		return flatNet;
 	}
 
+	/**
+	 * {@link #synapseMatrix}
+	 */
 	@Override
 	public SynapseMatrix getSynapseMatrix() {
 		return synapseMatrix;
 	}
 
+	/**
+	 * {@link #synapseSet}
+	 * 
+	 * @return
+	 */
 	public Set<Synapse> getSynapseSet() {
 		return synapseSet;
 	}
@@ -576,8 +581,6 @@ public class Network extends BasicNetwork {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("finalized: ");
-		sb.append(finalyzed);
 		sb.append(", ");
 		sb.append(layers.size());
 		sb.append(" layers");
@@ -592,5 +595,14 @@ public class Network extends BasicNetwork {
 			pcs.removePropertyChangeListener(l);
 		}
 		listeners.clear();
+	}
+
+	/**
+	 * Returns true if at least one input and ouput layer exist
+	 * 
+	 * @return
+	 */
+	public boolean isTrainable() {
+		return layers.size() >= 2;
 	}
 }

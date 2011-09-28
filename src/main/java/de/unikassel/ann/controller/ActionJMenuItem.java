@@ -56,8 +56,11 @@ public class ActionJMenuItem extends JMenuItem implements ActionListener {
 			export.setVisible(true);
 			break;
 		case CLOSE_CURRENT_SESSION:
-			Settings.getInstance().getCurrentSession();
-			// TODO soll die current session beim schließen gespeichert werden?
+			System.err.println("not implemented");
+			// TODO: Dialog öffnen und User fragen ob er speichern möchte, wenn ja
+			// ExportPanel anzeigen
+
+			// openSaveDialog()
 
 			break;
 		case CHANGE_BETWEEN_SESSIONS:
@@ -121,7 +124,7 @@ public class ActionJMenuItem extends JMenuItem implements ActionListener {
 
 		} else if (name.equals("xor")) {
 			try {
-				importFile = new File(new URI(MainMenu.class.getClassLoader().getResource("net_cfg.csv").toString()));
+				importFile = new File(new URI(MainMenu.class.getClassLoader().getResource("net_cfg_xor.csv").toString()));
 				settings.loadNetworkFromFile(importFile);
 			} catch (URISyntaxException e) {
 				// TODO Auto-generated catch block

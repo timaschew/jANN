@@ -17,6 +17,8 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.border.TitledBorder;
 
 import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.model.Neuron;
+import de.unikassel.ann.model.func.ActivationFunction;
 import de.unikassel.ann.model.func.SigmoidFunction;
 import de.unikassel.ann.model.func.TanHFunction;
 
@@ -145,5 +147,18 @@ public class StandardOptionsPanel extends JPanel {
 										.addComponent(exactInitialWeightSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 												GroupLayout.PREFERRED_SIZE)).addContainerGap(16, Short.MAX_VALUE)));
 		setLayout(groupLayout);
+	}
+
+	public ActivationFunction getStandardActivationFunction() {
+		String activationFunctionName = (String) funktionToActivateCombo.getSelectedItem();
+		ActivationFunction activation = new SigmoidFunction();
+		Class<?> clazz;
+		try {
+			clazz = Class.forName(Neuron.functionPackage + "." + activationFunctionName);
+			activation = (ActivationFunction) clazz.newInstance();
+		} catch (Exception e) {
+			System.err.println("could not instantiate function with name: " + activationFunctionName);
+		}
+		return activation;
 	}
 }

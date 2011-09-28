@@ -121,4 +121,5 @@ public class Sidebar extends JPanel {
 
 		topolgyPanel.update();
 	}
+
 }

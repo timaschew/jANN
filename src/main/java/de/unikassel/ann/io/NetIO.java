@@ -108,9 +108,9 @@ public class NetIO {
 
 			NetConfig config = new NetConfig();
 			if (topo && synapse) {
-				config.getNetwork().finalizeFromFlatNet(topoBeanList, synapsesBanList);
+				config.getNetwork().createTopology(topoBeanList, synapsesBanList);
 			} else if (topo && !synapse) {
-				config.getNetwork().finalizeFromFlatNet(topoBeanList, null);
+				config.getNetwork().createTopology(topoBeanList, null);
 			}
 
 			BackPropagation backProp = new BackPropagation();

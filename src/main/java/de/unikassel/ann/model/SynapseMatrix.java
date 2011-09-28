@@ -30,8 +30,8 @@ public class SynapseMatrix {
 	 * @param from
 	 * @param to
 	 * @param s
-	 * @see Network#finalizeStructure()
-	 * @see Network#finalizeFromFlatNet(java.util.List, java.util.List)
+	 * @see Network#connectFeedForward()
+	 * @see Network#createTopology(java.util.List, java.util.List)
 	 */
 	public boolean addOrUpdateSynapse(Synapse s, Integer from, Integer to) {
 		if (from == null || to == null) {

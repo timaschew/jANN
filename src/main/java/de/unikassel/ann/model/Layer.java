@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
+import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.model.func.ActivationFunction;
-import de.unikassel.ann.model.func.SigmoidFunction;
 
 public class Layer {
 
@@ -129,8 +129,7 @@ public class Layer {
 	 * @return
 	 */
 	private ActivationFunction getStandardFunction() {
-		// TODO: get from side bar
-		return new SigmoidFunction();
+		return Main.instance.sidebar.standardOptionsPanel.getStandardActivationFunction();
 	}
 
 }

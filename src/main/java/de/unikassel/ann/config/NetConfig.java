@@ -75,13 +75,6 @@ public class NetConfig {
 		}
 	}
 
-	/**
-	 * Generates the network with this configuration
-	 */
-	public void buildNetwork() {
-		network.finalizeStructure();
-	}
-
 	public Network getNetwork() {
 		return network;
 	}
