@@ -13,7 +13,7 @@ import de.unikassel.ann.strategy.Strategy;
 
 public class BackPropagation extends TrainingModule implements WorkModule {
 
-	private static boolean BATCH_LEARNING = false;
+	private boolean batchLearning = false;
 	private Double momentum;
 	private Double learnRate;
 
@@ -44,14 +44,13 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 		int outputSize = net.getOutputSize();
 		if (pair.getInput().length == inputSize && pair.getIdeal().length == outputSize) {
 			return true;
-		} else {
-			throw new IllegalArgumentException("test dataset does not match for topology");
 		}
+		throw new IllegalArgumentException("test dataset does not match for topology");
 	}
 
 	private void forwardStep(final Network net, final DataPair pair) {
 
-		if (net.isFinalized() == false) {
+		if (net.isTrainable() == false) {
 			throw new IllegalArgumentException("net not finalized yet");
 		}
 		net.setInputLayerValues(pair.getInput());
@@ -109,7 +108,7 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 				calculateDeltaAndUpdateWeights(net, pair);
 				currentStep++;
 			}
-			if (BATCH_LEARNING) {
+			if (batchLearning) {
 				updateWeights(net); // offline training
 			}
 
@@ -140,7 +139,7 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 				calculateError(l);
 			}
 			calculateWeightDelta(l); // for offline learning
-			if (BATCH_LEARNING == false) {
+			if (batchLearning == false) {
 				updateWeights(l); // online training
 			}
 		}
@@ -200,7 +199,7 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 			for (Synapse s : n.getIncomingSynapses()) {
 				Double oldDeltaWeight = s.getDeltaWeight();
 				Double delta = null;
-				if (BATCH_LEARNING) {
+				if (batchLearning) {
 					delta = learnRate * s.getBatchDelta() + momentum * oldDeltaWeight;
 					s.resetBatchDelta();
 				} else {
@@ -214,18 +213,48 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 	}
 
 	/**
-	 * @return the bATCH_LEARNING
+	 * @return the if online or offline training (batch)
 	 */
-	public static boolean isBATCH_LEARNING() {
-		return BATCH_LEARNING;
+	public boolean isBatchMode() {
+		return batchLearning;
 	}
 
 	/**
-	 * @param bATCH_LEARNING
-	 *            the bATCH_LEARNING to set
+	 * @param batchmode
+	 *            / offline training
 	 */
-	public static void setBATCH_LEARNING(final boolean bATCH_LEARNING) {
-		BATCH_LEARNING = bATCH_LEARNING;
+	public void setBatchMode(final boolean batchMode) {
+		batchLearning = batchMode;
+	}
+
+	/**
+	 * @return the momentum
+	 */
+	public Double getMomentum() {
+		return momentum;
+	}
+
+	/**
+	 * @param momentum
+	 *            the momentum to set
+	 */
+	public void setMomentum(final Double momentum) {
+		this.momentum = momentum;
+	}
+
+	/**
+	 * @return the learnRate
+	 */
+	public Double getLearnRate() {
+		return learnRate;
+	}
+
+	/**
+	 * @param learnRate
+	 *            the learnRate to set
+	 */
+	public void setLearnRate(final Double learnRate) {
+		this.learnRate = learnRate;
 	}
 
 	// public static void printStep(Network net, DataPair pair) {

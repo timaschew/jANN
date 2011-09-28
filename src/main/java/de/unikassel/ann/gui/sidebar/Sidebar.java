@@ -120,5 +120,7 @@ public class Sidebar extends JPanel {
 		tabbedPane.addTab("Training", null, scrollPaneTrain, null);
 
 		topolgyPanel.update();
+		trainStrategyPanel.updatePanel();
 	}
+
 }

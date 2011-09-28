@@ -12,8 +12,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
-import javax.swing.AbstractButton;
-import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -21,13 +19,13 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.JSpinner.DefaultEditor;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.TitledBorder;
 
+import de.unikassel.ann.algo.BackPropagation;
 import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.strategy.MaxLearnIterationsStrategy;
@@ -39,17 +37,15 @@ import de.unikassel.ann.strategy.Strategy;
 public class TrainStrategyPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	public JComboBox comboBoxAlgorithm;
+	private JComboBox comboBoxAlgorithm;
 	public JSpinner spinnerLearnRate;
 	public JSpinner spinnerMomentum;
-	public AbstractButton rdbtnOnline;
-	public JRadioButton rdbtnOffline;
-	public final ButtonGroup buttonGroup = new ButtonGroup();
+	public JCheckBox chbBatchMode;
 
 	// CardLayout Swing-Elements
-	public JPanel strategiePanel;
-	public JComboBox comboBoxTypStrategien;
-	public JCheckBox chckbxActivateStrategie;
+	private JPanel strategiePanel;
+	private JComboBox comboBoxTypStrategien;
+	private JCheckBox chckbxActivateStrategie;
 
 	private JLabel lblAlgorithm;
 	private JLabel lblLearnrate;
@@ -58,21 +54,20 @@ public class TrainStrategyPanel extends JPanel {
 	private JLabel lblTypStrategien;
 
 	// Cards Panes
-	public JPanel maxIter;
-	public JPanel minError;
-	public JPanel restartError;
-	public JPanel restartImprovement;
+	private JPanel maxIter;
+	private JPanel minError;
+	private JPanel restartError;
+	private JPanel restartImprovement;
 
 	// Cards panes elements
 	private JPanel comboBoxPane;
 	private JPanel cards;
-	public JSpinner spinnerMaxIterations;
-	public JSpinner spinnerMaxIterations2;
-	public JSpinner spinnerMinError;
-	public JSpinner spinnerMaxErrorForRestart;
-	public JSpinner spinnerIterationsForRestart;
-	public JSpinner spinnerImprIterationsForRestart;
-	public JSpinner spinnerMinImprovementForRestart;
+	private JSpinner spinnerMaxIterations;
+	private JSpinner spinnerMinError;
+	private JSpinner spinnerMaxErrorForRestart;
+	private JSpinner spinnerIterationsForRestart;
+	private JSpinner spinnerImprIterationsForRestart;
+	private JSpinner spinnerMinImprovementForRestart;
 
 	final static String MAX_ITERATIONSTRATEGY = "MaxIteration";
 	final static String MIN_ERRORSTRATEGY = "MinError";
@@ -86,29 +81,25 @@ public class TrainStrategyPanel extends JPanel {
 
 		setBorder(new TitledBorder(null, Settings.i18n.getString("sidebar.trainingsStrategy"), TitledBorder.LEADING, TitledBorder.TOP,
 				null, null));
-		setSize(400, 367);
+		setSize(400, 331);
 
 		lblAlgorithm = new JLabel(Settings.i18n.getString("sidebar.trainingsStrategy.algorithm"));
 		lblLearnrate = new JLabel(Settings.i18n.getString("sidebar.trainingsStrategy.learnRate"));
 		lblMomentum = new JLabel(Settings.i18n.getString("sidebar.trainingsStretegy.momentum"));
 
 		comboBoxAlgorithm = new JComboBox();
-		comboBoxAlgorithm.setModel(new DefaultComboBoxModel(new String[] { "Backpropagation", "Test" }));
+		comboBoxAlgorithm.setModel(new DefaultComboBoxModel(new String[] { "Backpropagation" }));
 
 		spinnerLearnRate = new JSpinner();
 		spinnerLearnRate.setModel(new SpinnerNumberModel(new Double(0.0), null, null, new Double(0.1)));
 		spinnerMomentum = new JSpinner();
 		spinnerMomentum.setModel(new SpinnerNumberModel(new Double(0.0), null, null, new Double(0.1)));
 
-		lblTrainingsmodus = new JLabel(Settings.i18n.getString("sidebar.trainingsStrategy.trainingmodus"));// Settings.i18n.getString("sidebar.trainingsStrategy.trainingmodus")
+		lblTrainingsmodus = new JLabel(Settings.i18n.getString("sidebar.trainingsStrategy.trainingmodus"));
 
-		rdbtnOnline = new JRadioButton();
-		rdbtnOnline.setText(Settings.i18n.getString("sidebar.trainingsStrategy.onlineRB"));
-		buttonGroup.add(rdbtnOnline);
-		rdbtnOnline.setSelected(true);
-
-		rdbtnOffline = new JRadioButton(Settings.i18n.getString("sidebar.trainingsStrategy.offlineRB"));
-		buttonGroup.add(rdbtnOffline);
+		chbBatchMode = new JCheckBox();
+		chbBatchMode.setText(Settings.i18n.getString("sidebar.trainingsStrategy.onlineRB"));
+		chbBatchMode.setSelected(true);
 
 		strategiePanel = new JPanel();
 		strategiePanel.setBorder(new TitledBorder(null, Settings.i18n.getString("sidebar.trainingsStrategy.strategy"),
@@ -118,16 +109,12 @@ public class TrainStrategyPanel extends JPanel {
 		String comboBoxItems[] = { MAX_ITERATIONSTRATEGY, MIN_ERRORSTRATEGY, RESTART_ERRORSTRATEGY, RESTART_IMPROVEMENTSTRATEGY };
 		comboBoxTypStrategien = new JComboBox(comboBoxItems);
 		chckbxActivateStrategie = new JCheckBox("");
-		// chckbxActivateStrategie.setSelected(true);
 
 		comboBoxPane = new JPanel();
 		comboBoxPane.setSize(200, 100);
 		comboBoxTypStrategien.setEditable(false);
 
 		cards = new JPanel(new CardLayout());
-
-		JLabel label = new JLabel(Settings.i18n.getString("sidebar.trainingsStrategy.strategy.maxIterations2"));
-		spinnerMaxIterations2 = new JSpinner();
 
 		/**
 		 * Cards Panels
@@ -354,11 +341,11 @@ public class TrainStrategyPanel extends JPanel {
 		comboBoxTypStrategien.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				updatePanel();
+				updatePanel(null, true);
 			}
 		});
 
-		JSpinner spinners[] = new JSpinner[] { spinnerMaxIterations, spinnerMaxIterations2, spinnerMinError, spinnerMaxErrorForRestart,
+		JSpinner spinners[] = new JSpinner[] { spinnerMaxIterations, spinnerMinError, spinnerMaxErrorForRestart,
 				spinnerIterationsForRestart, spinnerImprIterationsForRestart, spinnerMinImprovementForRestart };
 
 		for (JSpinner s : spinners) {
@@ -366,7 +353,7 @@ public class TrainStrategyPanel extends JPanel {
 			editor.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {
 				@Override
 				public void propertyChange(final PropertyChangeEvent evt) {
-					updatePanel();
+					updatePanel(null, true);
 				}
 			});
 		}
@@ -379,44 +366,47 @@ public class TrainStrategyPanel extends JPanel {
 	private LayoutManager getTrainPanelLayout() {
 		// Layout TrainStrategy Pane
 		GroupLayout groupLayout = new GroupLayout(this);
-		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(
-				groupLayout
-						.createSequentialGroup()
-						.addContainerGap()
-						.addGroup(
-								groupLayout
-										.createParallelGroup(Alignment.LEADING)
-										.addComponent(strategiePanel, GroupLayout.PREFERRED_SIZE, 358, GroupLayout.PREFERRED_SIZE)
-										.addGroup(
-												groupLayout
-														.createParallelGroup(Alignment.TRAILING, false)
-														.addGroup(
-																groupLayout
-																		.createSequentialGroup()
-																		.addComponent(lblMomentum)
-																		.addPreferredGap(ComponentPlacement.RELATED,
-																				GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-																		.addComponent(spinnerMomentum, GroupLayout.PREFERRED_SIZE, 60,
-																				GroupLayout.PREFERRED_SIZE))
-														.addGroup(
-																groupLayout
-																		.createSequentialGroup()
-																		.addComponent(lblLearnrate)
-																		.addPreferredGap(ComponentPlacement.RELATED,
-																				GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-																		.addComponent(spinnerLearnRate, GroupLayout.PREFERRED_SIZE, 60,
-																				GroupLayout.PREFERRED_SIZE))
-														.addGroup(
-																groupLayout
-																		.createSequentialGroup()
-																		.addComponent(lblAlgorithm)
-																		.addGap(52)
-																		.addComponent(comboBoxAlgorithm, GroupLayout.PREFERRED_SIZE,
-																				GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-														.addGroup(
-																groupLayout.createParallelGroup(Alignment.LEADING)
-																		.addComponent(rdbtnOnline).addComponent(rdbtnOffline)))
-										.addComponent(lblTrainingsmodus)).addContainerGap(8, Short.MAX_VALUE)));
+		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(
+						groupLayout
+								.createSequentialGroup()
+								.addContainerGap()
+								.addGroup(
+										groupLayout
+												.createParallelGroup(Alignment.LEADING)
+												.addGroup(
+														groupLayout
+																.createParallelGroup(Alignment.TRAILING, false)
+																.addGroup(
+																		groupLayout
+																				.createSequentialGroup()
+																				.addComponent(lblMomentum)
+																				.addPreferredGap(ComponentPlacement.RELATED,
+																						GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+																				.addComponent(spinnerMomentum, GroupLayout.PREFERRED_SIZE,
+																						60, GroupLayout.PREFERRED_SIZE))
+																.addGroup(
+																		groupLayout
+																				.createSequentialGroup()
+																				.addComponent(lblLearnrate)
+																				.addPreferredGap(ComponentPlacement.RELATED,
+																						GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+																				.addComponent(spinnerLearnRate, GroupLayout.PREFERRED_SIZE,
+																						60, GroupLayout.PREFERRED_SIZE))
+																.addGroup(
+																		groupLayout
+																				.createSequentialGroup()
+																				.addComponent(lblAlgorithm)
+																				.addGap(52)
+																				.addComponent(comboBoxAlgorithm,
+																						GroupLayout.PREFERRED_SIZE,
+																						GroupLayout.DEFAULT_SIZE,
+																						GroupLayout.PREFERRED_SIZE))
+																.addGroup(
+																		groupLayout.createSequentialGroup().addComponent(chbBatchMode)
+																				.addGap(1))).addComponent(lblTrainingsmodus)
+												.addComponent(strategiePanel, GroupLayout.PREFERRED_SIZE, 358, GroupLayout.PREFERRED_SIZE))
+								.addContainerGap(8, Short.MAX_VALUE)));
 		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(
 				groupLayout
 						.createSequentialGroup()
@@ -443,23 +433,35 @@ public class TrainStrategyPanel extends JPanel {
 						.addPreferredGap(ComponentPlacement.UNRELATED)
 						.addGroup(
 								groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(lblTrainingsmodus)
-										.addComponent(rdbtnOnline)).addPreferredGap(ComponentPlacement.UNRELATED)
-						.addComponent(rdbtnOffline).addGap(18)
+										.addComponent(chbBatchMode)).addGap(18)
 						.addComponent(strategiePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+						.addContainerGap(35, Short.MAX_VALUE)));
 
 		return groupLayout;
 	}
 
-	private void updatePanel() {
-		updatePanel(null);
+	public void updatePanel() {
+		updatePanel(null, false);
 	}
 
 	private void updatePanel(final Boolean valueFiredFromCheckBox) {
+		updatePanel(valueFiredFromCheckBox, true);
+	}
+
+	private void updatePanel(final Boolean valueFiredFromCheckBox, final boolean updateFromOwnPanel) {
+
+		/*
+		 * update learnRate, momentum, batchTraiing
+		 */
+		NetConfig net = Settings.getInstance().getCurrentSession().getNetworkConfig();
+		BackPropagation train = (BackPropagation) net.getTrainingModule();
+		chbBatchMode.setSelected(train.isBatchMode());
+		spinnerLearnRate.setValue(train.getLearnRate());
+		spinnerMomentum.setValue(train.getMomentum());
+
 		// "MaxIteration", "MinError", "RestartError","RestartImprovement"
 		String selectedStrategy = (String) comboBoxTypStrategien.getSelectedItem();
 		Strategy strategy;
-		NetConfig net = Settings.getInstance().getCurrentSession().getNetworkConfig();
 		List<Strategy> strategyList = net.getStrategies();
 		Boolean checkBoxValue = valueFiredFromCheckBox;
 
@@ -470,7 +472,12 @@ public class TrainStrategyPanel extends JPanel {
 			if (strategy == null) {
 				strategy = new MaxLearnIterationsStrategy();
 			}
-			((MaxLearnIterationsStrategy) strategy)._maxIteration = maxIterationSpinner;
+			if (updateFromOwnPanel) {
+				((MaxLearnIterationsStrategy) strategy)._maxIteration = maxIterationSpinner;
+			} else {
+				spinnerMaxIterations.setValue(((MaxLearnIterationsStrategy) strategy)._maxIteration);
+			}
+
 			updateStrategy(strategy, net, strategyList, checkBoxValue);
 
 		} else if (selectedStrategy.equals("MinError")) {

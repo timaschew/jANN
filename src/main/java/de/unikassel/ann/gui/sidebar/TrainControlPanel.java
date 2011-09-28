@@ -15,8 +15,10 @@ import javax.swing.JSpinner;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.TitledBorder;
 
+import de.unikassel.ann.algo.BackPropagation;
 import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.model.DataPairSet;
 
 public class TrainControlPanel extends JPanel {
@@ -184,7 +186,14 @@ public class TrainControlPanel extends JPanel {
 					JOptionPane.showMessageDialog(frame, "Es existieren keine Trainingsdaten ", "Warnung", JOptionPane.WARNING_MESSAGE);
 				} else {
 					DataPairSet testData = new DataPairSet(net.getTrainingData());
-					net.getTrainingModule().train(net.getTrainingData());
+					BackPropagation train = (BackPropagation) net.getTrainingModule();
+					Double learnRate = (Double) Main.instance.sidebar.trainStrategyPanel.spinnerLearnRate.getValue();
+					Double momentum = (Double) Main.instance.sidebar.trainStrategyPanel.spinnerMomentum.getValue();
+					Boolean batchMode = Main.instance.sidebar.trainStrategyPanel.chbBatchMode.isSelected();
+					train.setBatchMode(batchMode);
+					train.setLearnRate(learnRate);
+					train.setMomentum(momentum);
+					train.train(net.getTrainingData());
 					System.out.println("training finished");
 					net.getWorkingModule().work(net.getNetwork(), testData);
 					System.out.println(testData);

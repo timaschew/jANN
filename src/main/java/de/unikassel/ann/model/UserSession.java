@@ -71,26 +71,15 @@ public class UserSession {
 		return name;
 	}
 
+	public String getName() {
+		return name;
+	}
+
 	/**
 	 * @return the config
 	 */
 	public NetConfig getNetworkConfig() {
 		return config;
 	}
-
-	// /**
-	// * @param config
-	// * the config to set
-	// */
-	// public void setNetworkConfig(final NetConfig config) {
-	// NetConfig oldConfig = this.config;
-	// oldConfig.getNetwork().removeAllPropertyChangeListeners();
-	// this.config = config;
-	// GraphController.getInstance().reset();
-	// config.getNetwork().addPropertyChangeListener(GraphController.getInstance());
-	// config.getNetwork().addPropertyChangeListener(Network.PropertyChanges.NEURONS.name(), Main.instance.sidebar.topolgyPanel);
-	// GraphController.getInstance().renderNetwork(config.getNetwork());
-	// Main.instance.sidebar.topolgyPanel.update();
-	// }
 
 }

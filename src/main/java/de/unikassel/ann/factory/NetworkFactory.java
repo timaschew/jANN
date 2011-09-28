@@ -70,7 +70,8 @@ public class NetworkFactory {
 		config.addWorkModule(backProp);
 		config.addOrUpdateExisting(new MaxLearnIterationsStrategy(1000));
 
-		config.buildNetwork();
+		config.getNetwork().connectFeedForward();
+
 		return config;
 	}
 

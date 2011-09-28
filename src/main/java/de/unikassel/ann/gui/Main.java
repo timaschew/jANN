@@ -6,12 +6,13 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintStream;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
-import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextPane;
@@ -30,10 +31,11 @@ import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.gui.sidebar.Sidebar;
 import de.unikassel.ann.gui.sidebar.SidebarSOM;
 import de.unikassel.ann.model.Network;
+import de.unikassel.ann.util.Logger;
 
 public class Main {
 
-	public static Main instance = new Main();
+	public static Main instance = getInstance();
 
 	/**
 	 * Launch the application.
@@ -52,11 +54,18 @@ public class Main {
 		});
 	}
 
+	private static Main getInstance() {
+		if (instance == null) {
+			instance = new Main();
+		}
+		return instance;
+	}
+
 	/*
 	 * private fields
 	 */
 	private JFrame frame;
-	private JTextPane textPane;
+	private JTextPane textPane = new JTextPane();
 	private JTextPane textPaneSOM;
 	private JPanel jungPanel;
 	private JSplitPane jungConsoleSplitPane;
@@ -72,11 +81,14 @@ public class Main {
 	public SidebarSOM sidebarSom;
 	public JPanel _3DBoardPane;
 	private JPanel consoleOrChartPanel;
+	public MainMenu mainMenu;
+	private boolean initialized = false;
 
 	/**
 	 * Create the application.
 	 */
 	private Main() {
+		instance = this;
 		try {
 			// Set look and feel by the properties file
 			String lookAndFeel = Settings.properties.getProperty("gui.lookandfeel");
@@ -90,9 +102,22 @@ public class Main {
 		} catch (IllegalAccessException e) {
 			// handle exception
 		}
-
-		initialize();
 		redirectSystemStreams();
+		Logger.init();
+		Logger.debug(this.getClass(), "logging debug");
+		Logger.info(this.getClass(), "initializing app...");
+		Logger.warn(this.getClass(), "test");
+		Logger.error(this.getClass(), "BOOOM!");
+		initialize();
+		initialized = true;
+		Logger.info(this.getClass(), "initializing finished at {}", new Date().toString());
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean isInit() {
+		return initialized;
 	}
 
 	/**
@@ -110,7 +135,7 @@ public class Main {
 		//
 		// Main Menu(Bar)
 		//
-		JMenuBar mainMenu = new MainMenu();
+		mainMenu = new MainMenu();
 		frame.setJMenuBar(mainMenu);
 
 		//
@@ -129,7 +154,7 @@ public class Main {
 		jungPanel = new JPanel(new BorderLayout());
 
 		consolePanel = new JPanel(new BorderLayout());
-		textPane = new JTextPane();
+
 		textPane.setEditable(false);
 		addStylesToDocument(textPane.getStyledDocument());
 		consolePanel.add(textPane);
@@ -181,6 +206,12 @@ public class Main {
 		graphController.setParent(jungPanel);
 		graphController.init();
 
+		ButtonGroup group = new ButtonGroup();
+		JRadioButtonMenuItem mtSession = new JRadioButtonMenuItem(Settings.getInstance().getCurrentSession().getName());
+		group.add(mtSession);
+		mtSession.setSelected(true);
+		mainMenu.subMenuSession.add(mtSession);
+
 	}
 
 	public void initSidebarPanel() {
@@ -224,7 +255,7 @@ public class Main {
 		updateTextArea(text, "regular");
 	}
 
-	private void updateTextArea(final String text, final String styleName) {
+	public void updateTextArea(final String text, final String styleName) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -254,7 +285,7 @@ public class Main {
 		StyleConstants.setForeground(s, Color.green);
 
 		s = doc.addStyle("warn", regular);
-		StyleConstants.setForeground(s, Color.orange);
+		StyleConstants.setForeground(s, new Color(255, 140, 0));
 
 		s = doc.addStyle("italic", regular);
 		StyleConstants.setItalic(s, true);
@@ -305,12 +336,12 @@ public class Main {
 			}
 		};
 
-		if (Settings.properties.get("redirect.std.out").equals("1")) {
-			System.setOut(new PrintStream(out, true));
-		}
-		if (Settings.properties.get("redirect.std.err").equals("1")) {
-			System.setErr(new PrintStream(errorOut, true));
-		}
+		// if (Settings.properties.get("redirect.std.out").equals("1")) {
+		// System.setOut(new PrintStream(out, true));
+		// }
+		// if (Settings.properties.get("redirect.std.err").equals("1")) {
+		// System.setErr(new PrintStream(errorOut, true));
+		// }
 
 	}
 

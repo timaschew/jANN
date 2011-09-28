@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import de.unikassel.ann.algo.BackPropagation;
 import de.unikassel.ann.algo.TrainingModule;
 import de.unikassel.ann.algo.WorkModule;
 import de.unikassel.ann.controller.Settings;
@@ -15,6 +16,7 @@ import de.unikassel.ann.model.NetError;
 import de.unikassel.ann.model.Network;
 import de.unikassel.ann.model.Synapse;
 import de.unikassel.ann.rand.Randomizer;
+import de.unikassel.ann.strategy.MaxLearnIterationsStrategy;
 import de.unikassel.ann.strategy.Strategy;
 
 public class NetConfig {
@@ -38,6 +40,14 @@ public class NetConfig {
 		strategies = new ArrayList<Strategy>();
 		errorLogs = new ArrayList<NetError>();
 		trainErrorListener = new ArrayList<TrainErrorListener>();
+
+		/*
+		 * default algorithm and strategy
+		 */
+		BackPropagation backProp = new BackPropagation();
+		addTrainingModule(backProp);
+		addWorkModule(backProp);
+		addOrUpdateExisting(new MaxLearnIterationsStrategy(1000));
 	}
 
 	public boolean shouldStopTraining() {
@@ -73,13 +83,6 @@ public class NetConfig {
 		for (Synapse s : network.getSynapseSet()) {
 			s.setWeight(r.nextDouble() * 2 - 1);
 		}
-	}
-
-	/**
-	 * Generates the network with this configuration
-	 */
-	public void buildNetwork() {
-		network.finalizeStructure();
 	}
 
 	public Network getNetwork() {
