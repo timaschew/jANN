@@ -34,8 +34,7 @@ import javax.swing.SpinnerNumberModel;
  * 
  */
 public class CubeGUI extends JFrame {
-	private JSpinner minCorner;
-	private JSpinner maxCorner;
+	private JSpinner sizeSpinner;
 	private JSpinner worldXoffset;
 	private JSpinner worldYoffset;
 	private JLabel lblXrotation;
@@ -44,42 +43,16 @@ public class CubeGUI extends JFrame {
 	private JSpinner yRotField;
 	private JLabel lblZrotation;
 	private JSpinner zRotField;
-	private JButton btnStart;
-	private JButton btnStop;
 	private JSpinner delayTF;
 	private JLabel lblDelayms;
-	private JPanel panel;
-	private JTextField frontLeftTopX;
-	private JTextField frontLeftTopY;
-	private JTextField frontLeftTopZ;
-	private JPanel panel_1;
-	private JTextField frontLeftBotX;
-	private JTextField frontLeftBotY;
-	private JTextField frontLeftBotZ;
-	private JPanel panel_2;
-	private JTextField frontRightTopX;
-	private JTextField frontRightTopY;
-	private JTextField frontRightTopZ;
-	private JPanel panel_3;
-	private JTextField frontRightBotX;
-	private JTextField frontRightBotY;
-	private JTextField frontRightBotZ;
-	private JPanel panel_4;
-	private JTextField backLeftTopX;
-	private JTextField backLeftTopY;
-	private JTextField backLeftTopZ;
-	private JPanel panel_5;
-	private JTextField backLeftBotX;
-	private JTextField backLeftBotY;
-	private JTextField backLeftBotZ;
-	private JPanel panel_6;
-	private JTextField backRightTopX;
-	private JTextField backRightTopY;
-	private JTextField backRightTopZ;
-	private JPanel panel_7;
-	private JTextField backRightBotX;
-	private JTextField backRightBotY;
-	private JTextField backRightBotZ;
+	private JPanel coordinate3dPanel;
+	private JTextField coordinate3dX;
+	private JTextField coordinate3dY;
+	private JTextField coordinate3dZ;
+	private JPanel inputDataPanel;
+	private JTextField inputData1;
+	private JTextField inputData2;
+	private JTextField inputData3;
 	public SpinnerNumberModel worldXoffsetModel;
 	public SpinnerNumberModel worldYoffsetModel;
 	public SpinnerNumberModel zRotModel;
@@ -106,6 +79,15 @@ public class CubeGUI extends JFrame {
 	private long lastUpdate = System.currentTimeMillis();
 	private CubeRenderer w3d;
 	protected boolean init = false;
+	private JLabel lbldKoordinateAbsolut;
+	private JLabel lblVertexGewichte;
+	private JPanel panel_2;
+	private JTextField weight1;
+	private JTextField weight2;
+	private JTextField weight3;
+	private JTextField inputData4;
+	private JLabel lblInput;
+	private JTextField weight4;
 
 	public static void main(final String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -130,7 +112,6 @@ public class CubeGUI extends JFrame {
 	 * 
 	 */
 	protected void init() {
-		w3d = new CubeRenderer(this);
 		getContentPane().add(w3d);
 		init = true;
 
@@ -143,9 +124,9 @@ public class CubeGUI extends JFrame {
 		fpsTF.setText("" + (newTime - lastUpdate));
 
 		if (init) {
-			frontLeftTopX.setText(w3d.p[4][1].intValue() + "");
-			frontLeftTopY.setText(w3d.p[4][2].intValue() + "");
-			frontLeftTopZ.setText(w3d.p[4][3].intValue() + "");
+			coordinate3dX.setText(w3d.p[4][1].intValue() + "");
+			coordinate3dY.setText(w3d.p[4][2].intValue() + "");
+			coordinate3dZ.setText(w3d.p[4][3].intValue() + "");
 
 		}
 
@@ -154,6 +135,7 @@ public class CubeGUI extends JFrame {
 	}
 
 	public CubeGUI() {
+		w3d = new CubeRenderer(this);
 		getContentPane().setLayout(new BorderLayout());
 
 		chckbxAutoRotation = new JCheckBox("Auto-Rotation");
@@ -171,14 +153,25 @@ public class CubeGUI extends JFrame {
 
 		delayModel = new SpinnerNumberModel(new Integer(10), new Integer(0), new Integer(5000), new Integer(1));
 
-		DefaultEditor editor = (JSpinner.DefaultEditor) rotStepSpinner.getEditor();
-		editor.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {
+		DefaultEditor rotateEditor = (JSpinner.DefaultEditor) rotStepSpinner.getEditor();
+		rotateEditor.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
 				System.out.println("set step to" + evt.getNewValue());
 				xRotModel.setStepSize((Number) evt.getNewValue());
 				yRotModel.setStepSize((Number) evt.getNewValue());
 				zRotModel.setStepSize((Number) evt.getNewValue());
+			}
+		});
+
+		sizeSpinner = new JSpinner();
+		sizeSpinner.setValue(w3d.getGeometrySize());
+		DefaultEditor editorSize = (JSpinner.DefaultEditor) sizeSpinner.getEditor();
+		editorSize.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
+				Integer size = (Integer) evt.getNewValue();
+				w3d.initVerticies(size);
 			}
 		});
 
@@ -193,12 +186,6 @@ public class CubeGUI extends JFrame {
 
 		JPanel southPanel = new JPanel();
 		getContentPane().add(southPanel, BorderLayout.SOUTH);
-
-		btnStart = new JButton("Start");
-		southPanel.add(btnStart);
-
-		btnStop = new JButton("Stop");
-		southPanel.add(btnStop);
 
 		lblDelayms = new JLabel("Delay [ms]");
 		southPanel.add(lblDelayms);
@@ -227,216 +214,122 @@ public class CubeGUI extends JFrame {
 		gbl_easetBottomPanel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		easetBottomPanel.setLayout(gbl_easetBottomPanel);
 
-		panel_4 = new JPanel();
-		panel_4.setBackground(Color.DARK_GRAY);
-		GridBagConstraints gbc_panel_4 = new GridBagConstraints();
-		gbc_panel_4.insets = new Insets(0, 0, 5, 5);
-		gbc_panel_4.fill = GridBagConstraints.BOTH;
-		gbc_panel_4.gridx = 1;
-		gbc_panel_4.gridy = 1;
-		easetBottomPanel.add(panel_4, gbc_panel_4);
+		lblInput = new JLabel("Input");
+		GridBagConstraints gbc_lblInput = new GridBagConstraints();
+		gbc_lblInput.insets = new Insets(0, 0, 5, 5);
+		gbc_lblInput.gridx = 2;
+		gbc_lblInput.gridy = 1;
+		easetBottomPanel.add(lblInput, gbc_lblInput);
 
-		backLeftTopX = new JTextField();
-		backLeftTopX.setColumns(2);
-		panel_4.add(backLeftTopX);
+		inputDataPanel = new JPanel();
+		inputDataPanel.setBackground(Color.LIGHT_GRAY);
+		GridBagConstraints gbc_inputDataPanel = new GridBagConstraints();
+		gbc_inputDataPanel.insets = new Insets(0, 0, 5, 0);
+		gbc_inputDataPanel.fill = GridBagConstraints.BOTH;
+		gbc_inputDataPanel.gridx = 3;
+		gbc_inputDataPanel.gridy = 1;
+		easetBottomPanel.add(inputDataPanel, gbc_inputDataPanel);
 
-		backLeftTopY = new JTextField();
-		backLeftTopY.setColumns(2);
-		panel_4.add(backLeftTopY);
+		inputData1 = new JTextField();
+		inputData1.setColumns(2);
+		inputDataPanel.add(inputData1);
 
-		backLeftTopZ = new JTextField();
-		backLeftTopZ.setColumns(2);
-		panel_4.add(backLeftTopZ);
+		inputData2 = new JTextField();
+		inputData2.setColumns(2);
+		inputDataPanel.add(inputData2);
 
-		panel_6 = new JPanel();
-		panel_6.setBackground(Color.DARK_GRAY);
-		GridBagConstraints gbc_panel_6 = new GridBagConstraints();
-		gbc_panel_6.insets = new Insets(0, 0, 5, 0);
-		gbc_panel_6.fill = GridBagConstraints.BOTH;
-		gbc_panel_6.gridx = 3;
-		gbc_panel_6.gridy = 1;
-		easetBottomPanel.add(panel_6, gbc_panel_6);
+		inputData3 = new JTextField();
+		inputData3.setColumns(2);
+		inputDataPanel.add(inputData3);
 
-		backRightTopX = new JTextField();
-		backRightTopX.setColumns(2);
-		panel_6.add(backRightTopX);
+		inputData4 = new JTextField();
+		inputData4.setColumns(2);
+		inputDataPanel.add(inputData4);
 
-		backRightTopY = new JTextField();
-		backRightTopY.setColumns(2);
-		panel_6.add(backRightTopY);
-
-		backRightTopZ = new JTextField();
-		backRightTopZ.setColumns(2);
-		panel_6.add(backRightTopZ);
-
-		panel = new JPanel();
-		panel.setBackground(Color.LIGHT_GRAY);
-		GridBagConstraints gbc_panel = new GridBagConstraints();
-		gbc_panel.insets = new Insets(0, 0, 5, 5);
-		gbc_panel.fill = GridBagConstraints.BOTH;
-		gbc_panel.gridx = 0;
-		gbc_panel.gridy = 2;
-		easetBottomPanel.add(panel, gbc_panel);
-
-		frontLeftTopX = new JTextField();
-		panel.add(frontLeftTopX);
-		frontLeftTopX.setColumns(2);
-
-		frontLeftTopY = new JTextField();
-		panel.add(frontLeftTopY);
-		frontLeftTopY.setColumns(2);
-
-		frontLeftTopZ = new JTextField();
-		panel.add(frontLeftTopZ);
-		frontLeftTopZ.setColumns(2);
+		lblVertexGewichte = new JLabel("Gewichte");
+		GridBagConstraints gbc_lblVertexGewichte = new GridBagConstraints();
+		gbc_lblVertexGewichte.insets = new Insets(0, 0, 5, 5);
+		gbc_lblVertexGewichte.gridx = 2;
+		gbc_lblVertexGewichte.gridy = 2;
+		easetBottomPanel.add(lblVertexGewichte, gbc_lblVertexGewichte);
 
 		panel_2 = new JPanel();
 		panel_2.setBackground(Color.LIGHT_GRAY);
 		GridBagConstraints gbc_panel_2 = new GridBagConstraints();
-		gbc_panel_2.insets = new Insets(0, 0, 5, 5);
+		gbc_panel_2.insets = new Insets(0, 0, 5, 0);
 		gbc_panel_2.fill = GridBagConstraints.BOTH;
-		gbc_panel_2.gridx = 2;
+		gbc_panel_2.gridx = 3;
 		gbc_panel_2.gridy = 2;
 		easetBottomPanel.add(panel_2, gbc_panel_2);
 
-		frontRightTopX = new JTextField();
-		frontRightTopX.setColumns(2);
-		panel_2.add(frontRightTopX);
+		weight1 = new JTextField();
+		weight1.setColumns(2);
+		panel_2.add(weight1);
 
-		frontRightTopY = new JTextField();
-		frontRightTopY.setColumns(2);
-		panel_2.add(frontRightTopY);
+		weight2 = new JTextField();
+		weight2.setColumns(2);
+		panel_2.add(weight2);
 
-		frontRightTopZ = new JTextField();
-		frontRightTopZ.setColumns(2);
-		panel_2.add(frontRightTopZ);
+		weight3 = new JTextField();
+		weight3.setColumns(2);
+		panel_2.add(weight3);
 
-		panel_5 = new JPanel();
-		panel_5.setBackground(Color.DARK_GRAY);
-		GridBagConstraints gbc_panel_5 = new GridBagConstraints();
-		gbc_panel_5.insets = new Insets(0, 0, 5, 5);
-		gbc_panel_5.fill = GridBagConstraints.BOTH;
-		gbc_panel_5.gridx = 1;
-		gbc_panel_5.gridy = 3;
-		easetBottomPanel.add(panel_5, gbc_panel_5);
+		weight4 = new JTextField();
+		weight4.setColumns(2);
+		panel_2.add(weight4);
 
-		backLeftBotX = new JTextField();
-		backLeftBotX.setColumns(2);
-		panel_5.add(backLeftBotX);
+		lbldKoordinateAbsolut = new JLabel("3D Koordinate absolut");
+		GridBagConstraints gbc_lbldKoordinateAbsolut = new GridBagConstraints();
+		gbc_lbldKoordinateAbsolut.insets = new Insets(0, 0, 5, 5);
+		gbc_lbldKoordinateAbsolut.gridx = 2;
+		gbc_lbldKoordinateAbsolut.gridy = 3;
+		easetBottomPanel.add(lbldKoordinateAbsolut, gbc_lbldKoordinateAbsolut);
 
-		backLeftBotY = new JTextField();
-		backLeftBotY.setColumns(2);
-		panel_5.add(backLeftBotY);
+		coordinate3dPanel = new JPanel();
+		coordinate3dPanel.setBackground(Color.LIGHT_GRAY);
+		GridBagConstraints gbc_coordinate3dPanel = new GridBagConstraints();
+		gbc_coordinate3dPanel.insets = new Insets(0, 0, 5, 0);
+		gbc_coordinate3dPanel.fill = GridBagConstraints.BOTH;
+		gbc_coordinate3dPanel.gridx = 3;
+		gbc_coordinate3dPanel.gridy = 3;
+		easetBottomPanel.add(coordinate3dPanel, gbc_coordinate3dPanel);
 
-		backLeftBotZ = new JTextField();
-		backLeftBotZ.setColumns(2);
-		panel_5.add(backLeftBotZ);
+		coordinate3dX = new JTextField();
+		coordinate3dPanel.add(coordinate3dX);
+		coordinate3dX.setColumns(2);
 
-		panel_7 = new JPanel();
-		panel_7.setBackground(Color.DARK_GRAY);
-		GridBagConstraints gbc_panel_7 = new GridBagConstraints();
-		gbc_panel_7.insets = new Insets(0, 0, 5, 0);
-		gbc_panel_7.fill = GridBagConstraints.BOTH;
-		gbc_panel_7.gridx = 3;
-		gbc_panel_7.gridy = 3;
-		easetBottomPanel.add(panel_7, gbc_panel_7);
+		coordinate3dY = new JTextField();
+		coordinate3dPanel.add(coordinate3dY);
+		coordinate3dY.setColumns(2);
 
-		backRightBotX = new JTextField();
-		backRightBotX.setColumns(2);
-		panel_7.add(backRightBotX);
-
-		backRightBotY = new JTextField();
-		backRightBotY.setColumns(2);
-		panel_7.add(backRightBotY);
-
-		backRightBotZ = new JTextField();
-		backRightBotZ.setColumns(2);
-		panel_7.add(backRightBotZ);
-
-		panel_1 = new JPanel();
-		panel_1.setBackground(Color.LIGHT_GRAY);
-		GridBagConstraints gbc_panel_1 = new GridBagConstraints();
-		gbc_panel_1.insets = new Insets(0, 0, 0, 5);
-		gbc_panel_1.fill = GridBagConstraints.BOTH;
-		gbc_panel_1.gridx = 0;
-		gbc_panel_1.gridy = 4;
-		easetBottomPanel.add(panel_1, gbc_panel_1);
-
-		frontLeftBotX = new JTextField();
-		frontLeftBotX.setColumns(2);
-		panel_1.add(frontLeftBotX);
-
-		frontLeftBotY = new JTextField();
-		frontLeftBotY.setColumns(2);
-		panel_1.add(frontLeftBotY);
-
-		frontLeftBotZ = new JTextField();
-		frontLeftBotZ.setColumns(2);
-		panel_1.add(frontLeftBotZ);
-
-		panel_3 = new JPanel();
-		panel_3.setBackground(Color.LIGHT_GRAY);
-		GridBagConstraints gbc_panel_3 = new GridBagConstraints();
-		gbc_panel_3.insets = new Insets(0, 0, 0, 5);
-		gbc_panel_3.fill = GridBagConstraints.BOTH;
-		gbc_panel_3.gridx = 2;
-		gbc_panel_3.gridy = 4;
-		easetBottomPanel.add(panel_3, gbc_panel_3);
-
-		frontRightBotX = new JTextField();
-		frontRightBotX.setColumns(2);
-		panel_3.add(frontRightBotX);
-
-		frontRightBotY = new JTextField();
-		frontRightBotY.setColumns(2);
-		panel_3.add(frontRightBotY);
-
-		frontRightBotZ = new JTextField();
-		frontRightBotZ.setColumns(2);
-		panel_3.add(frontRightBotZ);
+		coordinate3dZ = new JTextField();
+		coordinate3dPanel.add(coordinate3dZ);
+		coordinate3dZ.setColumns(2);
 
 		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[] { 0, 0, 0, 0 };
+		gbl_panel.columnWidths = new int[] { 0, 0, 0, 0, 0 };
 		gbl_panel.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-		gbl_panel.columnWeights = new double[] { 1.0, 0.0, 1.0, Double.MIN_VALUE };
+		gbl_panel.columnWeights = new double[] { 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		gbl_panel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		eastTopPanel.setLayout(gbl_panel);
 
-		JLabel lblMinCorner = new JLabel("Min Corner");
-		GridBagConstraints gbc_lblMinCorner = new GridBagConstraints();
-		gbc_lblMinCorner.insets = new Insets(0, 0, 5, 5);
-		gbc_lblMinCorner.anchor = GridBagConstraints.EAST;
-		gbc_lblMinCorner.gridx = 1;
-		gbc_lblMinCorner.gridy = 0;
-		eastTopPanel.add(lblMinCorner, gbc_lblMinCorner);
+		JLabel lblSize = new JLabel("Größe");
+		GridBagConstraints gbc_lblSize = new GridBagConstraints();
+		gbc_lblSize.anchor = GridBagConstraints.EAST;
+		gbc_lblSize.insets = new Insets(0, 0, 5, 5);
+		gbc_lblSize.gridx = 1;
+		gbc_lblSize.gridy = 1;
+		eastTopPanel.add(lblSize, gbc_lblSize);
 
-		minCorner = new JSpinner();
-		GridBagConstraints gbc_minCorner = new GridBagConstraints();
-		gbc_minCorner.insets = new Insets(0, 0, 5, 0);
-		gbc_minCorner.fill = GridBagConstraints.HORIZONTAL;
-		gbc_minCorner.gridx = 2;
-		gbc_minCorner.gridy = 0;
-		eastTopPanel.add(minCorner, gbc_minCorner);
-		// minCorner.setColumns(10);
-
-		JLabel lblMaxCorner = new JLabel("Max Corner");
-		GridBagConstraints gbc_lblMaxCorner = new GridBagConstraints();
-		gbc_lblMaxCorner.anchor = GridBagConstraints.EAST;
-		gbc_lblMaxCorner.insets = new Insets(0, 0, 5, 5);
-		gbc_lblMaxCorner.gridx = 1;
-		gbc_lblMaxCorner.gridy = 1;
-		eastTopPanel.add(lblMaxCorner, gbc_lblMaxCorner);
-
-		maxCorner = new JSpinner();
-		GridBagConstraints gbc_maxCorner = new GridBagConstraints();
-		gbc_maxCorner.insets = new Insets(0, 0, 5, 0);
-		gbc_maxCorner.fill = GridBagConstraints.HORIZONTAL;
-		gbc_maxCorner.gridx = 2;
-		gbc_maxCorner.gridy = 1;
-		eastTopPanel.add(maxCorner, gbc_maxCorner);
+		GridBagConstraints gbc_sizeSpinner = new GridBagConstraints();
+		gbc_sizeSpinner.insets = new Insets(0, 0, 5, 0);
+		gbc_sizeSpinner.fill = GridBagConstraints.HORIZONTAL;
+		gbc_sizeSpinner.gridx = 3;
+		gbc_sizeSpinner.gridy = 1;
+		eastTopPanel.add(sizeSpinner, gbc_sizeSpinner);
 		// maxCorner.setColumns(10);
 
-		JLabel lblWorldXOffset = new JLabel("World x-offset");
+		JLabel lblWorldXOffset = new JLabel("World Position (x,y)");
 		GridBagConstraints gbc_lblWorldXOffset = new GridBagConstraints();
 		gbc_lblWorldXOffset.insets = new Insets(0, 0, 5, 5);
 		gbc_lblWorldXOffset.anchor = GridBagConstraints.EAST;
@@ -444,30 +337,21 @@ public class CubeGUI extends JFrame {
 		gbc_lblWorldXOffset.gridy = 2;
 		eastTopPanel.add(lblWorldXOffset, gbc_lblWorldXOffset);
 
-		worldXoffset = new JSpinner(worldXoffsetModel);
-		GridBagConstraints gbc_worldXoffset = new GridBagConstraints();
-		gbc_worldXoffset.insets = new Insets(0, 0, 5, 0);
-		gbc_worldXoffset.fill = GridBagConstraints.HORIZONTAL;
-		gbc_worldXoffset.gridx = 2;
-		gbc_worldXoffset.gridy = 2;
-		eastTopPanel.add(worldXoffset, gbc_worldXoffset);
-		// worldXoffset.setColumns(10);
-
-		JLabel lblWorldYoffset = new JLabel("World y-offset");
-		GridBagConstraints gbc_lblWorldYoffset = new GridBagConstraints();
-		gbc_lblWorldYoffset.insets = new Insets(0, 0, 5, 5);
-		gbc_lblWorldYoffset.anchor = GridBagConstraints.EAST;
-		gbc_lblWorldYoffset.gridx = 1;
-		gbc_lblWorldYoffset.gridy = 3;
-		eastTopPanel.add(lblWorldYoffset, gbc_lblWorldYoffset);
-
 		worldYoffset = new JSpinner(worldYoffsetModel);
 		GridBagConstraints gbc_worldYoffset = new GridBagConstraints();
-		gbc_worldYoffset.insets = new Insets(0, 0, 5, 0);
 		gbc_worldYoffset.fill = GridBagConstraints.HORIZONTAL;
+		gbc_worldYoffset.insets = new Insets(0, 0, 5, 5);
 		gbc_worldYoffset.gridx = 2;
-		gbc_worldYoffset.gridy = 3;
+		gbc_worldYoffset.gridy = 2;
 		eastTopPanel.add(worldYoffset, gbc_worldYoffset);
+
+		worldXoffset = new JSpinner(worldXoffsetModel);
+		GridBagConstraints gbc_worldXoffset = new GridBagConstraints();
+		gbc_worldXoffset.fill = GridBagConstraints.HORIZONTAL;
+		gbc_worldXoffset.insets = new Insets(0, 0, 5, 0);
+		gbc_worldXoffset.gridx = 3;
+		gbc_worldXoffset.gridy = 2;
+		eastTopPanel.add(worldXoffset, gbc_worldXoffset);
 
 		lblRotationStep = new JLabel("Rotation step");
 		GridBagConstraints gbc_lblRotationStep = new GridBagConstraints();
@@ -480,7 +364,7 @@ public class CubeGUI extends JFrame {
 		GridBagConstraints gbc_spinner = new GridBagConstraints();
 		gbc_spinner.fill = GridBagConstraints.HORIZONTAL;
 		gbc_spinner.insets = new Insets(0, 0, 5, 0);
-		gbc_spinner.gridx = 2;
+		gbc_spinner.gridx = 3;
 		gbc_spinner.gridy = 4;
 		eastTopPanel.add(rotStepSpinner, gbc_spinner);
 		// worldYoffset.setColumns(10);
@@ -498,7 +382,7 @@ public class CubeGUI extends JFrame {
 		GridBagConstraints gbc_xRotField = new GridBagConstraints();
 		gbc_xRotField.insets = new Insets(0, 0, 5, 0);
 		gbc_xRotField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_xRotField.gridx = 2;
+		gbc_xRotField.gridx = 3;
 		gbc_xRotField.gridy = 5;
 		eastTopPanel.add(xRotField, gbc_xRotField);
 
@@ -515,7 +399,7 @@ public class CubeGUI extends JFrame {
 		GridBagConstraints gbc_yRotField = new GridBagConstraints();
 		gbc_yRotField.insets = new Insets(0, 0, 5, 0);
 		gbc_yRotField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_yRotField.gridx = 2;
+		gbc_yRotField.gridx = 3;
 		gbc_yRotField.gridy = 6;
 		eastTopPanel.add(yRotField, gbc_yRotField);
 
@@ -531,7 +415,7 @@ public class CubeGUI extends JFrame {
 		GridBagConstraints gbc_zRotField = new GridBagConstraints();
 		gbc_zRotField.insets = new Insets(0, 0, 5, 0);
 		gbc_zRotField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_zRotField.gridx = 2;
+		gbc_zRotField.gridx = 3;
 		gbc_zRotField.gridy = 7;
 		eastTopPanel.add(zRotField, gbc_zRotField);
 		// zRotField.setColumns(10);

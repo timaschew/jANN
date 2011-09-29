@@ -45,18 +45,39 @@ public class CubeRenderer extends JPanel implements MouseMotionListener {
 
 	private Point prevMove = new Point();
 
-	public Double minCorner = -100.0;
-	public Double maxCorner = +100.0;
-
 	Image buffer;
 	Graphics2D gBuffer;
 
 	private CubeGUI controller;
 
+	private double minCorner;
+
+	private double maxCorner;
+
 	public CubeRenderer(final CubeGUI controller) {
 		this.controller = controller;
 		setBackground(new Color(255, 255, 255));
 		add(new JLabel("Test"));
+		addMouseMotionListener(this);
+		initVerticies(200.0);
+	}
+
+	/**
+	 * Changes the size of the cube
+	 * 
+	 * @param i
+	 * 
+	 */
+	public void initVerticies(final double size) {
+
+		if (size == getGeometrySize()) {
+			System.out.println("dont change verticies");
+			return;
+		}
+
+		minCorner = -(size / 2);
+		maxCorner = +(size / 2);
+		System.out.println("change verticies to " + minCorner + " / " + maxCorner);
 
 		// 8 Eckpunkte im lokalen Würfel-Koordinatensystem
 		// Nullpunkt = Mittelpunkt
@@ -84,8 +105,6 @@ public class CubeRenderer extends JPanel implements MouseMotionListener {
 		p[8][x] = minCorner;
 		p[8][y] = maxCorner;
 		p[8][z] = maxCorner;
-
-		addMouseMotionListener(this);
 
 	}
 
@@ -211,5 +230,12 @@ public class CubeRenderer extends JPanel implements MouseMotionListener {
 	public void mouseMoved(final MouseEvent e) {
 		prevMove = e.getPoint();
 
+	}
+
+	/**
+	 * @return
+	 */
+	public double getGeometrySize() {
+		return Math.abs(minCorner) + Math.abs(maxCorner);
 	}
 }
