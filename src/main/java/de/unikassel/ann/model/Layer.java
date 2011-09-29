@@ -18,14 +18,14 @@ public class Layer {
 
 	private BasicNetwork network;
 
-	private boolean layerWithBias;
+	// private boolean haveBias();
 
 	public Layer() {
 		neurons = new ArrayList<Neuron>();
 	}
 
 	public void addNeuron(final Neuron n) {
-		if (layerWithBias && n.isBias()) {
+		if (hasBias() && n.isBias()) {
 			throw new IllegalArgumentException("second bias neuron not allowed");
 		}
 		// set local index for layer scope
@@ -34,7 +34,6 @@ public class Layer {
 		if (n.isBias()) {
 			// add bias neuron at first position an shift all others
 			neurons.add(0, n);
-			layerWithBias = true;
 		} else {
 			// add to the end
 			neurons.add(n);
@@ -67,7 +66,7 @@ public class Layer {
 		sb.append("[");
 		sb.append(index);
 		sb.append("]");
-		sb.append(layerWithBias ? " (B)" : "");
+		sb.append(hasBias() ? " (B)" : "");
 		sb.append(" ");
 		sb.append(neurons.size());
 		sb.append(" neurons\n");
@@ -99,15 +98,20 @@ public class Layer {
 	}
 
 	public boolean hasBias() {
-		return layerWithBias;
+		for (Neuron n : neurons) {
+			if (n.isBias()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public void setBias(final boolean bias) {
-		if (layerWithBias == bias) {
+		if (hasBias() == bias) {
 			// already contains a bias or not
 			return;
 		}
-		boolean oldValue = layerWithBias;
+		boolean oldValue = hasBias();
 		if (bias) {
 			Neuron n = new Neuron(getStandardFunction(), true);
 			n.setId(network.getNextNeuronId());
@@ -119,7 +123,6 @@ public class Layer {
 				}
 			}
 		}
-		layerWithBias = bias;
 		if (network instanceof Network) {
 			((Network) network).getPCS().firePropertyChange(Network.PropertyChanges.NEURONS.name(), oldValue, bias);
 		}

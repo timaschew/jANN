@@ -3,9 +3,12 @@ package de.unikassel.ann.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 
 import de.unikassel.ann.controller.ActionJMenuItem;
@@ -20,6 +23,7 @@ public class MainMenu extends JMenuBar {
 	private static final long serialVersionUID = 1L;
 	private JMenu fileMenu;
 	public JMenu subMenuSession;
+	private final ButtonGroup buttonGroup = new ButtonGroup();
 
 	/**
 	 * Constructor
@@ -92,12 +96,28 @@ public class MainMenu extends JMenuBar {
 	private JMenu getAnsichtMenu() {
 		JMenu mnAnsicht = new JMenu(Settings.i18n.getString("menu.view"));
 
-		JMenuItem mntmDatenvisualisierung = new ActionJMenuItem(Settings.i18n.getString("menu.view.showTrainingData"), Actions.VIEW_DATA);
-		mnAnsicht.add(mntmDatenvisualisierung);
+		JRadioButtonMenuItem rdbtnmntmKonsoleAnzeigen = new JRadioButtonMenuItem("Konsole anzeigen");
+		rdbtnmntmKonsoleAnzeigen.setSelected(true);
+		buttonGroup.add(rdbtnmntmKonsoleAnzeigen);
+		mnAnsicht.add(rdbtnmntmKonsoleAnzeigen);
 
-		JMenuItem mntmTrainingfehlerverlauf = new ActionJMenuItem(Settings.i18n.getString("menu.view.showTrainingError"),
-				Actions.VIEW_TRAINING);
-		mnAnsicht.add(mntmTrainingfehlerverlauf);
+		JRadioButtonMenuItem radioButtonMenuItem = new JRadioButtonMenuItem("Trainingsdaten anzeigen");
+		buttonGroup.add(radioButtonMenuItem);
+		mnAnsicht.add(radioButtonMenuItem);
+
+		JRadioButtonMenuItem rdbtnmntmTrainingsfehlerAnzeigen = new JRadioButtonMenuItem("Training-Chart anzeigen");
+		buttonGroup.add(rdbtnmntmTrainingsfehlerAnzeigen);
+		mnAnsicht.add(rdbtnmntmTrainingsfehlerAnzeigen);
+
+		JSeparator separator = new JSeparator();
+		mnAnsicht.add(separator);
+
+		JMenuItem mntmTrainingchartLeeren = new JMenuItem("Konsole/Chart leeren");
+		mnAnsicht.add(mntmTrainingchartLeeren);
+
+		rdbtnmntmKonsoleAnzeigen.addActionListener(new ActionJMenuItem("switch console", Actions.SWITCH_CONSOLE));
+		rdbtnmntmTrainingsfehlerAnzeigen.addActionListener(new ActionJMenuItem("switch train error", Actions.SWITCH_TRAINERROR));
+		rdbtnmntmKonsoleAnzeigen.addActionListener(new ActionJMenuItem("switch train data", Actions.SWITCH_TRAINDATA));
 
 		return mnAnsicht;
 	}

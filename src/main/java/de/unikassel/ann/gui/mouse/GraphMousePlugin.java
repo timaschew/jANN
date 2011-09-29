@@ -96,6 +96,7 @@ public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements 
 			final VisualizationViewer<Vertex, Edge> vv = (VisualizationViewer<Vertex, Edge>) e.getSource();
 			final Point2D p = e.getPoint();
 			GraphElementAccessor<Vertex, Edge> pickSupport = vv.getPickSupport();
+			GraphController graphController = GraphController.getInstance();
 			if (pickSupport != null) {
 				Graph<Vertex, Edge> graph = vv.getModel().getGraphLayout().getGraph();
 				// set default edge type
@@ -122,20 +123,17 @@ public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements 
 					}
 				} else {
 					TopologyPanel topoPanel = Main.instance.sidebar.topolgyPanel;
-					NetworkLayer layer = null;
-					Integer selectedHiddenLayer = null;
 					if (topoPanel.mouseInputRB.isSelected()) {
-						layer = NetworkLayer.INPUT;
+						graphController.createVertex(NetworkLayer.INPUT);
 					} else if (topoPanel.mouseOutputRB.isSelected()) {
-						layer = NetworkLayer.OUTPUT;
+						graphController.createVertex(NetworkLayer.OUTPUT);
 					} else if (topoPanel.mouseHiddenRB.isSelected()) {
-						layer = NetworkLayer.HIDDEN;
-						selectedHiddenLayer = (Integer) topoPanel.comboBoxHiddenMausModus.getSelectedItem();
+						Integer selectedHiddenLayer = (Integer) topoPanel.comboBoxHiddenMausModus.getSelectedItem();
+						graphController.createVertex(NetworkLayer.HIDDEN, selectedHiddenLayer);
 					}
-					GraphController.getInstance().createVertex(layer, selectedHiddenLayer);
 				}
 			}
-			GraphController.getInstance().repaint();
+			graphController.repaint();
 		}
 	}
 
@@ -154,7 +152,7 @@ public class GraphMousePlugin<V, E> extends AbstractGraphMousePlugin implements 
 			if (pickSupport != null) {
 				final Vertex vertex = pickSupport.getVertex(layout, p.getX(), p.getY());
 				if (vertex != null && startVertex != null) {
-					GraphController.getInstance().createEdge(edgeFactory, startVertex, vertex);
+					GraphController.getInstance().createEdge(startVertex, vertex);
 				}
 			}
 			startVertex = null;

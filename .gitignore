@@ -10,3 +10,4 @@ test/org/generation5/*
 test/wireframe/*
 .classpath
 src/test/resources/net_export.csv
+.project

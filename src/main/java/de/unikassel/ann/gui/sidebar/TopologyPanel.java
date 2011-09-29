@@ -89,7 +89,7 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 		hiddenLayerCountSpinner = new JSpinner(new SpinnerNumberModel(0, 0, MAX_HIDDEN_LAYER, 1));
 
 		JLabel lblHiddenNeuronen = new JLabel(Settings.i18n.getString("sidebar.topology.hiddenNeurons"));
-		hiddenNeuronSpinner = new JSpinner(new SpinnerNumberModel(1, 1, MAX_NEURONS, 1));
+		hiddenNeuronSpinner = new JSpinner(new SpinnerNumberModel(0, 0, MAX_NEURONS, 1));
 
 		// is with the hiddenLayerCountSpinner associated
 
@@ -324,6 +324,9 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 				Layer layer = netConfig.getNetwork().getLayer(selectedHiddenLayer);
 				// ignore bias neuron for size
 				int sizeForSelectedHiddenLayer = layer.getNeurons().size() - (layer.hasBias() ? 1 : 0);
+				if (sizeForSelectedHiddenLayer < 0) {
+					sizeForSelectedHiddenLayer++;
+				}
 				hiddenNeuronSpinner.setValue(sizeForSelectedHiddenLayer);
 
 				// update hidden bias
@@ -447,6 +450,9 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 			Layer layer = netConfig.getNetwork().getLayer(selectedHiddenLayer);
 			// ignore bias neuron for size
 			int sizeForSelectedHiddenLayer = layer.getNeurons().size() - (layer.hasBias() ? 1 : 0);
+			if (sizeForSelectedHiddenLayer < 0) {
+				sizeForSelectedHiddenLayer++;
+			}
 			hiddenNeuronSpinner.setValue(sizeForSelectedHiddenLayer);
 
 			// hidden bias

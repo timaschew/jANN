@@ -22,24 +22,24 @@ import edu.uci.ics.jung.visualization.MultiLayerTransformer;
 import edu.uci.ics.jung.visualization.RenderContext;
 import edu.uci.ics.jung.visualization.annotations.AnnotatingGraphMousePlugin;
 import edu.uci.ics.jung.visualization.control.AbstractModalGraphMouse;
-import edu.uci.ics.jung.visualization.control.AnimatedPickingGraphMousePlugin;
 import edu.uci.ics.jung.visualization.control.CrossoverScalingControl;
 import edu.uci.ics.jung.visualization.control.LabelEditingGraphMousePlugin;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.PickingGraphMousePlugin;
-import edu.uci.ics.jung.visualization.control.RotatingGraphMousePlugin;
 import edu.uci.ics.jung.visualization.control.ScalingGraphMousePlugin;
-import edu.uci.ics.jung.visualization.control.ShearingGraphMousePlugin;
 import edu.uci.ics.jung.visualization.control.TranslatingGraphMousePlugin;
 
 public class GraphMouse<V, E> extends AbstractModalGraphMouse implements ModalGraphMouse, ItemSelectable {
 
 	protected Factory<Vertex> vertexFactory;
 	protected Factory<Edge> edgeFactory;
+
 	protected GraphMousePlugin<Vertex, Edge> editingPlugin;
 	protected LabelEditingGraphMousePlugin<Vertex, Edge> labelEditingPlugin;
 	protected GraphMousePopupPlugin<Vertex, Edge> popupEditingPlugin;
 	protected AnnotatingGraphMousePlugin<Vertex, Edge> annotatingPlugin;
+	protected GraphMouseConnectPlugin<Vertex, Edge> connectingPlugin;
+
 	protected MultiLayerTransformer basicTransformer;
 	protected RenderContext<Vertex, Edge> rc;
 
@@ -77,15 +77,17 @@ public class GraphMouse<V, E> extends AbstractModalGraphMouse implements ModalGr
 	@Override
 	protected void loadPlugins() {
 		pickingPlugin = new PickingGraphMousePlugin<Vertex, Edge>();
-		animatedPickingPlugin = new AnimatedPickingGraphMousePlugin<Vertex, Edge>();
+		// animatedPickingPlugin = new AnimatedPickingGraphMousePlugin<Vertex, Edge>();
 		translatingPlugin = new TranslatingGraphMousePlugin(InputEvent.BUTTON1_MASK);
 		scalingPlugin = new ScalingGraphMousePlugin(new CrossoverScalingControl(), 0, in, out);
-		rotatingPlugin = new RotatingGraphMousePlugin();
-		shearingPlugin = new ShearingGraphMousePlugin();
-		editingPlugin = new GraphMousePlugin<Vertex, Edge>(vertexFactory, edgeFactory);
+		// rotatingPlugin = new RotatingGraphMousePlugin();
+		// shearingPlugin = new ShearingGraphMousePlugin();
 		labelEditingPlugin = new LabelEditingGraphMousePlugin<Vertex, Edge>();
-		annotatingPlugin = new AnnotatingGraphMousePlugin<Vertex, Edge>(rc);
+		// annotatingPlugin = new AnnotatingGraphMousePlugin<Vertex, Edge>(rc);
+		editingPlugin = new GraphMousePlugin<Vertex, Edge>(vertexFactory, edgeFactory);
 		popupEditingPlugin = new GraphMousePopupPlugin<Vertex, Edge>(vertexFactory, edgeFactory);
+		connectingPlugin = new GraphMouseConnectPlugin<Vertex, Edge>();
+
 		add(scalingPlugin);
 		setMode(Mode.EDITING);
 	}
@@ -117,51 +119,54 @@ public class GraphMouse<V, E> extends AbstractModalGraphMouse implements ModalGr
 	@Override
 	protected void setPickingMode() {
 		remove(translatingPlugin);
-		remove(rotatingPlugin);
-		remove(shearingPlugin);
+		// remove(rotatingPlugin);
+		// remove(shearingPlugin);
 		remove(editingPlugin);
-		remove(annotatingPlugin);
+		// remove(annotatingPlugin);
 		add(pickingPlugin);
-		add(animatedPickingPlugin);
+		// add(animatedPickingPlugin);
 		add(labelEditingPlugin);
 		add(popupEditingPlugin);
+		add(connectingPlugin);
 	}
 
 	@Override
 	protected void setTransformingMode() {
 		remove(pickingPlugin);
-		remove(animatedPickingPlugin);
+		// remove(animatedPickingPlugin);
 		remove(editingPlugin);
-		remove(annotatingPlugin);
+		// remove(annotatingPlugin);
+		remove(connectingPlugin);
 		add(translatingPlugin);
-		add(rotatingPlugin);
-		add(shearingPlugin);
+		// add(rotatingPlugin);
+		// add(shearingPlugin);
 		add(labelEditingPlugin);
 		add(popupEditingPlugin);
 	}
 
 	protected void setEditingMode() {
 		remove(pickingPlugin);
-		remove(animatedPickingPlugin);
+		// remove(animatedPickingPlugin);
 		remove(translatingPlugin);
-		remove(rotatingPlugin);
-		remove(shearingPlugin);
+		// remove(rotatingPlugin);
+		// remove(shearingPlugin);
 		remove(labelEditingPlugin);
-		remove(annotatingPlugin);
+		// remove(annotatingPlugin);
+		remove(connectingPlugin);
 		add(editingPlugin);
 		add(popupEditingPlugin);
 	}
 
 	protected void setAnnotatingMode() {
 		remove(pickingPlugin);
-		remove(animatedPickingPlugin);
+		// remove(animatedPickingPlugin);
 		remove(translatingPlugin);
-		remove(rotatingPlugin);
-		remove(shearingPlugin);
+		// remove(rotatingPlugin);
+		// remove(shearingPlugin);
 		remove(labelEditingPlugin);
 		remove(editingPlugin);
 		remove(popupEditingPlugin);
-		add(annotatingPlugin);
+		// add(annotatingPlugin);
 	}
 
 	/**

@@ -4,25 +4,19 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.swing.JPanel;
 
-import org.apache.commons.collections15.Factory;
-
+import EDU.oswego.cs.dl.util.concurrent.CopyOnWriteArrayList;
 import de.unikassel.ann.gui.model.Edge;
 import de.unikassel.ann.gui.model.Vertex;
 import de.unikassel.ann.gui.mouse.GraphMouse;
-import de.unikassel.ann.model.EdgeMap;
-import de.unikassel.ann.model.FromTo;
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.Network;
 import de.unikassel.ann.model.Network.NetworkLayer;
@@ -215,70 +209,47 @@ public class GraphController implements PropertyChangeListener {
 				vertex.setIndex(neuron.getId());
 				vertex.setModel(neuron);
 
-				// Add the new vertex with its neuron id as key to the vertex map
-				vertexController.getVertexMap().put(neuron.getId(), vertex);
-
 				// Add the new vertex to the graph
 				graph.addVertex(vertex);
 			}
 		}
 
 		//
-		// Render Edges
-		// If the network is not finalized, the network will not have a synapseset.
-		// In order to render the created edges, use the current edgemap.
-		//
-		EdgeController<Edge> edgeController = EdgeController.getInstance();
-		EdgeMap<Double> edgeMap = edgeController.getEdgeMap();
-		Set<Entry<FromTo, Double>> edgeSet = edgeMap.getMap().entrySet();
-		for (Entry<FromTo, Double> edgeEntry : edgeSet) {
-			// Get the vertices of the synapse by their id of the their models
-			Integer fromId = edgeEntry.getKey().from;
-			Integer toId = edgeEntry.getKey().to;
-
-			Vertex fromVertex = vertexController.getVertexMap().get(fromId);
-			Vertex toVertex = vertexController.getVertexMap().get(toId);
-
-			if (fromVertex == null || toVertex == null) {
-				// maybe one or both vertices has been removed!
-				continue;
-			}
-
-			// Create new edge with its synapse and the both vertices
-			Edge edge = edgeController.getEdgeFactory().create();
-			edge.createModel(fromVertex.getModel(), toVertex.getModel());
-
-			// Add the edge to the graph
-			graph.addEdge(edge, fromVertex, toVertex, EdgeType.DIRECTED);
-		}
-
-		//
 		// Render Synapses
 		//
+		EdgeController<Edge> edgeController = EdgeController.getInstance();
 		for (Synapse synapse : network.getSynapseSet()) {
-			// Get the vertices of the synapse by their id of the their models
-			Integer fromId = synapse.getFromNeuron().getId();
-			Integer toId = synapse.getToNeuron().getId();
+			// Get the vertices of the synapse by their models (neurons)
+			Neuron fromNeuron = synapse.getFromNeuron();
+			Neuron toNeuron = synapse.getToNeuron();
 
-			Vertex fromVertex = vertexController.getVertexMap().get(fromId);
-			Vertex toVertex = vertexController.getVertexMap().get(toId);
+			Vertex fromVertex = vertexController.getVertexByModel(fromNeuron);
+			Vertex toVertex = vertexController.getVertexByModel(toNeuron);
 			if (fromVertex == null || toVertex == null) {
 				// Problem! Both vertices are mandatory for the edge!
+				System.err.println("Synapse " + synapse + " from " + fromVertex + " to " + toVertex + " will be removed!");
+				edgeController.getLostSynapses().add(synapse);
 				continue;
 			}
 
 			// Create new edge with its synapse and the both vertices
 			Edge edge = edgeController.getEdgeFactory().create();
-			edge.createModel(fromVertex.getModel(), toVertex.getModel());
 
-			// Add the new edge with the FromTo key and its weight as value to the edgemap
-			edgeMap.put(new FromTo(fromId, toId), edge.getWeight());
+			// Set synapse weight to random value if it's missing
+			if (synapse.getWeight() == null) {
+				synapse.setWeight(new Double(Math.random()));
+			}
+			edge.setModel(synapse);
 
 			// Add the new edge to the graph
 			graph.addEdge(edge, fromVertex, toVertex, EdgeType.DIRECTED);
 		}
 
-		// Store current layout before repainting in order to animate the transition
+		// Clean lost synpases out of the network
+		for (Synapse synapse : edgeController.getLostSynapses()) {
+			Network.getNetwork().removeSynapse(synapse);
+		}
+
 		repaint();
 	}
 
@@ -293,7 +264,6 @@ public class GraphController implements PropertyChangeListener {
 	}
 
 	public void createVertex(final NetworkLayer layer, final Integer layerIndex) {
-		// System.out.println("createVertex(" + layer + ", " + layerIndex + ")");
 		switch (layer) {
 		case INPUT:
 			Network.getNetwork().addInputNeuron();
@@ -308,52 +278,137 @@ public class GraphController implements PropertyChangeListener {
 	}
 
 	/**
+	 * Remove the vertex.
+	 * 
 	 * @param vertex
 	 */
 	public void removeVertex(final Vertex vertex) {
-		Network.getNetwork().removeNeuron(vertex.getModel());
+		if (vertex != null) {
+			Network.getNetwork().removeNeuron(vertex.getModel());
+		}
 	}
 
 	/**
-	 * Wrapper function to create and setup a new edge and adding it to the graph.
+	 * Remove all vertices in the set.
 	 * 
-	 * @param edgeFactory
-	 * @param toVertex
-	 * @param toVertex
+	 * @param picked
 	 */
-	public void createEdge(final Factory<Edge> edgeFactory, final Vertex fromVertex, final Vertex toVertex) {
+	public void removeVertices(final Collection<Vertex> vertices) {
+		for (Vertex vertex : vertices) {
+			removeVertex(vertex);
+		}
+	}
+
+	/**
+	 * @see createEdge
+	 */
+	public boolean createEdge(final Vertex fromVertex, final Vertex toVertex) {
+		return createEdge(fromVertex, toVertex, true);
+	}
+
+	/**
+	 * Create and setup a new edge and adding it to the graph.
+	 * 
+	 * @param toVertex
+	 * @param toVertex
+	 * @param repaint
+	 * @return boolean
+	 */
+	public boolean createEdge(final Vertex fromVertex, final Vertex toVertex, final boolean repaint) {
+		if (fromVertex.equals(toVertex)) {
+			// No self-edges
+			return false;
+		}
 		Neuron fromNeuron = fromVertex.getModel();
 		Neuron toNeuron = toVertex.getModel();
 
-		// Get the vertices of the synapse by their id of the their models
-		Integer fromId = fromNeuron.getId();
-		Integer toId = toNeuron.getId();
-
 		if (fromVertex.mayHaveEdgeTo(toVertex)) {
 			// Create a new edge with its synapse between the both vertices
-			Edge edge = edgeFactory.create();
+			EdgeController<Edge> edgeController = EdgeController.getInstance();
+			Edge edge = edgeController.getEdgeFactory().create();
 			edge.createModel(fromNeuron, toNeuron);
 
-			// Add the new edge with the FromTo key and its weight as value to the edgemap
-			EdgeMap<Double> edgeMap = EdgeController.getInstance().getEdgeMap();
-			edgeMap.put(new FromTo(fromId, toId), edge.getWeight());
+			// Add new synapse (edge model) to the network
+			Network.getNetwork().addSynapse(edge.getModel());
 
 			// Add the new edge to the graph
 			graph.addEdge(edge, fromVertex, toVertex, EdgeType.DIRECTED);
+
+			if (repaint) {
+				repaint();
+			}
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Create and setup a new edge between each vertex in the set and adding it to the graph.
+	 * 
+	 * @param vertices
+	 */
+	public void createEdge(final Collection<Vertex> vertices) {
+		for (Vertex v1 : vertices) {
+			for (Vertex v2 : vertices) {
+				if (createEdge(v1, v2) == false) {
+					createEdge(v2, v1);
+				}
+			}
+		}
+	}
+
+	/**
+	 * @see removeEdge
+	 */
+	public void removeEdge(final Edge edge) {
+		removeEdge(edge, true);
+	}
+
+	/**
+	 * Remove the edge and optional repaint the graph.
+	 * 
+	 * @param edge
+	 * @param repaint
+	 */
+	public void removeEdge(final Edge edge, final boolean repaint) {
+		Synapse synapse = edge.getModel();
+		Neuron fromNeuron = synapse.getFromNeuron();
+		Neuron toNeuron = synapse.getToNeuron();
+
+		// Remove synapse from the neurons
+		fromNeuron.getOutgoingSynapses().remove(synapse);
+		toNeuron.getIncomingSynapses().remove(synapse);
+
+		// Remove synapse (edge model) from the network
+		Network.getNetwork().removeSynapse(synapse);
+
+		graph.removeEdge(edge);
+
+		if (repaint) {
 			repaint();
 		}
 	}
 
 	/**
-	 * @param edge
+	 * Remove every edge in the list.
+	 * 
+	 * @param edges
 	 */
-	public void removeEdge(final Edge edge) {
-		// Remove the edgemap entry as well
-		EdgeMap<Double> edgeMap = EdgeController.getInstance().getEdgeMap();
-		FromTo fromTo = new FromTo(edge.getModel().getFromNeuron().getId(), edge.getModel().getToNeuron().getId());
-		edgeMap.remove(fromTo);
+	public void removeEdges(final Collection<Edge> edges) {
+		for (Edge edge : edges) {
+			removeEdge(edge, false);
+		}
+		repaint();
+	}
 
-		graph.removeEdge(edge);
+	/**
+	 * Remove all edges in the network.
+	 */
+	public void removeAllEdges() {
+		Collection<Edge> edges = new CopyOnWriteArrayList(graph.getEdges());
+		removeEdges(edges);
+		Network.getNetwork().getSynapseSet().clear();
 		repaint();
 	}
 
@@ -417,10 +472,11 @@ public class GraphController implements PropertyChangeListener {
 					// Compute the gap between two vertices
 					int gapX = width / layerSize;
 
+					VertexController<Vertex> vertexController = VertexController.getInstance();
 					int neuronIndex = -1;
 					for (Neuron neuron : neurons) {
 						neuronIndex++;
-						Vertex vertex = VertexController.getInstance().getVertexMap().get(neuron.getId());
+						Vertex vertex = vertexController.getVertexByModel(neuron);
 
 						// Compute location of the vertex
 						int x = neuronIndex * gapX + gapX / 2;
@@ -448,30 +504,19 @@ public class GraphController implements PropertyChangeListener {
 
 		viewer.setGraphMouse(graphMouse);
 		viewer.addKeyListener(graphMouse.getModeKeyListener());
-		viewer.addMouseWheelListener(new MouseWheelListener() {
-
-			@Override
-			public void mouseWheelMoved(final MouseWheelEvent e) {
-			}
-		});
 
 		graphMouse.setMode(ModalGraphMouse.Mode.PICKING);
 		graphMouse.setZoomAtMouse(false);
 	}
 
-	// /**
-	// * Add MouseMode Menu to the MainMenu of the frame to set the mode of the Graph Mouse.
-	// */
-	// private void addMouseModeMenu() {
-	// if (frame == null) {
-	// // No frame -> No menu -> No fun!
-	// return;
-	// }
-	// JMenu modeMenu = graphMouse.getModeMenu();
-	// modeMenu.setText(Settings.getI18n("menu.mousemode", "Mode"));
-	// JMenuBar menu = frame.getJMenuBar();
-	// menu.add(modeMenu, menu.getComponentCount() - 1);
-	// graphMouse.setMode(ModalGraphMouse.Mode.EDITING);
-	// }
+	/**
+	 * Show vertex details in the sidebar.
+	 * 
+	 * @param vertex
+	 */
+	public void showVertex(final Vertex vertex) {
+		// TODO
+		System.out.println(vertex);
+	}
 
 }

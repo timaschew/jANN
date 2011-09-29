@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Set;
 
 import de.unikassel.ann.config.NetConfig;
-import de.unikassel.ann.controller.EdgeController;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.io.beans.SynapseBean;
@@ -28,7 +27,7 @@ public class Network extends BasicNetwork {
 	 * Neuron or Synapse
 	 */
 	public enum PropertyChanges {
-		NEURONS, SYNAPSES
+		NEURONS, SYNAPSES, INPUT_NEURON
 	};
 
 	/**
@@ -128,22 +127,37 @@ public class Network extends BasicNetwork {
 		Layer layer;
 		try {
 			layer = layers.get(layerIndex);
+			// dont remove last neuron of a layer
+			if (layer.getNeurons().size() == 1) {
+				// dont remove last input / output neuron if hidden layers exist
+				if (layer.equals(getInputLayer()) && getSizeOfHiddenLayers() > 0) {
+					// return;
+				} else if (layer.equals(getOutputLayer()) && getSizeOfHiddenLayers() > 0) {
+					// return;
+				} else if (layerIndex > 0 && layerIndex < layers.size() - 1) {
+					// dont remove last neuron of hidden layer
+					// return;
+				}
+			}
+
 		} catch (IndexOutOfBoundsException ex) {
 			System.out.println("ERROR: " + ex.getMessage() + ", neuron: " + neuron + ", layerIndex = " + layerIndex);
 			return;
 		}
 
-		if (layer != null) {
-			List<Neuron> neurons = layer.getNeurons();
-			int size = neurons.size();
-			for (int i = 0; i < size; i++) {
-				if (neurons.get(i).getId() == neuron.getId()) {
-					layer.getNeurons().remove(i);
-					pcs.firePropertyChange(PropertyChanges.NEURONS.name(), size, size - 1);
-					return;
+		List<Neuron> neurons = layer.getNeurons();
+		int size = neurons.size();
+		for (int i = 0; i < size; i++) {
+			if (neurons.get(i).getId() == neuron.getId()) {
+				layer.getNeurons().remove(i);
+				pcs.firePropertyChange(PropertyChanges.NEURONS.name(), size, size - 1);
+				if (layer.equals(getInputLayer())) {
+					pcs.firePropertyChange(PropertyChanges.INPUT_NEURON.name(), size, size - 1);
 				}
+				return;
 			}
 		}
+
 	}
 
 	public void addInputNeuron() {
@@ -155,14 +169,14 @@ public class Network extends BasicNetwork {
 		setInputLayerSize(layerSize + 1);
 	}
 
-	public void removeInputNeuron() {
-		int layerSize = 0;
-		if (getInputLayer() != null) {
-			// input layer exists
-			layerSize = getInputLayer().getNeurons().size();
-		}
-		setInputLayerSize(layerSize - 1);
-	}
+	// public void removeInputNeuron() {
+	// int layerSize = 0;
+	// if (getInputLayer() != null) {
+	// // input layer exists
+	// layerSize = getInputLayer().getNeurons().size();
+	// }
+	// setInputLayerSize(layerSize - 1);
+	// }
 
 	public void addOutputNeuron() {
 		int layerSize = 0;
@@ -173,14 +187,14 @@ public class Network extends BasicNetwork {
 		setOuputLayerSize(layerSize + 1);
 	}
 
-	public void removeOutputNeuron() {
-		int layerSize = 0;
-		if (getOutputLayer() != null) {
-			// output layer exists
-			layerSize = getOutputLayer().getNeurons().size();
-		}
-		setOuputLayerSize(layerSize - 1);
-	}
+	// public void removeOutputNeuron() {
+	// int layerSize = 0;
+	// if (getOutputLayer() != null) {
+	// // output layer exists
+	// layerSize = getOutputLayer().getNeurons().size();
+	// }
+	// setOuputLayerSize(layerSize - 1);
+	// }
 
 	public void addHiddenNeuron(final int layerIndex) {
 		// add only, if the layer already exist
@@ -209,6 +223,13 @@ public class Network extends BasicNetwork {
 	}
 
 	public void setInputLayerSize(final int inputSize) {
+		if (inputSize < 0) {
+			return;
+		}
+		if (inputSize == 0 && getSizeOfHiddenLayers() > 0) {
+			return;
+		}
+
 		ActivationFunction function = getStandardFunction();
 		if (layers.isEmpty()) {
 			// add input layer
@@ -221,6 +242,7 @@ public class Network extends BasicNetwork {
 		int oldValue = inputLayer.getNeurons().size();
 		setLayerSize(inputSize, function, inputLayer);
 		pcs.firePropertyChange(PropertyChanges.NEURONS.name(), oldValue, inputSize);
+		pcs.firePropertyChange(PropertyChanges.INPUT_NEURON.name(), oldValue, inputSize);
 	}
 
 	/**
@@ -230,6 +252,9 @@ public class Network extends BasicNetwork {
 	 */
 	public void setOuputLayerSize(final int outputSize) {
 		if (outputSize < 0) {
+			return;
+		}
+		if (outputSize == 0 && getSizeOfHiddenLayers() > 0) {
 			return;
 		}
 		ActivationFunction function = getStandardFunction();
@@ -289,14 +314,12 @@ public class Network extends BasicNetwork {
 				setHiddenLayerSize(index, 1); // initial size
 
 				// Remove the edges between the previous last hidden layer and the output layer
-				EdgeMap<Double> edgeMap = EdgeController.getInstance().getEdgeMap();
 				List<Neuron> outputNeurons = getOutputLayer().getNeurons();
 				for (Neuron n : outputNeurons) {
 					List<Synapse> incomingSynapses = n.getIncomingSynapses();
 					for (Synapse synapse : incomingSynapses) {
 						Integer fromId = synapse.getFromNeuron().getId();
 						Integer toId = synapse.getToNeuron().getId();
-						edgeMap.remove(new FromTo(fromId, toId));
 					}
 				}
 			}
@@ -321,21 +344,28 @@ public class Network extends BasicNetwork {
 		setHiddenLayerSize(layerIndex, layerSize + (hasBias ? 1 : 0));
 	}
 
-	// TODO: can also used for input layer, is it good?
 	public void setHiddenLayerSize(final int layerIndex, final int layerSize) {
-		if (layerSize < 0) {
+		if (layerSize < 1) {
 			return;
 		}
 		ActivationFunction function = getStandardFunction();
 		// add only, if the layer already exist
 		// -1 because the the 2nd operand is index, not size
 		Integer oldValue = null;
-		if (layers.size() - 1 >= layerIndex) {
+		if (layers.size() - 1 > layerIndex) {
 			// for example layerIndex
 			oldValue = layers.get(layerIndex).getNeurons().size();
 			setLayerSize(layerSize, function, layers.get(layerIndex)); // initial size
+			pcs.firePropertyChange(PropertyChanges.NEURONS.name(), oldValue, new Integer(layerSize));
 		}
-		pcs.firePropertyChange(PropertyChanges.NEURONS.name(), oldValue, new Integer(layerSize));
+	}
+
+	public void addSynapse(final Synapse synapse) {
+		synapseSet.add(synapse);
+	}
+
+	public void removeSynapse(final Synapse synapse) {
+		synapseSet.remove(synapse);
 	}
 
 	private void setLayerSize(final int layerSize, final ActivationFunction function, final Layer layer) {

@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Stroke;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
 import java.util.Set;
 
 import org.apache.commons.collections15.Transformer;
@@ -11,7 +12,6 @@ import org.apache.commons.collections15.Transformer;
 import de.unikassel.ann.factory.EdgeFactory;
 import de.unikassel.ann.gui.model.Edge;
 import de.unikassel.ann.gui.model.Vertex;
-import de.unikassel.ann.model.EdgeMap;
 import de.unikassel.ann.model.Synapse;
 import edu.uci.ics.jung.visualization.RenderContext;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
@@ -38,7 +38,7 @@ public class EdgeController<E> {
 	private RenderContext<Vertex, Edge> renderContext;
 	private PickedState<Edge> edgePickedState;
 	private EdgeFactory edgeFactory;
-	private EdgeMap<Double> edgeMap;
+	private ArrayList<Synapse> lostSynapses;
 
 	public void init() {
 		this.viewer = GraphController.getInstance().getViewer();
@@ -46,7 +46,7 @@ public class EdgeController<E> {
 		this.renderContext = viewer.getRenderContext();
 		this.edgePickedState = viewer.getPickedEdgeState();
 		this.edgeFactory = new EdgeFactory();
-		this.edgeMap = new EdgeMap<Double>();
+		this.lostSynapses = new ArrayList<Synapse>();
 
 		setEdgeLabel();
 		setEdgeShape();
@@ -61,6 +61,7 @@ public class EdgeController<E> {
 	public void clear() {
 		edgePickedState.clear();
 		edgeFactory.reset();
+		lostSynapses.clear();
 	}
 
 	/**
@@ -68,11 +69,19 @@ public class EdgeController<E> {
 	 */
 	public void reset() {
 		clear();
-		edgeMap.getMap().clear();
 	}
 
 	public EdgeFactory getEdgeFactory() {
 		return edgeFactory;
+	}
+
+	/**
+	 * Contains all invalid synpases which were deteced during rendering the network.
+	 * 
+	 * @return ArrayList<Synapse>
+	 */
+	public ArrayList<Synapse> getLostSynapses() {
+		return lostSynapses;
 	}
 
 	/**
@@ -119,14 +128,10 @@ public class EdgeController<E> {
 					return;
 				}
 				// TODO Show value of the picked edge in the Sidebar
-				System.out.println(picked);
+				// System.out.println(picked);
 			}
 		});
 
-	}
-
-	public EdgeMap<Double> getEdgeMap() {
-		return edgeMap;
 	}
 
 	/*

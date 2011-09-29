@@ -1,9 +1,10 @@
 package de.unikassel.ann.gui.model;
 
 import java.text.DecimalFormat;
-import java.util.List;
+import java.util.Set;
 
 import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.model.Network;
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.Synapse;
 
@@ -124,26 +125,6 @@ public class Vertex implements Comparable<Vertex> {
 		return model.getValue();
 	}
 
-	public void remove() {
-		// LayerController<Layer> layerController = LayerController.getInstance();
-		// int layerIndex = getLayer();
-		// int layerSize = layerController.getVerticesInLayer(layerIndex).size();
-		//
-		// // Input layer (index = 0)
-		// Actions action = Actions.UPDATE_SIDEBAR_CONFIG_INPUT_NEURON_MODEL;
-		// if (layerIndex > 0) {
-		// if (layerIndex == layerController.getLayers().size() - 1) {
-		// // Output Layer (index = # layers - 1)
-		// action = Actions.UPDATE_SIDEBAR_CONFIG_OUTPUT_NEURON_MODEL;
-		// } else {
-		// // Hidden Layer (0 < index < # layers - 1)
-		// action = Actions.UPDATE_SIDEBAR_CONFIG_HIDDEN_LAYER_MODEL;
-		// }
-		// }
-		// ActionController.get()
-		// .doAction(action, new PropertyChangeEvent(this, SidebarModel.P.inputNeurons.name(), layerSize, layerSize - 1));
-	}
-
 	@Override
 	public String toString() {
 		if (df == null) {
@@ -163,13 +144,40 @@ public class Vertex implements Comparable<Vertex> {
 	 * @return
 	 */
 	public boolean hasEdgeTo(final Vertex toVertex) {
-		List<Synapse> outgoingSynapses = getModel().getOutgoingSynapses();
-		for (Synapse synapse : outgoingSynapses) {
-			if (synapse.getToNeuron().getId() == toVertex.getModel().getId()) {
-				return true;
+		return getEdgeTo(toVertex) != null;
+	}
+
+	/**
+	 * Get the synapse between this vertex and the toVertex.
+	 * 
+	 * @param toVertex
+	 * @return
+	 */
+	public Synapse getEdgeTo(final Vertex toVertex) {
+		Neuron fromNeuron = getModel();
+		Neuron toNeuron = toVertex.getModel();
+
+		Set<Synapse> synapseSet = Network.getNetwork().getSynapseSet();
+		for (Synapse synapse : synapseSet) {
+			if (synapse.getFromNeuron().equals(fromNeuron) && synapse.getToNeuron().equals(toNeuron)) {
+				return synapse;
 			}
 		}
-		return false;
+		return null;
+		//
+		// List<Synapse> outgoingSynapses = getModel().getOutgoingSynapses();
+		// Neuron toVertexModel = toVertex.getModel();
+		//
+		// // Get the synapse for this -> toVertex
+		// for (Synapse synapse : outgoingSynapses) {
+		// boolean isFromThis = synapse.getFromNeuron().getId() == getModel().getId();
+		// boolean isToVertex = synapse.getToNeuron().getId() == toVertexModel.getId();
+		// boolean isValidSynapse = toVertexModel.getIncomingSynapses().contains(synapse);
+		// if (isFromThis && isToVertex && isValidSynapse) {
+		// return synapse;
+		// }
+		// }
+		// return null;
 	}
 
 	/**
@@ -177,13 +185,20 @@ public class Vertex implements Comparable<Vertex> {
 	 * @return
 	 */
 	public boolean mayHaveEdgeTo(final Vertex toVertex) {
+		if (toVertex == null) {
+			return false;
+		}
+
 		// The neurons do not have to be connected already
 		if (hasEdgeTo(toVertex)) {
+			System.out.println(this + " hasEdgeTo " + toVertex);
 			return false;
 		}
 
 		// The "to"-vertex has to be in a layer with a higher index than the "from"-vertex
-		if (toVertex.getModel().getLayer().getIndex() <= getModel().getLayer().getIndex()) {
+		int layerIndex = getModel().getLayer().getIndex();
+		int toLayerIndex = toVertex.getModel().getLayer().getIndex();
+		if (layerIndex >= toLayerIndex) {
 			return false;
 		}
 

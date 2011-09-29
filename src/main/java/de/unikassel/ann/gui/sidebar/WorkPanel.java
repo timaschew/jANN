@@ -9,20 +9,25 @@ package de.unikassel.ann.gui.sidebar;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.util.Logger;
 
 /**
  * @author Sofia
  * 
  */
-public class WorkPanel extends JPanel {
+public class WorkPanel extends JPanel implements PropertyChangeListener, ChangeListener {
 
 	// public static void main(final String[] args) {
 	// ManualTestTrain test = new ManualTestTrain();
@@ -39,6 +44,13 @@ public class WorkPanel extends JPanel {
 		setPreferredSize(new Dimension(400, 342));
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
+	}
+
+	/**
+	 * @param inputs
+	 * 
+	 */
+	public void updateWorkPanel() {
 		inputs = Settings.getInstance().getCurrentSession().getNetworkConfig().getNetwork().getInputSizeIgnoringBias();
 		System.out.println("inputs " + inputs);
 
@@ -57,6 +69,7 @@ public class WorkPanel extends JPanel {
 		// layout.setAutoCreateGaps(true);
 		// layout.setAutoCreateContainerGaps(true);
 
+		removeAll();
 		for (int i = 1; i <= inputs; i++) {
 			JPanel inputsP = new JPanel();
 			inputsP.setLayout(new BoxLayout(inputsP, BoxLayout.Y_AXIS));
@@ -77,16 +90,24 @@ public class WorkPanel extends JPanel {
 
 	}
 
-	/**
-	 * @param inputs
+	/*
+	 * (non-Javadoc)
 	 * 
+	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
 	 */
-	public void updateWorkPanel(final Integer inputs) {
-		this.inputs = inputs;
-		WorkPanel panel = new WorkPanel();
-		panel.updateUI();
-		panel.validate();
-		panel.repaint();
+	@Override
+	public void propertyChange(final PropertyChangeEvent evt) {
+		updateWorkPanel();
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
+	 */
+	@Override
+	public void stateChanged(final ChangeEvent e) {
+		Logger.debug(this.getClass(), "tab was changed");
+		updateWorkPanel();
 	}
 }
