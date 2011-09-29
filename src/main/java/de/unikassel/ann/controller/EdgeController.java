@@ -10,6 +10,7 @@ import java.util.Set;
 import org.apache.commons.collections15.Transformer;
 
 import de.unikassel.ann.factory.EdgeFactory;
+import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.gui.model.Edge;
 import de.unikassel.ann.gui.model.Vertex;
 import de.unikassel.ann.model.Synapse;
@@ -124,11 +125,12 @@ public class EdgeController<E> {
 			public void itemStateChanged(final ItemEvent e) {
 				Set<Edge> picked = edgePickedState.getPicked();
 				if (picked.isEmpty()) {
-					// No edge picked
+					// No vertex picked
+					Main.instance.sidebar.selectedSymbolsPanel.reset();
 					return;
 				}
-				// TODO Show value of the picked edge in the Sidebar
-				// System.out.println(picked);
+				// Show picked vertex in the Sidebar
+				Main.instance.sidebar.selectedSymbolsPanel.updateEdge(picked);
 			}
 		});
 

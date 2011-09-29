@@ -13,6 +13,7 @@ import java.util.Set;
 import org.apache.commons.collections15.Transformer;
 
 import de.unikassel.ann.factory.VertexFactory;
+import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.gui.model.Edge;
 import de.unikassel.ann.gui.model.Vertex;
 import de.unikassel.ann.model.Network;
@@ -212,10 +213,11 @@ public class VertexController<V> {
 				Set<Vertex> picked = vertexPickedState.getPicked();
 				if (picked.isEmpty()) {
 					// No vertex picked
+					Main.instance.sidebar.selectedSymbolsPanel.reset();
 					return;
 				}
-				// TODO Show value of the picked vertex in the Sidebar
-				// System.out.println(picked);
+				// Show picked vertex in the Sidebar
+				Main.instance.sidebar.selectedSymbolsPanel.updateVertex(picked);
 			}
 		});
 
@@ -299,7 +301,7 @@ public class VertexController<V> {
 		protected Stroke heavy = new BasicStroke(4);
 		protected Stroke medium = new BasicStroke(2);
 		protected Stroke light = new BasicStroke(1);
-		protected Stroke dotted = RenderContext.DASHED;
+		// protected Stroke dotted = RenderContext.DASHED;
 
 		protected PickedInfo<Vertex> pi;
 
