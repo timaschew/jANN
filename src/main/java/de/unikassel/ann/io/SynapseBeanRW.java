@@ -10,7 +10,6 @@ import java.util.List;
 import org.apache.commons.lang.ArrayUtils;
 import org.supercsv.cellprocessor.ConvertNullTo;
 import org.supercsv.cellprocessor.ParseBool;
-import org.supercsv.cellprocessor.ParseDouble;
 import org.supercsv.cellprocessor.ParseInt;
 import org.supercsv.cellprocessor.Token;
 import org.supercsv.cellprocessor.ift.CellProcessor;
@@ -21,37 +20,36 @@ import org.supercsv.io.ICsvBeanWriter;
 
 import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.io.beans.SynapseBean;
-import de.unikassel.ann.io.beans.TopologyBean;
 import de.unikassel.ann.model.Network;
 import de.unikassel.ann.model.Synapse;
 import de.unikassel.ann.model.SynapseMatrix;
 
-
 public class SynapseBeanRW extends BasicCsvReader {
-	
+
 	/* CSV */
 	/* "from";"to";"value";"random" */
-	
-	static String[] header2beanMapping = new String[]{"from", "to", "value", "random"};
-	static CellProcessor[] readProcessor = new CellProcessor[] {new ParseInt(), new ParseInt(), new Token("", Double.NaN, new ParseDoubleUni()), new Token("", false, new ParseBool())};
-	static CellProcessor[] writeProcessor = new CellProcessor[] {new ConvertNullTo("null"), new ConvertNullTo("null"), new ConvertNullTo(""), new ConvertNullTo("null")};
 
-	
-	public static List<SynapseBean> readData(BufferedReader bufferedReader) {
+	static String[] header2beanMapping = new String[] { "from", "to", "value", "random" };
+	static CellProcessor[] readProcessor = new CellProcessor[] { new ParseInt(), new ParseInt(),
+			new Token("", Double.NaN, new ParseDoubleUni()), new Token("", false, new ParseBool()) };
+	static CellProcessor[] writeProcessor = new CellProcessor[] { new ConvertNullTo("null"), new ConvertNullTo("null"),
+			new ConvertNullTo(""), new ConvertNullTo("null") };
+
+	public static List<SynapseBean> readData(final BufferedReader bufferedReader) {
 		final List<SynapseBean> list = new ArrayList<SynapseBean>();
-		
+
 		final ICsvBeanReader reader = new CsvBeanReader(bufferedReader, pref);
 		try {
 			String[] header = reader.getCSVHeader(true);
 			if (ArrayUtils.isEquals(header2beanMapping, header) == false) {
-				throw new IllegalArgumentException("wrong header\n"+header);	
+				throw new IllegalArgumentException("wrong header\n" + header);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	
+
 		SynapseBean bean;
-		
+
 		try {
 			while ((bean = reader.read(SynapseBean.class, header2beanMapping, readProcessor)) != null) {
 				list.add(bean);
@@ -62,45 +60,46 @@ public class SynapseBeanRW extends BasicCsvReader {
 		return list;
 	}
 
+	public static void writeData(final NetConfig netConfig, final File f) {
 
-	public static void writeData(NetConfig netConfig, File f) {
-		
 		List<SynapseBean> synapseList = convertToSnypaseList(netConfig);
-		
+
 		FileWriter writer = null;
 		try {
 			writer = new FileWriter(f, true);
-			writer.write(NetIO.OPEN_TAG+NetIO.SYNAPSE_TAG+"\n");
+			writer.write(NetIO.OPEN_TAG + NetIO.SYNAPSE_TAG + "\n");
 			writer.flush();
 			ICsvBeanWriter beanWriter = new CsvBeanWriter(writer, pref);
-			
+
 			beanWriter.writeHeader(header2beanMapping);
-			
+
 			for (SynapseBean b : synapseList) {
 				beanWriter.write(b, header2beanMapping, writeProcessor);
 			}
 			// force to write the content to the file, flush only doesn' exist
-			beanWriter.close(); 
+			beanWriter.close();
 			writer = new FileWriter(f, true);
-			writer.write(NetIO.CLOSE_TAG+"\n\n");
+			writer.write(NetIO.CLOSE_TAG + "\n\n");
 			writer.flush();
 			writer.close();
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
+
 	}
-	
-	private static List<SynapseBean> convertToSnypaseList(NetConfig netConfig) {
+
+	private static List<SynapseBean> convertToSnypaseList(final NetConfig netConfig) {
 		List<SynapseBean> list = new ArrayList<SynapseBean>();
 		Network net = netConfig.getNetwork();
-		
+
 		SynapseMatrix sm = net.getSynapseMatrix();
 		Synapse[][] fs = sm.getSynapses();
-		for (int i=0; i<fs.length; i++) {
-			for (int j=0; j<fs[i].length; j++) {
+		if (fs == null) {
+			return list;
+		}
+		for (int i = 0; i < fs.length; i++) {
+			for (int j = 0; j < fs[i].length; j++) {
 				Synapse s = fs[i][j];
 				if (s != null) {
 					SynapseBean b = new SynapseBean();

@@ -449,10 +449,14 @@ public class Network extends BasicNetwork {
 	}
 
 	/**
-	 * Creates the synapses between all neurons. From layer x-1 to layer x, from x to x+1, ...<br>
+	 * Call this only if the flat net is empty (when exporting the network) Creates the synapses between all neurons. From layer x-1 to
+	 * layer x, from x to x+1, ...<br>
 	 * Sets the {@link #flatNet}
 	 */
-	private void initFlatNet() {
+	public void initFlatNet() {
+		if (flatNet.size() > 0) {
+			flatNet = new ArrayList<Neuron>();
+		}
 		for (Layer l : layers) {
 			// set flat net
 			for (Neuron n : l.getNeurons()) {

@@ -85,22 +85,28 @@ public class ExportSaveFilePanel extends JDialog {
 			@Override
 			public void actionPerformed(final ActionEvent event) {
 				NetIO net = new NetIO();
-				String fileName = Settings.getInstance().getCurrentSession().toString();
-				File exportFile = new File(PATH + File.separator + fileName);
+				String sessionName = Settings.getInstance().getCurrentSession().toString();
+				File exportFile = openFileChooser();
+
 				if (netCB.isSelected()) {
 					NetConfig config = Settings.getInstance().getCurrentSession().getNetworkConfig();
-					net.writeNet(exportFile, fileName, config);
+					net.writeNet(exportFile, sessionName, config);
 				}
 				if (trainingDataCB.isSelected()) {
 
 					DataPairSet dataSet = Settings.getInstance().getCurrentSession().getNetworkConfig().getTrainingData();
-					net.writeDataSet(exportFile, fileName, trainingDataCB.isSelected(), dataSet);
+					net.writeDataSet(exportFile, sessionName, trainingDataCB.isSelected(), dataSet);
 				}
 				if (testDataCB.isSelected()) {
 					DataPairSet testDataSet = Settings.getInstance().getCurrentSession().getNetworkConfig().getTestData();
-					net.writeDataSet(exportFile, fileName, testDataCB.isSelected(), testDataSet);
+					net.writeDataSet(exportFile, sessionName, testDataCB.isSelected(), testDataSet);
 				}
-				openFileChooser(exportFile);
+
+				if (parentCaller.equals("EXIT")) {
+					fileSessionsCombomodel.removeElement(exportFile.getName());
+				} else {
+					dispose();
+				}
 			}
 
 		});
@@ -234,14 +240,18 @@ public class ExportSaveFilePanel extends JDialog {
 	}
 
 	private void setTheCheckBoxs() {
-
-		if (Settings.getInstance().getCurrentSession().getNetworkConfig().getTrainingData() == null) {
+		NetConfig netConfig = Settings.getInstance().getCurrentSession().getNetworkConfig();
+		if (netConfig.getNetwork() != null) {
+			netCB.setEnabled(true);
+			netCB.setSelected(true);
+		}
+		if (netConfig.getTrainingData() == null) {
 			trainingDataCB.setEnabled(false);
 		} else {
 			trainingDataCB.setEnabled(true);
 			trainingDataCB.setSelected(true);
 		}
-		if (Settings.getInstance().getCurrentSession().getNetworkConfig().getTestData() == null) {
+		if (netConfig.getTestData() == null) {
 			testDataCB.setEnabled(false);
 		} else {
 			testDataCB.setEnabled(true);
@@ -249,32 +259,17 @@ public class ExportSaveFilePanel extends JDialog {
 		}
 	}
 
-	private void openFileChooser(final File exportFile) {
-
+	private File openFileChooser() {
 		fileSaveChooser = new JFileChooser();
-		FileFilter filter = new FileNameExtensionFilter("csv files", "csv");
+		FileFilter filter = new FileNameExtensionFilter("CSV Format", "csv");
 		fileSaveChooser.addChoosableFileFilter(filter);
-		fileSaveChooser.setSelectedFile(exportFile);
 		// only csv files
 		fileSaveChooser.setAcceptAllFileFilterUsed(false);
 
 		int ret = fileSaveChooser.showSaveDialog(exportSaveFilePanel);
 		if (ret == JFileChooser.APPROVE_OPTION) {
-			exportFile.renameTo(fileSaveChooser.getSelectedFile());
-		} else if (ret == JFileChooser.CANCEL_OPTION) {
-			exportFile.delete();
+			return fileSaveChooser.getSelectedFile();
 		}
-
-		// wenn der Aufrufer der Exit-Kommando ist, dann
-		// erscheint der Export Dialog so oft, wie Sessions existieren
-		// wenn der File gespeichert wird, wird die Session aus dem
-		// comboBoxmodel entfernt
-		if (parentCaller.equals("EXIT")) {
-			fileSessionsCombomodel.removeElement(exportFile.getName());
-		} else {
-			dispose();
-		}
-
+		return null;
 	}
-
 }
