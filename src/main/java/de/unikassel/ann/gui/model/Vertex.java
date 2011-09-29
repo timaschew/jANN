@@ -1,9 +1,10 @@
 package de.unikassel.ann.gui.model;
 
 import java.text.DecimalFormat;
-import java.util.List;
+import java.util.Set;
 
 import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.model.Network;
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.Synapse;
 
@@ -153,19 +154,30 @@ public class Vertex implements Comparable<Vertex> {
 	 * @return
 	 */
 	public Synapse getEdgeTo(final Vertex toVertex) {
-		List<Synapse> outgoingSynapses = getModel().getOutgoingSynapses();
-		Neuron toVertexModel = toVertex.getModel();
+		Neuron fromNeuron = getModel();
+		Neuron toNeuron = toVertex.getModel();
 
-		// Get the synapse for this -> toVertex
-		for (Synapse synapse : outgoingSynapses) {
-			boolean isFromThis = synapse.getFromNeuron().getId() == getModel().getId();
-			boolean isToVertex = synapse.getToNeuron().getId() == toVertexModel.getId();
-			boolean isValidSynapse = toVertexModel.getIncomingSynapses().contains(synapse);
-			if (isFromThis && isToVertex && isValidSynapse) {
+		Set<Synapse> synapseSet = Network.getNetwork().getSynapseSet();
+		for (Synapse synapse : synapseSet) {
+			if (synapse.getFromNeuron().equals(fromNeuron) && synapse.getToNeuron().equals(toNeuron)) {
 				return synapse;
 			}
 		}
 		return null;
+		//
+		// List<Synapse> outgoingSynapses = getModel().getOutgoingSynapses();
+		// Neuron toVertexModel = toVertex.getModel();
+		//
+		// // Get the synapse for this -> toVertex
+		// for (Synapse synapse : outgoingSynapses) {
+		// boolean isFromThis = synapse.getFromNeuron().getId() == getModel().getId();
+		// boolean isToVertex = synapse.getToNeuron().getId() == toVertexModel.getId();
+		// boolean isValidSynapse = toVertexModel.getIncomingSynapses().contains(synapse);
+		// if (isFromThis && isToVertex && isValidSynapse) {
+		// return synapse;
+		// }
+		// }
+		// return null;
 	}
 
 	/**
@@ -186,7 +198,6 @@ public class Vertex implements Comparable<Vertex> {
 		// The "to"-vertex has to be in a layer with a higher index than the "from"-vertex
 		int layerIndex = getModel().getLayer().getIndex();
 		int toLayerIndex = toVertex.getModel().getLayer().getIndex();
-		System.out.println(layerIndex + " >= " + toLayerIndex);
 		if (layerIndex >= toLayerIndex) {
 			return false;
 		}

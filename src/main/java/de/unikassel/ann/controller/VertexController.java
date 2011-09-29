@@ -7,7 +7,7 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.Set;
 
 import org.apache.commons.collections15.Transformer;
@@ -15,6 +15,7 @@ import org.apache.commons.collections15.Transformer;
 import de.unikassel.ann.factory.VertexFactory;
 import de.unikassel.ann.gui.model.Edge;
 import de.unikassel.ann.gui.model.Vertex;
+import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.func.ActivationFunction;
 import de.unikassel.ann.model.func.SigmoidFunction;
 import de.unikassel.ann.model.func.TanHFunction;
@@ -53,7 +54,6 @@ public class VertexController<V> {
 	private RenderContext<Vertex, Edge> renderContext;
 	private PickedState<Vertex> vertexPickedState;
 	private VertexFactory vertexFactory;
-	private HashMap<Integer, Vertex> vertexMap;
 
 	public void init() {
 		this.viewer = GraphController.getInstance().getViewer();
@@ -61,7 +61,6 @@ public class VertexController<V> {
 		this.renderContext = viewer.getRenderContext();
 		this.vertexPickedState = viewer.getPickedVertexState();
 		this.vertexFactory = new VertexFactory();
-		this.vertexMap = new HashMap<Integer, Vertex>();
 
 		setVertexLabel();
 		setVertexStrokeHighlight();
@@ -78,7 +77,6 @@ public class VertexController<V> {
 	public void clear() {
 		vertexPickedState.clear();
 		vertexFactory.reset();
-		vertexMap.clear();
 	}
 
 	/**
@@ -90,6 +88,22 @@ public class VertexController<V> {
 
 	public VertexFactory getVertexFactory() {
 		return vertexFactory;
+	}
+
+	/**
+	 * Get the vertex by its model (neuron)
+	 * 
+	 * @param neuron
+	 * @return Vertex
+	 */
+	public Vertex getVertexByModel(final Neuron neuron) {
+		Collection<Vertex> vertices = GraphController.getInstance().getGraph().getVertices();
+		for (Vertex vertex : vertices) {
+			if (vertex.getModel().equals(neuron)) {
+				return vertex;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -170,10 +184,6 @@ public class VertexController<V> {
 			}
 		});
 
-	}
-
-	public HashMap<Integer, Vertex> getVertexMap() {
-		return vertexMap;
 	}
 
 	/*

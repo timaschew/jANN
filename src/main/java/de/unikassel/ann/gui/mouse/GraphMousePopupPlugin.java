@@ -143,7 +143,7 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 				allNeuronMenu.add(new AbstractAction(Settings.i18n.getString("graph.mouse.delete")) {
 					@Override
 					public void actionPerformed(final ActionEvent e) {
-						graphController.removeVertex(vertices);
+						graphController.removeVertices(vertices);
 					}
 				});
 
@@ -228,7 +228,7 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 				@SuppressWarnings("unchecked")
 				@Override
 				public void actionPerformed(final ActionEvent e) {
-					graphController.removeVertex(new CopyOnWriteArrayList(pickedVertices));
+					graphController.removeVertices(new CopyOnWriteArrayList(pickedVertices));
 					pickedVertexState.clear();
 				}
 			});
@@ -303,12 +303,9 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 			if (edges.size() > 0) {
 				popup.addSeparator();
 				popup.add(new AbstractAction(Settings.i18n.getString("graph.mouse.deleteAllEdges")) {
-					@SuppressWarnings("unchecked")
 					@Override
 					public void actionPerformed(final ActionEvent e) {
-						// unpick edge
-						graphController.removeEdge(new CopyOnWriteArrayList(edges));
-						pickedEdgeState.clear();
+						graphController.removeAllEdges();
 					}
 				});
 			}
@@ -324,7 +321,6 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 			popup.add(new AbstractAction(Settings.i18n.getString("graph.mouse.deleteEdge")) {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
-					// unpick edge
 					graphController.removeEdge(edge);
 					pickedEdgeState.clear();
 				}
@@ -338,8 +334,7 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 				@SuppressWarnings("unchecked")
 				@Override
 				public void actionPerformed(final ActionEvent e) {
-					// unpick edge
-					graphController.removeEdge(new CopyOnWriteArrayList(pickedEdges));
+					graphController.removeEdges(new CopyOnWriteArrayList(pickedEdges));
 					pickedEdgeState.clear();
 				}
 			});

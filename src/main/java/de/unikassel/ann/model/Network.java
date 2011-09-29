@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Set;
 
 import de.unikassel.ann.config.NetConfig;
-import de.unikassel.ann.controller.EdgeController;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.io.beans.SynapseBean;
@@ -315,14 +314,12 @@ public class Network extends BasicNetwork {
 				setHiddenLayerSize(index, 1); // initial size
 
 				// Remove the edges between the previous last hidden layer and the output layer
-				EdgeMap<Double> edgeMap = EdgeController.getInstance().getEdgeMap();
 				List<Neuron> outputNeurons = getOutputLayer().getNeurons();
 				for (Neuron n : outputNeurons) {
 					List<Synapse> incomingSynapses = n.getIncomingSynapses();
 					for (Synapse synapse : incomingSynapses) {
 						Integer fromId = synapse.getFromNeuron().getId();
 						Integer toId = synapse.getToNeuron().getId();
-						edgeMap.remove(new FromTo(fromId, toId));
 					}
 				}
 			}
@@ -361,6 +358,14 @@ public class Network extends BasicNetwork {
 			setLayerSize(layerSize, function, layers.get(layerIndex)); // initial size
 			pcs.firePropertyChange(PropertyChanges.NEURONS.name(), oldValue, new Integer(layerSize));
 		}
+	}
+
+	public void addSynapse(final Synapse synapse) {
+		synapseSet.add(synapse);
+	}
+
+	public void removeSynapse(final Synapse synapse) {
+		synapseSet.remove(synapse);
 	}
 
 	private void setLayerSize(final int layerSize, final ActivationFunction function, final Layer layer) {
