@@ -10,7 +10,6 @@ package de.unikassel.ann.gui;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.InputStream;
@@ -52,14 +51,12 @@ public class TrainDataCreateDialog extends JDialog {
 
 		// Create a text area.
 		final JTextArea textArea = new JTextArea();
-		textArea.setFont(new Font("Serif", Font.ITALIC, 16));
 		textArea.setLineWrap(true);
 		textArea.setWrapStyleWord(true);
 
 		JLabel lblInfo = new JLabel(Settings.i18n.getString("trainDataCreateDialog.lblInfo"));
 		JTextArea infos = new JTextArea();
 		infos.setEditable(false);
-		infos.setEnabled(false);
 		infos.setPreferredSize(new Dimension(353, 120));
 		infos.setText(information);
 

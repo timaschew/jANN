@@ -64,7 +64,7 @@ public class FrameTestMenuElements extends JFrame {
 
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				TrainDataPanel datenPanel = TrainDataPanel.getTrainDataPanelInstance();
+				TrainDataPanel datenPanel = new TrainDataPanel();
 				datenPanel.pack();
 				datenPanel.setVisible(true);
 			}

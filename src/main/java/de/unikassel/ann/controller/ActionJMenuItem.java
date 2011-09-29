@@ -126,7 +126,7 @@ public class ActionJMenuItem extends JMenuItem implements ActionListener {
 			Main.instance.addSOMSidebarPanel();
 			break;
 		case NORMALIZE_TRAIN_DATA:
-			TrainDataPanel trainData = TrainDataPanel.getTrainDataPanelInstance();
+			TrainDataPanel trainData = new TrainDataPanel();
 			trainData.setVisible(true);
 			break;
 
