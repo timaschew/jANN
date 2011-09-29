@@ -103,7 +103,13 @@ public class ExportSaveFilePanel extends JDialog {
 				}
 
 				if (parentCaller.equals("EXIT")) {
-					fileSessionsCombomodel.removeElement(exportFile.getName());
+					fileSessionsCombomodel.removeElement(sessionName);
+					if (fileSessionsCombo.getSelectedItem() == null) {
+						dispose();
+						System.exit(0);
+					}
+					fileSessionsCombo.revalidate();
+					fileSessionsCombo.repaint();
 				} else {
 					dispose();
 				}
@@ -136,13 +142,17 @@ public class ExportSaveFilePanel extends JDialog {
 		List<UserSession> userSessionsListe = Settings.getInstance().getUserSessions();
 
 		for (int i = 0; i < userSessionsListe.size(); i++) {
-			fileSessionsCombomodel.addElement(userSessionsListe.get(i).toString());
+			fileSessionsCombomodel.addElement(userSessionsListe.get(i).getName());
 			fileSessionsCombo.setModel(fileSessionsCombomodel);
 		}
+		fileSessionsCombo.setSelectedItem(Settings.getInstance().getCurrentSession().getName());
 		fileSessionsCombo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				if (parentCaller.equals("EXPORT") || parentCaller.equals("EXIT")) {
+					if (fileSessionsCombo.getSelectedItem() == null) {
+						return;
+					}
 					Settings.getInstance().loadSesson(fileSessionsCombo.getSelectedItem().toString());
 					// check if the traindata is null and setenable the checkbox, true of false
 					setTheCheckBoxs();

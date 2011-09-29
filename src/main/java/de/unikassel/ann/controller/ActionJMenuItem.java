@@ -157,6 +157,9 @@ public class ActionJMenuItem extends JMenuItem implements ActionListener {
 			}
 		}
 		// set the Session
+		if (sessionList.isEmpty()) {
+			System.exit(0);
+		}
 		Settings.getInstance().loadSesson(sessionList.get(sessionList.size() - 1).toString());
 		// update the SessionMenuitem
 		Settings.getInstance().updateSesionInMenu();
