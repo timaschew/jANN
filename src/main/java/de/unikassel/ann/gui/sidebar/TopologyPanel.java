@@ -324,6 +324,9 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 				Layer layer = netConfig.getNetwork().getLayer(selectedHiddenLayer);
 				// ignore bias neuron for size
 				int sizeForSelectedHiddenLayer = layer.getNeurons().size() - (layer.hasBias() ? 1 : 0);
+				if (sizeForSelectedHiddenLayer < 0) {
+					sizeForSelectedHiddenLayer++;
+				}
 				hiddenNeuronSpinner.setValue(sizeForSelectedHiddenLayer);
 
 				// update hidden bias
@@ -447,6 +450,9 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 			Layer layer = netConfig.getNetwork().getLayer(selectedHiddenLayer);
 			// ignore bias neuron for size
 			int sizeForSelectedHiddenLayer = layer.getNeurons().size() - (layer.hasBias() ? 1 : 0);
+			if (sizeForSelectedHiddenLayer < 0) {
+				sizeForSelectedHiddenLayer++;
+			}
 			hiddenNeuronSpinner.setValue(sizeForSelectedHiddenLayer);
 
 			// hidden bias

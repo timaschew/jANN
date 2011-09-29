@@ -132,12 +132,12 @@ public class Network extends BasicNetwork {
 			if (layer.getNeurons().size() == 1) {
 				// dont remove last input / output neuron if hidden layers exist
 				if (layer.equals(getInputLayer()) && getSizeOfHiddenLayers() > 0) {
-					return;
+					// return;
 				} else if (layer.equals(getOutputLayer()) && getSizeOfHiddenLayers() > 0) {
-					return;
+					// return;
 				} else if (layerIndex > 0 && layerIndex < layers.size() - 1) {
 					// dont remove last neuron of hidden layer
-					return;
+					// return;
 				}
 			}
 

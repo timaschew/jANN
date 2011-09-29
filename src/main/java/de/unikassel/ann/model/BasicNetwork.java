@@ -67,7 +67,8 @@ public abstract class BasicNetwork {
 			return 0;
 		}
 		int biasOffset = getInputLayer().hasBias() ? 1 : 0;
-		return getInputLayer().getNeurons().size() - biasOffset;
+		int result = getInputLayer().getNeurons().size() - biasOffset;
+		return result < 0 ? 0 : result;
 	}
 
 	/**
