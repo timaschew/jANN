@@ -3,9 +3,6 @@ package de.unikassel.ann.gui;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 
 import javax.swing.GroupLayout;
@@ -52,7 +49,7 @@ public class ImportFilePanel extends JDialog {
 		searchFilePanel = new JPanel();
 		searchFilePanel.setLayout(new BorderLayout());
 
-		setTitle("Import");
+		setTitle(Settings.i18n.getString("importFilePanel.titel"));
 		setSize(272, 210);
 		setLocationRelativeTo(null);
 		setModal(true);
@@ -60,7 +57,7 @@ public class ImportFilePanel extends JDialog {
 
 		JPanel importDialogPanel = new JPanel();
 
-		JLabel lblImportFile = new JLabel("File Importieren");
+		JLabel lblImportFile = new JLabel(Settings.i18n.getString("importFilePanel.lblImportFile"));
 		JButton btnSearch = new JButton();
 		btnSearch.setIcon(new ImageIcon(this.getClass().getClassLoader().getResource("img/search-icon.png")));
 
@@ -73,18 +70,18 @@ public class ImportFilePanel extends JDialog {
 
 		});
 
-		JLabel lblTopology = new JLabel("Topologie");
+		JLabel lblTopology = new JLabel(Settings.i18n.getString("importFilePanel.lblTopology"));
 		topologieCB = new JCheckBox("");
 		topologieCB.setEnabled(false);
-		JLabel lblSynapse = new JLabel("Synapse");
+		JLabel lblSynapse = new JLabel(Settings.i18n.getString("importFilePanel.lblSynapse"));
 		synapseCB = new JCheckBox("");
 		synapseCB.setEnabled(false);
-		JLabel lblTrainingData = new JLabel("Training Data");
+		JLabel lblTrainingData = new JLabel(Settings.i18n.getString("importFilePanel.lblTrainingData"));
 		trainigDataCB = new JCheckBox("");
 		trainigDataCB.setEnabled(false);
-		JButton btnImport = new JButton("Import");
+		JButton btnImport = new JButton(Settings.i18n.getString("importFilePanel.btnImport"));
 		// TODO Nach Import JungView Aktualisieren
-		JButton btnCancel = new JButton("Abbrechen");
+		JButton btnCancel = new JButton(Settings.i18n.getString("importFilePanel.btnCancel"));
 
 		textFieldFileName = new JTextField(10);
 		textFieldFileName.setEditable(false);
@@ -216,6 +213,8 @@ public class ImportFilePanel extends JDialog {
 		fileopen = new JFileChooser();
 		FileFilter filter = new FileNameExtensionFilter("csv files", "csv");
 		fileopen.addChoosableFileFilter(filter);
+		// only csv files
+		fileopen.setAcceptAllFileFilterUsed(false);
 
 		int ret = fileopen.showDialog(searchFilePanel, "Open file");
 
@@ -268,26 +267,4 @@ public class ImportFilePanel extends JDialog {
 		return false;
 	}
 
-	private String readFile(final File file) {
-
-		StringBuffer fileBuffer = null;
-		String fileString = null;
-		String line = null;
-
-		try {
-			FileReader in = new FileReader(file);
-			BufferedReader brd = new BufferedReader(in);
-			fileBuffer = new StringBuffer();
-
-			while ((line = brd.readLine()) != null) {
-				fileBuffer.append(line).append(System.getProperty("line.separator"));
-			}
-
-			in.close();
-			fileString = fileBuffer.toString();
-		} catch (IOException e) {
-			return null;
-		}
-		return fileString;
-	}
 }

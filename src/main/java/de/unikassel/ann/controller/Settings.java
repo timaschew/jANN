@@ -147,7 +147,7 @@ public class Settings {
 
 	}
 
-	private void updateSesionInMenu() {
+	public void updateSesionInMenu() {
 		// skip, ignore first initial call
 		if (Main.instance.isInit() == false) {
 			return;

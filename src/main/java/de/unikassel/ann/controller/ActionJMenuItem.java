@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
@@ -23,6 +24,7 @@ import de.unikassel.ann.gui.ImportFilePanel;
 import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.gui.MainMenu;
 import de.unikassel.ann.gui.TrainDataPanel;
+import de.unikassel.ann.model.UserSession;
 
 /**
  * Menu action item class
@@ -55,15 +57,25 @@ public class ActionJMenuItem extends JMenuItem implements ActionListener {
 			panel.setVisible(true);
 			break;
 		case EXPORT:
-			ExportSaveFilePanel export = new ExportSaveFilePanel();
+			ExportSaveFilePanel export = new ExportSaveFilePanel("EXPORT");
 			export.setVisible(true);
 			break;
 		case CLOSE_CURRENT_SESSION:
-			System.err.println("not implemented");
-			// TODO: Dialog öffnen und User fragen ob er speichern möchte, wenn ja
-			// ExportPanel anzeigen
-
-			// openSaveDialog()
+			String currentSessionName = Settings.getInstance().getCurrentSession().getName();
+			Object[] options = { "Speichern", "Nein", "Abbrechen" };
+			Component frame = new JFrame();
+			int n = JOptionPane.showOptionDialog(frame, "Beim Schließen gehen Ihre Daten verloren.\n"
+					+ "Möchten Sie Ihre Änderungen speichern?", "Speichern", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE,
+					null, options, options[2]);
+			if (n == JOptionPane.YES_OPTION) {
+				ExportSaveFilePanel saveSession = new ExportSaveFilePanel("CLOSE_CURRENT_SESSION");
+				saveSession.fileSessionsCombomodel.removeAllElements();
+				saveSession.fileSessionsCombomodel.addElement(currentSessionName);
+				saveSession.setVisible(true);
+			} else if (n == JOptionPane.NO_OPTION) {
+				// if "No" selected, remove the currentsession from usersessionsList
+				removeCurrentSessionFromList(currentSessionName);
+			}
 
 			break;
 		case CHANGE_BETWEEN_SESSIONS:
@@ -81,16 +93,16 @@ public class ActionJMenuItem extends JMenuItem implements ActionListener {
 					JOptionPane.INFORMATION_MESSAGE);
 			break;
 		case EXIT:
-			Object[] options = { "Speichern", "Nein", "Abbrechen" };
-			Component frame = new JFrame();
-			int n = JOptionPane.showOptionDialog(frame, "Die aktuelle Session ist nicht gespeichert \n" + "Möchten Sie speichern?",
-					"Speichern", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[2]);
+			Object[] option = { "Speichern", "Nein", "Abbrechen" };
+			Component frameD = new JFrame();
+			int pane = JOptionPane.showOptionDialog(frameD, "Beim Beenden gehen Ihre Daten verloren. \n" + "Möchten Sie diese speichern?",
+					"Beenden", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, option, option[2]);
 
-			if (n == JOptionPane.YES_OPTION) {
-				// TODO call Export panel
-			} else if (n == JOptionPane.NO_OPTION) {
+			if (pane == JOptionPane.YES_OPTION) {
+				ExportSaveFilePanel exitSave = new ExportSaveFilePanel("EXIT");
+				exitSave.setVisible(true);
+			} else if (pane == JOptionPane.NO_OPTION) {
 				System.exit(e.getID());
-			} else if (n == JOptionPane.CANCEL_OPTION) {
 			}
 			break;
 		case LOAD_OR_NETWORK:
@@ -120,6 +132,24 @@ public class ActionJMenuItem extends JMenuItem implements ActionListener {
 			System.out.println("Unknown command: " + action);
 			break;
 		}
+	}
+
+	/**
+	 * @param currentSessionName
+	 */
+	private void removeCurrentSessionFromList(final String currentSessionName) {
+		List<UserSession> sessionList = Settings.getInstance().getUserSessions();
+		for (int i = 0; i < sessionList.size(); i++) {
+			String sessionName = sessionList.get(i).toString();
+			if (sessionName.equals(currentSessionName)) {
+				sessionList.remove(i);
+			}
+		}
+		// set the Session
+		Settings.getInstance().loadSesson(sessionList.get(sessionList.size() - 1).toString());
+		// update the SessionMenuitem
+		Settings.getInstance().updateSesionInMenu();
+
 	}
 
 	/**

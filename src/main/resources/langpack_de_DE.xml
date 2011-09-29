@@ -103,5 +103,18 @@
 	<entry key="graph.mouse.createVertexHiddenWithLayer">Hidden Neuron hinzufügen (Layer %d)</entry>
 	<entry key="graph.mouse.HiddenLayer">Hidden Layer %d</entry>
 	<entry key="session.initial.name">Neu</entry>
-	
+	<entry key="importFilePanel.titel">Import</entry>
+	<entry key="importFilePanel.lblImportFile">File Importieren</entry>
+	<entry key="importFilePanel.lblTopology">Topologie</entry>
+	<entry key="importFilePanel.lblSynapse">Synapse</entry>
+	<entry key="importFilePanel.lblTrainingData">Trainingsdaten</entry>
+	<entry key="importFilePanel.btnImport">Import</entry>
+	<entry key="importFilePanel.btnCancel">Abbrechen</entry>
+	<entry key="exportSaveFilePanel.titel">Exportieren/Speichern</entry>
+	<entry key="exportSaveFilePanel.lblSession">Session</entry>
+	<entry key="exportSaveFilePanel.lblNetz">Netz</entry>
+	<entry key="exportSaveFilePanel.lblTrainingData">Trainingsdaten</entry>
+	<entry key="exportSaveFilePanel.lblTestData">Test Daten</entry>
+	<entry key="exportSaveFilePanel.btnExport">Speichern</entry>
+	<entry key="exportSaveFilePanel.btnCancel">Abbrechen</entry>
 </properties>

@@ -44,9 +44,9 @@ public class Sidebar extends JPanel {
 		JPanel wrapper = new JPanel();
 		GridBagLayout gbl_wrapper = new GridBagLayout();
 		gbl_wrapper.columnWidths = new int[] { 412, 0 };
-		gbl_wrapper.rowHeights = new int[] { 339, 350, 90, 224, 160 };
+		gbl_wrapper.rowHeights = new int[] { 339, 90, 224 };
 		gbl_wrapper.columnWeights = new double[] { 0.0, Double.MIN_VALUE };
-		gbl_wrapper.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0 };
+		gbl_wrapper.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0 };
 		wrapper.setLayout(gbl_wrapper);
 
 		// topology Panel
@@ -58,15 +58,7 @@ public class Sidebar extends JPanel {
 		gbc_topolgyPanel.gridx = 0;
 		gbc_topolgyPanel.gridy = 0;
 		wrapper.add(topolgyPanel, gbc_topolgyPanel);
-		// Trainstrategy Panel
-		trainStrategyPanel = new TrainStrategyPanel();
-		GridBagConstraints gbc_trainStrategyPanel = new GridBagConstraints();
-		gbc_trainStrategyPanel.anchor = GridBagConstraints.NORTH;
-		gbc_trainStrategyPanel.fill = GridBagConstraints.HORIZONTAL;
-		gbc_trainStrategyPanel.insets = new Insets(0, 0, 5, 0);
-		gbc_trainStrategyPanel.gridx = 0;
-		gbc_trainStrategyPanel.gridy = 1;
-		wrapper.add(trainStrategyPanel, gbc_trainStrategyPanel);
+
 		// Standardoption Panel
 		standardOptionsPanel = new StandardOptionsPanel();
 		GridBagConstraints gbc_standardOptionsPanel = new GridBagConstraints();
@@ -74,18 +66,19 @@ public class Sidebar extends JPanel {
 		gbc_standardOptionsPanel.fill = GridBagConstraints.HORIZONTAL;
 		gbc_standardOptionsPanel.insets = new Insets(0, 0, 5, 0);
 		gbc_standardOptionsPanel.gridx = 0;
-		gbc_standardOptionsPanel.gridy = 2;
+		gbc_standardOptionsPanel.gridy = 1;
 		wrapper.add(standardOptionsPanel, gbc_standardOptionsPanel);
+
+		JScrollPane scrollPane = new JScrollPane(wrapper);
 		// selectedSymbol Panel
 		selectedSymbolsPanel = new SelectedSymbolPanel();
 		GridBagConstraints gbc_selectedSymbolsPanel = new GridBagConstraints();
+		gbc_selectedSymbolsPanel.insets = new Insets(0, 0, 5, 0);
 		gbc_selectedSymbolsPanel.anchor = GridBagConstraints.NORTH;
 		gbc_selectedSymbolsPanel.fill = GridBagConstraints.HORIZONTAL;
 		gbc_selectedSymbolsPanel.gridx = 0;
-		gbc_selectedSymbolsPanel.gridy = 3;
+		gbc_selectedSymbolsPanel.gridy = 2;
 		wrapper.add(selectedSymbolsPanel, gbc_selectedSymbolsPanel);
-
-		JScrollPane scrollPane = new JScrollPane(wrapper);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(100);
 
 		JPanel trainTabPanel = new JPanel();
@@ -93,17 +86,27 @@ public class Sidebar extends JPanel {
 		JScrollPane scrollPaneTrain = new JScrollPane(trainTabPanel);
 		GridBagLayout gbl_trainTabPanel = new GridBagLayout();
 		gbl_trainTabPanel.columnWidths = new int[] { 407, 0 };
-		gbl_trainTabPanel.rowHeights = new int[] { 235, 350, 0 };
+		gbl_trainTabPanel.rowHeights = new int[] { 350, 235, 350 };
 		gbl_trainTabPanel.columnWeights = new double[] { 0.0, Double.MIN_VALUE };
 		gbl_trainTabPanel.rowWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
 		trainTabPanel.setLayout(gbl_trainTabPanel);
+
+		// Trainstrategy Panel
+		trainStrategyPanel = new TrainStrategyPanel();
+		GridBagConstraints gbc_trainStrategyPanel = new GridBagConstraints();
+		gbc_trainStrategyPanel.anchor = GridBagConstraints.NORTH;
+		gbc_trainStrategyPanel.fill = GridBagConstraints.HORIZONTAL;
+		gbc_trainStrategyPanel.insets = new Insets(0, 0, 5, 0);
+		gbc_trainStrategyPanel.gridx = 0;
+		gbc_trainStrategyPanel.gridy = 0;
+		trainTabPanel.add(trainStrategyPanel, gbc_trainStrategyPanel);
 
 		TrainControlPanel trainControlPanel = new TrainControlPanel();
 		GridBagConstraints gbc_trainControlPanel = new GridBagConstraints();
 		gbc_trainControlPanel.anchor = GridBagConstraints.NORTHWEST;
 		gbc_trainControlPanel.insets = new Insets(0, 0, 5, 0);
 		gbc_trainControlPanel.gridx = 0;
-		gbc_trainControlPanel.gridy = 0;
+		gbc_trainControlPanel.gridy = 1;
 		trainTabPanel.add(trainControlPanel, gbc_trainControlPanel);
 
 		manualTestPanel = new WorkPanel();
@@ -112,7 +115,7 @@ public class Sidebar extends JPanel {
 		gbc_manualTestPanel.anchor = GridBagConstraints.NORTH;
 		gbc_manualTestPanel.insets = new Insets(0, 0, 5, 0);
 		gbc_manualTestPanel.gridx = 0;
-		gbc_manualTestPanel.gridy = 1;
+		gbc_manualTestPanel.gridy = 2;
 		trainTabPanel.add(manualTestPanel, gbc_manualTestPanel);
 		scrollPaneTrain.getVerticalScrollBar().setUnitIncrement(100);
 

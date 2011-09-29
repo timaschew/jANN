@@ -10,13 +10,12 @@ package de.unikassel.ann.gui;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.List;
 
-import javax.swing.AbstractButton;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -25,9 +24,13 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
+import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.io.NetIO;
+import de.unikassel.ann.model.DataPairSet;
 import de.unikassel.ann.model.UserSession;
 
 /**
@@ -36,44 +39,39 @@ import de.unikassel.ann.model.UserSession;
  */
 public class ExportSaveFilePanel extends JDialog {
 
-	private JPanel exportFilePanel;
-	private JFileChooser fileopen;
-	private AbstractButton btnSearchs;
+	private JPanel exportSaveFilePanel;
+	private JFileChooser fileSaveChooser;
 	private JCheckBox netCB;
 	private JCheckBox testDataCB;
 	private JCheckBox trainingDataCB;
 	private JButton btnExport;
-	private JDialog selectFileToExport;
+	public JComboBox fileSessionsCombo;
+	public DefaultComboBoxModel fileSessionsCombomodel;
+	private String parentCaller;
+	private JButton btnCancel;
+
+	private static final String PATH = System.getProperty("user.home");
 
 	/**
 	 * 
 	 */
-	public ExportSaveFilePanel() {
+	public ExportSaveFilePanel(final String parentCaller) {
 
-		exportFilePanel = new JPanel();
-		exportFilePanel.setLayout(new BorderLayout());
+		exportSaveFilePanel = new JPanel();
+		exportSaveFilePanel.setLayout(new BorderLayout());
 
-		setTitle("Export");
-		setSize(278, 202);
+		this.parentCaller = parentCaller;
+
+		setTitle(Settings.i18n.getString("exportSaveFilePanel.titel"));
+		setSize(250, 202);
 		setLocationRelativeTo(null);
 		setModal(true);
 		setResizable(false);
 
-		JLabel lblFile = new JLabel("File ");
-		JLabel lblNetz = new JLabel("Netz");
-		JLabel lblTrainingData = new JLabel("Training Daten");
-		JLabel lblTestData = new JLabel("Test Daten");
-
-		btnSearchs = new JButton("");
-		btnSearchs.setIcon(new ImageIcon(this.getClass().getClassLoader().getResource("img/search-icon.png")));
-		btnSearchs.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				// TODO sessionList auslesen, um auswählen zu können
-				// selectFileToExport();
-			}
-
-		});
+		JLabel lblSession = new JLabel(Settings.i18n.getString("exportSaveFilePanel.lblSession"));
+		JLabel lblNetz = new JLabel(Settings.i18n.getString("exportSaveFilePanel.lblNetz"));
+		JLabel lblTrainingData = new JLabel(Settings.i18n.getString("exportSaveFilePanel.lblTrainingData"));
+		JLabel lblTestData = new JLabel(Settings.i18n.getString("exportSaveFilePanel.lblTestData"));
 
 		netCB = new JCheckBox("");
 		netCB.setEnabled(true);
@@ -82,49 +80,53 @@ public class ExportSaveFilePanel extends JDialog {
 		testDataCB = new JCheckBox("");
 		testDataCB.setEnabled(false);
 
-		// netCB.addActionListener(new ActionListener() {
-		// @Override
-		// public void actionPerformed(final ActionEvent e) {
-		// if (netCB.isSelected()) {
-		// trainingDataCB.setEnabled(true);
-		// } else {
-		// if (trainingDataCB.isSelected()) {
-		// trainingDataCB.setSelected(false);
-		// trainingDataCB.setEnabled(false);
-		// }
-		// trainingDataCB.setEnabled(false);
-		// }
-		// }
-		// });
-		//
-		// trainingDataCB.addActionListener(new ActionListener() {
-		// @Override
-		// public void actionPerformed(final ActionEvent e) {
-		// if (trainingDataCB.isSelected() && !netCB.isSelected()) {
-		// netCB.setSelected(true);
-		// }
-		// }
-		// });
-
-		btnExport = new JButton("Export");
+		btnExport = new JButton(Settings.i18n.getString("exportSaveFilePanel.btnExport"));
 		btnExport.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent event) {
-				openFileChooser();
+				NetIO net = new NetIO();
+				String fileName = Settings.getInstance().getCurrentSession().toString();
+				File exportFile = new File(PATH + File.separator + fileName);
+				if (netCB.isSelected()) {
+					NetConfig config = Settings.getInstance().getCurrentSession().getNetworkConfig();
+					net.writeNet(exportFile, fileName, config);
+				}
+				if (trainingDataCB.isSelected()) {
+
+					DataPairSet dataSet = Settings.getInstance().getCurrentSession().getNetworkConfig().getTrainingData();
+					net.writeDataSet(exportFile, fileName, trainingDataCB.isSelected(), dataSet);
+				}
+				if (testDataCB.isSelected()) {
+					DataPairSet testDataSet = Settings.getInstance().getCurrentSession().getNetworkConfig().getTestData();
+					net.writeDataSet(exportFile, fileName, testDataCB.isSelected(), testDataSet);
+				}
+				openFileChooser(exportFile);
 			}
 
 		});
 
-		JButton btnAbbrechen = new JButton("Abbrechen");
-		btnAbbrechen.addActionListener(new ActionListener() {
+		btnCancel = new JButton(Settings.i18n.getString("exportSaveFilePanel.btnCancel"));
+		// wenn der Aufrufer der Exit Kommando ist, soll
+		// über das Cancel Button, die applikation geschlossen werden
+		// falls der User nicht alles geöffnete Sessions speichern möchte
+		if (parentCaller.equals("EXIT")) {
+			btnCancel.setText("Exit");
+		}
+
+		btnCancel.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(final ActionEvent event) {
-				dispose();
+			public void actionPerformed(final ActionEvent e) {
+				if (parentCaller.equals("EXIT")) {
+					System.exit(e.getID());
+				} else {
+					dispose();
+				}
+
 			}
 		});
 
-		final JComboBox fileSessionsCombo = new JComboBox();
-		DefaultComboBoxModel fileSessionsCombomodel = new DefaultComboBoxModel();
+		fileSessionsCombo = new JComboBox();
+		fileSessionsCombomodel = new DefaultComboBoxModel();
 		List<UserSession> userSessionsListe = Settings.getInstance().getUserSessions();
 
 		for (int i = 0; i < userSessionsListe.size(); i++) {
@@ -134,96 +136,145 @@ public class ExportSaveFilePanel extends JDialog {
 		fileSessionsCombo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				NetIO net = new NetIO();
-				// check if the traindata is null and setenable the checkbox, true of false
-				if (Settings.getInstance().getCurrentSession().getNetworkConfig().getTrainingData() == null) {
-					trainingDataCB.setEnabled(false);
-				} else {
-					trainingDataCB.setEnabled(true);
+				if (parentCaller.equals("EXPORT") || parentCaller.equals("EXIT")) {
+					Settings.getInstance().loadSesson(fileSessionsCombo.getSelectedItem().toString());
+					// check if the traindata is null and setenable the checkbox, true of false
+					setTheCheckBoxs();
+				} else if (parentCaller.equals("CLOSE_CURRENT_SESSION")) {
+					setTheCheckBoxs();
 				}
-				if (Settings.getInstance().getCurrentSession().getNetworkConfig().getTestData() == null) {
-					testDataCB.setEnabled(false);
-				} else {
-					testDataCB.setEnabled(true);
-				}
+
 			}
+
 		});
 
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
-		groupLayout.setHorizontalGroup(groupLayout
-				.createParallelGroup(Alignment.LEADING)
-				.addGroup(
-						groupLayout
-								.createSequentialGroup()
-								.addContainerGap()
-								.addGroup(
-										groupLayout
-												.createParallelGroup(Alignment.LEADING)
-												.addGroup(
-														groupLayout
-																.createSequentialGroup()
-																.addGroup(
-																		groupLayout.createParallelGroup(Alignment.LEADING)
-																				.addComponent(lblNetz).addComponent(lblTrainingData)
-																				.addComponent(lblTestData))
-																.addGap(66)
-																.addGroup(
-																		groupLayout.createParallelGroup(Alignment.TRAILING)
-																				.addComponent(trainingDataCB).addComponent(netCB)
-																				.addComponent(testDataCB)))
-												.addGroup(
-														Alignment.TRAILING,
-														groupLayout
-																.createSequentialGroup()
-																.addComponent(lblFile)
-																.addGap(51)
-																.addComponent(fileSessionsCombo, 0, 147, Short.MAX_VALUE)
-																.addPreferredGap(ComponentPlacement.RELATED)
-																.addComponent(btnSearchs, GroupLayout.PREFERRED_SIZE, 33,
-																		GroupLayout.PREFERRED_SIZE))).addContainerGap())
-				.addGroup(
-						groupLayout.createSequentialGroup().addGap(22).addComponent(btnExport)
-								.addPreferredGap(ComponentPlacement.RELATED, 76, Short.MAX_VALUE).addComponent(btnAbbrechen).addGap(25)));
-		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(
+		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(
 				groupLayout
 						.createSequentialGroup()
-						.addContainerGap()
-						.addGroup(
-								groupLayout
-										.createParallelGroup(Alignment.TRAILING)
-										.addComponent(btnSearchs)
-										.addGroup(
-												groupLayout
-														.createParallelGroup(Alignment.BASELINE)
-														.addComponent(lblFile)
-														.addComponent(fileSessionsCombo, GroupLayout.PREFERRED_SIZE,
-																GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING).addComponent(lblNetz).addComponent(netCB))
-						.addPreferredGap(ComponentPlacement.UNRELATED)
 						.addGroup(
 								groupLayout
 										.createParallelGroup(Alignment.LEADING)
 										.addGroup(
-												groupLayout.createSequentialGroup().addComponent(lblTrainingData).addGap(14)
-														.addComponent(lblTestData))
+												groupLayout
+														.createSequentialGroup()
+														.addContainerGap()
+														.addGroup(
+																groupLayout
+																		.createParallelGroup(Alignment.LEADING)
+																		.addGroup(
+																				groupLayout
+																						.createSequentialGroup()
+																						.addGroup(
+																								groupLayout
+																										.createParallelGroup(
+																												Alignment.LEADING)
+																										.addComponent(lblNetz)
+																										.addComponent(lblTrainingData)
+																										.addComponent(lblTestData))
+																						.addGap(56)
+																						.addGroup(
+																								groupLayout
+																										.createParallelGroup(
+																												Alignment.LEADING)
+																										.addComponent(testDataCB)
+																										.addComponent(trainingDataCB)
+																										.addComponent(netCB)))
+																		.addGroup(
+																				groupLayout
+																						.createSequentialGroup()
+																						.addComponent(lblSession)
+																						.addPreferredGap(ComponentPlacement.RELATED, 33,
+																								Short.MAX_VALUE)
+																						.addComponent(fileSessionsCombo,
+																								GroupLayout.PREFERRED_SIZE, 143,
+																								GroupLayout.PREFERRED_SIZE).addGap(16))))
 										.addGroup(
-												groupLayout.createSequentialGroup().addComponent(trainingDataCB)
-														.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(testDataCB)))
+												groupLayout.createSequentialGroup().addGap(22).addComponent(btnExport).addGap(41)
+														.addComponent(btnCancel))).addContainerGap()));
+		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(
+				groupLayout
+						.createSequentialGroup()
+						.addGap(8)
+						.addGroup(
+								groupLayout
+										.createParallelGroup(Alignment.BASELINE)
+										.addComponent(lblSession)
+										.addComponent(fileSessionsCombo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+												GroupLayout.PREFERRED_SIZE))
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(
+								groupLayout
+										.createParallelGroup(Alignment.LEADING)
+										.addGroup(
+												groupLayout
+														.createSequentialGroup()
+														.addComponent(netCB)
+														.addGap(12)
+														.addGroup(
+																groupLayout
+																		.createParallelGroup(Alignment.LEADING)
+																		.addGroup(
+																				groupLayout.createSequentialGroup()
+																						.addPreferredGap(ComponentPlacement.RELATED)
+																						.addComponent(trainingDataCB)
+																						.addPreferredGap(ComponentPlacement.UNRELATED)
+																						.addComponent(testDataCB))
+																		.addGroup(
+																				groupLayout.createSequentialGroup().addGap(30)
+																						.addComponent(lblTestData))))
+										.addGroup(
+												groupLayout.createSequentialGroup().addComponent(lblNetz)
+														.addPreferredGap(ComponentPlacement.UNRELATED).addComponent(lblTrainingData)))
 						.addGap(16)
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(btnExport).addComponent(btnAbbrechen))
-						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(btnExport).addComponent(btnCancel))
+						.addContainerGap(12, Short.MAX_VALUE)));
 		getContentPane().setLayout(groupLayout);
 
 	}
 
-	private void openFileChooser() {
+	private void setTheCheckBoxs() {
 
-		fileopen = new JFileChooser();
-		// FileFilter filter = new FileNameExtensionFilter("csv files", "csv");
-		// fileopen.addChoosableFileFilter(filter);
+		if (Settings.getInstance().getCurrentSession().getNetworkConfig().getTrainingData() == null) {
+			trainingDataCB.setEnabled(false);
+		} else {
+			trainingDataCB.setEnabled(true);
+			trainingDataCB.setSelected(true);
+		}
+		if (Settings.getInstance().getCurrentSession().getNetworkConfig().getTestData() == null) {
+			testDataCB.setEnabled(false);
+		} else {
+			testDataCB.setEnabled(true);
+			testDataCB.setSelected(true);
+		}
+	}
 
-		int ret = fileopen.showDialog(exportFilePanel, "Save file");
+	private void openFileChooser(final File exportFile) {
+
+		fileSaveChooser = new JFileChooser();
+		FileFilter filter = new FileNameExtensionFilter("csv files", "csv");
+		fileSaveChooser.addChoosableFileFilter(filter);
+		fileSaveChooser.setSelectedFile(exportFile);
+		// only csv files
+		fileSaveChooser.setAcceptAllFileFilterUsed(false);
+
+		int ret = fileSaveChooser.showSaveDialog(exportSaveFilePanel);
+		if (ret == JFileChooser.APPROVE_OPTION) {
+			exportFile.renameTo(fileSaveChooser.getSelectedFile());
+		} else if (ret == JFileChooser.CANCEL_OPTION) {
+			exportFile.delete();
+		}
+
+		// wenn der Aufrufer der Exit-Kommando ist, dann
+		// erscheint der Export Dialog so oft, wie Sessions existieren
+		// wenn der File gespeichert wird, wird die Session aus dem
+		// comboBoxmodel entfernt
+		if (parentCaller.equals("EXIT")) {
+			fileSessionsCombomodel.removeElement(exportFile.getName());
+		} else {
+			dispose();
+		}
 
 	}
+
 }
