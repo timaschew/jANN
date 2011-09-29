@@ -1,18 +1,37 @@
 package de.unikassel.ann.gui.sidebar;
 
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ActionMap;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.InputMap;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.TitledBorder;
 
 import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.gui.model.Edge;
+import de.unikassel.ann.gui.model.Vertex;
+import de.unikassel.ann.model.Neuron;
+import de.unikassel.ann.model.Synapse;
 
 public class SelectedSymbolPanel extends JPanel {
 
@@ -21,7 +40,7 @@ public class SelectedSymbolPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	public JTextField fieldSelected;
-	public JComboBox activatedFunktioncomboBox;
+	public CustomComboBox activatedFunctionComboBox;
 	public JSpinner neuroInputBySelectSpinner;
 	public JSpinner spinnerSynapsWeight;
 
@@ -45,8 +64,15 @@ public class SelectedSymbolPanel extends JPanel {
 		fieldSelected.setEditable(false);
 		fieldSelected.setColumns(10);
 
-		activatedFunktioncomboBox = new JComboBox();
-		activatedFunktioncomboBox.setModel(new DefaultComboBoxModel(new String[] { "Sigmoid", "Test" }));
+		activatedFunctionComboBox = new CustomComboBox();
+		DefaultComboBoxModel model = new DefaultComboBoxModel();
+		model.addElement("");
+		model.addElement("Sigmoid");
+		model.addElement("TanH");
+		activatedFunctionComboBox.setModel(model);
+		HashSet<Integer> disableIndex = new HashSet<Integer>();
+		disableIndex.add(0);
+		activatedFunctionComboBox.setDisableIndex(disableIndex);
 
 		neuroInputBySelectSpinner = new JSpinner();
 		neuroInputBySelectSpinner.setModel(new SpinnerNumberModel(new Double(0.0), null, null, new Double(0.1)));
@@ -64,7 +90,7 @@ public class SelectedSymbolPanel extends JPanel {
 						.addGap(41)
 						.addGroup(
 								gl_SelectedSymbolPanel.createParallelGroup(Alignment.TRAILING, false).addComponent(fieldSelected)
-										.addComponent(activatedFunktioncomboBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+										.addComponent(activatedFunctionComboBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 										.addComponent(spinnerSynapsWeight).addComponent(neuroInputBySelectSpinner)).addGap(62)));
 		gl_SelectedSymbolPanel.setVerticalGroup(gl_SelectedSymbolPanel.createParallelGroup(Alignment.LEADING).addGroup(
 				gl_SelectedSymbolPanel
@@ -92,9 +118,193 @@ public class SelectedSymbolPanel extends JPanel {
 								gl_SelectedSymbolPanel
 										.createParallelGroup(Alignment.BASELINE)
 										.addComponent(lblActivationFunction)
-										.addComponent(activatedFunktioncomboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										.addComponent(activatedFunctionComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 												GroupLayout.PREFERRED_SIZE)).addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 		setLayout(gl_SelectedSymbolPanel);
+		reset();
+	}
+
+	/**
+	 * Reset the panel and disable all elements.
+	 */
+	public void reset() {
+		fieldSelected.setText(null);
+
+		HashSet<Integer> disableIndex = new HashSet<Integer>();
+		activatedFunctionComboBox.setDisableIndex(disableIndex);
+		activatedFunctionComboBox.setSelectedIndex(0);
+		disableIndex.add(0);
+		activatedFunctionComboBox.setDisableIndex(disableIndex);
+		activatedFunctionComboBox.setEnabled(false);
+
+		spinnerSynapsWeight.setValue(0);
+		spinnerSynapsWeight.setEnabled(false);
+
+		neuroInputBySelectSpinner.setValue(0);
+		neuroInputBySelectSpinner.setEnabled(false);
+	}
+
+	/**
+	 * Update the panel with the picked vertex (or vertices)
+	 * 
+	 * @param picked
+	 */
+	public void updateVertex(final Set<Vertex> picked) {
+		reset();
+
+		// List of picked values to show
+		List<String> activationFunctions = new ArrayList<String>();
+		List<Double> values = new ArrayList<Double>();
+		String selected = "";
+
+		// Collect all values of the picked set
+		for (Vertex vertex : picked) {
+			Neuron model = vertex.getModel();
+			activationFunctions.add(model.getActivationFunction().getClass().getSimpleName());
+			values.add(model.getValue());
+			selected += (selected == "" ? "" : ", ") + model.getId();
+		}
+		fieldSelected.setText(selected);
+
+		boolean showFunc = true;
+		String refFunc = activationFunctions.get(0);
+		for (String func : activationFunctions) {
+			showFunc &= refFunc.equals(func);
+		}
+		activatedFunctionComboBox.setEnabled(true);
+		if (showFunc) {
+			refFunc = refFunc.replaceAll("Function", "");
+			activatedFunctionComboBox.setSelectedItem(refFunc);
+		} else {
+			activatedFunctionComboBox.setSelectedItem(null);
+		}
+
+		boolean showValue = true;
+		Double refValue = values.get(0);
+		for (Double value : values) {
+			showValue &= refValue.equals(value);
+		}
+		neuroInputBySelectSpinner.setEnabled(true);
+		if (showValue) {
+			neuroInputBySelectSpinner.setValue(refValue);
+		} else {
+			neuroInputBySelectSpinner.setValue(0);
+		}
+	}
+
+	/**
+	 * 
+	 * @param picked
+	 */
+	public void updateEdge(final Set<Edge> picked) {
+		reset();
+
+		// List of picked values to show
+		List<Double> values = new ArrayList<Double>();
+
+		// Collect all values of the picked set
+		for (Edge edge : picked) {
+			Synapse model = edge.getModel();
+			values.add(model.getWeight());
+		}
+		fieldSelected.setText(picked.size() + "");
+
+		boolean showValue = true;
+		Double refValue = values.get(0);
+		for (Double value : values) {
+			showValue &= refValue.equals(value);
+		}
+		spinnerSynapsWeight.setEnabled(true);
+		if (showValue) {
+			spinnerSynapsWeight.setValue(refValue);
+		} else {
+			spinnerSynapsWeight.setValue(0);
+		}
+	}
+
+	/*
+	 * Custom Combox Box which has the ability to disable elements.
+	 */
+	private class CustomComboBox extends JComboBox {
+		public CustomComboBox() {
+			super();
+			setRenderer(new DefaultListCellRenderer() {
+				@Override
+				public Component getListCellRendererComponent(final JList list, final Object value, final int index,
+						final boolean isSelected, final boolean cellHasFocus) {
+					Component c;
+					if (disableIndexSet.contains(index)) {
+						c = super.getListCellRendererComponent(list, value, index, false, false);
+						c.setEnabled(false);
+					} else {
+						c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+						c.setEnabled(true);
+					}
+					return c;
+				}
+			});
+			Action up = new AbstractAction() {
+				@Override
+				public void actionPerformed(final ActionEvent e) {
+					int si = getSelectedIndex();
+					for (int i = si - 1; i >= 0; i--) {
+						if (!disableIndexSet.contains(i)) {
+							setSelectedIndex(i);
+							break;
+						}
+					}
+				}
+			};
+			Action down = new AbstractAction() {
+				@Override
+				public void actionPerformed(final ActionEvent e) {
+					int si = getSelectedIndex();
+					for (int i = si + 1; i < getModel().getSize(); i++) {
+						if (!disableIndexSet.contains(i)) {
+							setSelectedIndex(i);
+							break;
+						}
+					}
+				}
+			};
+			ActionMap am = getActionMap();
+			am.put("selectPrevious3", up);
+			am.put("selectNext3", down);
+			InputMap im = getInputMap();
+			im.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "selectPrevious3");
+			im.put(KeyStroke.getKeyStroke(KeyEvent.VK_KP_UP, 0), "selectPrevious3");
+			im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "selectNext3");
+			im.put(KeyStroke.getKeyStroke(KeyEvent.VK_KP_DOWN, 0), "selectNext3");
+		}
+
+		private final HashSet<Integer> disableIndexSet = new HashSet<Integer>();
+		private boolean isDisableIndex = false;
+
+		public void setDisableIndex(final HashSet<Integer> set) {
+			disableIndexSet.clear();
+			for (Integer i : set) {
+				disableIndexSet.add(i);
+			}
+		}
+
+		@Override
+		public void setPopupVisible(final boolean v) {
+			if (!v && isDisableIndex) {
+				isDisableIndex = false;
+			} else {
+				super.setPopupVisible(v);
+			}
+		}
+
+		@Override
+		public void setSelectedIndex(final int index) {
+			if (disableIndexSet.contains(index)) {
+				isDisableIndex = true;
+			} else {
+				// isDisableIndex = false;
+				super.setSelectedIndex(index);
+			}
+		}
 	}
 
 }
