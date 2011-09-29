@@ -75,6 +75,7 @@ public class ColorHelper {
 		int bF = 1;
 
 		int count = 0;
+		// 1276 steps
 		while (true) {
 			localMap.put(count++, new Color(r, g, b));
 			if (b == HIGH) {
@@ -82,6 +83,9 @@ public class ColorHelper {
 			}
 			if (g == HIGH) {
 				bF = -1; // decrement blue
+				// rF = +1; // increment red
+			}
+			if (b == LOW) {
 				rF = +1; // increment red
 			}
 			if (r == HIGH) {
@@ -90,7 +94,7 @@ public class ColorHelper {
 			if (g == LOW && b == LOW) {
 				rF = -1; // decrement red
 			}
-			if (r < HALF && b == LOW) {
+			if (r < HALF && g == LOW && b == LOW) {
 				break; // finish
 			}
 			r += rF;
@@ -113,6 +117,7 @@ public class ColorHelper {
 		Integer min = list.get(0);
 		Integer max = list.get(list.size() - 1);
 		factor = max + 1;
+		System.out.println(factor);
 	}
 
 	/**
@@ -128,4 +133,52 @@ public class ColorHelper {
 		return value;
 	}
 
+	/**
+	 * blue-green-red 1276 steps
+	 * 
+	 * <pre>
+	 * if (b == HIGH) {
+	 * 	gF = 1; // increment green
+	 * }
+	 * if (g == HIGH) {
+	 * 	bF = -1; // decrement blue
+	 * 	// rF = +1; // increment red
+	 * }
+	 * if (b == LOW) {
+	 * 	rF = +1; // increment red
+	 * }
+	 * if (r == HIGH) {
+	 * 	gF = -1; // decrement green
+	 * }
+	 * if (g == LOW &amp;&amp; b == LOW) {
+	 * 	rF = -1; // decrement red
+	 * }
+	 * if (r &lt; HALF &amp;&amp; g == LOW &amp;&amp; b == LOW) {
+	 * 	break; // finish
+	 * }
+	 * </pre>
+	 */
+
+	/**
+	 * blue-short green-red 1200 steps
+	 * 
+	 * <pre>
+	 * if (b == HIGH) {
+	 * 	gF = 1; // increment green
+	 * }
+	 * if (g == HIGH) {
+	 * 	bF = -1; // decrement blue
+	 * 	rF = +1; // increment red
+	 * }
+	 * if (r == HIGH) {
+	 * 	gF = -1; // decrement green
+	 * }
+	 * if (g == LOW &amp;&amp; b == LOW) {
+	 * 	rF = -1; // decrement red
+	 * }
+	 * if (r &lt; HALF &amp;&amp; b == LOW) {
+	 * 	break; // finish
+	 * }
+	 * </pre>
+	 */
 }
