@@ -33,52 +33,6 @@ public class Vertex implements Comparable<Vertex> {
 		model = new Neuron(activateFunc, bias);
 	}
 
-	// /**
-	// * Vertex setup. Sets the current sidebar config values to the layer and add it to the layercontroller.
-	// */
-	// public void setup() {
-	// // Get current selected layer index from the sidebar
-	// UserSession currentSession = Settings.getInstance().getCurrentSession();
-	// int layerIndex = currentSession.sidebarModel.getMouseInsertLayer();
-	// setup(layerIndex);
-	// }
-
-	public void setup(final int layerIndex) {
-		// // LayerController<Layer> layerController = LayerController.getInstance();
-		//
-		// // Set current layer index for this vertex (for its neuron model)
-		// setLayer(layerIndex);
-		//
-		// // TODO Get standard value set in the sidebar model
-		// setValue(0d);
-		//
-		// // Get the number of vertices in the layer BEFORE adding the new vertex
-		// int layerSize = layerController.getVerticesInLayer(layerIndex).size();
-		//
-		// System.out.println("Vertex.setup(" + layerIndex + ")");
-		//
-		// // Add the new vertex to the current jung layer but DO NOT add the
-		// // vertex to the graph at this position!
-		// layerController.addVertex(layerIndex, this, false);
-		//
-		// // Input layer (index = 0)
-		// Actions action = Actions.UPDATE_SIDEBAR_CONFIG_INPUT_NEURON_MODEL;
-		// String propertyName = SidebarModel.P.inputNeurons.name();
-		// if (layerIndex > 0) {
-		// if (layerIndex == layerController.getLayers().size() - 1) {
-		// // Output Layer (index = # layers - 1)
-		// action = Actions.UPDATE_SIDEBAR_CONFIG_OUTPUT_NEURON_MODEL;
-		// propertyName = SidebarModel.P.outputNeurons.name();
-		// } else {
-		// // Hidden Layer (0 < index < # layers - 1)
-		// action = Actions.UPDATE_SIDEBAR_CONFIG_HIDDEN_NEURON_MODEL;
-		// propertyName = SidebarModel.P.hiddenNeurons.name();
-		// }
-		// }
-		//
-		// ActionController.get().doAction(action, new PropertyChangeEvent(this, propertyName, layerSize, layerSize + 1));
-	}
-
 	public void setIndex(final int index) {
 		this.index = index;
 	}
@@ -99,15 +53,7 @@ public class Vertex implements Comparable<Vertex> {
 		return model;
 	}
 
-	// public void setLayer(final int index) {
-	// // TODO Get layer by its index
-	// ! when you crate a a layer you have to call layer.setNetowrk(network); !
-	// Layer layer = new Layer();
-	// layer.setIndex(index);
-	// model.setLayer(layer);
-	// }
-
-	public int getLayer() {
+	public int getLayerIndex() {
 		if (model == null) {
 			return -1;
 		}
