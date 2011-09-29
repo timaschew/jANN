@@ -8,9 +8,10 @@
 package de.unikassel.ann.threeD.model;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
+ * NOTE: does not implement the pointMatrix !!!
+ * 
  * <pre>
  * 
  *       8 - - - - - 7
@@ -25,7 +26,7 @@ import java.util.List;
  * @author anton
  * 
  */
-public class Cube {
+public class SimpleCube extends RenderGeometry {
 
 	/*
 	 * 8 points
@@ -48,20 +49,20 @@ public class Cube {
 	/** flag if points are already initialized */
 	private boolean init = false;
 
-	/**
-	 * list of all points / verticies
-	 */
-	public List<Point3D> points;
-
-	/**
-	 * list of the points which are connected
-	 */
-	public List<Line> lines;
+	// /**
+	// * list of all points / verticies
+	// */
+	// public List<Point3D> points;
+	//
+	// /**
+	// * list of the points which are connected
+	// */
+	// public List<Line> lines;
 
 	/**
 	 * Cube with a size of 100
 	 */
-	public Cube() {
+	public SimpleCube() {
 		this(100);
 	}
 
@@ -70,7 +71,7 @@ public class Cube {
 	 * 
 	 * @param size
 	 */
-	public Cube(final int size) {
+	public SimpleCube(final int size) {
 		points = new ArrayList<Point3D>();
 		lines = new ArrayList<Line>();
 		initAndConnectPoints(size);
@@ -169,6 +170,7 @@ public class Cube {
 	/**
 	 * @return
 	 */
+	@Override
 	public double getGeometrySize() {
 		return Math.abs(negativeRadius) + Math.abs(positiveRadius);
 	}

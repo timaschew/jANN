@@ -18,9 +18,9 @@ import java.awt.event.MouseMotionListener;
 
 import javax.swing.JPanel;
 
-import de.unikassel.ann.threeD.model.Cube;
 import de.unikassel.ann.threeD.model.Line;
 import de.unikassel.ann.threeD.model.Point3D;
+import de.unikassel.ann.threeD.model.RenderGeometry;
 
 /**
  * @author anton
@@ -31,7 +31,7 @@ public class FrameRenderer extends JPanel implements MouseMotionListener {
 	private static final double MOUSE_ROTATION_FACTOR = 100.0;;
 	private SOMGui controller;
 	private Point prevMove;
-	private Cube cube;
+	private RenderGeometry cube;
 	private Image buffer;
 	private Graphics2D gBuffer;
 
@@ -41,7 +41,7 @@ public class FrameRenderer extends JPanel implements MouseMotionListener {
 		addMouseMotionListener(this);
 	}
 
-	public void setModel(final Cube cube) {
+	public void setModel(final RenderGeometry cube) {
 		this.cube = cube;
 	}
 

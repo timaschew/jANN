@@ -29,8 +29,9 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 
-import de.unikassel.ann.threeD.model.Cube;
+import de.unikassel.ann.threeD.model.GridCube;
 import de.unikassel.ann.threeD.model.Point3D;
+import de.unikassel.ann.threeD.model.RenderGeometry;
 
 /**
  * @author anton
@@ -80,7 +81,7 @@ public class SOMGui extends JFrame {
 	public JCheckBox chckbxAutoRotation;
 	private int cunter = 0;
 	private long lastUpdate = System.currentTimeMillis();
-	private Cube w3d;
+	private RenderGeometry w3d;
 	protected boolean init = false;
 	private JLabel lbldKoordinateAbsolut;
 	private JLabel lblVertexGewichte;
@@ -142,7 +143,8 @@ public class SOMGui extends JFrame {
 	public SOMGui() {
 
 		renderer = new FrameRenderer(this);
-		w3d = new Cube();
+		// w3d = new SimpleCube();
+		w3d = new GridCube(200);
 		renderer.setModel(w3d);
 
 		getContentPane().setLayout(new BorderLayout());
@@ -180,7 +182,7 @@ public class SOMGui extends JFrame {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
 				Integer size = (Integer) evt.getNewValue();
-				w3d.setGeometrySize(size);
+				// w3d.setGeometrySize(size);
 			}
 		});
 
