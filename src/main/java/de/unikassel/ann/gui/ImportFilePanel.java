@@ -66,6 +66,7 @@ public class ImportFilePanel extends JDialog {
 			@Override
 			public void actionPerformed(final ActionEvent event) {
 				openFileChooser();
+
 			}
 
 		});
@@ -247,9 +248,11 @@ public class ImportFilePanel extends JDialog {
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				System.out.println("IO:");
 			} catch (ClassNotFoundException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
+				System.out.println("class");
 			}
 
 		}

@@ -22,7 +22,7 @@ public class NetIOTest {
 		File importFile = new File(PATH + "werner.csv");
 
 		NetIO netIO = new NetIO();
-		netIO.readConfigFile(importFile); // read and parse file
+		netIO.readConfigFile(importFile);// read and parse file
 
 		// create network (topology and synapses)
 		NetConfig netConfig = netIO.generateNetwork();
@@ -68,7 +68,9 @@ public class NetIOTest {
 		File importFile = new File(PATH + "waldemar.csv");
 
 		NetIO netIO = new NetIO();
-		netIO.readConfigFile(importFile); // read and parse file
+
+		netIO.readConfigFile(importFile);
+		// read and parse file
 
 		// create network (topology and synapses)
 		NetConfig netConfig = netIO.generateNetwork();
@@ -105,7 +107,9 @@ public class NetIOTest {
 		deleteFile(exportFile);
 
 		NetIO netIO = new NetIO();
-		netIO.readConfigFile(importFile); // read and parse file
+
+		netIO.readConfigFile(importFile);
+		// read and parse file
 
 		// create network (topology and synapses)
 		NetConfig netConfig = netIO.generateNetwork();
@@ -137,7 +141,9 @@ public class NetIOTest {
 		File f = new File(PATH + "net_export.csv");
 
 		NetIO netIO = new NetIO();
-		netIO.readConfigFile(f); // read and parse file
+
+		netIO.readConfigFile(f);
+		// read and parse file
 
 		// create network (topology and synapses)
 		NetConfig netConfig = netIO.generateNetwork();

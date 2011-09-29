@@ -24,6 +24,7 @@ import de.unikassel.ann.gui.ImportFilePanel;
 import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.gui.Main.Panel;
 import de.unikassel.ann.gui.MainMenu;
+import de.unikassel.ann.gui.TrainDataCreateDialog;
 import de.unikassel.ann.gui.TrainDataPanel;
 import de.unikassel.ann.model.UserSession;
 
@@ -139,6 +140,10 @@ public class ActionJMenuItem extends JMenuItem implements ActionListener {
 			Main.instance.switchBottomPanel(Panel.TRAINERROR_CHART);
 			break;
 		case NONE:
+		case CREATE_TRAIN_DATA:
+			TrainDataCreateDialog trainD = new TrainDataCreateDialog();
+			trainD.setVisible(true);
+			break;
 		default:
 			System.out.println("Unknown command: " + action);
 			break;

@@ -143,6 +143,10 @@ public class MainMenu extends JMenuBar {
 		JMenuItem mntmTrainData = new ActionJMenuItem(Settings.i18n.getString("menu.options.trainData"), Actions.NORMALIZE_TRAIN_DATA);
 		mnOptions.add(mntmTrainData);
 
+		JMenuItem mntmCreateTrainData = new ActionJMenuItem(Settings.i18n.getString("menu.options.createTrainData"),
+				Actions.CREATE_TRAIN_DATA);
+		mnOptions.add(mntmCreateTrainData);
+
 		return mnOptions;
 	}
 

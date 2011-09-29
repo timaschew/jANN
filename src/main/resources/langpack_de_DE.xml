@@ -13,6 +13,7 @@
 	<entry key="menu.view.showTrainingError">Trainingsfehler anzeigen</entry>
 	<entry key="menu.view.showTrainingData">Trainingsdaten anzeigen</entry>
 	<entry key="menu.options">Optionen</entry>
+	<entry key="menu.options.createTrainData">Trainingsdaten erzeugen</entry>
 	<entry key="menu.options.backpropagation">Backpropagation</entry>
 	<entry key="menu.options.SOM">Self Organized Network</entry>
 	<entry key="menu.options.trainData">Trainingsdaten normalisieren</entry>
@@ -137,4 +138,10 @@
 	<entry key="exportSaveFilePanel.lblTestData">Test Daten</entry>
 	<entry key="exportSaveFilePanel.btnExport">Speichern</entry>
 	<entry key="exportSaveFilePanel.btnCancel">Abbrechen</entry>
+	
+	<entry key="trainDataCreateDialog.titel">Trainingdaten erzeugen</entry>
+	<entry key="trainDataCreateDialog.btnSave">Speichern</entry>
+	<entry key="trainDataCreateDialog.btnCancel">Abbrechen</entry>
+	<entry key="trainDataCreateDialog.lblInfo">Bitte Trainingsdaten eingeben: </entry>
 </properties>
+
