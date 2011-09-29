@@ -498,9 +498,9 @@ public class GraphController implements PropertyChangeListener {
 	}
 
 	private void initGraphMouse() {
-		// Create Graph Mouse (set in and out parameter to '1f' to disable zoom)
+		// Create Graph Mouse (NOTE: Disable zoom by setting "in" and "out" parameter to "1f")
 		graphMouse = new GraphMouse<Vertex, Edge>(viewer.getRenderContext(), VertexController.getInstance().getVertexFactory(),
-				EdgeController.getInstance().getEdgeFactory(), 1f, 1f);
+				EdgeController.getInstance().getEdgeFactory());
 
 		viewer.setGraphMouse(graphMouse);
 		viewer.addKeyListener(graphMouse.getModeKeyListener());

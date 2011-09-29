@@ -15,6 +15,7 @@ import org.apache.commons.collections15.Transformer;
 import de.unikassel.ann.factory.VertexFactory;
 import de.unikassel.ann.gui.model.Edge;
 import de.unikassel.ann.gui.model.Vertex;
+import de.unikassel.ann.model.Network;
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.func.ActivationFunction;
 import de.unikassel.ann.model.func.SigmoidFunction;
@@ -26,7 +27,6 @@ import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.decorators.AbstractVertexShapeTransformer;
 import edu.uci.ics.jung.visualization.picking.PickedInfo;
 import edu.uci.ics.jung.visualization.picking.PickedState;
-import edu.uci.ics.jung.visualization.renderers.GradientVertexRenderer;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
 
 public class VertexController<V> {
@@ -63,6 +63,7 @@ public class VertexController<V> {
 		this.vertexFactory = new VertexFactory();
 
 		setVertexLabel();
+		setVertexBorder();
 		setVertexStrokeHighlight();
 		setVertexShape();
 		setVertexColor();
@@ -107,11 +108,34 @@ public class VertexController<V> {
 	}
 
 	/**
+	 * Check if the vertex is located in a hidden layer.
+	 * 
+	 * @param vertex
+	 * @return boolean
+	 */
+	public boolean isVertexInHiddenLayer(final Vertex vertex) {
+		int layerSize = Network.getNetwork().getLayers().size();
+		if (vertex.getLayerIndex() > 0 && vertex.getLayerIndex() < layerSize - 1) {
+			// Vertex is in a hidden layer
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Set Vertex Label and Position
 	 */
 	private void setVertexLabel() {
 		renderContext.setVertexLabelTransformer(VertexInfo.getInstance());
 		renderer.getVertexLabelRenderer().setPosition(Renderer.VertexLabel.Position.S);
+	}
+
+	/**
+	 * Set Vertex Paint (Border)
+	 */
+	private void setVertexBorder() {
+		VertexDrawPaint<Vertex, Paint> vdp = new VertexDrawPaint<Vertex, Paint>(vertexPickedState);
+		renderContext.setVertexDrawPaintTransformer(vdp);
 	}
 
 	/**
@@ -147,7 +171,18 @@ public class VertexController<V> {
 					// TanH [-1,1] --> factor = (value+1) * 50
 					factor = (int) (vertex.getValue() + 1) * 50;
 				}
-				return ColorHelper.numberToColor(factor);
+
+				// Get factor depending color
+				Color color = ColorHelper.numberToColor(factor);
+				color = color.brighter().brighter().brighter();
+
+				int alpha = (int) (255 * 0.8);
+				if (VertexController.getInstance().isVertexInHiddenLayer(vertex)) {
+					for (int i = 0; i < 100; i++) {
+						alpha = (int) (255 * 0.4);
+					}
+				}
+				return new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
 			}
 		});
 	}
@@ -156,7 +191,7 @@ public class VertexController<V> {
 	 * Set Vertex Gradient
 	 */
 	private void setVertexGradient() {
-		viewer.getRenderer().setVertexRenderer(new GradientVertexRenderer<Vertex, Edge>(Color.white, Color.gray, false));
+		// viewer.getRenderer().setVertexRenderer(new GradientVertexRenderer<Vertex, Edge>(Color.white, Color.gray, false));
 	}
 
 	/**
@@ -209,7 +244,9 @@ public class VertexController<V> {
 	/*
 	 * Vertex Size class
 	 */
+	@SuppressWarnings("hiding")
 	private final class VertexTransformer<V, E> extends AbstractVertexShapeTransformer<Vertex> implements Transformer<Vertex, Shape> {
+		@SuppressWarnings("unused")
 		protected Graph<Vertex, Edge> graph;
 
 		public VertexTransformer(final Graph<Vertex, Edge> graph) {
@@ -234,13 +271,36 @@ public class VertexController<V> {
 	}
 
 	/*
+	 * Vertex Draw Paint class
+	 */
+	@SuppressWarnings("hiding")
+	private final class VertexDrawPaint<V, P> implements Transformer<Vertex, Paint> {
+		protected PickedInfo<Vertex> pi;
+
+		public VertexDrawPaint(final PickedInfo<Vertex> pi) {
+			this.pi = pi;
+		}
+
+		@Override
+		public Paint transform(final Vertex vertex) {
+			if (pi.isPicked(vertex)) {
+				return Color.CYAN;
+			}
+			return Color.BLACK;
+		}
+	}
+
+	/*
 	 * Vertex Stroke Highlight class
 	 */
+	@SuppressWarnings("hiding")
 	private final class VertexStrokeHighlight<V, E> implements Transformer<Vertex, Stroke> {
 		protected boolean highlight = false;
-		protected Stroke heavy = new BasicStroke(5);
-		protected Stroke medium = new BasicStroke(3);
+		protected Stroke heavy = new BasicStroke(4);
+		protected Stroke medium = new BasicStroke(2);
 		protected Stroke light = new BasicStroke(1);
+		protected Stroke dotted = RenderContext.DASHED;
+
 		protected PickedInfo<Vertex> pi;
 
 		public VertexStrokeHighlight(final PickedInfo<Vertex> pi) {
@@ -256,12 +316,12 @@ public class VertexController<V> {
 
 		@Override
 		public Stroke transform(final Vertex v) {
-			Graph<Vertex, Edge> graph = GraphController.getInstance().getGraph();
 			if (highlight) {
 				if (pi.isPicked(v)) {
 					return heavy;
 				}
-				if (VertexController.highlightNeighbours) {
+				if (highlightNeighbours) {
+					Graph<Vertex, Edge> graph = GraphController.getInstance().getGraph();
 					for (Vertex w : graph.getNeighbors(v)) {
 						if (pi.isPicked(w)) {
 							return medium;
