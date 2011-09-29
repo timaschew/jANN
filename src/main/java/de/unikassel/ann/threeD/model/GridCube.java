@@ -81,14 +81,36 @@ public class GridCube extends RenderGeometry {
 		this.ySize = ySize;
 		this.zSize = zSize;
 		// points
-		for (int z = 0; z < zGrids; z++) {
-			for (int x = 0; x < xGrids; x++) {
-				for (int y = 0; y < yGrids; y++) {
-					Point3D p = new Point3D(x * xSize / xGrids, y * ySize / yGrids, z * zSize / zGrids);
-					pointMatrix.set(p, x, y, z);
+		int zPositive = zSize / 2;
+		int zNegative = -zPositive;
+		int zChunk = zSize / (zGrids - 1);
+		int zCounter = 0;
+
+		int yPositive = ySize / 2;
+		int yNegative = -yPositive;
+		int yChunk = ySize / (yGrids - 1);
+		int yCounter = 0;
+
+		int xPositive = xSize / 2;
+		int xNegative = -xPositive;
+		int xChunk = xSize / (xGrids - 1);
+		int xCounter = 0;
+
+		for (int z = zNegative; z <= zPositive; z += zChunk) {
+			xCounter = 0;
+			for (int x = xNegative; x <= xPositive; x += xChunk) {
+				yCounter = 0;
+				for (int y = yNegative; y <= yPositive; y += yChunk) {
+					System.out.println("                     " + xCounter + " " + yCounter + " " + zCounter);
+					System.out.println(x + " " + y + " " + z);
+					Point3D p = new Point3D(x, y, z);
+					pointMatrix.set(p, xCounter, yCounter, zCounter);
 					points.add(p);
+					yCounter++;
 				}
+				xCounter++;
 			}
+			zCounter++;
 		}
 
 		// grid cube

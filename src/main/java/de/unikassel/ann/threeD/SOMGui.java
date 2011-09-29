@@ -144,7 +144,7 @@ public class SOMGui extends JFrame {
 
 		renderer = new FrameRenderer(this);
 		// w3d = new SimpleCube();
-		w3d = new GridCube(200);
+		w3d = new GridCube(5, 5, 5, 200);
 		renderer.setModel(w3d);
 
 		getContentPane().setLayout(new BorderLayout());
