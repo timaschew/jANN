@@ -3,6 +3,7 @@ package de.unikassel.ann.gui.mouse;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import java.util.Collection;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -11,18 +12,17 @@ import javax.swing.JPopupMenu;
 
 import org.apache.commons.collections15.Factory;
 
+import EDU.oswego.cs.dl.util.concurrent.CopyOnWriteArrayList;
 import de.unikassel.ann.controller.GraphController;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.gui.model.Edge;
 import de.unikassel.ann.gui.model.Vertex;
 import de.unikassel.ann.gui.sidebar.TopologyPanel;
+import de.unikassel.ann.model.Network;
 import de.unikassel.ann.model.Network.NetworkLayer;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
-import edu.uci.ics.jung.graph.DirectedGraph;
-import edu.uci.ics.jung.graph.Graph;
-import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.AbstractPopupGraphMousePlugin;
 import edu.uci.ics.jung.visualization.picking.PickedState;
@@ -35,145 +35,397 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 	protected Factory<Vertex> vertexFactory;
 	protected Factory<Edge> edgeFactory;
 	protected JPopupMenu popup = new JPopupMenu();
+	private PickedState<Vertex> pickedVertexState;
+	private PickedState<Edge> pickedEdgeState;
+	private Vertex vertex;
+	private Edge edge;
+	private Set<Vertex> pickedVertices;
+	private Set<Edge> pickedEdges;
 
 	public GraphMousePopupPlugin(final Factory<Vertex> vertexFactory, final Factory<Edge> edgeFactory) {
 		this.vertexFactory = vertexFactory;
 		this.edgeFactory = edgeFactory;
 	}
 
+	@SuppressWarnings("serial")
+	private void createPopupByState(final int state) {
+		final GraphController graphController = GraphController.getInstance();
+		String actionText;
+
+		switch (state) {
+		//
+		// (1) Nothing selected, clicked on empty space
+		//
+		case 1:
+			// New neuron menu
+			JMenu newNeuronMenu = new JMenu(Settings.i18n.getString("graph.mouse.createVertex"));
+
+			// Input
+			newNeuronMenu.add(new AbstractAction(Settings.i18n.getString("graph.mouse.InputLayer")) {
+				@Override
+				public void actionPerformed(final ActionEvent e) {
+					graphController.createVertex(NetworkLayer.INPUT);
+				}
+			});
+
+			// Output
+			newNeuronMenu.add(new AbstractAction(Settings.i18n.getString("graph.mouse.OutputLayer")) {
+				@Override
+				public void actionPerformed(final ActionEvent e) {
+					graphController.createVertex(NetworkLayer.OUTPUT);
+				}
+			});
+
+			// Hidden (optional depends on whether there is at least one hidden layer available)
+			TopologyPanel topoPanel = Main.instance.sidebar.topolgyPanel;
+			final Integer hiddenLayers = (Integer) topoPanel.hiddenLayerCountSpinner.getValue();
+			if (hiddenLayers > 0) {
+				newNeuronMenu.addSeparator();
+
+				// NOTE: Start at index 1 because hidden layers starts with this index. Index 0 = input layer!
+				for (int i = 1; i <= hiddenLayers; i++) {
+					final int layerIndex = i;
+					actionText = String.format(Settings.i18n.getString("graph.mouse.HiddenLayer") + " %d", layerIndex);
+					newNeuronMenu.add(new AbstractAction(actionText) {
+						@Override
+						public void actionPerformed(final ActionEvent e) {
+							graphController.createVertex(NetworkLayer.HIDDEN, layerIndex);
+						}
+					});
+				}
+			}
+
+			popup.add(newNeuronMenu);
+
+			// New hidden layer
+			popup.add(new AbstractAction(Settings.i18n.getString("graph.mouse.createHiddenLayer")) {
+				@Override
+				public void actionPerformed(final ActionEvent e) {
+					Network.getNetwork().setSizeOfHiddenLayers(hiddenLayers + 1);
+				}
+			});
+
+			// If there are at least two vertices in the graph
+			final Collection<Vertex> vertices = graphController.getGraph().getVertices();
+			if (vertices.size() > 1) {
+				// add an entry with a submenu to ...
+				JMenu allNeuronMenu = new JMenu(Settings.i18n.getString("graph.mouse.allVertices"));
+
+				// select all vertices
+				allNeuronMenu.add(new AbstractAction(Settings.i18n.getString("graph.mouse.select")) {
+					@Override
+					public void actionPerformed(final ActionEvent e) {
+						for (Vertex vertex : vertices) {
+							pickedVertexState.pick(vertex, true);
+						}
+					}
+				});
+
+				// connect all vertices
+				allNeuronMenu.add(new AbstractAction(Settings.i18n.getString("graph.mouse.connect")) {
+					@Override
+					public void actionPerformed(final ActionEvent e) {
+						graphController.createEdge(vertices);
+					}
+				});
+
+				// delete all vertices
+				allNeuronMenu.add(new AbstractAction(Settings.i18n.getString("graph.mouse.delete")) {
+					@Override
+					public void actionPerformed(final ActionEvent e) {
+						graphController.removeVertex(vertices);
+					}
+				});
+
+				popup.addSeparator();
+				popup.add(allNeuronMenu);
+			}
+
+			break;
+		//
+		// (2) Nothing selected, clicked on a vertex
+		//
+		case 2:
+			pickedVertexState.pick(vertex, true);
+			createPopupByState(12);
+			popup.addSeparator();
+			createPopupByState(1);
+			break;
+		//
+		// (3) Nothing selected, clicked on an edge
+		//
+		case 3:
+			createPopupByState(20);
+			popup.addSeparator();
+			createPopupByState(1);
+			break;
+		//
+		// (4) One vertex selected, clicked on empty space
+		//
+		case 4:
+			// get vertex from the set of picked vertices
+			if (vertex == null) {
+				vertex = pickedVertices.iterator().next();
+			}
+			createPopupByState(2);
+			break;
+		//
+		// (5) One vertex selected, clicked on selected vertex
+		//
+		case 5:
+			createPopupByState(2);
+			break;
+		//
+		// (6) One vertex selected, clicked on an other vertex
+		//
+		case 6:
+			// unpick vertex (from the set of picked vertices)
+			if (vertex == null) {
+				vertex = pickedVertices.iterator().next();
+			}
+			pickedVertexState.pick(vertex, false);
+			createPopupByState(2);
+			break;
+		//
+		// (7) More than one vertex selected, clicked on empty space
+		//
+		case 7:
+			createPopupByState(1);
+
+			// Selected vertices menu
+			JMenu selectedNeuronMenu = new JMenu(Settings.i18n.getString("graph.mouse.selectedVertices"));
+
+			// connect
+			selectedNeuronMenu.add(new AbstractAction(Settings.i18n.getString("graph.mouse.connect")) {
+				@Override
+				public void actionPerformed(final ActionEvent e) {
+					graphController.createEdge(pickedVertices);
+					pickedVertexState.pick(vertex, false);
+				}
+			});
+
+			// delete
+			selectedNeuronMenu.add(new AbstractAction(Settings.i18n.getString("graph.mouse.delete")) {
+				@SuppressWarnings("unchecked")
+				@Override
+				public void actionPerformed(final ActionEvent e) {
+					graphController.removeVertex(new CopyOnWriteArrayList(pickedVertices));
+					pickedVertexState.clear();
+				}
+			});
+
+			// popup.addSeparator();
+			popup.add(selectedNeuronMenu);
+
+			break;
+		//
+		// (8) More than one vertex selected, clicked on selected V
+		//
+		case 8:
+			createPopupByState(12);
+			popup.addSeparator();
+			createPopupByState(7);
+			break;
+		//
+		// (9) More than one vertex selected, clicked on an other V
+		//
+		case 9:
+			// unpick vertex (from the set of picked vertices)
+			if (vertex == null) {
+				vertex = pickedVertices.iterator().next();
+			}
+			pickedVertexState.pick(vertex, false);
+			createPopupByState(2);
+			break;
+		//
+		// (10) One vertex selected, clicked on an edge
+		//
+		case 10:
+			// unpick vertex
+			pickedVertexState.pick(vertex, false);
+			createPopupByState(3);
+			break;
+		//
+		// (11) More than one vertex selected, clicked on an edge
+		//
+		case 11:
+			createPopupByState(10);
+			break;
+		//
+		// (12) One vertex is selected, clicked on the selected vertex OR on empty space
+		//
+		case 12:
+			// Show details
+			popup.add(new AbstractAction(Settings.i18n.getString("graph.mouse.showDetails")) {
+				@Override
+				public void actionPerformed(final ActionEvent e) {
+					// unpick vertex
+					graphController.showVertex(vertex);
+					pickedVertexState.pick(vertex, false);
+				}
+			});
+
+			// Delete
+			actionText = String.format(Settings.i18n.getString("graph.mouse.deleteVertex") + " %d", vertex.getIndex());
+			popup.add(new AbstractAction(actionText) {
+				@Override
+				public void actionPerformed(final ActionEvent e) {
+					// unpick vertex
+					graphController.removeVertex(vertex);
+					pickedVertexState.pick(vertex, false);
+				}
+			});
+			break;
+		//
+		// No edge picked
+		//
+		case 20:
+			final Collection<Edge> edges = graphController.getGraph().getEdges();
+			if (edges.size() > 0) {
+				popup.addSeparator();
+				popup.add(new AbstractAction(Settings.i18n.getString("graph.mouse.deleteAllEdges")) {
+					@SuppressWarnings("unchecked")
+					@Override
+					public void actionPerformed(final ActionEvent e) {
+						// unpick edge
+						graphController.removeEdge(new CopyOnWriteArrayList(edges));
+						pickedEdgeState.clear();
+					}
+				});
+			}
+			break;
+		//
+		// One edge picked
+		//
+		case 21:
+			if (edge == null) {
+				edge = pickedEdges.iterator().next();
+			}
+			pickedEdgeState.pick(edge, true);
+			popup.add(new AbstractAction(Settings.i18n.getString("graph.mouse.deleteEdge")) {
+				@Override
+				public void actionPerformed(final ActionEvent e) {
+					// unpick edge
+					graphController.removeEdge(edge);
+					pickedEdgeState.clear();
+				}
+			});
+			break;
+		//
+		// More than one edge picked
+		//
+		case 22:
+			popup.add(new AbstractAction(Settings.i18n.getString("graph.mouse.deleteSelectedEdges")) {
+				@SuppressWarnings("unchecked")
+				@Override
+				public void actionPerformed(final ActionEvent e) {
+					// unpick edge
+					graphController.removeEdge(new CopyOnWriteArrayList(pickedEdges));
+					pickedEdgeState.clear();
+				}
+			});
+			break;
+		default:
+			break;
+		}
+	}
+
 	@Override
-	@SuppressWarnings({ "unchecked", "serial" })
+	@SuppressWarnings({ "unchecked" })
 	protected void handlePopup(final MouseEvent e) {
 		final VisualizationViewer<Vertex, Edge> vv = (VisualizationViewer<Vertex, Edge>) e.getSource();
 		final Layout<Vertex, Edge> layout = vv.getGraphLayout();
-		final Graph<Vertex, Edge> graph = layout.getGraph();
+		// final Graph<Vertex, Edge> graph = layout.getGraph();
 		final Point2D p = e.getPoint();
 		final Point2D ivp = p;
 		GraphElementAccessor<Vertex, Edge> pickSupport = vv.getPickSupport();
 		if (pickSupport != null) {
+			vertex = pickSupport.getVertex(layout, ivp.getX(), ivp.getY());
+			edge = pickSupport.getEdge(layout, ivp.getX(), ivp.getY());
+			pickedVertexState = vv.getPickedVertexState();
+			pickedEdgeState = vv.getPickedEdgeState();
+			pickedVertices = pickedVertexState.getPicked();
+			pickedEdges = pickedEdgeState.getPicked();
 
+			// Clear current popup
 			popup.removeAll();
 
-			final Vertex vertex = pickSupport.getVertex(layout, ivp.getX(), ivp.getY());
-			final Edge edge = pickSupport.getEdge(layout, ivp.getX(), ivp.getY());
-			final PickedState<Vertex> pickedVertexState = vv.getPickedVertexState();
-			final PickedState<Edge> pickedEdgeState = vv.getPickedEdgeState();
-
-			if (vertex != null) {
-				Set<Vertex> picked = pickedVertexState.getPicked();
-				if (picked.size() > 0) {
-					if (graph instanceof UndirectedGraph == false) {
-						JMenu directedMenu = new JMenu(Settings.i18n.getString("graph.mouse.createEdgeDirected"));
-						boolean addMenu = false;
-						for (final Vertex other : picked) {
-							// Filter connectable vertices
-							if (other.mayHaveEdgeTo(vertex) == false) {
-								continue;
-							}
-							directedMenu.add(new AbstractAction("[" + other + "," + vertex + "]") {
-								@Override
-								public void actionPerformed(final ActionEvent e) {
-									GraphController.getInstance().createEdge(edgeFactory, other, vertex);
-									// Network network = Settings.getInstance().getCurrentSession().getNetworkConfig().getNetwork();
-								}
-							});
-							addMenu = true;
-						}
-
-						// Add the menu only if it has any action
-						if (addMenu) {
-							popup.add(directedMenu);
-						}
-					}
-					if (graph instanceof DirectedGraph == false) {
-						JMenu undirectedMenu = new JMenu(Settings.i18n.getString("graph.mouse.createEdgeUnDirected"));
-						boolean addMenu = false;
-						for (final Vertex other : picked) {
-							// Filter connectable vertices
-							if (other.mayHaveEdgeTo(vertex) == false) {
-								continue;
-							}
-							undirectedMenu.add(new AbstractAction("[" + other + "," + vertex + "]") {
-								@Override
-								public void actionPerformed(final ActionEvent e) {
-									GraphController.getInstance().createEdge(edgeFactory, other, vertex);
-								}
-							});
-							addMenu = true;
-						}
-
-						// Add the menu only if it has any action
-						if (addMenu) {
-							popup.add(undirectedMenu);
-						}
-					}
+			// Handle picked (selected) vertices
+			switch (pickedVertices.size()) {
+			case 0:
+				//
+				// No vertex picked
+				//
+				if (vertex != null) {
+					// click on vertex
+					createPopupByState(2);
+				} else if (edge != null) {
+					// click on edge
+					createPopupByState(3);
+				} else {
+					createPopupByState(1);
 				}
-				popup.add(new AbstractAction(Settings.i18n.getString("graph.mouse.deleteVertex")) {
-					@Override
-					public void actionPerformed(final ActionEvent e) {
-						pickedVertexState.pick(vertex, false);
-						GraphController.getInstance().removeVertex(vertex);
-					}
-				});
-			} else if (edge != null) {
-				popup.add(new AbstractAction(Settings.i18n.getString("graph.mouse.deleteEdge")) {
-					@Override
-					public void actionPerformed(final ActionEvent e) {
-						pickedEdgeState.pick(edge, false);
-						GraphController.getInstance().removeEdge(edge);
-					}
-				});
-			} else {
-				// Use the current sidebar settings to make the popup text more attractive
-				// String actionText = Settings.i18n.getString("graph.mouse.createVertex");
-				// try {
-				// TopologyPanel topoPanel = Main.instance.sidebar.topolgyPanel;
-				// if (topoPanel.mouseInputRB.isSelected()) {
-				// actionText = Settings.i18n.getString("graph.mouse.createVertexInput");
-				// } else if (topoPanel.mouseOutputRB.isSelected()) {
-				// actionText = Settings.i18n.getString("graph.mouse.createVertexOutput");
-				// } else if (topoPanel.mouseHiddenRB.isSelected()) {
-				// Integer selectedHiddenLayer = (Integer) topoPanel.comboBoxHiddenMausModus.getSelectedItem();
-				// actionText = String.format(Settings.i18n.getString("graph.mouse.createVertexHidden"), selectedHiddenLayer);
-				// }
-				// } catch (Exception ex) {
-				// }
-
-				// Input
-				popup.add(new AbstractAction(Settings.i18n.getString("graph.mouse.createVertexInput")) {
-					@Override
-					public void actionPerformed(final ActionEvent e) {
-						GraphController.getInstance().createVertex(NetworkLayer.INPUT);
-					}
-				});
-
-				// Output
-				popup.add(new AbstractAction(Settings.i18n.getString("graph.mouse.createVertexOutput")) {
-					@Override
-					public void actionPerformed(final ActionEvent e) {
-						GraphController.getInstance().createVertex(NetworkLayer.OUTPUT);
-					}
-				});
-
-				// Hidden (optional depends on whether there is at least one hidden layer available)
-				TopologyPanel topoPanel = Main.instance.sidebar.topolgyPanel;
-				Integer hiddenLayers = (Integer) topoPanel.hiddenLayerCountSpinner.getValue();
-				if (hiddenLayers > 0) {
-					JMenu hiddenNeuronMenu = new JMenu(Settings.i18n.getString("graph.mouse.createVertexHidden"));
-					// NOTE: Start at index 1 because hidden layers starts with this index. Index 0 = input layer!
-					for (int i = 1; i <= hiddenLayers; i++) {
-						final int layerIndex = i;
-						String actionText = String.format(Settings.i18n.getString("graph.mouse.HiddenLayer"), layerIndex);
-						hiddenNeuronMenu.add(new AbstractAction(actionText) {
-							@Override
-							public void actionPerformed(final ActionEvent e) {
-								GraphController.getInstance().createVertex(NetworkLayer.HIDDEN, layerIndex);
-							}
-						});
-					}
-					popup.add(hiddenNeuronMenu);
+				break;
+			case 1:
+				//
+				// One vertex picked
+				//
+				if (vertex != null && pickedVertices.contains(vertex)) {
+					// click on selected vertex
+					createPopupByState(5);
+				} else if (vertex != null && pickedVertices.contains(vertex) == false) {
+					// click on an other vertex
+					createPopupByState(6);
+				} else if (edge != null) {
+					// click on edge
+					createPopupByState(10);
+				} else {
+					// click on empty space
+					createPopupByState(4);
 				}
+				break;
+			default:
+				//
+				// More than one vertex picked
+				//
+				if (vertex != null && pickedVertices.contains(vertex)) {
+					// click on selected vertex
+					createPopupByState(8);
+				} else if (vertex != null && pickedVertices.contains(vertex) == false) {
+					// click on an other vertex
+					createPopupByState(9);
+				} else if (edge != null) {
+					// click on edge
+					createPopupByState(11);
+				} else {
+					// click on empty space
+					createPopupByState(7);
+				}
+				break;
 			}
+
+			// Handle picked (selected) edges
+			switch (pickedEdges.size()) {
+			case 0:
+				//
+				// No edge picked
+				//
+				createPopupByState(20);
+				break;
+			case 1:
+				//
+				// One edge picked
+				//
+				createPopupByState(21);
+				break;
+			default:
+				//
+				// More than one edge picked
+				//
+				createPopupByState(22);
+				break;
+			}
+
 			if (popup.getComponentCount() > 0) {
 				popup.show(vv, e.getX(), e.getY());
 			}

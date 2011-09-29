@@ -96,12 +96,30 @@
 	<entry key="graph.mouse.createEdgeUnDirected">Erzeuge Synapse</entry>
 	<entry key="graph.mouse.deleteVertex">Lösche Neuron</entry>
 	<entry key="graph.mouse.deleteEdge">Lösche Synapse</entry>
-	<entry key="graph.mouse.createVertex">Neuron hinzufügen</entry>
+	<entry key="graph.mouse.deleteAllEdges">Lösche alle Synapsen</entry>
+	<entry key="graph.mouse.deleteSelectedEdges">Lösche selektierte Synapsen</entry>
+	<entry key="graph.mouse.createVertex">Füge Neuron hinzu</entry>
+	<!--
 	<entry key="graph.mouse.createVertexInput">Input Neuron hinzufügen</entry>
 	<entry key="graph.mouse.createVertexOutput">Output Neuron hinzufügen</entry>
 	<entry key="graph.mouse.createVertexHidden">Hidden Neuron hinzufügen</entry>
 	<entry key="graph.mouse.createVertexHiddenWithLayer">Hidden Neuron hinzufügen (Layer %d)</entry>
-	<entry key="graph.mouse.HiddenLayer">Hidden Layer %d</entry>
+	-->
+	<entry key="graph.mouse.createHiddenLayer">Füge Hidden Layer</entry>
+	<entry key="graph.mouse.InputLayer">Input Layer</entry>
+	<entry key="graph.mouse.OutputLayer">Output Layer</entry>
+	<entry key="graph.mouse.HiddenLayer">Hidden Layer</entry>
+	<entry key="graph.mouse.connect">verbinden</entry>
+	<entry key="graph.mouse.connectAllVertices">Verbinde alle Neuronen</entry>
+	<entry key="graph.mouse.connectSelectedVertices">Verbinde selektierte Neuronen</entry>	
+	<entry key="graph.mouse.delete">löschen</entry>
+	<entry key="graph.mouse.deleteAllVertices">Lösche alle Neuronen</entry>
+	<entry key="graph.mouse.deleteSelectedVertices">Lösche selektierte Neuronen</entry>
+	<entry key="graph.mouse.select">selektieren</entry>
+	<entry key="graph.mouse.selectedVertices">Selektierte Neuronen</entry>
+	<entry key="graph.mouse.allVertices">Alle Neuronen</entry>
+	<entry key="graph.mouse.showDetails">Zeige Details</entry>
+	
 	<entry key="session.initial.name">Neu</entry>
 	
 </properties>

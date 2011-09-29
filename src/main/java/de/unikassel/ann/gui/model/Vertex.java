@@ -124,26 +124,6 @@ public class Vertex implements Comparable<Vertex> {
 		return model.getValue();
 	}
 
-	public void remove() {
-		// LayerController<Layer> layerController = LayerController.getInstance();
-		// int layerIndex = getLayer();
-		// int layerSize = layerController.getVerticesInLayer(layerIndex).size();
-		//
-		// // Input layer (index = 0)
-		// Actions action = Actions.UPDATE_SIDEBAR_CONFIG_INPUT_NEURON_MODEL;
-		// if (layerIndex > 0) {
-		// if (layerIndex == layerController.getLayers().size() - 1) {
-		// // Output Layer (index = # layers - 1)
-		// action = Actions.UPDATE_SIDEBAR_CONFIG_OUTPUT_NEURON_MODEL;
-		// } else {
-		// // Hidden Layer (0 < index < # layers - 1)
-		// action = Actions.UPDATE_SIDEBAR_CONFIG_HIDDEN_LAYER_MODEL;
-		// }
-		// }
-		// ActionController.get()
-		// .doAction(action, new PropertyChangeEvent(this, SidebarModel.P.inputNeurons.name(), layerSize, layerSize - 1));
-	}
-
 	@Override
 	public String toString() {
 		if (df == null) {
@@ -177,6 +157,10 @@ public class Vertex implements Comparable<Vertex> {
 	 * @return
 	 */
 	public boolean mayHaveEdgeTo(final Vertex toVertex) {
+		if (toVertex == null) {
+			return false;
+		}
+
 		// The neurons do not have to be connected already
 		if (hasEdgeTo(toVertex)) {
 			return false;

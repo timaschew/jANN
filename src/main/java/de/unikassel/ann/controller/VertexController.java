@@ -56,6 +56,7 @@ public class VertexController<V> {
 		setVertexStrokeHighlight();
 		setVertexShape();
 		setVertexColor();
+		setVertexGradient();
 		setVertexTooltip();
 		setVertexPickListener();
 	}
@@ -132,6 +133,13 @@ public class VertexController<V> {
 	}
 
 	/**
+	 * Set Vertex Gradient
+	 */
+	private void setVertexGradient() {
+		// viewer.getRenderer().setVertexRenderer(new GradientVertexRenderer<Vertex, Edge>(Color.white, Color.gray, false));
+	}
+
+	/**
 	 * Set Vertex Tooltip
 	 */
 	private void setVertexTooltip() {
@@ -152,7 +160,7 @@ public class VertexController<V> {
 					return;
 				}
 				// TODO Show value of the picked vertex in the Sidebar
-				System.out.println(picked);
+				// System.out.println(picked);
 			}
 		});
 

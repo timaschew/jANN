@@ -119,7 +119,7 @@ public class EdgeController<E> {
 					return;
 				}
 				// TODO Show value of the picked edge in the Sidebar
-				System.out.println(picked);
+				// System.out.println(picked);
 			}
 		});
 

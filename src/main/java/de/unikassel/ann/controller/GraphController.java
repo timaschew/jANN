@@ -4,19 +4,16 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.swing.JPanel;
-
-import org.apache.commons.collections15.Factory;
 
 import de.unikassel.ann.gui.model.Edge;
 import de.unikassel.ann.gui.model.Vertex;
@@ -308,20 +305,34 @@ public class GraphController implements PropertyChangeListener {
 	}
 
 	/**
+	 * Remove the vertex.
+	 * 
 	 * @param vertex
 	 */
 	public void removeVertex(final Vertex vertex) {
-		Network.getNetwork().removeNeuron(vertex.getModel());
+		if (vertex != null) {
+			Network.getNetwork().removeNeuron(vertex.getModel());
+		}
 	}
 
 	/**
-	 * Wrapper function to create and setup a new edge and adding it to the graph.
+	 * Remove all vertices in the set.
 	 * 
-	 * @param edgeFactory
+	 * @param picked
+	 */
+	public void removeVertex(final Collection<Vertex> vertices) {
+		for (Vertex vertex : vertices) {
+			removeVertex(vertex);
+		}
+	}
+
+	/**
+	 * Create and setup a new edge and adding it to the graph.
+	 * 
 	 * @param toVertex
 	 * @param toVertex
 	 */
-	public void createEdge(final Factory<Edge> edgeFactory, final Vertex fromVertex, final Vertex toVertex) {
+	public void createEdge(final Vertex fromVertex, final Vertex toVertex) {
 		Neuron fromNeuron = fromVertex.getModel();
 		Neuron toNeuron = toVertex.getModel();
 
@@ -331,11 +342,12 @@ public class GraphController implements PropertyChangeListener {
 
 		if (fromVertex.mayHaveEdgeTo(toVertex)) {
 			// Create a new edge with its synapse between the both vertices
-			Edge edge = edgeFactory.create();
+			EdgeController<Edge> edgeController = EdgeController.getInstance();
+			Edge edge = edgeController.getEdgeFactory().create();
 			edge.createModel(fromNeuron, toNeuron);
 
 			// Add the new edge with the FromTo key and its weight as value to the edgemap
-			EdgeMap<Double> edgeMap = EdgeController.getInstance().getEdgeMap();
+			EdgeMap<Double> edgeMap = edgeController.getEdgeMap();
 			edgeMap.put(new FromTo(fromId, toId), edge.getWeight());
 
 			// Add the new edge to the graph
@@ -345,16 +357,49 @@ public class GraphController implements PropertyChangeListener {
 	}
 
 	/**
+	 * Create and setup a new edge between each vertex in the set and adding it to the graph.
+	 * 
+	 * @param vertices
+	 */
+	public void createEdge(final Collection<Vertex> vertices) {
+		for (Vertex v1 : vertices) {
+			for (Vertex v2 : vertices) {
+				createEdge(v1, v2);
+			}
+		}
+	}
+
+	/**
+	 * Remove the edge.
+	 * 
 	 * @param edge
 	 */
 	public void removeEdge(final Edge edge) {
 		// Remove the edgemap entry as well
 		EdgeMap<Double> edgeMap = EdgeController.getInstance().getEdgeMap();
-		FromTo fromTo = new FromTo(edge.getModel().getFromNeuron().getId(), edge.getModel().getToNeuron().getId());
+		Neuron fromNeuron = edge.getModel().getFromNeuron();
+		Neuron toNeuron = edge.getModel().getToNeuron();
+		FromTo fromTo = new FromTo(fromNeuron.getId(), toNeuron.getId());
 		edgeMap.remove(fromTo);
+
+		// Remove synapse from the neurons
+		fromNeuron.getOutgoingSynapses().remove(edge.getModel());
+		toNeuron.getIncomingSynapses().remove(edge.getModel());
 
 		graph.removeEdge(edge);
 		repaint();
+	}
+
+	/**
+	 * 
+	 * Remove each edge in the list.
+	 * 
+	 * @param edges
+	 */
+	public void removeEdge(final Collection<Edge> edges) {
+		for (Edge edge : edges) {
+			removeEdge(edge);
+		}
 	}
 
 	@Override
@@ -448,30 +493,19 @@ public class GraphController implements PropertyChangeListener {
 
 		viewer.setGraphMouse(graphMouse);
 		viewer.addKeyListener(graphMouse.getModeKeyListener());
-		viewer.addMouseWheelListener(new MouseWheelListener() {
-
-			@Override
-			public void mouseWheelMoved(final MouseWheelEvent e) {
-			}
-		});
 
 		graphMouse.setMode(ModalGraphMouse.Mode.PICKING);
 		graphMouse.setZoomAtMouse(false);
 	}
 
-	// /**
-	// * Add MouseMode Menu to the MainMenu of the frame to set the mode of the Graph Mouse.
-	// */
-	// private void addMouseModeMenu() {
-	// if (frame == null) {
-	// // No frame -> No menu -> No fun!
-	// return;
-	// }
-	// JMenu modeMenu = graphMouse.getModeMenu();
-	// modeMenu.setText(Settings.getI18n("menu.mousemode", "Mode"));
-	// JMenuBar menu = frame.getJMenuBar();
-	// menu.add(modeMenu, menu.getComponentCount() - 1);
-	// graphMouse.setMode(ModalGraphMouse.Mode.EDITING);
-	// }
+	/**
+	 * Show vertex details in the sidebar.
+	 * 
+	 * @param vertex
+	 */
+	public void showVertex(final Vertex vertex) {
+		// TODO
+		System.out.println(vertex);
+	}
 
 }
