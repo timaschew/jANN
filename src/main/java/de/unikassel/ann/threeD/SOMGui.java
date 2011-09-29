@@ -29,11 +29,14 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 
+import de.unikassel.ann.threeD.model.Cube;
+import de.unikassel.ann.threeD.model.Point3D;
+
 /**
  * @author anton
  * 
  */
-public class CubeGUI extends JFrame {
+public class SOMGui extends JFrame {
 	private JSpinner sizeSpinner;
 	private JSpinner worldXoffset;
 	private JSpinner worldYoffset;
@@ -77,7 +80,7 @@ public class CubeGUI extends JFrame {
 	public JCheckBox chckbxAutoRotation;
 	private int cunter = 0;
 	private long lastUpdate = System.currentTimeMillis();
-	private CubeRenderer w3d;
+	private Cube w3d;
 	protected boolean init = false;
 	private JLabel lbldKoordinateAbsolut;
 	private JLabel lblVertexGewichte;
@@ -88,6 +91,7 @@ public class CubeGUI extends JFrame {
 	private JTextField inputData4;
 	private JLabel lblInput;
 	private JTextField weight4;
+	private FrameRenderer renderer;
 
 	public static void main(final String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -95,7 +99,7 @@ public class CubeGUI extends JFrame {
 			@Override
 			public void run() {
 				try {
-					CubeGUI w = new CubeGUI();
+					SOMGui w = new SOMGui();
 					w.init();
 					w.setVisible(true);
 					w.setBounds(100, 100, 1000, 700); // statt 800 1060
@@ -112,7 +116,7 @@ public class CubeGUI extends JFrame {
 	 * 
 	 */
 	protected void init() {
-		getContentPane().add(w3d);
+		getContentPane().add(renderer);
 		init = true;
 
 	}
@@ -124,9 +128,10 @@ public class CubeGUI extends JFrame {
 		fpsTF.setText("" + (newTime - lastUpdate));
 
 		if (init) {
-			coordinate3dX.setText(w3d.p[4][1].intValue() + "");
-			coordinate3dY.setText(w3d.p[4][2].intValue() + "");
-			coordinate3dZ.setText(w3d.p[4][3].intValue() + "");
+			Point3D p = w3d.points.get(0);
+			coordinate3dX.setText(p.x.intValue() + "");
+			coordinate3dY.setText(p.y.intValue() + "");
+			coordinate3dZ.setText(p.z.intValue() + "");
 
 		}
 
@@ -134,8 +139,12 @@ public class CubeGUI extends JFrame {
 		lastUpdate = newTime;
 	}
 
-	public CubeGUI() {
-		w3d = new CubeRenderer(this);
+	public SOMGui() {
+
+		renderer = new FrameRenderer(this);
+		w3d = new Cube();
+		renderer.setModel(w3d);
+
 		getContentPane().setLayout(new BorderLayout());
 
 		chckbxAutoRotation = new JCheckBox("Auto-Rotation");
@@ -171,7 +180,7 @@ public class CubeGUI extends JFrame {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
 				Integer size = (Integer) evt.getNewValue();
-				w3d.initVerticies(size);
+				w3d.setGeometrySize(size);
 			}
 		});
 

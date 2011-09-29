@@ -18,10 +18,10 @@ import javax.swing.event.ChangeListener;
 
 import de.unikassel.ann.model.SomNetwork;
 import de.unikassel.ann.model.Synapse;
+import de.unikassel.ann.threeD.model.Point3D;
 import de.unikassel.threeD.geo.Cube;
 import de.unikassel.threeD.geo.GeometryObject3D;
-import de.unikassel.threeD.geo.GridCube;
-import de.unikassel.threeD.geo.Point3D;
+import de.unikassel.threeD.geo.GridHyperCube;
 import de.unikassel.threeD.geo.WireframeGeometry;
 
 public class Board3D extends JPanel implements Runnable, ActionListener, ChangeListener {
@@ -63,9 +63,9 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 
 	public static Board3D instance;
 
-	public int dim1 = 3;
-	public int dim2 = 3;
-	public int dim3 = 3;
+	public int dim1 = 2;
+	public int dim2 = 2;
+	public int dim3 = 2;
 	public int dim4 = 2;
 	public int inputSize = 3;
 
@@ -73,14 +73,14 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 
 		instance = this;
 
-		som = new SomNetwork(inputSize, dim1, dim2, dim3);
+		som = new SomNetwork(inputSize, dim1, dim2, dim3, dim4);
 		som.reset();
 		// som.addChangeListener(this);
 
 		quader = new Cube(100, 100, 200);
 		cube = new Cube(100, 100, 100);
-		// somVisualisation = new GridHyperCube(dim1, dim2, dim3, dim4, 100, 100, 100);
-		somVisualisation = new GridCube(dim1, dim2, dim3, 200, 200, 200);
+		somVisualisation = new GridHyperCube(dim1, dim2, dim3, dim4, 100, 100, 100);
+		// somVisualisation = new GridCube(dim1, dim2, dim3, 200, 200, 200);
 		// somVisualisation = new Plane(dim1, dim2, 100, 100, 100);
 		// somVisualisation = new SimpleLine(dim1, 50, 50, 50);
 
