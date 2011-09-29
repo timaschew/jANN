@@ -122,12 +122,22 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 				});
 
 				// connect all vertices
-				allNeuronMenu.add(new AbstractAction(Settings.i18n.getString("graph.mouse.connect")) {
+				JMenu connectMenu = new JMenu(Settings.i18n.getString("graph.mouse.connect"));
+				connectMenu.add(new AbstractAction(Settings.i18n.getString("graph.mouse.intermeshed")) {
 					@Override
 					public void actionPerformed(final ActionEvent e) {
 						graphController.createEdge(vertices);
+						pickedVertexState.clear();
 					}
 				});
+				connectMenu.add(new AbstractAction(Settings.i18n.getString("graph.mouse.feedforward")) {
+					@Override
+					public void actionPerformed(final ActionEvent e) {
+						Network.getNetwork().connectFeedForward();
+						pickedVertexState.clear();
+					}
+				});
+				allNeuronMenu.add(connectMenu);
 
 				// delete all vertices
 				allNeuronMenu.add(new AbstractAction(Settings.i18n.getString("graph.mouse.delete")) {
@@ -196,13 +206,22 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 			JMenu selectedNeuronMenu = new JMenu(Settings.i18n.getString("graph.mouse.selectedVertices"));
 
 			// connect
-			selectedNeuronMenu.add(new AbstractAction(Settings.i18n.getString("graph.mouse.connect")) {
+			JMenu connectMenu = new JMenu(Settings.i18n.getString("graph.mouse.connect"));
+			connectMenu.add(new AbstractAction(Settings.i18n.getString("graph.mouse.intermeshed")) {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
 					graphController.createEdge(pickedVertices);
-					pickedVertexState.pick(vertex, false);
+					pickedVertexState.clear();
 				}
 			});
+			connectMenu.add(new AbstractAction(Settings.i18n.getString("graph.mouse.feedforward")) {
+				@Override
+				public void actionPerformed(final ActionEvent e) {
+					Network.getNetwork().connectFeedForward();
+					pickedVertexState.clear();
+				}
+			});
+			selectedNeuronMenu.add(connectMenu);
 
 			// delete
 			selectedNeuronMenu.add(new AbstractAction(Settings.i18n.getString("graph.mouse.delete")) {

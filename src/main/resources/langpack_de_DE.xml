@@ -111,7 +111,9 @@
 	<entry key="graph.mouse.HiddenLayer">Hidden Layer</entry>
 	<entry key="graph.mouse.connect">verbinden</entry>
 	<entry key="graph.mouse.connectAllVertices">Verbinde alle Neuronen</entry>
-	<entry key="graph.mouse.connectSelectedVertices">Verbinde selektierte Neuronen</entry>	
+	<entry key="graph.mouse.connectSelectedVertices">Verbinde selektierte Neuronen</entry>
+	<entry key="graph.mouse.intermeshed">vermascht</entry>
+	<entry key="graph.mouse.feedforward">feedforward</entry>
 	<entry key="graph.mouse.delete">löschen</entry>
 	<entry key="graph.mouse.deleteAllVertices">Lösche alle Neuronen</entry>
 	<entry key="graph.mouse.deleteSelectedVertices">Lösche selektierte Neuronen</entry>

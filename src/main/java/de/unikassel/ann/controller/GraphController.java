@@ -333,6 +333,10 @@ public class GraphController implements PropertyChangeListener {
 	 * @param toVertex
 	 */
 	public void createEdge(final Vertex fromVertex, final Vertex toVertex) {
+		if (fromVertex.equals(toVertex)) {
+			// No self-edges
+			return;
+		}
 		Neuron fromNeuron = fromVertex.getModel();
 		Neuron toNeuron = toVertex.getModel();
 
@@ -365,6 +369,7 @@ public class GraphController implements PropertyChangeListener {
 		for (Vertex v1 : vertices) {
 			for (Vertex v2 : vertices) {
 				createEdge(v1, v2);
+				createEdge(v2, v1);
 			}
 		}
 	}
@@ -377,14 +382,18 @@ public class GraphController implements PropertyChangeListener {
 	public void removeEdge(final Edge edge) {
 		// Remove the edgemap entry as well
 		EdgeMap<Double> edgeMap = EdgeController.getInstance().getEdgeMap();
-		Neuron fromNeuron = edge.getModel().getFromNeuron();
-		Neuron toNeuron = edge.getModel().getToNeuron();
+		Synapse synapse = edge.getModel();
+		Neuron fromNeuron = synapse.getFromNeuron();
+		Neuron toNeuron = synapse.getToNeuron();
 		FromTo fromTo = new FromTo(fromNeuron.getId(), toNeuron.getId());
 		edgeMap.remove(fromTo);
 
 		// Remove synapse from the neurons
-		fromNeuron.getOutgoingSynapses().remove(edge.getModel());
-		toNeuron.getIncomingSynapses().remove(edge.getModel());
+		fromNeuron.getOutgoingSynapses().remove(synapse);
+		toNeuron.getIncomingSynapses().remove(synapse);
+
+		System.out.println("getOutgoingSynapses: " + fromNeuron.getOutgoingSynapses());
+		System.out.println("getIncomingSynapses: " + toNeuron.getIncomingSynapses());
 
 		graph.removeEdge(edge);
 		repaint();

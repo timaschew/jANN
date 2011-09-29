@@ -143,13 +143,29 @@ public class Vertex implements Comparable<Vertex> {
 	 * @return
 	 */
 	public boolean hasEdgeTo(final Vertex toVertex) {
+		return getEdgeTo(toVertex) != null;
+	}
+
+	/**
+	 * Get the synapse between this vertex and the toVertex.
+	 * 
+	 * @param toVertex
+	 * @return
+	 */
+	public Synapse getEdgeTo(final Vertex toVertex) {
 		List<Synapse> outgoingSynapses = getModel().getOutgoingSynapses();
+		Neuron toVertexModel = toVertex.getModel();
+
+		// Get the synapse for this -> toVertex
 		for (Synapse synapse : outgoingSynapses) {
-			if (synapse.getToNeuron().getId() == toVertex.getModel().getId()) {
-				return true;
+			boolean isFromThis = synapse.getFromNeuron().getId() == getModel().getId();
+			boolean isToVertex = synapse.getToNeuron().getId() == toVertexModel.getId();
+			boolean isValidSynapse = toVertexModel.getIncomingSynapses().contains(synapse);
+			if (isFromThis && isToVertex && isValidSynapse) {
+				return synapse;
 			}
 		}
-		return false;
+		return null;
 	}
 
 	/**
@@ -163,11 +179,15 @@ public class Vertex implements Comparable<Vertex> {
 
 		// The neurons do not have to be connected already
 		if (hasEdgeTo(toVertex)) {
+			System.out.println(this + " hasEdgeTo " + toVertex);
 			return false;
 		}
 
 		// The "to"-vertex has to be in a layer with a higher index than the "from"-vertex
-		if (toVertex.getModel().getLayer().getIndex() <= getModel().getLayer().getIndex()) {
+		int layerIndex = getModel().getLayer().getIndex();
+		int toLayerIndex = toVertex.getModel().getLayer().getIndex();
+		System.out.println(layerIndex + " >= " + toLayerIndex);
+		if (layerIndex >= toLayerIndex) {
 			return false;
 		}
 
