@@ -3,7 +3,6 @@ package de.unikassel.ann.gui;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -251,14 +250,8 @@ public class ImportFilePanel extends JDialog {
 					trainigDataCB.setEnabled(true);
 					trainigDataCB.setSelected(true);
 				}
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
+			} catch (Exception e1) {
 				e1.printStackTrace();
-				System.out.println("IO:");
-			} catch (ClassNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-				System.out.println("class");
 			}
 
 		}

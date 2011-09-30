@@ -187,11 +187,7 @@ public class Settings {
 		NetIO reader = new NetIO();
 		try {
 			reader.readConfigFile(file);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (ClassNotFoundException e1) {
-			// TODO Auto-generated catch block
+		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
 		NetConfig netConfig = reader.generateNetwork(topo, synapse, training);

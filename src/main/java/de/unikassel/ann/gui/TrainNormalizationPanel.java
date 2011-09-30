@@ -58,7 +58,7 @@ public class TrainNormalizationPanel extends JDialog {
 
 		btnApplyData = new JButton(Settings.i18n.getString("menu.options.trainData.btnApplyData"));
 
-		btnCancel = new JButton(Settings.i18n.getString("Schließen"));
+		btnCancel = new JButton("Schließen");
 
 		GroupLayout gl_trainingsDatenNormalPanel = new GroupLayout(trainingsDatenNormalPanel);
 		gl_trainingsDatenNormalPanel

@@ -26,6 +26,11 @@ import javax.swing.ScrollPaneConstants;
 
 import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.gui.Main.Panel;
+import de.unikassel.ann.io.NetIO;
+import de.unikassel.ann.model.DataPairSet;
+import de.unikassel.ann.util.Logger;
+import de.unikassel.ann.util.StringReplaceHelper;
 
 /**
  * @author Sofia
@@ -33,7 +38,14 @@ import de.unikassel.ann.controller.Settings;
  */
 public class TrainDataCreateDialog extends JDialog {
 
+	// private TrainDataCreateDialog
+
+	private String firstLine;
+
 	public TrainDataCreateDialog() {
+
+		// lh = new ListTransferHandler();
+		setModal(false);
 
 		JPanel trainDataPane = new JPanel();
 		setTitle(Settings.i18n.getString("trainDataCreateDialog.titel"));
@@ -45,22 +57,41 @@ public class TrainDataCreateDialog extends JDialog {
 		JButton btnSave = new JButton(Settings.i18n.getString("trainDataCreateDialog.btnSave"));
 		JButton btnCancel = new JButton(Settings.i18n.getString("trainDataCreateDialog.btnCancel"));
 
-		String information = "X Spalten mit Semikolon (;) getrennt,\n" + "XY für die Inputneuronen, \n" + "XZ für die Outputneuronen\n"
-				+ "Dezimaltrennzeichen mit (,) oder (.), \n" + "keine Tausender-Trennzeichen (1.000)! \n"
-				+ "pro Datensatz eine Zeile verwenden";
+		String descriptionVar = "{} Spalten mit Semikolon (;) getrennt<br>" + "{} für die Inputneuronen<br>"
+				+ "{} für die Outputneuronen<br>" + "Dezimaltrennzeichen mit (,) oder (.)<br>"
+				+ "keine Tausender-Trennzeichen (1.000)! <br>" + "pro Datensatz eine Zeile verwenden";
+
+		NetConfig netconfig = Settings.getInstance().getCurrentSession().getNetworkConfig();
+		int inputSize = netconfig.getNetwork().getInputSizeIgnoringBias();
+		int outputSize = netconfig.getNetwork().getOutputSize();
+		int sumSize = inputSize + outputSize;
+		String description = StringReplaceHelper.replace(descriptionVar, sumSize, inputSize, outputSize);
+		JLabel lblThisIsA = new JLabel("<html><body>" + description + "</body></html>");
 
 		// Create a text area.
-		final JTextArea textArea = new JTextArea();
-		textArea.setLineWrap(true);
-		textArea.setWrapStyleWord(true);
+		final JTextArea userDataArea = new JTextArea();
+		userDataArea.setLineWrap(true);
+		userDataArea.setWrapStyleWord(true);
 
 		JLabel lblInfo = new JLabel(Settings.i18n.getString("trainDataCreateDialog.lblInfo"));
-		JTextArea infos = new JTextArea();
-		infos.setEditable(false);
-		infos.setPreferredSize(new Dimension(353, 120));
-		infos.setText(information);
+		JTextArea firstLineArea = new JTextArea();
+		firstLineArea.setEditable(false);
+		firstLineArea.setPreferredSize(new Dimension(353, 30));
+		StringBuilder sb = new StringBuilder();
+		String prefix = "";
+		for (int i = 0; i < inputSize; i++) {
+			sb.append(prefix);
+			prefix = ";";
+			sb.append("i");
+		}
+		for (int i = 0; i < outputSize; i++) {
+			sb.append(prefix);
+			sb.append("o");
+		}
+		firstLine = sb.toString();
+		firstLineArea.setText(firstLine);
 
-		JScrollPane areaScrollPane = new JScrollPane(textArea);
+		JScrollPane areaScrollPane = new JScrollPane(userDataArea);
 		areaScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		areaScrollPane.setPreferredSize(new Dimension(353, 180));
 
@@ -72,17 +103,25 @@ public class TrainDataCreateDialog extends JDialog {
 				if (netconfig.getTrainingData() != null) {
 					Object[] option = { "Ja", "Nein" };
 					Component frameD = new JFrame();
+
 					int pane = JOptionPane.showOptionDialog(frameD, "Trainingsdaten existieren bereits. \n"
 							+ "Möchten Sie diese überschreiben?", "Beenden", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null,
 							option, option[1]);
 
 					if (pane == JOptionPane.YES_OPTION) {
-						// TODO Traindata überschreiben
+						InputStream inputStream = writeAreaTextToInputStream(userDataArea);
+						NetIO io = new NetIO();
+						try {
+							io.readTraininData(inputStream);
+							DataPairSet trainData = io.getTrainingSet();
+							netconfig.setTrainingData(trainData);
+							Main.instance.trainingDataChartPanel.updateTrainingData();
+						} catch (Exception e1) {
+							Main.instance.switchBottomPanel(Panel.CONSOLE);
+							Logger.error(this.getClass(), "Trainingsdaten konnten nicht erzeugt werden, Grund: {}", e1.getMessage());
+						}
 					}
 				}
-				// Schreib die Daten in dem Inputstream
-				writeAreaTextToInputStream(textArea);
-
 			}
 		});
 
@@ -97,18 +136,21 @@ public class TrainDataCreateDialog extends JDialog {
 		trainDataPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
 		trainDataPane.add(lblInfo);
-		trainDataPane.add(infos);
+
+		trainDataPane.add(lblThisIsA);
+		trainDataPane.add(firstLineArea);
 		trainDataPane.add(areaScrollPane);
 		trainDataPane.add(btnSave);
 		trainDataPane.add(btnCancel);
 
-		add(trainDataPane);
+		getContentPane().add(trainDataPane);
 
 	}
 
 	public InputStream writeAreaTextToInputStream(final JTextArea textArea) {
 		return new InputStream() {
-			String s = textArea.getText();
+
+			String s = firstLine + "\n" + textArea.getText();
 			int inPtr = 0;
 
 			@Override
@@ -116,12 +158,11 @@ public class TrainDataCreateDialog extends JDialog {
 			{
 				if (inPtr >= s.length()) {
 					return -1;
-				} else {
-					inPtr++;
-					return s.charAt(inPtr - 1);
 				}
-			}// read
-		};// InputStream
-	}// textArea2InputStream
+				inPtr++;
+				return s.charAt(inPtr - 1);
+			}
+		};
+	}
 
 }

@@ -5,7 +5,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collections;
@@ -43,7 +42,16 @@ public class NetIO {
 	public List<TopologyBean> topoBeanList = null;
 	public List<SynapseBean> synapsesBanList = null;
 
-	public void readConfigFile(final File file) throws IOException, ClassNotFoundException {
+	public void readTraininData(final InputStream inputStream) throws Exception {
+
+		InputStreamReader inputStremReader = new InputStreamReader(inputStream);
+		BufferedReader bufferedReader = new BufferedReader(inputStremReader);
+		trainigBeanList = TrainingRW.readData(bufferedReader);
+		bufferedReader.close();
+
+	}
+
+	public void readConfigFile(final File file) throws Exception {
 
 		InputStream fis = null;
 		try {

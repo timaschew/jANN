@@ -13,8 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import de.unikassel.ann.gui.Main;
 
@@ -24,7 +22,6 @@ import de.unikassel.ann.gui.Main;
  */
 public class Logger {
 
-	private final static String REGEX = "([{][}])";
 	private final static int DEBUG = 0;
 	private final static int INFO = 2;
 	private final static int WARN = 3;
@@ -67,19 +64,7 @@ public class Logger {
 	}
 
 	private static void log(final Class<?> clazz, final Integer level, final String message, final Object... params) {
-		String finalMsg = message;
-		for (Object o : params) {
-			try {
-				// quoteReplacement
-				Matcher m = Pattern.compile(REGEX).matcher(finalMsg);
-				String escaped = Matcher.quoteReplacement(o.toString());
-				// Pattern.compile("([{][}])").matcher(finalMsg).
-				finalMsg = finalMsg.replaceFirst("([{][}])", escaped);
-			} catch (Exception e) {
-				System.err.println("could not parse parameter message '" + message + "' with param: " + o);
-				e.printStackTrace();
-			}
-		}
+		String finalMsg = StringReplaceHelper.replace(message, params);
 		log(clazz, level, finalMsg);
 	}
 

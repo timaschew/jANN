@@ -80,7 +80,7 @@ public class ChartTrainingDataPanel extends JPanel {
 			int inputSize = trainData.getPairs().get(0).getInput().length;
 			Double[][] inputAndIdeal = trainData.getInputAndIdeal();
 			int field = 0;
-			for (int i = 0; i < inputAndIdeal[field].length; i++) {
+			for (int i = 0; i < inputAndIdeal[0].length; i++) {
 				String postfix = field < inputSize ? "input" : "ideal";
 				XYSeries seriesFor = new XYSeries(field + 1 + "(" + postfix + ")");
 				trainingsDataSet.addSeries(seriesFor);

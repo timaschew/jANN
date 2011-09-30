@@ -17,7 +17,7 @@ public class NetIOTest {
 
 	// takes too much time
 	@Ignore
-	public void testWerner() throws IOException, ClassNotFoundException {
+	public void testWerner() throws Exception {
 
 		File importFile = new File(PATH + "werner.csv");
 
@@ -63,7 +63,7 @@ public class NetIOTest {
 
 	// takes too much time
 	@Ignore
-	public void testWaldemar() throws IOException, ClassNotFoundException {
+	public void testWaldemar() throws Exception {
 
 		File importFile = new File(PATH + "waldemar.csv");
 
@@ -97,7 +97,7 @@ public class NetIOTest {
 	}
 
 	@Test
-	public void testImportAndExportConfig() throws IOException, ClassNotFoundException {
+	public void testImportAndExportConfig() throws Exception {
 
 		TrainingRW.WRITE_INDEX_IN_HEADER = false;
 
@@ -136,7 +136,7 @@ public class NetIOTest {
 	}
 
 	@Test
-	public void testImportExportedConfig() throws IOException, ClassNotFoundException {
+	public void testImportExportedConfig() throws Exception {
 
 		File f = new File(PATH + "net_export.csv");
 
