@@ -37,7 +37,7 @@ public class SettingsTest {
 	@Test()
 	public void testWrapperWihtoutException() {
 		String str = Settings.getI18n("bladsbalsudb");
-		Assert.assertNull(str);
+		Assert.assertEquals("<i18n>", str);
 	}
 
 	@Test

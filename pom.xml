@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>jANN</groupId>
 	<artifactId>jANN</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>jANN</name>
 	<description>Java API for ANN</description>
 	<repositories>
@@ -43,11 +43,11 @@
 			<artifactId>mdaaj</artifactId>
 			<version>0.0.5</version>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.javaplot</groupId>-->
-<!--			<artifactId>javaplot</artifactId>-->
-<!--			<version>1.0</version>-->
-<!--		</dependency>-->
+		<!-- <dependency> -->
+		<!-- <groupId>org.javaplot</groupId> -->
+		<!-- <artifactId>javaplot</artifactId> -->
+		<!-- <version>1.0</version> -->
+		<!-- </dependency> -->
 
 		<!-- <dependency> -->
 		<!-- <groupId>commons-io</groupId> -->
@@ -234,6 +234,19 @@
 						<phase>package</phase>
 						<goals>
 							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
 						</goals>
 					</execution>
 				</executions>
