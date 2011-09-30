@@ -24,6 +24,10 @@
 	<entry key="menu.options.trainData.btnPreviewData">Vorschau</entry>
 	<entry key="menu.options.trainData.btnApplyData">Anwenden</entry>
 	<entry key="menu.options.trainData.btnCancel">Abbrechen</entry>
+	<entry key="menu.loggingLevel">Logging Level</entry>
+	<entry key="menu.loggingLevel.debug">DEBUG</entry>
+	<entry key="menu.loggingLevel.info">INFO</entry>
+	<entry key="menu.loggingLevel.warn">WARNING</entry>	
 	<entry key="menu.help">Hilfe</entry>
 	<entry key="menu.help.about">Über</entry>
 	<entry key="menu.network">Beispiele</entry>
@@ -149,5 +153,6 @@
 	<entry key="workpanel.lblInput">Input Neuron</entry>
 	<entry key="workpanel.normalizeCB">Normalisieren</entry>
 	<entry key="workpanel.btnApplyData">Anwenden</entry>
+	<entry key="workpanel.lblInput">Input Neuron Werte (Trenner " ; ")</entry>
 </properties>
 

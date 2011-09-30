@@ -50,6 +50,9 @@ public class MainMenu extends JMenuBar {
 		JMenu mnTest = getTestMenu();
 		this.add(mnTest);
 
+		JMenu mnLoggingLevel = getLoggingLevelMenu();
+		this.add(mnLoggingLevel);
+
 		JMenu mnHilfe = getHilfeMenu();
 		this.add(mnHilfe);
 	}
@@ -169,6 +172,24 @@ public class MainMenu extends JMenuBar {
 		mntmNetzwerk.add(mntn2BitAddiererNetwork);
 
 		return mntmNetzwerk;
+	}
+
+	/**
+	 * @return JMenu Logging-Level
+	 */
+	private JMenu getLoggingLevelMenu() {
+		JMenu mnLoggingLevel = new JMenu(Settings.i18n.getString("menu.loggingLevel"));
+
+		JMenuItem mntmDebug = new ActionJMenuItem(Settings.i18n.getString("menu.loggingLevel.debug"), Actions.DEBUG_LOGGING_LEVEL);
+		mnLoggingLevel.add(mntmDebug);
+
+		JMenuItem mntmInfo = new ActionJMenuItem(Settings.i18n.getString("menu.loggingLevel.info"), Actions.INFO_LOGGING_LEVEL);
+		mnLoggingLevel.add(mntmInfo);
+
+		JMenuItem mntmWarn = new ActionJMenuItem(Settings.i18n.getString("menu.loggingLevel.warn"), Actions.WARN_LOGGING_LEVEL);
+		mnLoggingLevel.add(mntmWarn);
+
+		return mnLoggingLevel;
 	}
 
 	/**
