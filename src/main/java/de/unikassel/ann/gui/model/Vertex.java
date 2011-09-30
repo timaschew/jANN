@@ -7,6 +7,7 @@ import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.model.Network;
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.Synapse;
+import de.unikassel.ann.model.func.ActivationFunction;
 
 public class Vertex implements Comparable<Vertex> {
 
@@ -23,14 +24,11 @@ public class Vertex implements Comparable<Vertex> {
 	 * Constructor
 	 */
 	public Vertex() {
-		// TODO get activateFunction
-		String activateFunc = "SigmoidFunction";
-
-		// TODO bias enabled?
-		boolean bias = false;
+		// Get the activateFunction
+		ActivationFunction activateFunction = Network.getNetwork().getStandardFunction();
 
 		// Create model
-		model = new Neuron(activateFunc, bias);
+		model = new Neuron(activateFunction, false);
 	}
 
 	public void setIndex(final int index) {

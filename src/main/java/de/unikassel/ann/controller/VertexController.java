@@ -13,10 +13,8 @@ import java.util.Set;
 import org.apache.commons.collections15.Transformer;
 
 import de.unikassel.ann.factory.VertexFactory;
-import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.gui.model.Edge;
 import de.unikassel.ann.gui.model.Vertex;
-import de.unikassel.ann.model.Network;
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.func.ActivationFunction;
 import de.unikassel.ann.model.func.SigmoidFunction;
@@ -115,12 +113,7 @@ public class VertexController<V> {
 	 * @return boolean
 	 */
 	public boolean isVertexInHiddenLayer(final Vertex vertex) {
-		int layerSize = Network.getNetwork().getLayers().size();
-		if (vertex.getLayerIndex() > 0 && vertex.getLayerIndex() < layerSize - 1) {
-			// Vertex is in a hidden layer
-			return true;
-		}
-		return false;
+		return GraphController.getInstance().isLayerHidden(vertex.getModel().getLayer());
 	}
 
 	/**
@@ -180,6 +173,7 @@ public class VertexController<V> {
 				Color color = ColorHelper.numberToColor(factor);
 				color = color.brighter().brighter().brighter();
 
+				// Make vertices in hidden layers a little bit more transparency
 				int alpha = (int) (255 * 0.8);
 				if (VertexController.getInstance().isVertexInHiddenLayer(vertex)) {
 					for (int i = 0; i < 100; i++) {
@@ -216,11 +210,11 @@ public class VertexController<V> {
 				Set<Vertex> picked = vertexPickedState.getPicked();
 				if (picked.isEmpty()) {
 					// No vertex picked
-					Main.instance.sidebar.selectedSymbolsPanel.reset();
+					GraphController.getInstance().select();
 					return;
 				}
 				// Show picked vertex in the Sidebar
-				Main.instance.sidebar.selectedSymbolsPanel.updateVertex(picked);
+				GraphController.getInstance().selectVertex(picked);
 			}
 		});
 
