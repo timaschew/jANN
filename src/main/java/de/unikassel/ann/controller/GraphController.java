@@ -22,6 +22,7 @@ import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.gui.model.Edge;
 import de.unikassel.ann.gui.model.Vertex;
 import de.unikassel.ann.gui.mouse.GraphMouse;
+import de.unikassel.ann.gui.sidebar.StandardOptionsPanel;
 import de.unikassel.ann.model.Layer;
 import de.unikassel.ann.model.Network;
 import de.unikassel.ann.model.Network.NetworkLayer;
@@ -362,7 +363,10 @@ public class GraphController implements PropertyChangeListener {
 
 			// Set synapse weight to random value if it's missing
 			if (synapse.getWeight() == null) {
-				synapse.setWeight(new Double(Math.random()));
+				// Get random default weight between min and max defined in the standard options panel in the sidebar.
+				StandardOptionsPanel panel = Main.instance.sidebar.standardOptionsPanel;
+				double weight = panel.getRandomInitialWeight();
+				synapse.setWeight(weight);
 			}
 			edge.setModel(synapse);
 

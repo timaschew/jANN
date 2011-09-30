@@ -10,7 +10,6 @@ import de.unikassel.ann.algo.BackPropagation;
 import de.unikassel.ann.algo.TrainingModule;
 import de.unikassel.ann.algo.WorkModule;
 import de.unikassel.ann.controller.Settings;
-import de.unikassel.ann.gui.TrainErrorListener;
 import de.unikassel.ann.model.DataPairSet;
 import de.unikassel.ann.model.NetError;
 import de.unikassel.ann.model.Network;
@@ -28,7 +27,6 @@ public class NetConfig {
 	private Randomizer randomizer;
 	private List<NetError> errorLogs;
 	private int restartAmount = 0;
-	private List<TrainErrorListener> trainErrorListener;
 
 	private DataPairSet trainingData;
 	private DataPairSet testData;
@@ -39,7 +37,6 @@ public class NetConfig {
 		network.setConfig(this);
 		strategies = new ArrayList<Strategy>();
 		errorLogs = new ArrayList<NetError>();
-		trainErrorListener = new ArrayList<TrainErrorListener>();
 
 		/*
 		 * default algorithm and strategy
@@ -171,17 +168,6 @@ public class NetConfig {
 	// return null;
 	// }
 	// }
-
-	public void addTrainErrorListener(final TrainErrorListener tel) {
-		trainErrorListener.add(tel);
-	}
-
-	public void notifyError(final Double currentError) {
-		for (TrainErrorListener tel : trainErrorListener) {
-			tel.addError(getTrainingModule().getCurrentIteration(), currentError);
-
-		}
-	}
 
 	/**
 	 * @return the trainingData

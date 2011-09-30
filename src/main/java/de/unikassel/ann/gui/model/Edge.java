@@ -3,6 +3,8 @@ package de.unikassel.ann.gui.model;
 import java.text.DecimalFormat;
 
 import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.gui.Main;
+import de.unikassel.ann.gui.sidebar.StandardOptionsPanel;
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.Synapse;
 
@@ -54,8 +56,10 @@ public class Edge {
 	public void createModel(final Neuron from, final Neuron to) {
 		model = new Synapse(from, to);
 
-		// TODO remove later (it's just for testing purpose)
-		updateWeight(new Double(Math.random()));
+		// Get random default weight between min and max defined in the standard options panel in the sidebar.
+		StandardOptionsPanel panel = Main.instance.sidebar.standardOptionsPanel;
+		double weight = panel.getRandomInitialWeight();
+		updateWeight(weight);
 	}
 
 	public Double getWeight() {
@@ -75,9 +79,7 @@ public class Edge {
 	@Override
 	public String toString() {
 		if (df == null) {
-			df = new DecimalFormat(
-					Settings.properties.getProperty("gui.decimalFormat"),
-					Settings.decimalSymbols);
+			df = new DecimalFormat(Settings.properties.getProperty("gui.decimalFormat"), Settings.decimalSymbols);
 		}
 		return df.format(getWeight());
 	}

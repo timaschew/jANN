@@ -68,7 +68,7 @@ public class Main {
 	 * private fields
 	 */
 	private JFrame frame;
-	private JTextPane textPane = new JTextPane();
+	private JTextPane textPane;
 	private JTextPane textPaneSOM;
 	private JPanel jungPanel;
 	private JSplitPane jungConsoleSplitPane;
@@ -85,6 +85,7 @@ public class Main {
 	public JPanel consoleOrChartPanel;
 	public ChartTrainingErrorPanel trainingErrorChartPanel;
 	public ChartTrainingDataPanel trainingDataChartPanel;
+	private JScrollPane scrollPane;
 
 	/**
 	 * Create the application.
@@ -99,6 +100,14 @@ public class Main {
 		} catch (Exception e) {
 			Logger.info(this.getClass(), "Look&Feel auf Defaultwert gesetzt: {} ", UIManager.getLookAndFeel().getName());
 		}
+		textPane = new JTextPane();
+		textPane.setEditable(false);
+		addStylesToDocument(textPane.getStyledDocument());
+		scrollPane = new JScrollPane(textPane);
+		consolePanel = new JPanel(new BorderLayout());
+		consolePanel.add(scrollPane, BorderLayout.CENTER);
+		consoleOrChartPanel = new JPanel(new BorderLayout());
+		consoleOrChartPanel.add(consolePanel);
 
 		Logger.debug(this.getClass(), "logging debug");
 		Logger.info(this.getClass(), "initializing app...");
@@ -169,17 +178,8 @@ public class Main {
 		// jungConsoleSplitPane.setMinimumSize(new Dimension(625, 50));
 		jungPanel = new JPanel(new BorderLayout());
 
-		consolePanel = new JPanel(new BorderLayout());
 		trainingErrorChartPanel = new ChartTrainingErrorPanel();
 		trainingDataChartPanel = new ChartTrainingDataPanel();
-
-		textPane.setEditable(false);
-		addStylesToDocument(textPane.getStyledDocument());
-		JScrollPane scrollPane = new JScrollPane(textPane);
-		consolePanel.add(scrollPane, BorderLayout.CENTER);
-
-		consoleOrChartPanel = new JPanel(new BorderLayout());
-		consoleOrChartPanel.add(consolePanel);
 
 		// SplitPane for Backpropagation with JUNG
 		jungConsoleSplitPane.setContinuousLayout(true);

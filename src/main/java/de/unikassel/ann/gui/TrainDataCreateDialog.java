@@ -34,7 +34,6 @@ import javax.swing.text.DefaultEditorKit;
 
 import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.Settings;
-import de.unikassel.ann.gui.Main.Panel;
 import de.unikassel.ann.io.NetIO;
 import de.unikassel.ann.model.DataPairSet;
 import de.unikassel.ann.util.Logger;
@@ -127,7 +126,7 @@ public class TrainDataCreateDialog extends JDialog {
 							netconfig.setTrainingData(trainData);
 							Main.instance.trainingDataChartPanel.updateTrainingData();
 						} catch (Exception e1) {
-							Main.instance.switchBottomPanel(Panel.CONSOLE);
+
 							Logger.error(this.getClass(), "Trainingsdaten konnten nicht erzeugt werden, Grund: {}", e1.getMessage());
 						}
 					}

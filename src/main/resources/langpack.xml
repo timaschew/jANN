@@ -24,10 +24,6 @@
 	<entry key="menu.options.trainData.btnPreviewData">Vorschau</entry>
 	<entry key="menu.options.trainData.btnApplyData">Anwenden</entry>
 	<entry key="menu.options.trainData.btnCancel">Abbrechen</entry>
-	<entry key="menu.loggingLevel">Logging Level</entry>
-	<entry key="menu.loggingLevel.debug">DEBUG</entry>
-	<entry key="menu.loggingLevel.info">INFO</entry>
-	<entry key="menu.loggingLevel.warn">WARNING</entry>
 	<entry key="menu.help">Hilfe</entry>
 	<entry key="menu.help.about">Über</entry>
 	<entry key="menu.network">Beispiele</entry>
@@ -66,7 +62,6 @@
 	<entry key="sidebar.standardOptions.initialWeigth">Initialgewicht</entry>
 	<entry key="sidebar.standardOptions.randomRB">Zufällig</entry>
 	<entry key="sidebar.standardOptions.exactRB">Exakt</entry>
-	<entry key="sidebar.standardOptions.until">bis</entry>
 	<entry key="sidebar.standardOptions.neuron">Neuron</entry>
 	<entry key="sidebar.standardOptions.neurons">Neuronen</entry>
 	<entry key="sidebar.standardOptions.synapse">Synapse</entry>
@@ -77,7 +72,7 @@
 	<entry key="sidebar.selectedSymbol.neuronsInput">Neuronen Input</entry>
 	<entry key="sidebar.selectedSymbol.activatedFunction">Aktivierungsfunktion</entry>
 	<entry key="sidebar.selectedSymbol.applyChanges">Übernehmen</entry>
-	<entry key="sidebar.selectedSymbol.discardChanges">Verwerfen</entry>
+	<entry key="sidebar.selectedSymbol.discardChanges">Abbrechen</entry>
 	<entry key="sidebar.trainControl">Training-Steuerung</entry>
 	<entry key="sidebar.trainControl.btnSteps">Schritte</entry>
 	<entry key="sidebar.trainControl.btnTrainingsPattern">Trainingspattern</entry>
@@ -148,12 +143,5 @@
 	<entry key="trainDataCreateDialog.btnSave">Speichern</entry>
 	<entry key="trainDataCreateDialog.btnCancel">Abbrechen</entry>
 	<entry key="trainDataCreateDialog.lblInfo">Bitte Trainingsdaten eingeben: </entry>
-	<entry key="trainDataCreateDialog.copy">Kopieren</entry>
-	<entry key="trainDataCreateDialog.paste">Einfügen</entry>
-	
-	<entry key="workpanel.titel">Manueller Test</entry>
-	<entry key="workpanel.lblInput">Input Neuron</entry>
-	<entry key="workpanel.normalizeCB">Normalisieren</entry>
-	<entry key="workpanel.btnApplyData">Anwenden</entry>
 </properties>
 

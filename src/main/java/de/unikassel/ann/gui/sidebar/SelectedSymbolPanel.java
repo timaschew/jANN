@@ -59,7 +59,6 @@ public class SelectedSymbolPanel extends JPanel {
 
 	// Set by the update method of their type in order to call it again on discard
 	private SelectedType lastSelectedType;
-
 	private boolean ignoreChanges;
 
 	/**
@@ -240,7 +239,7 @@ public class SelectedSymbolPanel extends JPanel {
 		}
 
 		// activatedFunctionComboBox
-		if (activatedFunctionComboBox.isEditable()) {
+		if (activatedFunctionComboBox.isEnabled()) {
 			Object selectedItem = activatedFunctionComboBox.getSelectedItem();
 			String value = selectedItem != null ? selectedItem.toString() : null;
 			if (value != null && value.isEmpty() == false) {

@@ -17,6 +17,7 @@ import javax.swing.border.TitledBorder;
 
 import de.unikassel.ann.algo.BackPropagation;
 import de.unikassel.ann.config.NetConfig;
+import de.unikassel.ann.controller.GraphController;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.model.DataPairSet;
@@ -177,16 +178,27 @@ public class TrainControlPanel extends JPanel {
 	 */
 	private void initListeners() {
 		btnPlay.addActionListener(new ActionListener() {
-			@SuppressWarnings("unused")
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				NetConfig net = Settings.getInstance().getCurrentSession().getNetworkConfig();
-				Logger.info(this.getClass(), "training started");
-				if (net.getTrainingData() == null) {
+
+				if (net.getTrainingData() == null || net.getTrainingData().getRows() == 0) {
 					JFrame frame = new JFrame();
 					JOptionPane.showMessageDialog(frame, "Es existieren keine Trainingsdaten ", "Warnung", JOptionPane.WARNING_MESSAGE);
 				} else {
+					// copy of train data
 					DataPairSet testData = new DataPairSet(net.getTrainingData());
+
+					int trainInLenght = testData.getPairs().get(0).getInput().length;
+					int trainOutLenght = testData.getPairs().get(0).getIdeal().length;
+					int netInLenght = net.getNetwork().getInputSizeIgnoringBias();
+					int netOutLength = net.getNetwork().getOutputSize();
+					if (trainInLenght != netInLenght || trainOutLenght != netOutLength) {
+						Logger.warn(this.getClass(), "Trainingsdaten {} Input {} Output passten nicht zur Topology {} Input und {} Output",
+								trainInLenght, trainOutLenght, netInLenght, netOutLength);
+						return;
+					}
+
 					BackPropagation train = (BackPropagation) net.getTrainingModule();
 					Double learnRate = (Double) Main.instance.sidebar.trainStrategyPanel.spinnerLearnRate.getValue();
 					Double momentum = (Double) Main.instance.sidebar.trainStrategyPanel.spinnerMomentum.getValue();
@@ -194,8 +206,10 @@ public class TrainControlPanel extends JPanel {
 					train.setBatchMode(batchMode);
 					train.setLearnRate(learnRate);
 					train.setMomentum(momentum);
+					Logger.info(this.getClass(), "training started");
 					train.train(net.getTrainingData());
-					Logger.info(this.getClass(), "training finished");
+					GraphController.getInstance().repaint();
+					Logger.info(this.getClass(), "training beendet");
 					net.getWorkingModule().work(net.getNetwork(), testData);
 					Logger.info(this.getClass(), testData.toString());
 				}
