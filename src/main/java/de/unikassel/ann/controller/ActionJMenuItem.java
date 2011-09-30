@@ -151,13 +151,13 @@ public class ActionJMenuItem extends JMenuItem implements ActionListener {
 			HelpOverview.createAndShowGUI();
 			break;
 		case INFO_LOGGING_LEVEL:
-			Logger.info(this.getClass(), "INFO-LEVEL");
+			Logger.setDefaultLevel("INFO");
 			break;
 		case DEBUG_LOGGING_LEVEL:
-			Logger.debug(this.getClass(), "DEBUG-LEVEL");
+			Logger.setDefaultLevel("DEBUG");
 			break;
 		case WARN_LOGGING_LEVEL:
-			Logger.warn(this.getClass(), "WARN-LEVEL");
+			Logger.setDefaultLevel("WARN");
 			break;
 		default:
 			System.out.println("Unknown command: " + action);
