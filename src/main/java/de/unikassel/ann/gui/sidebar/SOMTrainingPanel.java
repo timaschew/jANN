@@ -27,6 +27,7 @@ import de.unikassel.ann.gui.SOMGui;
 import de.unikassel.ann.io.tasks.SomWorker;
 import de.unikassel.ann.model.SomNetwork;
 import de.unikassel.ann.threeD.model.GridCube;
+import de.unikassel.ann.threeD.model.GridHypercube;
 import de.unikassel.ann.threeD.model.GridPlane;
 import de.unikassel.ann.threeD.model.RenderGeometry;
 
@@ -77,7 +78,8 @@ public class SOMTrainingPanel extends JPanel {
 					geometry = new GridCube(outputSize, outputSize, outputSize, patternRange);
 					break;
 				case 4:
-					// geometry = new GridHypercube(outputSize, outputSize, outputSize, patternRange);
+					geometry = new GridHypercube(outputSize, outputSize, outputSize, outputSize, patternRange, patternRange, patternRange,
+							patternRange);
 					break;
 				default:
 					return;

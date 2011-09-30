@@ -2,39 +2,12 @@ package de.unikassel.ann.threeD.model;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.locks.ReentrantLock;
 
 import de.unikassel.mdda.MDDA;
 
 /**
- * 3D plane with a equi gridded structure of 3
+ * 4D plane with a equi gridded structure of 4
  * 
- * <pre>
- * 
- *         a ___ b ____ c
- *        /     /     / |
- *       1- - -2 - - 3  f
- *       |     |     | /|
- *       4 - - 5 - - 6  i 
- *       |     |     | /
- *       7 - - 8 - - 9
- *       
- *          a ___ b ___ c
- *        / |   / |   / |
- *       * -d- * -e -* -f
- *       | /|  | /|  | /|
- *       | -g- * -h- * -i
- *       | /   | /   | /
- *       * - - * - - *
- *       
- *          a ___ b ___ c
- *        / |   / |   / |
- *       1 -d- 2 -e -3 -f
- *       | /|  | /|  | /|
- *       4 -g- 5 -h- 6 -i
- *       | /   | /   | /
- *       7 - - 8 - - 9
- * </pre>
  * 
  */
 public class GridHypercube extends RenderGeometry {
@@ -42,51 +15,23 @@ public class GridHypercube extends RenderGeometry {
 	private int xSize;
 	private int zSize;
 	private int ySize;
-	private int zGrids;
-	private int yGrids;
+	private int wSize;
+
 	private int xGrids;
-	private ReentrantLock lock = new ReentrantLock();
+	private int yGrids;
+	private int zGrids;
+	private int wGrids;
 
-	/**
-	 * grid count = 3<br>
-	 * size = 100
-	 */
-	public GridHypercube() {
-		this(100);
-	}
-
-	/**
-	 * grid count = 3
-	 * 
-	 * @param xSize
-	 * @param ySize
-	 * @param zSize
-	 */
-	public GridHypercube(final int xSize, final int ySize, final int zSize) {
-		this(3, 3, 3, xSize, ySize, zSize);
-	}
-
-	public GridHypercube(final int xGrids, final int yGrids, final int zGrids, final int size) {
-		this(xGrids, yGrids, zGrids, size, size, size);
-	}
-
-	/**
-	 * grid count = 3
-	 * 
-	 * @param size
-	 */
-	public GridHypercube(final int size) {
-		this(3, 3, 3, size, size, size);
-	}
-
-	public GridHypercube(final int xGrids, final int yGrids, final int zGrids, final int xSize, final int ySize, final int zSize) {
+	public GridHypercube(final int xGrids, final int yGrids, final int zGrids, final int wGrids, final int xSize, final int ySize,
+			final int zSize, final int wSize) {
 		this.xSize = xSize;
 		this.ySize = ySize;
 		this.zSize = zSize;
+		this.wSize = wSize;
 		this.xGrids = xGrids;
 		this.yGrids = yGrids;
 		this.zGrids = zGrids;
-
+		this.wGrids = wGrids;
 		setGeometrySize();
 	}
 
@@ -97,16 +42,19 @@ public class GridHypercube extends RenderGeometry {
 			xGrids = grids;
 			yGrids = grids;
 			zGrids = grids;
+			wGrids = grids;
 		}
 		if (size != null) {
 			if (xGrids == 2 && size % 2 != 0) {
 				xSize = size + 1;
 				ySize = size + 1;
 				zSize = size + 1;
+				wSize = size + 1;
 			} else {
 				xSize = size;
 				ySize = size;
 				zSize = size;
+				wSize = size;
 			}
 		}
 		if (size != null || grids != null) {
@@ -123,6 +71,12 @@ public class GridHypercube extends RenderGeometry {
 	 */
 	private void setGeometrySize() {
 		// points
+
+		int wPositive = wSize / 2;
+		int wNegative = -wPositive;
+		int wChunk = wSize / (wGrids - 1);
+		int wCounter = 0;
+
 		int zPositive = zSize / 2;
 		int zNegative = -zPositive;
 		int zChunk = zSize / (zGrids - 1);
@@ -138,60 +92,64 @@ public class GridHypercube extends RenderGeometry {
 		int xChunk = xSize / (xGrids - 1);
 		int xCounter = 0;
 
-		MDDA<Point3D> pointMatrixT = new MDDA<Point3D>(xGrids, yGrids, zGrids);
+		MDDA<Point3D> pointMatrixT = new MDDA<Point3D>(xGrids, yGrids, zGrids, wGrids);
 		ArrayList<Line> linesT = new ArrayList<Line>();
 		ArrayList<Point3D> pointsT = new ArrayList<Point3D>();
 
-		for (int z = zNegative; z <= zPositive; z += zChunk) {
-			xCounter = 0;
-			for (int x = xNegative; x <= xPositive; x += xChunk) {
-				yCounter = 0;
-				for (int y = yNegative; y <= yPositive; y += yChunk) {
-					Point3D p = new Point3D(x, y, z);
-					try {
-						pointMatrixT.set(p, xCounter, yCounter, zCounter);
-					} catch (Exception e) {
-						// System.err.println("try to set " + xCounter + ", " + yCounter + ", " + zCounter);
-						// System.err.print("but array was: ");
-						// for (int i : pointMatrix.getSize()) {
-						// System.err.print(" " + i);
-						// }
-						// System.err.println("");
-						// e.printStackTrace();
-						return;
+		for (int w = wNegative; w <= wPositive; w += wChunk) {
+			wCounter = 0;
+			for (int z = zNegative; z <= zPositive; z += zChunk) {
+				xCounter = 0;
+				for (int x = xNegative; x <= xPositive; x += xChunk) {
+					yCounter = 0;
+					for (int y = yNegative; y <= yPositive; y += yChunk) {
+						Point3D p = new Point3D(x, y, z);
+						try {
+							pointMatrixT.set(p, xCounter, yCounter, zCounter, wCounter);
+						} catch (Exception e) {
+							System.out.println(xCounter + "/" + yCounter + "/" + zCounter + "/" + wCounter);
+							e.printStackTrace();
+							return;
+						}
+						pointsT.add(p);
+						yCounter++;
 					}
-
-					pointsT.add(p);
-					yCounter++;
+					xCounter++;
 				}
-				xCounter++;
+				zCounter++;
 			}
-			zCounter++;
+			wCounter++;
 		}
 
 		// grid cube
-		for (int z = 0; z < zGrids; z++) {
-			for (int x = 0; x < xGrids; x++) {
-				for (int y = 0; y < yGrids; y++) {
-					if (z > 0) {
-						// connection in z axis
-						Line deep = new Line(pointMatrixT.get(x, y, z), pointMatrixT.get(x, y, z - 1));
-						linesT.add(deep);
-					}
-					if (x > 0) {
-						// connection in x axis
-						Line left2 = new Line(pointMatrixT.get(x, y, z), pointMatrixT.get(x - 1, y, z));
-						linesT.add(left2);
-					}
-					if (y > 0) {
-						// connection in y axis
-						Line down = new Line(pointMatrixT.get(x, y, z), pointMatrixT.get(x, y - 1, z));
-						linesT.add(down);
+		for (int w = 0; w < zGrids; w++) {
+			for (int z = 0; z < zGrids; z++) {
+				for (int x = 0; x < xGrids; x++) {
+					for (int y = 0; y < yGrids; y++) {
+						if (w > 0) {
+							// connection in z axis
+							Line wDim = new Line(pointMatrixT.get(x, y, z, w), pointMatrixT.get(x, y, z, w - 1));
+							linesT.add(wDim);
+						}
+						if (z > 0) {
+							// connection in z axis
+							Line deep = new Line(pointMatrixT.get(x, y, z, w), pointMatrixT.get(x, y, z - 1, w));
+							linesT.add(deep);
+						}
+						if (x > 0) {
+							// connection in x axis
+							Line left = new Line(pointMatrixT.get(x, y, z, w), pointMatrixT.get(x - 1, y, z, w));
+							linesT.add(left);
+						}
+						if (y > 0) {
+							// connection in y axis
+							Line down = new Line(pointMatrixT.get(x, y, z, w), pointMatrixT.get(x, y - 1, z, w));
+							linesT.add(down);
+						}
 					}
 				}
 			}
 		}
-
 		pointMatrix = pointMatrixT;
 		lines = linesT;
 		points = pointsT;

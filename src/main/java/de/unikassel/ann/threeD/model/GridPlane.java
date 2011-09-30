@@ -6,7 +6,7 @@ import java.util.Random;
 import de.unikassel.mdda.MDDA;
 
 /**
- * 3D plane with a equi gridded structure of 3
+ * 2D plane with a equi gridded structure of 2
  * 
  * <pre>
  * 

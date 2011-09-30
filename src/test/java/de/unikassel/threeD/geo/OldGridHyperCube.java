@@ -14,7 +14,7 @@ import de.unikassel.mdda.MDDA;
  * </pre>
  * 
  */
-public class GridHyperCube extends WireframeGeometry {
+public class OldGridHyperCube extends WireframeGeometry {
 
 	public GeometryObject3D points;
 	private int maxHeight;
@@ -25,7 +25,7 @@ public class GridHyperCube extends WireframeGeometry {
 	private int layers;
 	private int hyperLayer;
 
-	public GridHyperCube(int rows, int cols, int layers, int hyperLayers, int maxWidth, int maxHeight, int maxDepth) {
+	public OldGridHyperCube(int rows, int cols, int layers, int hyperLayers, int maxWidth, int maxHeight, int maxDepth) {
 //		pointMatrix = new Point3D[layers][rows][cols];
 		pointMatrix = new MDDA<Point3D>(rows, cols, layers, hyperLayers);
 		lineList = new ArrayList<Line>();

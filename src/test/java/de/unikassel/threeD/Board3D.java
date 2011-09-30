@@ -21,7 +21,7 @@ import de.unikassel.ann.model.Synapse;
 import de.unikassel.ann.threeD.model.Point3D;
 import de.unikassel.threeD.geo.Cube;
 import de.unikassel.threeD.geo.GeometryObject3D;
-import de.unikassel.threeD.geo.GridCube;
+import de.unikassel.threeD.geo.OldGridCube;
 import de.unikassel.threeD.geo.WireframeGeometry;
 
 public class Board3D extends JPanel implements Runnable, ActionListener, ChangeListener {
@@ -80,7 +80,7 @@ public class Board3D extends JPanel implements Runnable, ActionListener, ChangeL
 		quader = new Cube(100, 100, 200);
 		cube = new Cube(100, 100, 100);
 		// somVisualisation = new GridHyperCube(dim1, dim2, dim3, dim4, 100, 100, 100);
-		somVisualisation = new GridCube(dim1, dim2, dim3, 200, 200, 200);
+		somVisualisation = new OldGridCube(dim1, dim2, dim3, 200, 200, 200);
 		// somVisualisation = new Plane(dim1, dim2, 100, 100, 100);
 		// somVisualisation = new SimpleLine(dim1, 50, 50, 50);
 

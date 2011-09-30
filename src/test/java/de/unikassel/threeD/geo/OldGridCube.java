@@ -38,7 +38,7 @@ import de.unikassel.mdda.MDDA;
  * </pre>
  * 
  */
-public class GridCube extends WireframeGeometry {
+public class OldGridCube extends WireframeGeometry {
 
 	public GeometryObject3D points;
 	private int maxHeight;
@@ -48,7 +48,7 @@ public class GridCube extends WireframeGeometry {
 	private int rows;
 	private int layers;
 
-	public GridCube(int rows, int cols, int layers, int maxWidth, int maxHeight, int maxDepth) {
+	public OldGridCube(int rows, int cols, int layers, int maxWidth, int maxHeight, int maxDepth) {
 		pointMatrix = new MDDA<Point3D>(rows, cols, layers);
 		lineList = new ArrayList<Line>();
 		points = new GeometryObject3D();
