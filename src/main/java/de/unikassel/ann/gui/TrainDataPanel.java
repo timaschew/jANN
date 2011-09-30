@@ -7,15 +7,18 @@ import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SpinnerNumberModel;
 
+import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.gui.Main.Panel;
+import de.unikassel.ann.model.DataPairSet;
+import de.unikassel.ann.normalize.NormUtil;
 
 public class TrainDataPanel extends JDialog {
 
@@ -24,22 +27,9 @@ public class TrainDataPanel extends JDialog {
 
 	public ButtonGroup buttonGroup = new ButtonGroup();
 
-	public static TrainDataPanel getTrainDataPanelInstance() {
-		if (trainDataPanelInstance == null) {
-			trainDataPanelInstance = new TrainDataPanel();
-		}
-		return trainDataPanelInstance;
-	}
-
 	public JButton btnShowTrainingsdata;
-	public JCheckBox checkBoxInput;
-	public JCheckBox checkBoxOutput;
-	public JSpinner spinnerInputFrom;
-	public JSpinner spinnerInputTo;
-	public JSpinner spinnerOutputFrom;
-	public JSpinner spinnerOutputTo;
-	public JRadioButton rdbtnInvertOutputYes;
-	public JRadioButton rdbtnInvertOutputNo;
+	public JSpinner spinnerMin;
+	public JSpinner spinnerMax;
 	public JButton btnPreviewData;
 	public JButton btnApplyData;
 	public JButton btnCancel;
@@ -47,47 +37,27 @@ public class TrainDataPanel extends JDialog {
 	/**
 	 * Create the frame.
 	 */
-	private TrainDataPanel() {
+	public TrainDataPanel() {
 		setTitle(Settings.i18n.getString("menu.options.trainData"));
 		setModal(true);
-		setSize(350, 270);
+		setSize(295, 190);
 		setResizable(false);
 		setLocationRelativeTo(null);
 
 		JPanel trainingsDatenNormalPanel = new JPanel();
 
-		JLabel lblWhat = new JLabel(Settings.i18n.getString("menu.options.trainData.lblWhat"));
-
 		btnShowTrainingsdata = new JButton(Settings.i18n.getString("menu.options.trainData.btnShowTrainingsdata"));
 
-		JLabel lblNormalize = new JLabel(Settings.i18n.getString("menu.options.trainData.lblNormalize"));
+		JLabel lblMin = new JLabel(Settings.i18n.getString("menu.options.trainData.lblMin"));
 
-		JLabel lblfrom = new JLabel(Settings.i18n.getString("menu.options.trainData.lblfrom"));
+		JLabel lblMax = new JLabel(Settings.i18n.getString("menu.options.trainData.lblMax"));
 
-		JLabel lblUp = new JLabel(Settings.i18n.getString("menu.options.trainData.lblUp"));
+		JLabel lblScale = new JLabel(Settings.i18n.getString("menu.options.trainData.lblScale"));
+		spinnerMin = new JSpinner();
+		spinnerMin.setModel(new SpinnerNumberModel(new Double(0.0), null, null, new Double(0.1)));
 
-		JLabel lblInput = new JLabel(Settings.i18n.getString("menu.options.trainData.lblInput"));
-
-		JLabel lblOutput = new JLabel(Settings.i18n.getString("menu.options.trainData.lblOutput"));
-
-		checkBoxInput = new JCheckBox("");
-		buttonGroup.add(checkBoxInput);
-		checkBoxOutput = new JCheckBox("");
-		buttonGroup.add(checkBoxOutput);
-		spinnerInputFrom = new JSpinner();
-
-		spinnerInputTo = new JSpinner();
-
-		spinnerOutputFrom = new JSpinner();
-
-		spinnerOutputTo = new JSpinner();
-
-		JLabel lblInvertOutput = new JLabel(Settings.i18n.getString("menu.options.trainData.lblInvertOutput"));
-
-		rdbtnInvertOutputYes = new JRadioButton(Settings.i18n.getString("menu.options.trainData.rdbtnInvertOutputYes"));
-		rdbtnInvertOutputYes.setSelected(true);
-
-		rdbtnInvertOutputNo = new JRadioButton(Settings.i18n.getString("menu.options.trainData.rdbtnInvertOutputNo"));
+		spinnerMax = new JSpinner();
+		spinnerMax.setModel(new SpinnerNumberModel(new Double(0), null, null, new Double(0.1)));
 
 		btnPreviewData = new JButton(Settings.i18n.getString("menu.options.trainData.btnPreviewData"));
 
@@ -113,131 +83,69 @@ public class TrainDataPanel extends JDialog {
 																		.addGroup(
 																				gl_trainingsDatenNormalPanel
 																						.createParallelGroup(Alignment.LEADING)
-																						.addGroup(
-																								gl_trainingsDatenNormalPanel
-																										.createSequentialGroup()
-																										.addGroup(
-																												gl_trainingsDatenNormalPanel
-																														.createParallelGroup(
-																																Alignment.LEADING)
-																														.addComponent(
-																																lblInput)
-																														.addComponent(
-																																lblOutput))
-																										.addGap(47)
-																										.addGroup(
-																												gl_trainingsDatenNormalPanel
-																														.createParallelGroup(
-																																Alignment.LEADING)
-																														.addComponent(
-																																checkBoxOutput)
-																														.addComponent(
-																																checkBoxInput)))
-																						.addGroup(
-																								gl_trainingsDatenNormalPanel
-																										.createSequentialGroup()
-																										.addComponent(lblWhat).addGap(41)
-																										.addComponent(lblNormalize))
-																						.addComponent(lblInvertOutput))
-																		.addGap(13)
-																		.addGroup(
-																				gl_trainingsDatenNormalPanel
-																						.createParallelGroup(Alignment.LEADING)
-																						.addComponent(rdbtnInvertOutputYes,
-																								GroupLayout.PREFERRED_SIZE, 46,
-																								GroupLayout.PREFERRED_SIZE)
-																						.addGroup(
-																								gl_trainingsDatenNormalPanel
-																										.createParallelGroup(
-																												Alignment.TRAILING)
-																										.addComponent(spinnerOutputFrom,
-																												GroupLayout.PREFERRED_SIZE,
-																												45,
-																												GroupLayout.PREFERRED_SIZE)
-																										.addComponent(spinnerInputFrom,
-																												GroupLayout.PREFERRED_SIZE,
-																												45,
-																												GroupLayout.PREFERRED_SIZE)
-																										.addComponent(lblfrom)))
+																						.addComponent(btnPreviewData)
+																						.addComponent(lblScale))
+																		.addPreferredGap(ComponentPlacement.UNRELATED)
 																		.addGroup(
 																				gl_trainingsDatenNormalPanel
 																						.createParallelGroup(Alignment.LEADING)
 																						.addGroup(
 																								gl_trainingsDatenNormalPanel
 																										.createSequentialGroup()
-																										.addGap(14)
 																										.addGroup(
 																												gl_trainingsDatenNormalPanel
 																														.createParallelGroup(
 																																Alignment.LEADING)
 																														.addComponent(
-																																spinnerInputTo,
+																																spinnerMin,
 																																GroupLayout.PREFERRED_SIZE,
-																																45,
+																																60,
 																																GroupLayout.PREFERRED_SIZE)
-																														.addComponent(lblUp)
 																														.addComponent(
-																																spinnerOutputTo,
+																																lblMin))
+																										.addPreferredGap(
+																												ComponentPlacement.UNRELATED)
+																										.addGroup(
+																												gl_trainingsDatenNormalPanel
+																														.createParallelGroup(
+																																Alignment.LEADING)
+																														.addComponent(
+																																lblMax)
+																														.addComponent(
+																																spinnerMax,
 																																GroupLayout.PREFERRED_SIZE,
-																																45,
+																																60,
 																																GroupLayout.PREFERRED_SIZE)))
 																						.addGroup(
 																								gl_trainingsDatenNormalPanel
 																										.createSequentialGroup()
+																										.addComponent(btnApplyData)
 																										.addPreferredGap(
 																												ComponentPlacement.UNRELATED)
-																										.addComponent(rdbtnInvertOutputNo))))
-														.addGroup(
-																gl_trainingsDatenNormalPanel.createSequentialGroup()
-																		.addComponent(btnPreviewData)
-																		.addPreferredGap(ComponentPlacement.UNRELATED)
-																		.addComponent(btnApplyData)
-																		.addPreferredGap(ComponentPlacement.UNRELATED)
-																		.addComponent(btnCancel))).addContainerGap(69, Short.MAX_VALUE)));
+																										.addComponent(btnCancel)))))
+										.addContainerGap(6, Short.MAX_VALUE)));
 		gl_trainingsDatenNormalPanel.setVerticalGroup(gl_trainingsDatenNormalPanel.createParallelGroup(Alignment.LEADING).addGroup(
 				gl_trainingsDatenNormalPanel
 						.createSequentialGroup()
-						.addGap(20)
+						.addContainerGap()
 						.addComponent(btnShowTrainingsdata)
-						.addGap(18)
+						.addGap(6)
 						.addGroup(
-								gl_trainingsDatenNormalPanel.createParallelGroup(Alignment.BASELINE).addComponent(lblWhat)
-										.addComponent(lblNormalize).addComponent(lblfrom).addComponent(lblUp))
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addGroup(
-								gl_trainingsDatenNormalPanel
-										.createParallelGroup(Alignment.TRAILING)
-										.addComponent(lblInput)
-										.addComponent(checkBoxInput)
-										.addGroup(
-												gl_trainingsDatenNormalPanel
-														.createParallelGroup(Alignment.BASELINE)
-														.addComponent(spinnerInputFrom, GroupLayout.PREFERRED_SIZE,
-																GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-														.addComponent(spinnerInputTo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-																GroupLayout.PREFERRED_SIZE)))
-						.addPreferredGap(ComponentPlacement.RELATED)
+								gl_trainingsDatenNormalPanel.createParallelGroup(Alignment.BASELINE).addComponent(lblMin)
+										.addComponent(lblMax))
+						.addPreferredGap(ComponentPlacement.RELATED, 6, Short.MAX_VALUE)
 						.addGroup(
 								gl_trainingsDatenNormalPanel
-										.createParallelGroup(Alignment.LEADING)
-										.addGroup(
-												gl_trainingsDatenNormalPanel.createParallelGroup(Alignment.BASELINE)
-														.addComponent(lblOutput).addComponent(checkBoxOutput))
-										.addGroup(
-												gl_trainingsDatenNormalPanel
-														.createParallelGroup(Alignment.BASELINE)
-														.addComponent(spinnerOutputFrom, GroupLayout.PREFERRED_SIZE,
-																GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-														.addComponent(spinnerOutputTo, GroupLayout.PREFERRED_SIZE,
-																GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-						.addGap(18)
-						.addGroup(
-								gl_trainingsDatenNormalPanel.createParallelGroup(Alignment.BASELINE).addComponent(lblInvertOutput)
-										.addComponent(rdbtnInvertOutputYes).addComponent(rdbtnInvertOutputNo))
-						.addGap(18)
+										.createParallelGroup(Alignment.BASELINE)
+										.addComponent(lblScale)
+										.addComponent(spinnerMin, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+												GroupLayout.PREFERRED_SIZE)
+										.addComponent(spinnerMax, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+												GroupLayout.PREFERRED_SIZE))
+						.addGap(32)
 						.addGroup(
 								gl_trainingsDatenNormalPanel.createParallelGroup(Alignment.BASELINE).addComponent(btnPreviewData)
-										.addComponent(btnApplyData).addComponent(btnCancel)).addContainerGap(22, Short.MAX_VALUE)));
+										.addComponent(btnApplyData).addComponent(btnCancel)).addGap(80)));
 		trainingsDatenNormalPanel.setLayout(gl_trainingsDatenNormalPanel);
 		getContentPane().add(trainingsDatenNormalPanel);
 
@@ -256,6 +164,25 @@ public class TrainDataPanel extends JDialog {
 			}
 		});
 
-	}
+		btnApplyData.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				NetConfig net = Settings.getInstance().getCurrentSession().getNetworkConfig();
+				double spiMax = (Double) spinnerMax.getValue();
+				double spiMin = (Double) spinnerMax.getValue();
+				DataPairSet dataPairSet = NormUtil.normalize(net.getTrainingData(), spiMin, spiMax);
+				net.setTrainingData(dataPairSet);
 
+			}
+		});
+
+		btnShowTrainingsdata.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				Main.instance.switchBottomPanel(Panel.TRAIN_DATA_CHART);
+
+			}
+		});
+
+	}
 }
