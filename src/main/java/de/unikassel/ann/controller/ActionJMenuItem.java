@@ -23,12 +23,13 @@ import de.unikassel.ann.gui.ExportSaveFilePanel;
 import de.unikassel.ann.gui.HelpOverview;
 import de.unikassel.ann.gui.ImportFilePanel;
 import de.unikassel.ann.gui.Main;
-import de.unikassel.ann.gui.SOMGui;
 import de.unikassel.ann.gui.Main.Panel;
 import de.unikassel.ann.gui.MainMenu;
+import de.unikassel.ann.gui.SOMGui;
 import de.unikassel.ann.gui.TrainDataCreateDialog;
 import de.unikassel.ann.gui.TrainNormalizationPanel;
 import de.unikassel.ann.model.UserSession;
+import de.unikassel.ann.util.Logger;
 
 /**
  * Menu action item class
@@ -151,6 +152,15 @@ public class ActionJMenuItem extends JMenuItem implements ActionListener {
 			break;
 		case jANN_FUNCTION_OVERVIEW:
 			HelpOverview.createAndShowGUI();
+			break;
+		case INFO_LOGGING_LEVEL:
+			Logger.info(this.getClass(), "INFO-LEVEL");
+			break;
+		case DEBUG_LOGGING_LEVEL:
+			Logger.debug(this.getClass(), "DEBUG-LEVEL");
+			break;
+		case WARN_LOGGING_LEVEL:
+			Logger.warn(this.getClass(), "WARN-LEVEL");
 			break;
 		default:
 			System.out.println("Unknown command: " + action);
