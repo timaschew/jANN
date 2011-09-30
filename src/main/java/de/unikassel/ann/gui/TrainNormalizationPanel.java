@@ -20,24 +20,23 @@ import de.unikassel.ann.gui.Main.Panel;
 import de.unikassel.ann.model.DataPairSet;
 import de.unikassel.ann.normalize.NormUtil;
 
-public class TrainDataPanel extends JDialog {
+public class TrainNormalizationPanel extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	private static TrainDataPanel trainDataPanelInstance;
+	private static TrainNormalizationPanel trainDataPanelInstance;
 
 	public ButtonGroup buttonGroup = new ButtonGroup();
 
 	public JButton btnShowTrainingsdata;
 	public JSpinner spinnerMin;
 	public JSpinner spinnerMax;
-	public JButton btnPreviewData;
 	public JButton btnApplyData;
 	public JButton btnCancel;
 
 	/**
 	 * Create the frame.
 	 */
-	public TrainDataPanel() {
+	public TrainNormalizationPanel() {
 		setTitle(Settings.i18n.getString("menu.options.trainData"));
 		setModal(true);
 		setSize(295, 190);
@@ -53,17 +52,13 @@ public class TrainDataPanel extends JDialog {
 		JLabel lblMax = new JLabel(Settings.i18n.getString("menu.options.trainData.lblMax"));
 
 		JLabel lblScale = new JLabel(Settings.i18n.getString("menu.options.trainData.lblScale"));
-		spinnerMin = new JSpinner();
-		spinnerMin.setModel(new SpinnerNumberModel(new Double(0.0), null, null, new Double(0.1)));
+		spinnerMin = new JSpinner(new SpinnerNumberModel(new Double(-1.0), null, null, new Double(0.1)));
 
-		spinnerMax = new JSpinner();
-		spinnerMax.setModel(new SpinnerNumberModel(new Double(0), null, null, new Double(0.1)));
-
-		btnPreviewData = new JButton(Settings.i18n.getString("menu.options.trainData.btnPreviewData"));
+		spinnerMax = new JSpinner(new SpinnerNumberModel(new Double(1), null, null, new Double(0.1)));
 
 		btnApplyData = new JButton(Settings.i18n.getString("menu.options.trainData.btnApplyData"));
 
-		btnCancel = new JButton(Settings.i18n.getString("menu.options.trainData.btnCancel"));
+		btnCancel = new JButton(Settings.i18n.getString("Schließen"));
 
 		GroupLayout gl_trainingsDatenNormalPanel = new GroupLayout(trainingsDatenNormalPanel);
 		gl_trainingsDatenNormalPanel
@@ -83,9 +78,8 @@ public class TrainDataPanel extends JDialog {
 																		.addGroup(
 																				gl_trainingsDatenNormalPanel
 																						.createParallelGroup(Alignment.LEADING)
-																						.addComponent(btnPreviewData)
-																						.addComponent(lblScale))
-																		.addPreferredGap(ComponentPlacement.UNRELATED)
+																						.addComponent(lblScale).addComponent(btnApplyData))
+																		.addPreferredGap(ComponentPlacement.RELATED)
 																		.addGroup(
 																				gl_trainingsDatenNormalPanel
 																						.createParallelGroup(Alignment.LEADING)
@@ -119,11 +113,9 @@ public class TrainDataPanel extends JDialog {
 																						.addGroup(
 																								gl_trainingsDatenNormalPanel
 																										.createSequentialGroup()
-																										.addComponent(btnApplyData)
-																										.addPreferredGap(
-																												ComponentPlacement.UNRELATED)
+																										.addGap(100)
 																										.addComponent(btnCancel)))))
-										.addContainerGap(6, Short.MAX_VALUE)));
+										.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 		gl_trainingsDatenNormalPanel.setVerticalGroup(gl_trainingsDatenNormalPanel.createParallelGroup(Alignment.LEADING).addGroup(
 				gl_trainingsDatenNormalPanel
 						.createSequentialGroup()
@@ -144,8 +136,8 @@ public class TrainDataPanel extends JDialog {
 												GroupLayout.PREFERRED_SIZE))
 						.addGap(32)
 						.addGroup(
-								gl_trainingsDatenNormalPanel.createParallelGroup(Alignment.BASELINE).addComponent(btnPreviewData)
-										.addComponent(btnApplyData).addComponent(btnCancel)).addGap(80)));
+								gl_trainingsDatenNormalPanel.createParallelGroup(Alignment.BASELINE).addComponent(btnCancel)
+										.addComponent(btnApplyData)).addGap(80)));
 		trainingsDatenNormalPanel.setLayout(gl_trainingsDatenNormalPanel);
 		getContentPane().add(trainingsDatenNormalPanel);
 
@@ -164,15 +156,27 @@ public class TrainDataPanel extends JDialog {
 			}
 		});
 
+		btnShowTrainingsdata.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				Main.instance.switchBottomPanel(Panel.TRAIN_DATA_CHART);
+			}
+		});
+
 		btnApplyData.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				NetConfig net = Settings.getInstance().getCurrentSession().getNetworkConfig();
+				if (net.getTrainingData() == null) {
+					return;
+				}
+
 				double spiMax = (Double) spinnerMax.getValue();
-				double spiMin = (Double) spinnerMax.getValue();
+				double spiMin = (Double) spinnerMin.getValue();
 				DataPairSet dataPairSet = NormUtil.normalize(net.getTrainingData(), spiMin, spiMax);
 				net.setTrainingData(dataPairSet);
-
+				Main.instance.trainingDataChartPanel.updateTrainingData();
+				Main.instance.switchBottomPanel(Panel.TRAIN_DATA_CHART);
 			}
 		});
 

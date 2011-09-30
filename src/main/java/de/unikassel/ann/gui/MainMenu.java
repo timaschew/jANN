@@ -101,9 +101,9 @@ public class MainMenu extends JMenuBar {
 		buttonGroup.add(rdbtnmntmKonsoleAnzeigen);
 		mnAnsicht.add(rdbtnmntmKonsoleAnzeigen);
 
-		JRadioButtonMenuItem radioButtonMenuItem = new JRadioButtonMenuItem("Trainingsdaten anzeigen");
-		buttonGroup.add(radioButtonMenuItem);
-		mnAnsicht.add(radioButtonMenuItem);
+		JRadioButtonMenuItem radioTrainDataChart = new JRadioButtonMenuItem("Trainingsdaten anzeigen");
+		buttonGroup.add(radioTrainDataChart);
+		mnAnsicht.add(radioTrainDataChart);
 
 		JRadioButtonMenuItem rdbtnmntmTrainingsfehlerAnzeigen = new JRadioButtonMenuItem("Training-Chart anzeigen");
 		buttonGroup.add(rdbtnmntmTrainingsfehlerAnzeigen);
@@ -117,7 +117,7 @@ public class MainMenu extends JMenuBar {
 
 		rdbtnmntmKonsoleAnzeigen.addActionListener(new ActionJMenuItem("switch console", Actions.SWITCH_CONSOLE));
 		rdbtnmntmTrainingsfehlerAnzeigen.addActionListener(new ActionJMenuItem("switch train error", Actions.SWITCH_TRAINERROR));
-		rdbtnmntmKonsoleAnzeigen.addActionListener(new ActionJMenuItem("switch train data", Actions.SWITCH_TRAINDATA));
+		radioTrainDataChart.addActionListener(new ActionJMenuItem("switch train data", Actions.SWITCH_TRAINDATA));
 
 		return mnAnsicht;
 	}

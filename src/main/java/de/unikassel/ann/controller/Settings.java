@@ -168,6 +168,9 @@ public class Settings {
 			}
 			Main.instance.mainMenu.subMenuSession.add(mtSession);
 		}
+
+		Main.instance.trainingDataChartPanel.updateTrainingData();
+
 	}
 
 	public void loadNetworkFromFile(final File file) {
