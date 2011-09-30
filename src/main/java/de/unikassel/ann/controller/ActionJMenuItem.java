@@ -20,6 +20,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import de.unikassel.ann.gui.ExportSaveFilePanel;
+import de.unikassel.ann.gui.FunctionOverviewjANN;
 import de.unikassel.ann.gui.ImportFilePanel;
 import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.gui.Main.Panel;
@@ -143,6 +144,9 @@ public class ActionJMenuItem extends JMenuItem implements ActionListener {
 		case CREATE_TRAIN_DATA:
 			TrainDataCreateDialog trainD = new TrainDataCreateDialog();
 			trainD.setVisible(true);
+			break;
+		case jANN_FUNCTION_OVERVIEW:
+			FunctionOverviewjANN.createAndShowGUI();
 			break;
 		default:
 			System.out.println("Unknown command: " + action);
