@@ -18,6 +18,7 @@ import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.func.ActivationFunction;
 import de.unikassel.ann.model.func.SigmoidFunction;
 import de.unikassel.ann.model.func.TanHFunction;
+import de.unikassel.ann.util.FormatHelper;
 import de.unikassel.ann.util.Logger;
 
 public class StandardOptionsPanel extends JPanel {
@@ -118,4 +119,29 @@ public class StandardOptionsPanel extends JPanel {
 		}
 		return activation;
 	}
+
+	public double getInitialWeightMin() {
+		Object minValue = randomInitialWeightSpinnerMin.getValue();
+		double min = FormatHelper.parse2Double(minValue);
+		return min;
+	}
+
+	public double getInitialWeightMax() {
+		Object maxValue = randomInitialWeightSpinnerMax.getValue();
+		double max = FormatHelper.parse2Double(maxValue);
+		return max;
+	}
+
+	public double getRandomInitialWeight() {
+		double min = getInitialWeightMin();
+		double max = getInitialWeightMax();
+		if (min > max) {
+			double temp = min;
+			min = max;
+			max = temp;
+		}
+		double weight = new Double(Math.random()) * Math.abs(min) + Math.abs(max) - Math.abs(min);
+		return weight;
+	}
+
 }

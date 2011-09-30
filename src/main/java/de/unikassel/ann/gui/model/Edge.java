@@ -7,7 +7,6 @@ import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.gui.sidebar.StandardOptionsPanel;
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.Synapse;
-import de.unikassel.ann.util.FormatHelper;
 
 public class Edge {
 
@@ -59,16 +58,7 @@ public class Edge {
 
 		// Get random default weight between min and max defined in the standard options panel in the sidebar.
 		StandardOptionsPanel panel = Main.instance.sidebar.standardOptionsPanel;
-		Object minValue = panel.randomInitialWeightSpinnerMin.getValue();
-		Object maxValue = panel.randomInitialWeightSpinnerMax.getValue();
-		double min = FormatHelper.parse2Double(minValue);
-		double max = FormatHelper.parse2Double(maxValue);
-		if (min > max) {
-			double temp = min;
-			min = max;
-			max = temp;
-		}
-		double weight = new Double(Math.random()) * Math.abs(min) + Math.abs(max) - Math.abs(min);
+		double weight = panel.getRandomInitialWeight();
 		updateWeight(weight);
 	}
 
