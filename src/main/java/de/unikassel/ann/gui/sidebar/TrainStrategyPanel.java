@@ -290,8 +290,8 @@ public class TrainStrategyPanel extends JPanel {
 		 */
 		GroupLayout gl_maxIter = new GroupLayout(maxIter);
 		gl_maxIter.setHorizontalGroup(gl_maxIter.createParallelGroup(Alignment.LEADING).addGroup(
-				gl_maxIter.createSequentialGroup().addContainerGap().addComponent(lblMaxIterations).addGap(73)
-						.addComponent(spinnerMaxIterations, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE).addGap(127)));
+				gl_maxIter.createSequentialGroup().addContainerGap().addComponent(lblMaxIterations).addGap(74)
+						.addComponent(spinnerMaxIterations, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE).addGap(77)));
 		gl_maxIter.setVerticalGroup(gl_maxIter.createParallelGroup(Alignment.LEADING).addGroup(
 				gl_maxIter
 						.createSequentialGroup()
