@@ -13,7 +13,6 @@ import de.unikassel.ann.algo.TrainingModule;
 import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.GraphController;
 import de.unikassel.ann.gui.Main;
-import de.unikassel.ann.gui.chart.ChartTrainingErrorPanel;
 import de.unikassel.ann.model.DataPair;
 import de.unikassel.ann.model.DataPairSet;
 import de.unikassel.ann.util.Logger;
@@ -28,6 +27,8 @@ public class TrainWorker extends SwingWorker<Void, Double> {
 		this.net = net;
 		this.train = train;
 		this.testData = testData;
+
+		Main.instance.trainingErrorChartPanel.createNewSeries();
 	}
 
 	@Override
@@ -38,7 +39,6 @@ public class TrainWorker extends SwingWorker<Void, Double> {
 			set.addPair(pair);
 			train.train(set);
 			Double currentError = train.getCurrentError();
-			System.out.println(currentError);
 			publish(currentError);
 		}
 		Logger.info(this.getClass(), testData.toString());
@@ -50,19 +50,18 @@ public class TrainWorker extends SwingWorker<Void, Double> {
 	@Override
 	protected void process(final List<Double> errorList) {
 		// process is only interested in the last value reported each time, using it to update the GUI
-		System.out.println(errorList);
-		ChartTrainingErrorPanel errorChartPanel = Main.instance.trainingErrorChartPanel;
-		errorChartPanel.createNewSeries();
-
 		for (Double error : errorList) {
-			errorChartPanel.addToCurrentSeries(error);
+			if (error.isNaN()) {
+				continue;
+			}
+			Main.instance.trainingErrorChartPanel.addToCurrentSeries(error);
 		}
 		GraphController.getInstance().repaint();
 	}
 
 	@Override
 	protected void done() {
-		super.done();
+		publish(Double.NaN);
 	}
 
 }
