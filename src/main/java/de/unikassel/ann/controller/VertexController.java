@@ -173,6 +173,9 @@ public class VertexController<V> {
 					factor = (int) (vertex.getValue() + 1) * 50;
 				}
 
+				// Normalize factor
+				factor = factor > 100 ? 100 : factor < 0 ? 0 : factor;
+
 				// Get factor depending color
 				Color color = ColorHelper.numberToColor(factor);
 				color = color.brighter().brighter().brighter();

@@ -55,6 +55,15 @@ public class SelectedSymbolPanel extends JPanel {
 	private JButton btnApplyChanges;
 	private JButton btnDiscardChanges;
 
+	private enum SelectedType {
+		VERTEX, EDGE
+	};
+
+	// Set by the update method of their type in order to call it again on discard
+	private SelectedType lastSelectedType;
+
+	private boolean ignoreChanges;
+
 	/**
 	 * Create the frame.
 	 */
@@ -149,21 +158,14 @@ public class SelectedSymbolPanel extends JPanel {
 		neuroInputBySelectSpinner.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(final ChangeEvent evt) {
+				if (ignoreChanges) {
+					return;
+				}
 				JSpinner spinner = (JSpinner) evt.getSource();
 
 				// Get the new value
 				Double value = FormatHelper.parse2Double(spinner.getValue());
-
-				// Update all selected vertices
-				Set<Vertex> pickedVertices = GraphController.getInstance().getPickedVertices();
-				if (pickedVertices.size() > 0) {
-					for (Vertex vertex : pickedVertices) {
-						if (vertex.getModel().isBias()) {
-							continue;
-						}
-						Network.getNetwork().changeNeuronValue(vertex.getModel(), value);
-					}
-				}
+				changeNeuronValue(value);
 			}
 		});
 
@@ -171,18 +173,14 @@ public class SelectedSymbolPanel extends JPanel {
 		spinnerSynapsWeight.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(final ChangeEvent evt) {
+				if (ignoreChanges) {
+					return;
+				}
 				JSpinner spinner = (JSpinner) evt.getSource();
 
 				// Get the new value
 				Double value = FormatHelper.parse2Double(spinner.getValue());
-
-				// Update all selected egdes
-				Set<Edge> pickedEdges = GraphController.getInstance().getPickedEdges();
-				if (pickedEdges.size() > 0) {
-					for (Edge edge : pickedEdges) {
-						Network.getNetwork().changeSynapseWeight(edge.getModel(), value);
-					}
-				}
+				changeSynapseWeight(value);
 			}
 		});
 
@@ -190,6 +188,9 @@ public class SelectedSymbolPanel extends JPanel {
 		activatedFunctionComboBox.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
+				if (ignoreChanges) {
+					return;
+				}
 				JComboBox combobox = (JComboBox) evt.getSource();
 
 				// Get the selected value
@@ -198,33 +199,103 @@ public class SelectedSymbolPanel extends JPanel {
 				if (value == null || value.isEmpty()) {
 					return;
 				}
-
-				// Add "Function"-suffix to the activation function name if it is missing
-				String activationFunctionName = value;
-				if (activationFunctionName.endsWith(Neuron.functionSuffix) == false) {
-					activationFunctionName += Neuron.functionSuffix;
-				}
-
-				// Update all selected vertices
-				Set<Vertex> pickedVertices = GraphController.getInstance().getPickedVertices();
-				if (pickedVertices.size() > 0) {
-					for (Vertex vertex : pickedVertices) {
-						// Update only if the selected value differs from the current value
-						ActivationFunction activationFunction = vertex.getModel().getActivationFunction();
-						String curFunc = activationFunction != null ? activationFunction.getClass().getSimpleName() : null;
-						if (curFunc.equalsIgnoreCase(activationFunctionName) == false) {
-							Network.getNetwork().changeNeuronActivationFunction(vertex.getModel(), activationFunctionName);
-						}
-					}
-				}
+				changeNeuronActivationFunction(value);
 			}
 		});
+	}
+
+	private void changeNeuronValue(final Double value) {
+		// Update all selected vertices
+		Set<Vertex> pickedVertices = GraphController.getInstance().getPickedVertices();
+		if (pickedVertices.size() > 0) {
+			for (Vertex vertex : pickedVertices) {
+				if (vertex.getModel().isBias()) {
+					continue;
+				}
+				Network.getNetwork().changeNeuronValue(vertex.getModel(), value);
+			}
+		}
+	}
+
+	private void changeSynapseWeight(final Double value) {
+		// Update all selected egdes
+		Set<Edge> pickedEdges = GraphController.getInstance().getPickedEdges();
+		if (pickedEdges.size() > 0) {
+			for (Edge edge : pickedEdges) {
+				Network.getNetwork().changeSynapseWeight(edge.getModel(), value);
+			}
+		}
+	}
+
+	private void changeNeuronActivationFunction(final String value) {
+		// Add "Function"-suffix to the activation function name if it is missing
+		String activationFunctionName = value;
+		if (activationFunctionName.endsWith(Neuron.functionSuffix) == false) {
+			activationFunctionName += Neuron.functionSuffix;
+		}
+
+		// Update all selected vertices
+		Set<Vertex> pickedVertices = GraphController.getInstance().getPickedVertices();
+		if (pickedVertices.size() > 0) {
+			for (Vertex vertex : pickedVertices) {
+				// Update only if the selected value differs from the current value
+				ActivationFunction activationFunction = vertex.getModel().getActivationFunction();
+				String curFunc = activationFunction != null ? activationFunction.getClass().getSimpleName() : null;
+				if (curFunc.equalsIgnoreCase(activationFunctionName) == false) {
+					Network.getNetwork().changeNeuronActivationFunction(vertex.getModel(), activationFunctionName);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Apply the changes made in the input elements to the currently picked symbols.
+	 */
+	private void apply() {
+		// neuroInputBySelectSpinner
+		if (neuroInputBySelectSpinner.isEnabled()) {
+			Double value = FormatHelper.parse2Double(neuroInputBySelectSpinner.getValue());
+			changeNeuronValue(value);
+		}
+
+		// spinnerSynapsWeight
+		if (spinnerSynapsWeight.isEnabled()) {
+			Double value = FormatHelper.parse2Double(spinnerSynapsWeight.getValue());
+			changeSynapseWeight(value);
+		}
+
+		// activatedFunctionComboBox
+		if (activatedFunctionComboBox.isEditable()) {
+			Object selectedItem = activatedFunctionComboBox.getSelectedItem();
+			String value = selectedItem != null ? selectedItem.toString() : null;
+			if (value != null && value.isEmpty() == false) {
+				changeNeuronActivationFunction(value);
+			}
+		}
+	}
+
+	/**
+	 * Discard the changes made in the input elements and (re)set the values of the currently picked symbols.
+	 */
+	private void discard() {
+		GraphController graphController = GraphController.getInstance();
+		switch (lastSelectedType) {
+		case VERTEX:
+			updateVertex(graphController.getPickedVertices());
+			break;
+		case EDGE:
+			updateEdge(graphController.getPickedEdges());
+			break;
+		default:
+			break;
+		}
 	}
 
 	/**
 	 * Reset the panel and disable all elements.
 	 */
 	public void reset() {
+		ignoreChanges = true;
 		fieldSelected.setText(null);
 
 		HashSet<Integer> disableIndex = new HashSet<Integer>();
@@ -292,7 +363,7 @@ public class SelectedSymbolPanel extends JPanel {
 			if (refValue == null) {
 				// There's at least one value so set the reference value and set the show flag to true
 				refValue = value;
-				showFunc = true;
+				showValue = true;
 			}
 			// Show value only when all values are the same
 			showValue &= refValue.equals(value);
@@ -303,6 +374,10 @@ public class SelectedSymbolPanel extends JPanel {
 		} else {
 			neuroInputBySelectSpinner.setValue(0);
 		}
+
+		// Store in order to know on discard which update to call
+		lastSelectedType = SelectedType.VERTEX;
+		ignoreChanges = false;
 	}
 
 	/**
@@ -339,6 +414,10 @@ public class SelectedSymbolPanel extends JPanel {
 		} else {
 			spinnerSynapsWeight.setValue(0);
 		}
+
+		// Store in order to know on discard which update to call
+		lastSelectedType = SelectedType.EDGE;
+		ignoreChanges = false;
 	}
 
 	/*
