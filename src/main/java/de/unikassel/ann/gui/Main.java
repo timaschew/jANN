@@ -97,6 +97,7 @@ public class Main {
 	 */
 	private Main() {
 		instance = this;
+
 		try {
 			// Set look and feel by the properties file
 			String lookAndFeel = Settings.properties.getProperty("gui.lookandfeel");
@@ -110,12 +111,14 @@ public class Main {
 		} catch (IllegalAccessException e) {
 			// handle exception
 		}
+
 		redirectSystemStreams();
 		Logger.init();
 		Logger.debug(this.getClass(), "logging debug");
 		Logger.info(this.getClass(), "initializing app...");
 		Logger.warn(this.getClass(), "test");
 		Logger.error(this.getClass(), "BOOOM!");
+
 		initialize();
 		initialized = true;
 		Logger.info(this.getClass(), "initializing finished at {}", new Date().toString());

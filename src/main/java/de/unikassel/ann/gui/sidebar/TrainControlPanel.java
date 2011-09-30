@@ -20,6 +20,7 @@ import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.model.DataPairSet;
+import de.unikassel.ann.util.Logger;
 
 public class TrainControlPanel extends JPanel {
 
@@ -180,7 +181,7 @@ public class TrainControlPanel extends JPanel {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				NetConfig net = Settings.getInstance().getCurrentSession().getNetworkConfig();
-				System.out.println("training started");
+				Logger.info(this.getClass(), "training started");
 				if (net.getTrainingData() == null) {
 					JFrame frame = new JFrame();
 					JOptionPane.showMessageDialog(frame, "Es existieren keine Trainingsdaten ", "Warnung", JOptionPane.WARNING_MESSAGE);
@@ -194,9 +195,9 @@ public class TrainControlPanel extends JPanel {
 					train.setLearnRate(learnRate);
 					train.setMomentum(momentum);
 					train.train(net.getTrainingData());
-					System.out.println("training finished");
+					Logger.info(this.getClass(), "training finished");
 					net.getWorkingModule().work(net.getNetwork(), testData);
-					System.out.println(testData);
+					Logger.info(this.getClass(), testData.toString());
 				}
 
 			}

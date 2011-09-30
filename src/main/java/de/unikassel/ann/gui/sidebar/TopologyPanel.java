@@ -25,6 +25,7 @@ import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.GraphController;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.model.Layer;
+import de.unikassel.ann.util.Logger;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse.Mode;
 
 public class TopologyPanel extends JPanel implements PropertyChangeListener {
@@ -493,8 +494,7 @@ public class TopologyPanel extends JPanel implements PropertyChangeListener {
 				mouseOutputRB.setEnabled(false);
 			}
 		}
-
-		System.out.println(netConfig.getNetwork().getLayers());
+		Logger.debug(this.getClass(), netConfig.getNetwork().getLayers().toString());
 
 	}
 

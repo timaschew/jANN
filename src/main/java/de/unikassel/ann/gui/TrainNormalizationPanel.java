@@ -160,6 +160,7 @@ public class TrainNormalizationPanel extends JDialog {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				Main.instance.switchBottomPanel(Panel.TRAIN_DATA_CHART);
+				// Logger.switchBottomPanel(Panel.TRAIN_DATA_CHART);
 			}
 		});
 
@@ -177,6 +178,7 @@ public class TrainNormalizationPanel extends JDialog {
 				net.setTrainingData(dataPairSet);
 				Main.instance.trainingDataChartPanel.updateTrainingData();
 				Main.instance.switchBottomPanel(Panel.TRAIN_DATA_CHART);
+				// Logger.switchBottomPanel(Panel.TRAIN_DATA_CHART);
 			}
 		});
 
@@ -184,7 +186,7 @@ public class TrainNormalizationPanel extends JDialog {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				Main.instance.switchBottomPanel(Panel.TRAIN_DATA_CHART);
-
+				// Logger.switchBottomPanel(Panel.TRAIN_DATA_CHART);
 			}
 		});
 

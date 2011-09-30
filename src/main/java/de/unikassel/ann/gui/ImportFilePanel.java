@@ -22,6 +22,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.io.NetIO;
+import de.unikassel.ann.util.Logger;
 
 public class ImportFilePanel extends JDialog {
 
@@ -251,7 +252,7 @@ public class ImportFilePanel extends JDialog {
 					trainigDataCB.setSelected(true);
 				}
 			} catch (Exception e1) {
-				e1.printStackTrace();
+				Logger.error(this.getClass(), "Die Datei könnte nicht importiert werden, Grund: {}", e1.getMessage());
 			}
 
 		}

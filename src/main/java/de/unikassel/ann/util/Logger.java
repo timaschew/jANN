@@ -125,5 +125,4 @@ public class Logger {
 	public static void error(final Class<?> clazz, final String message) {
 		log(clazz, ERROR, message);
 	}
-
 }

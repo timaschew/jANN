@@ -8,11 +8,12 @@
 package de.unikassel.ann.gui.sidebar;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -29,20 +30,13 @@ import de.unikassel.ann.util.Logger;
  */
 public class WorkPanel extends JPanel implements PropertyChangeListener, ChangeListener {
 
-	// public static void main(final String[] args) {
-	// ManualTestTrain test = new ManualTestTrain();
-	// JFrame frame = new JFrame();
-	// frame.add(test);
-	// frame.setVisible(true);
-	// }
 	public static WorkPanel instance = new WorkPanel();
 	private Integer inputs;
 
 	public WorkPanel() {
 
-		setBorder(new TitledBorder(null, "Manueller Test", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		setPreferredSize(new Dimension(400, 342));
-		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		setBorder(new TitledBorder(null, Settings.i18n.getString("workpanel.titel"), TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		setLayout(new GridLayout());
 
 	}
 
@@ -53,40 +47,37 @@ public class WorkPanel extends JPanel implements PropertyChangeListener, ChangeL
 	public void updateWorkPanel() {
 		inputs = Settings.getInstance().getCurrentSession().getNetworkConfig().getNetwork().getInputSizeIgnoringBias();
 		System.out.println("inputs " + inputs);
-
-		//
-		// JPanel textfields = new JPanel();
-		// textfields.setLayout(new BoxLayout(textfields, BoxLayout.Y_AXIS));
-		// add(textfields, BorderLayout.EAST);
-
 		if (inputs == 0) {
 			JLabel label = new JLabel("Es existieren keine Input Neuronen");
 			add(label, BorderLayout.CENTER);
 		}
 
-		// GroupLayout layout = new GroupLayout(this);
-		// setLayout(layout);
-		// layout.setAutoCreateGaps(true);
-		// layout.setAutoCreateContainerGaps(true);
+		JPanel inputsP = new JPanel(new GridLayout(0, 1, 20, 20));
+		JPanel fieldsP = new JPanel(new GridLayout(0, 1, 20, 20));
 
 		removeAll();
-		for (int i = 1; i <= inputs; i++) {
-			JPanel inputsP = new JPanel();
-			inputsP.setLayout(new BoxLayout(inputsP, BoxLayout.Y_AXIS));
-			add(inputsP, BorderLayout.WEST);
-			JLabel label = new JLabel("Input" + i);
-			label.setAlignmentY(BOTTOM_ALIGNMENT);
-			JTextField field = new JTextField(10);
-			field.setAlignmentY(BOTTOM_ALIGNMENT);
-			System.out.println("drin");
-			inputsP.add(label);
-			inputsP.add(field);
 
+		for (int i = 1; i <= inputs; i++) {
+
+			JLabel label = new JLabel(Settings.i18n.getString("workpanel.lblInput") + i);
+			inputsP.add(label);
+			JTextField field = new JTextField(10);
+			fieldsP.add(field);
+
+			add(inputsP);
+			add(fieldsP);
 			inputsP.revalidate();
+			fieldsP.revalidate();
 			validate();
 			repaint();
 
 		}
+
+		JCheckBox normalizeData = new JCheckBox(Settings.i18n.getString("workpanel.normalizeCB"));
+		inputsP.add(normalizeData);
+
+		JButton applyData = new JButton(Settings.i18n.getString("workpanel.btnApplyData"));
+		fieldsP.add(applyData);
 
 	}
 

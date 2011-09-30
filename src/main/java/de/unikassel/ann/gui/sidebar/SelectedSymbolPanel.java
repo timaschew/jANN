@@ -28,8 +28,6 @@ import javax.swing.KeyStroke;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import de.unikassel.ann.controller.GraphController;
 import de.unikassel.ann.controller.Settings;
@@ -110,12 +108,15 @@ public class SelectedSymbolPanel extends JPanel {
 						.addContainerGap()
 						.addGroup(
 								gl_SelectedSymbolPanel.createParallelGroup(Alignment.LEADING).addComponent(lblActivationFunction)
-										.addComponent(lblNeuroInput).addComponent(lblSelected).addComponent(lblSynapseWeight))
+										.addComponent(lblNeuroInput).addComponent(lblSelected).addComponent(lblSynapseWeight)
+										.addComponent(btnApplyChanges))
 						.addGap(41)
 						.addGroup(
 								gl_SelectedSymbolPanel.createParallelGroup(Alignment.TRAILING, false).addComponent(fieldSelected)
 										.addComponent(activatedFunctionComboBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-										.addComponent(spinnerSynapsWeight).addComponent(neuroInputBySelectSpinner)).addGap(62)));
+										.addComponent(spinnerSynapsWeight).addComponent(neuroInputBySelectSpinner)
+										.addComponent(btnDiscardChanges))));
+
 		gl_SelectedSymbolPanel.setVerticalGroup(gl_SelectedSymbolPanel.createParallelGroup(Alignment.LEADING).addGroup(
 				gl_SelectedSymbolPanel
 						.createSequentialGroup()
@@ -143,6 +144,13 @@ public class SelectedSymbolPanel extends JPanel {
 										.createParallelGroup(Alignment.BASELINE)
 										.addComponent(lblActivationFunction)
 										.addComponent(activatedFunctionComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+												GroupLayout.PREFERRED_SIZE))
+						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addGroup(
+								gl_SelectedSymbolPanel
+										.createParallelGroup(Alignment.BASELINE)
+										.addComponent(btnApplyChanges)
+										.addComponent(btnDiscardChanges, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 												GroupLayout.PREFERRED_SIZE)).addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 		setLayout(gl_SelectedSymbolPanel);
 
@@ -154,52 +162,19 @@ public class SelectedSymbolPanel extends JPanel {
 	 * Bind action listener to the elements of this panel.
 	 */
 	private void initActions() {
-		// neuroInputBySelectSpinner
-		neuroInputBySelectSpinner.addChangeListener(new ChangeListener() {
-			@Override
-			public void stateChanged(final ChangeEvent evt) {
-				if (ignoreChanges) {
-					return;
-				}
-				JSpinner spinner = (JSpinner) evt.getSource();
 
-				// Get the new value
-				Double value = FormatHelper.parse2Double(spinner.getValue());
-				changeNeuronValue(value);
-			}
-		});
-
-		// spinnerSynapsWeight
-		spinnerSynapsWeight.addChangeListener(new ChangeListener() {
-			@Override
-			public void stateChanged(final ChangeEvent evt) {
-				if (ignoreChanges) {
-					return;
-				}
-				JSpinner spinner = (JSpinner) evt.getSource();
-
-				// Get the new value
-				Double value = FormatHelper.parse2Double(spinner.getValue());
-				changeSynapseWeight(value);
-			}
-		});
-
-		// activatedFunctionComboBox
-		activatedFunctionComboBox.addActionListener(new ActionListener() {
+		btnApplyChanges.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
-				if (ignoreChanges) {
-					return;
-				}
-				JComboBox combobox = (JComboBox) evt.getSource();
+				apply();
+			}
+		});
 
-				// Get the selected value
-				Object selectedItem = combobox.getSelectedItem();
-				String value = selectedItem != null ? selectedItem.toString() : null;
-				if (value == null || value.isEmpty()) {
-					return;
-				}
-				changeNeuronActivationFunction(value);
+		btnDiscardChanges.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				discard();
+
 			}
 		});
 	}

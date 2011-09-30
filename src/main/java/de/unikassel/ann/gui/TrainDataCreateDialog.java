@@ -12,17 +12,25 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.InputStream;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.text.DefaultEditorKit;
 
 import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.Settings;
@@ -72,6 +80,8 @@ public class TrainDataCreateDialog extends JDialog {
 		final JTextArea userDataArea = new JTextArea();
 		userDataArea.setLineWrap(true);
 		userDataArea.setWrapStyleWord(true);
+
+		copyPasteActionsForTextArea(userDataArea);
 
 		JLabel lblInfo = new JLabel(Settings.i18n.getString("trainDataCreateDialog.lblInfo"));
 		JTextArea firstLineArea = new JTextArea();
@@ -147,6 +157,25 @@ public class TrainDataCreateDialog extends JDialog {
 
 	}
 
+	/**
+	 * @param userDataArea
+	 */
+	private void copyPasteActionsForTextArea(final JTextArea userDataArea) {
+		JPopupMenu copyPaste = new JPopupMenu();
+		JMenuItem copyItem = new JMenuItem(new DefaultEditorKit.CopyAction());
+		copyItem.setText(Settings.i18n.getString("trainDataCreateDialog.copy"));
+		copyItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
+
+		JMenuItem pasteItem = new JMenuItem(new DefaultEditorKit.PasteAction());
+		pasteItem.setText(Settings.i18n.getString("trainDataCreateDialog.paste"));
+		pasteItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK));
+		copyPaste.add(copyItem);
+		copyPaste.add(pasteItem);
+
+		MouseListener popupListener = new PopupListener(copyPaste);
+		userDataArea.addMouseListener(popupListener);
+	}
+
 	public InputStream writeAreaTextToInputStream(final JTextArea textArea) {
 		return new InputStream() {
 
@@ -163,6 +192,31 @@ public class TrainDataCreateDialog extends JDialog {
 				return s.charAt(inPtr - 1);
 			}
 		};
+	}
+
+	// MouseListener for Copy and Paste Action
+	class PopupListener extends MouseAdapter {
+		JPopupMenu popup;
+
+		PopupListener(final JPopupMenu popupMenu) {
+			popup = popupMenu;
+		}
+
+		@Override
+		public void mousePressed(final MouseEvent e) {
+			maybeShowPopup(e);
+		}
+
+		@Override
+		public void mouseReleased(final MouseEvent e) {
+			maybeShowPopup(e);
+		}
+
+		private void maybeShowPopup(final MouseEvent e) {
+			if (e.isPopupTrigger()) {
+				popup.show(e.getComponent(), e.getX(), e.getY());
+			}
+		}
 	}
 
 }

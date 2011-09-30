@@ -21,6 +21,7 @@ import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.func.ActivationFunction;
 import de.unikassel.ann.model.func.SigmoidFunction;
 import de.unikassel.ann.model.func.TanHFunction;
+import de.unikassel.ann.util.Logger;
 
 public class StandardOptionsPanel extends JPanel {
 
@@ -157,7 +158,8 @@ public class StandardOptionsPanel extends JPanel {
 			clazz = Class.forName(Neuron.functionPackage + "." + activationFunctionName);
 			activation = (ActivationFunction) clazz.newInstance();
 		} catch (Exception e) {
-			System.err.println("could not instantiate function with name: " + activationFunctionName);
+			Logger.error(this.getClass(),
+					"could not instantiate function with name: " + activationFunctionName + "reason{} " + e.getMessage());
 		}
 		return activation;
 	}

@@ -132,12 +132,15 @@ public class ActionJMenuItem extends JMenuItem implements ActionListener {
 			break;
 
 		case SWITCH_CONSOLE:
+			// Logger.switchBottomPanel(Panel.CONSOLE);
 			Main.instance.switchBottomPanel(Panel.CONSOLE);
 			break;
 		case SWITCH_TRAINDATA:
+			// Logger.switchBottomPanel(Panel.TRAIN_DATA_CHART);
 			Main.instance.switchBottomPanel(Panel.TRAIN_DATA_CHART);
 			break;
 		case SWITCH_TRAINERROR:
+			// Logger.switchBottomPanel(Panel.TRAINERROR_CHART);
 			Main.instance.switchBottomPanel(Panel.TRAINERROR_CHART);
 			break;
 		case NONE:
