@@ -27,6 +27,7 @@ import de.unikassel.ann.gui.Main.Panel;
 import de.unikassel.ann.gui.MainMenu;
 import de.unikassel.ann.gui.TrainDataCreateDialog;
 import de.unikassel.ann.gui.TrainNormalizationPanel;
+import de.unikassel.ann.gui.sidebar.SOMGui;
 import de.unikassel.ann.model.UserSession;
 
 /**
@@ -121,10 +122,11 @@ public class ActionJMenuItem extends JMenuItem implements ActionListener {
 			loadNetworkFromFile("2-bit-addierer");
 			break;
 		case BACKPROPAGATION_VIEW:
-			Main.instance.addBackproSidebarPanel();
+			// Main.instance.addBackproSidebarPanel();
 			break;
 		case SOM_VIEW:
-			Main.instance.addSOMSidebarPanel();
+			// Main.instance.addSOMSidebarPanel();
+			SOMGui.createAndShowGui();
 			break;
 		case NORMALIZE_TRAIN_DATA:
 			TrainNormalizationPanel trainData = new TrainNormalizationPanel();
@@ -140,7 +142,11 @@ public class ActionJMenuItem extends JMenuItem implements ActionListener {
 		case SWITCH_TRAINERROR:
 			Main.instance.switchBottomPanel(Panel.TRAINERROR_CHART);
 			break;
+		case CLEAR_CONSOLE:
+			Main.instance.clearConsole();
+			break;
 		case NONE:
+			break;
 		case CREATE_TRAIN_DATA:
 			TrainDataCreateDialog trainD = new TrainDataCreateDialog();
 			trainD.setVisible(true);

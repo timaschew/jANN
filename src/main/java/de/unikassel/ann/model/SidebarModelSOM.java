@@ -7,14 +7,11 @@
  */
 package de.unikassel.ann.model;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.unikassel.ann.controller.ActionControllerSOM;
-import de.unikassel.ann.controller.Actions;
 
 /**
  * @author Sofia
@@ -37,7 +34,6 @@ public class SidebarModelSOM {
 	public SidebarModelSOM() {
 		pcs = new PropertyChangeSupport(this);
 		outputNeuronsInDimension = new ArrayList<Integer>();
-		initChangeListener();
 		ac = ActionControllerSOM.get();
 	}
 
@@ -115,19 +111,6 @@ public class SidebarModelSOM {
 		String oldValue = this.pattern;
 		this.pattern = pattern;
 		pcs.firePropertyChange(PSom.pattern.name(), oldValue, pattern);
-	}
-
-	/**
-	 * 
-	 */
-	private void initChangeListener() {
-		pcs.addPropertyChangeListener(new PropertyChangeListener() {
-			@Override
-			public void propertyChange(final PropertyChangeEvent evt) {
-				ac.doActionSOM(Actions.UPDATE_SIDEBAR_TOPOLOGYSOM_VIEW, evt);
-			}
-		});
-
 	}
 
 }

@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
@@ -18,7 +16,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.WindowConstants;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.Style;
@@ -75,7 +73,6 @@ public class Main {
 	private JTextPane textPaneSOM;
 	private JPanel jungPanel;
 	private JSplitPane jungConsoleSplitPane;
-	private JSplitPane _3DBoardSplitPane;
 	private JPanel consolePanel;
 	private JPanel consolePanelSOM;
 	private boolean initialized = false;
@@ -87,7 +84,6 @@ public class Main {
 	public Sidebar sidebar;
 	public JSplitPane mainSplitPane;
 	public SidebarSOM sidebarSom;
-	public JPanel _3DBoardPane;
 	public JPanel consoleOrChartPanel;
 	public ChartTrainingErrorPanel trainingErrorChartPanel;
 	public ChartTrainingDataPanel trainingDataChartPanel;
@@ -97,21 +93,15 @@ public class Main {
 	 */
 	private Main() {
 		instance = this;
+		Logger.init();
 		try {
 			// Set look and feel by the properties file
 			String lookAndFeel = Settings.properties.getProperty("gui.lookandfeel");
 			UIManager.setLookAndFeel(lookAndFeel);
-		} catch (UnsupportedLookAndFeelException e) {
-			// handle exception
-		} catch (ClassNotFoundException e) {
-			// handle exception
-		} catch (InstantiationException e) {
-			// handle exception
-		} catch (IllegalAccessException e) {
-			// handle exception
+		} catch (Exception e) {
+			Logger.info(this.getClass(), "Look&Feel auf Defaultwert gesetzt: {} ", UIManager.getLookAndFeel().getName());
 		}
-		redirectSystemStreams();
-		Logger.init();
+
 		Logger.debug(this.getClass(), "logging debug");
 		Logger.info(this.getClass(), "initializing app...");
 		Logger.warn(this.getClass(), "test");
@@ -157,7 +147,7 @@ public class Main {
 		//
 		frame = new JFrame();
 		frame.setBounds(100, 100, 1060, 600); // statt 800 1060
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
 		//
 		// Main Menu(Bar)
@@ -208,15 +198,6 @@ public class Main {
 		JScrollPane scrollPanes = new JScrollPane(textPaneSOM);
 		consolePanelSOM.add(scrollPanes, BorderLayout.CENTER);
 
-		_3DBoardSplitPane = new JSplitPane();
-		_3DBoardPane = new JPanel(new BorderLayout());
-		_3DBoardSplitPane.setContinuousLayout(true);
-		_3DBoardSplitPane.setDividerLocation(400);
-		_3DBoardSplitPane.setBorder(BorderFactory.createEmptyBorder());
-		_3DBoardSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-		_3DBoardSplitPane.setRightComponent(consolePanelSOM);
-		_3DBoardSplitPane.setLeftComponent(_3DBoardPane);
-
 		mainSplitPane.setLeftComponent(jungConsoleSplitPane);
 		mainSplitPane.setContinuousLayout(true);
 		mainSplitPane.setDividerLocation(600);
@@ -253,33 +234,7 @@ public class Main {
 		mainSplitPane.setRightComponent(sidebar);
 	}
 
-	/**
-	 * add the SOM sidebar panel for menu "options" to the Mainsplitpane and remove the sidebar for backpropagation
-	 */
-	public void addSOMSidebarPanel() {
-		sidebarSom = new SidebarSOM();
-		sidebarSom.setMinimumSize(new Dimension(430, 50));
-		textPaneSOM.removeAll();
-		mainSplitPane.removeAll();
-		mainSplitPane.setRightComponent(sidebarSom);
-		mainSplitPane.setLeftComponent(_3DBoardSplitPane);
-
-	}
-
-	/**
-	 * add the Backprop. sidebar for the menu "options" to the Main-splitPane and remove the Som
-	 */
-	public void addBackproSidebarPanel() {
-		sidebar = new Sidebar();
-		// Provide minimum sizes for the components in the split pane
-		sidebar.setMinimumSize(new Dimension(435, 50));
-		textPane.removeAll();
-		mainSplitPane.removeAll();
-		mainSplitPane.setRightComponent(sidebar);
-		mainSplitPane.setLeftComponent(jungConsoleSplitPane);
-	}
-
-	private void updateTextArea(final String text) {
+	public void updateTextArea(final String text) {
 		updateTextArea(text, "regular");
 	}
 
@@ -329,47 +284,11 @@ public class Main {
 
 	}
 
-	private void redirectSystemStreams() {
-		OutputStream out = new OutputStream() {
-			@Override
-			public void write(final int b) throws IOException {
-				updateTextArea(String.valueOf((char) b));
-			}
-
-			@Override
-			public void write(final byte[] b, final int off, final int len) throws IOException {
-				updateTextArea(new String(b, off, len));
-			}
-
-			@Override
-			public void write(final byte[] b) throws IOException {
-				write(b, 0, b.length);
-			}
-		};
-
-		OutputStream errorOut = new OutputStream() {
-			@Override
-			public void write(final int b) throws IOException {
-				updateTextArea(String.valueOf((char) b), "error");
-			}
-
-			@Override
-			public void write(final byte[] b, final int off, final int len) throws IOException {
-				updateTextArea(new String(b, off, len), "error");
-			}
-
-			@Override
-			public void write(final byte[] b) throws IOException {
-				write(b, 0, b.length);
-			}
-		};
-
-		// if (Settings.properties.get("redirect.std.out").equals("1")) {
-		// System.setOut(new PrintStream(out, true));
-		// // }
-		// if (Settings.properties.get("redirect.std.err").equals("1")) {
-		// System.setErr(new PrintStream(errorOut, true));
-		// }
+	/**
+	 * 
+	 */
+	public void clearConsole() {
+		textPane.setText("");
 
 	}
 
