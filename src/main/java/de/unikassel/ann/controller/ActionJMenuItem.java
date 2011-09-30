@@ -26,7 +26,7 @@ import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.gui.Main.Panel;
 import de.unikassel.ann.gui.MainMenu;
 import de.unikassel.ann.gui.TrainDataCreateDialog;
-import de.unikassel.ann.gui.TrainDataPanel;
+import de.unikassel.ann.gui.TrainNormalizationPanel;
 import de.unikassel.ann.model.UserSession;
 
 /**
@@ -127,7 +127,7 @@ public class ActionJMenuItem extends JMenuItem implements ActionListener {
 			Main.instance.addSOMSidebarPanel();
 			break;
 		case NORMALIZE_TRAIN_DATA:
-			TrainDataPanel trainData = new TrainDataPanel();
+			TrainNormalizationPanel trainData = new TrainNormalizationPanel();
 			trainData.setVisible(true);
 			break;
 

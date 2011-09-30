@@ -7,6 +7,7 @@ import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.model.Network;
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.Synapse;
+import de.unikassel.ann.model.func.ActivationFunction;
 
 public class Vertex implements Comparable<Vertex> {
 
@@ -23,14 +24,11 @@ public class Vertex implements Comparable<Vertex> {
 	 * Constructor
 	 */
 	public Vertex() {
-		// TODO get activateFunction
-		String activateFunc = "SigmoidFunction";
-
-		// TODO bias enabled?
-		boolean bias = false;
+		// Get the activateFunction
+		ActivationFunction activateFunction = Network.getNetwork().getStandardFunction();
 
 		// Create model
-		model = new Neuron(activateFunc, bias);
+		model = new Neuron(activateFunction, false);
 	}
 
 	public void setIndex(final int index) {
@@ -61,7 +59,7 @@ public class Vertex implements Comparable<Vertex> {
 	}
 
 	public void setValue(final Double value) {
-		model.setOutputValue(value);
+		model.setValue(value);
 	}
 
 	public Double getValue() {
@@ -110,23 +108,11 @@ public class Vertex implements Comparable<Vertex> {
 			}
 		}
 		return null;
-		//
-		// List<Synapse> outgoingSynapses = getModel().getOutgoingSynapses();
-		// Neuron toVertexModel = toVertex.getModel();
-		//
-		// // Get the synapse for this -> toVertex
-		// for (Synapse synapse : outgoingSynapses) {
-		// boolean isFromThis = synapse.getFromNeuron().getId() == getModel().getId();
-		// boolean isToVertex = synapse.getToNeuron().getId() == toVertexModel.getId();
-		// boolean isValidSynapse = toVertexModel.getIncomingSynapses().contains(synapse);
-		// if (isFromThis && isToVertex && isValidSynapse) {
-		// return synapse;
-		// }
-		// }
-		// return null;
 	}
 
 	/**
+	 * Returns whether the vertex may have an edge to the target vertex.
+	 * 
 	 * @param toVertex
 	 * @return
 	 */
@@ -137,7 +123,11 @@ public class Vertex implements Comparable<Vertex> {
 
 		// The neurons do not have to be connected already
 		if (hasEdgeTo(toVertex)) {
-			System.out.println(this + " hasEdgeTo " + toVertex);
+			return false;
+		}
+
+		// Avoid incoming synapses to a bias
+		if (toVertex.getModel().isBias()) {
 			return false;
 		}
 

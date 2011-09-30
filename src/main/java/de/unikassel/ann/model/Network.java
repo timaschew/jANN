@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import de.unikassel.ann.config.NetConfig;
+import de.unikassel.ann.controller.GraphController;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.io.beans.SynapseBean;
@@ -154,10 +155,51 @@ public class Network extends BasicNetwork {
 				if (layer.equals(getInputLayer())) {
 					pcs.firePropertyChange(PropertyChanges.INPUT_NEURON.name(), size, size - 1);
 				}
-				return;
+				// Finish here cause a neuron is unique
+				break;
 			}
 		}
 
+		// Remove empty layers when possible (e.g. do not remove the input or output layer if there is at least one hidden layer)
+		if (layer.getNeurons().size() == 0) {
+			// Layer is empty!
+			System.out.println(layer.getIndex() + " is empty");
+
+			if (GraphController.getInstance().isLayerHidden(layer)) {
+				// It's a hidden layer!
+				System.out.println(layer.getIndex() + " is a hidden layer");
+
+				if (layer.getIndex() == layers.size() - 2) {
+					// It's the last hidden layer!
+					System.out.println(layer.getIndex() + " is the last hidden layer");
+
+					int oldValue = layers.size() - 2;
+					layers.remove(layer);
+
+					// shift the index attribute of the output layer
+					Layer outputLayer = layers.get(layers.size() - 1);
+					outputLayer.setIndex(layers.size() - 1);
+
+					pcs.firePropertyChange(PropertyChanges.NEURONS.name(), oldValue, layers.size() - 2);
+				}
+			} else {
+				// It's an input or output layer!
+				if (layers.size() <= 2) {
+					// There is no hidden layer!
+					System.out.println("there is no hidden layer anymore");
+					if (layer.getIndex() == 0) {
+						// Input layer
+						System.out.println(layer.getIndex() + " is the input layer");
+					} else if (layer.getIndex() == 1) {
+						// // Output layer
+						System.out.println(layer.getIndex() + " is the output layer");
+					} else {
+						// WTF?
+						System.out.println(layer.getIndex() + " WTF what kind of layer are you???");
+					}
+				}
+			}
+		}
 	}
 
 	public void addInputNeuron() {
@@ -348,6 +390,10 @@ public class Network extends BasicNetwork {
 		if (layerSize < 1) {
 			return;
 		}
+
+		// For the case that we have no input and/or output neuron
+		System.out.println("setHiddenLayerSize(" + layerIndex + ", " + layerSize + ")");
+
 		ActivationFunction function = getStandardFunction();
 		// add only, if the layer already exist
 		// -1 because the the 2nd operand is index, not size
@@ -366,6 +412,42 @@ public class Network extends BasicNetwork {
 
 	public void removeSynapse(final Synapse synapse) {
 		synapseSet.remove(synapse);
+	}
+
+	/**
+	 * Change the value of a neuron.
+	 * 
+	 * @param neuron
+	 * @param value
+	 */
+	public void changeNeuronValue(final Neuron neuron, final Double value) {
+		Double oldValue = neuron.getValue();
+		neuron.setValue(value);
+		pcs.firePropertyChange(PropertyChanges.NEURONS.name(), oldValue, value);
+	}
+
+	/**
+	 * Change the weight of a synapse.
+	 * 
+	 * @param synapse
+	 * @param weight
+	 */
+	public void changeSynapseWeight(final Synapse synapse, final Double weight) {
+		Double oldWeight = synapse.getWeight();
+		synapse.setWeight(weight);
+		pcs.firePropertyChange(PropertyChanges.SYNAPSES.name(), oldWeight, weight);
+	}
+
+	/**
+	 * Change the activation function of a neuron.
+	 * 
+	 * @param neuron
+	 * @param funcName
+	 */
+	public void changeNeuronActivationFunction(final Neuron neuron, final String funcName) {
+		ActivationFunction oldValue = neuron.getActivationFunction();
+		neuron.setActivationFunction(funcName);
+		pcs.firePropertyChange(PropertyChanges.NEURONS.name(), oldValue, neuron.getActivationFunction());
 	}
 
 	private void setLayerSize(final int layerSize, final ActivationFunction function, final Layer layer) {
@@ -395,9 +477,11 @@ public class Network extends BasicNetwork {
 	}
 
 	/**
+	 * Get the actual selected standard activation function from the sidebar.
+	 * 
 	 * @return
 	 */
-	private ActivationFunction getStandardFunction() {
+	public ActivationFunction getStandardFunction() {
 		return Main.instance.sidebar.standardOptionsPanel.getStandardActivationFunction();
 	}
 
@@ -554,7 +638,7 @@ public class Network extends BasicNetwork {
 			throw new IllegalArgumentException("input layer count != input.lenght");
 		}
 		for (int i = biasOffset; i < neuronList.size(); i++) {
-			neuronList.get(i).setOutputValue(input[i - biasOffset]);
+			neuronList.get(i).setValue(input[i - biasOffset]);
 		}
 	}
 
@@ -639,4 +723,5 @@ public class Network extends BasicNetwork {
 	public boolean isTrainable() {
 		return layers.size() >= 2;
 	}
+
 }

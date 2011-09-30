@@ -2,9 +2,9 @@ package de.unikassel.threeD;
 
 import java.awt.Graphics2D;
 
+import de.unikassel.ann.threeD.model.Line;
+import de.unikassel.ann.threeD.model.Point3D;
 import de.unikassel.threeD.geo.Cube;
-import de.unikassel.threeD.geo.Line;
-import de.unikassel.threeD.geo.Point3D;
 import de.unikassel.threeD.geo.WireframeGeometry;
 
 public class FrameRenderer {
@@ -28,13 +28,13 @@ public class FrameRenderer {
 		int wy = offset2D[1];
 
 		for (Line line : cube.lineList) {
-			double fromZ = line.from.z;
-			double toZ = line.to.z;
+			double fromZ = line.a.z;
+			double toZ = line.b.z;
 
-			int fromX = (int) line.from.x;
-			int fromY = (int) line.from.y;
-			int toX = (int) line.to.x;
-			int toY = (int) line.to.y;
+			int fromX = line.a.x.intValue();
+			int fromY = line.a.y.intValue();
+			int toX = line.b.x.intValue();
+			int toY = line.b.y.intValue();
 
 			// b_x = (d_x - e_x) (e_z / d_z)
 			// b_y = (d_y - e_y) (e_z / d_z)
@@ -55,10 +55,10 @@ public class FrameRenderer {
 			toY = (int) (toY * (1 + toZ / PERSPECTIVE_FACTOR));
 
 			//
-			fromX = (wx + fromX);
-			fromY = (wy + fromY);
-			toX = (wx + toX);
-			toY = (wy + toY);
+			fromX = wx + fromX;
+			fromY = wy + fromY;
+			toX = wx + toX;
+			toY = wy + toY;
 			g2d.drawLine(fromX, fromY, toX, toY);
 		}
 	}
@@ -82,7 +82,7 @@ public class FrameRenderer {
 			// int y2 = (int)((DISTANCE * line.to.y / -zTo));
 			//
 			// g2d.drawLine(x1+wx, y1+wy, x2+wx, y2+wy);
-			g2d.drawLine((int) line.from.x + wx, (int) line.from.y + wy, (int) line.to.x + wx, (int) line.to.y + wy);
+			g2d.drawLine(line.a.x.intValue() + wx, line.a.y.intValue() + wy, line.b.x.intValue() + wx, line.b.y.intValue() + wy);
 		}
 	}
 }

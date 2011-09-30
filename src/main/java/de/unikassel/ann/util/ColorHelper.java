@@ -37,8 +37,10 @@ public class ColorHelper {
 	 *            should be from 0 unti 100
 	 */
 	public static Color numberToColor(final double value) {
-		if (value < 0 || value > 100) {
-			return null;
+		if (value < 0) {
+			return numberToColorPercentage(0);
+		} else if (value > 100) {
+			return numberToColorPercentage(1);
 		}
 		return numberToColorPercentage(value / 100);
 	}
@@ -49,8 +51,10 @@ public class ColorHelper {
 	 * @return
 	 */
 	public static Color numberToColorPercentage(final double value) {
-		if (value < 0 || value > 1) {
-			return null;
+		if (value < 0) {
+			return numberToColorPercentage(0);
+		} else if (value > 1) {
+			return numberToColorPercentage(1);
 		}
 		Double d = value * factor;
 		int index = d.intValue();

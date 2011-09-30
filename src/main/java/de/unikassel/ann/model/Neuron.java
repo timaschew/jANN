@@ -32,6 +32,8 @@ public class Neuron {
 
 	public static final String functionPackage = SigmoidFunction.class.getPackage().getName();
 
+	public static final String functionSuffix = "Function";
+
 	public Neuron(final ActivationFunction standardFunc, final double outputValue, final boolean bias) {
 		set(standardFunc, outputValue, bias);
 	}
@@ -78,7 +80,7 @@ public class Neuron {
 		return outgoingSynapses;
 	}
 
-	public void setOutputValue(final Double val) {
+	public void setValue(final Double val) {
 		if (bias) {
 			throw new IllegalAccessError("cannot set input value for bias neuron");
 		}
@@ -198,6 +200,27 @@ public class Neuron {
 
 	public ActivationFunction getActivationFunction() {
 		return activationFunction;
+	}
+
+	public void setActivationFunction(final ActivationFunction activationFunction) {
+		this.activationFunction = activationFunction;
+	}
+
+	public void setActivationFunction(String activationFunctionName) {
+		// Add "Function"-suffix to the activation function name if it is missing
+		if (activationFunctionName.endsWith(functionSuffix) == false) {
+			activationFunctionName += functionSuffix;
+		}
+
+		ActivationFunction activation = new SigmoidFunction();
+		Class<?> clazz;
+		try {
+			clazz = Class.forName(functionPackage + "." + activationFunctionName);
+			activation = (ActivationFunction) clazz.newInstance();
+		} catch (Exception e) {
+			System.err.println("could not instantiate function with name: " + activationFunctionName);
+		}
+		setActivationFunction(activation);
 	}
 
 }

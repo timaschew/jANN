@@ -2,6 +2,7 @@ package de.unikassel.ann.gui.sidebar;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,6 +17,7 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.InputMap;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -26,12 +28,18 @@ import javax.swing.KeyStroke;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
+import de.unikassel.ann.controller.GraphController;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.gui.model.Edge;
 import de.unikassel.ann.gui.model.Vertex;
+import de.unikassel.ann.model.Network;
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.Synapse;
+import de.unikassel.ann.model.func.ActivationFunction;
+import de.unikassel.ann.util.FormatHelper;
 
 public class SelectedSymbolPanel extends JPanel {
 
@@ -39,10 +47,22 @@ public class SelectedSymbolPanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public JTextField fieldSelected;
-	public CustomComboBox activatedFunctionComboBox;
-	public JSpinner neuroInputBySelectSpinner;
-	public JSpinner spinnerSynapsWeight;
+
+	private JTextField fieldSelected;
+	private CustomComboBox activatedFunctionComboBox;
+	private JSpinner neuroInputBySelectSpinner;
+	private JSpinner spinnerSynapsWeight;
+	private JButton btnApplyChanges;
+	private JButton btnDiscardChanges;
+
+	private enum SelectedType {
+		VERTEX, EDGE
+	};
+
+	// Set by the update method of their type in order to call it again on discard
+	private SelectedType lastSelectedType;
+
+	private boolean ignoreChanges;
 
 	/**
 	 * Create the frame.
@@ -79,6 +99,10 @@ public class SelectedSymbolPanel extends JPanel {
 
 		spinnerSynapsWeight = new JSpinner();
 		spinnerSynapsWeight.setModel(new SpinnerNumberModel(new Double(0.0), null, null, new Double(0.1)));
+
+		btnApplyChanges = new JButton(Settings.i18n.getString("sidebar.selectedSymbol.applyChanges"));
+		btnDiscardChanges = new JButton(Settings.i18n.getString("sidebar.selectedSymbol.discardChanges"));
+
 		GroupLayout gl_SelectedSymbolPanel = new GroupLayout(this);
 		gl_SelectedSymbolPanel.setHorizontalGroup(gl_SelectedSymbolPanel.createParallelGroup(Alignment.LEADING).addGroup(
 				gl_SelectedSymbolPanel
@@ -121,13 +145,157 @@ public class SelectedSymbolPanel extends JPanel {
 										.addComponent(activatedFunctionComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 												GroupLayout.PREFERRED_SIZE)).addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 		setLayout(gl_SelectedSymbolPanel);
+
 		reset();
+		initActions();
+	}
+
+	/**
+	 * Bind action listener to the elements of this panel.
+	 */
+	private void initActions() {
+		// neuroInputBySelectSpinner
+		neuroInputBySelectSpinner.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(final ChangeEvent evt) {
+				if (ignoreChanges) {
+					return;
+				}
+				JSpinner spinner = (JSpinner) evt.getSource();
+
+				// Get the new value
+				Double value = FormatHelper.parse2Double(spinner.getValue());
+				changeNeuronValue(value);
+			}
+		});
+
+		// spinnerSynapsWeight
+		spinnerSynapsWeight.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(final ChangeEvent evt) {
+				if (ignoreChanges) {
+					return;
+				}
+				JSpinner spinner = (JSpinner) evt.getSource();
+
+				// Get the new value
+				Double value = FormatHelper.parse2Double(spinner.getValue());
+				changeSynapseWeight(value);
+			}
+		});
+
+		// activatedFunctionComboBox
+		activatedFunctionComboBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent evt) {
+				if (ignoreChanges) {
+					return;
+				}
+				JComboBox combobox = (JComboBox) evt.getSource();
+
+				// Get the selected value
+				Object selectedItem = combobox.getSelectedItem();
+				String value = selectedItem != null ? selectedItem.toString() : null;
+				if (value == null || value.isEmpty()) {
+					return;
+				}
+				changeNeuronActivationFunction(value);
+			}
+		});
+	}
+
+	private void changeNeuronValue(final Double value) {
+		// Update all selected vertices
+		Set<Vertex> pickedVertices = GraphController.getInstance().getPickedVertices();
+		if (pickedVertices.size() > 0) {
+			for (Vertex vertex : pickedVertices) {
+				if (vertex.getModel().isBias()) {
+					continue;
+				}
+				Network.getNetwork().changeNeuronValue(vertex.getModel(), value);
+			}
+		}
+	}
+
+	private void changeSynapseWeight(final Double value) {
+		// Update all selected egdes
+		Set<Edge> pickedEdges = GraphController.getInstance().getPickedEdges();
+		if (pickedEdges.size() > 0) {
+			for (Edge edge : pickedEdges) {
+				Network.getNetwork().changeSynapseWeight(edge.getModel(), value);
+			}
+		}
+	}
+
+	private void changeNeuronActivationFunction(final String value) {
+		// Add "Function"-suffix to the activation function name if it is missing
+		String activationFunctionName = value;
+		if (activationFunctionName.endsWith(Neuron.functionSuffix) == false) {
+			activationFunctionName += Neuron.functionSuffix;
+		}
+
+		// Update all selected vertices
+		Set<Vertex> pickedVertices = GraphController.getInstance().getPickedVertices();
+		if (pickedVertices.size() > 0) {
+			for (Vertex vertex : pickedVertices) {
+				// Update only if the selected value differs from the current value
+				ActivationFunction activationFunction = vertex.getModel().getActivationFunction();
+				String curFunc = activationFunction != null ? activationFunction.getClass().getSimpleName() : null;
+				if (curFunc.equalsIgnoreCase(activationFunctionName) == false) {
+					Network.getNetwork().changeNeuronActivationFunction(vertex.getModel(), activationFunctionName);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Apply the changes made in the input elements to the currently picked symbols.
+	 */
+	private void apply() {
+		// neuroInputBySelectSpinner
+		if (neuroInputBySelectSpinner.isEnabled()) {
+			Double value = FormatHelper.parse2Double(neuroInputBySelectSpinner.getValue());
+			changeNeuronValue(value);
+		}
+
+		// spinnerSynapsWeight
+		if (spinnerSynapsWeight.isEnabled()) {
+			Double value = FormatHelper.parse2Double(spinnerSynapsWeight.getValue());
+			changeSynapseWeight(value);
+		}
+
+		// activatedFunctionComboBox
+		if (activatedFunctionComboBox.isEditable()) {
+			Object selectedItem = activatedFunctionComboBox.getSelectedItem();
+			String value = selectedItem != null ? selectedItem.toString() : null;
+			if (value != null && value.isEmpty() == false) {
+				changeNeuronActivationFunction(value);
+			}
+		}
+	}
+
+	/**
+	 * Discard the changes made in the input elements and (re)set the values of the currently picked symbols.
+	 */
+	private void discard() {
+		GraphController graphController = GraphController.getInstance();
+		switch (lastSelectedType) {
+		case VERTEX:
+			updateVertex(graphController.getPickedVertices());
+			break;
+		case EDGE:
+			updateEdge(graphController.getPickedEdges());
+			break;
+		default:
+			break;
+		}
 	}
 
 	/**
 	 * Reset the panel and disable all elements.
 	 */
 	public void reset() {
+		ignoreChanges = true;
 		fieldSelected.setText(null);
 
 		HashSet<Integer> disableIndex = new HashSet<Integer>();
@@ -155,41 +323,61 @@ public class SelectedSymbolPanel extends JPanel {
 		// List of picked values to show
 		List<String> activationFunctions = new ArrayList<String>();
 		List<Double> values = new ArrayList<Double>();
-		String selected = "";
 
 		// Collect all values of the picked set
 		for (Vertex vertex : picked) {
 			Neuron model = vertex.getModel();
 			activationFunctions.add(model.getActivationFunction().getClass().getSimpleName());
 			values.add(model.getValue());
-			selected += (selected == "" ? "" : ", ") + model.getId();
 		}
-		fieldSelected.setText(selected);
 
-		boolean showFunc = true;
-		String refFunc = activationFunctions.get(0);
+		// Field select
+		String neurons = Settings.i18n.getString(picked.size() != 1 ? "sidebar.standardOptions.neurons" : "sidebar.standardOptions.neuron");
+		String selectText = String.format("%d " + neurons, picked.size());
+		fieldSelected.setText(selectText);
+
+		// Activation function
+		boolean showFunc = false;
+		String refFunc = null;
 		for (String func : activationFunctions) {
+			if (refFunc == null) {
+				// There's at least one function so set the reference function and set the show flag to true
+				refFunc = func;
+				showFunc = true;
+			}
+			// Show function only when all functions are the same
 			showFunc &= refFunc.equals(func);
 		}
 		activatedFunctionComboBox.setEnabled(true);
-		if (showFunc) {
+		if (showFunc && refFunc != null) {
 			refFunc = refFunc.replaceAll("Function", "");
 			activatedFunctionComboBox.setSelectedItem(refFunc);
 		} else {
 			activatedFunctionComboBox.setSelectedItem(null);
 		}
 
-		boolean showValue = true;
-		Double refValue = values.get(0);
+		// Neuron value
+		boolean showValue = false;
+		Double refValue = null;
 		for (Double value : values) {
+			if (refValue == null) {
+				// There's at least one value so set the reference value and set the show flag to true
+				refValue = value;
+				showValue = true;
+			}
+			// Show value only when all values are the same
 			showValue &= refValue.equals(value);
 		}
 		neuroInputBySelectSpinner.setEnabled(true);
-		if (showValue) {
+		if (showValue && refValue != null) {
 			neuroInputBySelectSpinner.setValue(refValue);
 		} else {
 			neuroInputBySelectSpinner.setValue(0);
 		}
+
+		// Store in order to know on discard which update to call
+		lastSelectedType = SelectedType.VERTEX;
+		ignoreChanges = false;
 	}
 
 	/**
@@ -207,8 +395,14 @@ public class SelectedSymbolPanel extends JPanel {
 			Synapse model = edge.getModel();
 			values.add(model.getWeight());
 		}
-		fieldSelected.setText(picked.size() + "");
 
+		// Field select
+		String synapses = Settings.i18n.getString(picked.size() != 1 ? "sidebar.standardOptions.synapses"
+				: "sidebar.standardOptions.synapse");
+		String selectText = String.format("%d " + synapses, picked.size());
+		fieldSelected.setText(selectText);
+
+		// Synapse weight
 		boolean showValue = true;
 		Double refValue = values.get(0);
 		for (Double value : values) {
@@ -220,6 +414,10 @@ public class SelectedSymbolPanel extends JPanel {
 		} else {
 			spinnerSynapsWeight.setValue(0);
 		}
+
+		// Store in order to know on discard which update to call
+		lastSelectedType = SelectedType.EDGE;
+		ignoreChanges = false;
 	}
 
 	/*

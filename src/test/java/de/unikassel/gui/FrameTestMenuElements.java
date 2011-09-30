@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import de.unikassel.ann.gui.ImportFilePanel;
-import de.unikassel.ann.gui.TrainDataPanel;
+import de.unikassel.ann.gui.TrainNormalizationPanel;
 import de.unikassel.ann.gui.sidebar.SideConfigurationPanel;
 
 public class FrameTestMenuElements extends JFrame {
@@ -64,7 +64,7 @@ public class FrameTestMenuElements extends JFrame {
 
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				TrainDataPanel datenPanel = new TrainDataPanel();
+				TrainNormalizationPanel datenPanel = new TrainNormalizationPanel();
 				datenPanel.pack();
 				datenPanel.setVisible(true);
 			}

@@ -7,13 +7,18 @@ import java.awt.Graphics;
 import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.JPanel;
 
 import EDU.oswego.cs.dl.util.concurrent.CopyOnWriteArrayList;
+import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.gui.model.Edge;
 import de.unikassel.ann.gui.model.Vertex;
 import de.unikassel.ann.gui.mouse.GraphMouse;
@@ -23,6 +28,7 @@ import de.unikassel.ann.model.Network.NetworkLayer;
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.Synapse;
 import edu.uci.ics.jung.algorithms.layout.AbstractLayout;
+import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.layout.StaticLayout;
 import edu.uci.ics.jung.graph.DirectedGraph;
@@ -33,6 +39,7 @@ import edu.uci.ics.jung.visualization.VisualizationServer.Paintable;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 import edu.uci.ics.jung.visualization.layout.LayoutTransition;
+import edu.uci.ics.jung.visualization.picking.PickedState;
 import edu.uci.ics.jung.visualization.util.Animator;
 
 public class GraphController implements PropertyChangeListener {
@@ -100,6 +107,94 @@ public class GraphController implements PropertyChangeListener {
 		return init;
 	}
 
+	/**
+	 * Arrange vertices accordingly to their layer and position.
+	 * 
+	 * @return Paintable
+	 */
+	private Paintable getViewerPreRenderer() {
+		return new VisualizationViewer.Paintable() {
+			@Override
+			public void paint(final Graphics g) {
+				final int height = viewer.getHeight();
+				final int width = viewer.getWidth();
+
+				// The Position of a vertex depends on the number of vertices that
+				// are in the same layer.
+				// Since new vertices are always added at the last position, get
+				// the number of vertices to compute the position for the new
+				// vertex.
+				// LayerController<Layer> layerController = LayerController.getInstance();
+				// ArrayList<JungLayer> layers = layerController.getLayers();
+
+				List<Layer> layers = Network.getNetwork().getLayers();
+
+				// No layers? -> No need to positionize anything!
+				if (layers.size() == 0) {
+					viewer.repaint();
+					return;
+				}
+
+				// Gap between the layers
+				int gapY = height / layers.size();
+
+				Iterator<Layer> layerIterator = layers.iterator();
+				while (layerIterator.hasNext()) {
+					Layer layer = layerIterator.next();
+					// }
+					//
+					// for (JungLayer jungLayer : layers) {
+					List<Neuron> neurons = layer.getNeurons();
+					int layerIndex = layer.getIndex();
+					int layerSize = neurons.size();
+
+					// System.out.println(layerIndex + ": " + vertices);
+
+					// Skip empty layers
+					if (layerSize == 0) {
+						continue;
+					}
+
+					// Compute the gap between two vertices
+					int gapX = width / layerSize;
+
+					VertexController<Vertex> vertexController = VertexController.getInstance();
+					int neuronIndex = -1;
+					for (Neuron neuron : neurons) {
+						neuronIndex++;
+						Vertex vertex = vertexController.getVertexByModel(neuron);
+
+						// Compute location of the vertex
+						int x = neuronIndex * gapX + gapX / 2;
+						int y = layerIndex * gapY + gapY / 2;
+						Point2D location = new Point2D.Double(x, y);
+
+						// Set vertex location and lock it
+						layout.setLocation(vertex, location);
+						layout.lock(vertex, true);
+					}
+				}
+			}
+
+			@Override
+			public boolean useTransform() {
+				return false;
+			}
+		};
+	}
+
+	private void initGraphMouse() {
+		// Create Graph Mouse (NOTE: Disable zoom by setting "in" and "out" parameter to "1f")
+		graphMouse = new GraphMouse<Vertex, Edge>(viewer.getRenderContext(), VertexController.getInstance().getVertexFactory(),
+				EdgeController.getInstance().getEdgeFactory());
+
+		viewer.setGraphMouse(graphMouse);
+		viewer.addKeyListener(graphMouse.getModeKeyListener());
+
+		graphMouse.setMode(ModalGraphMouse.Mode.PICKING);
+		graphMouse.setZoomAtMouse(false);
+	}
+
 	/*
 	 * Getter & Setter
 	 */
@@ -134,6 +229,36 @@ public class GraphController implements PropertyChangeListener {
 
 	public void setParent(final JPanel parent) {
 		this.parent = parent;
+	}
+
+	/**
+	 * Get a set of all actual picked vertices.
+	 * 
+	 * @return Set<Vertex>
+	 */
+	public Set<Vertex> getPickedVertices() {
+		GraphElementAccessor<Vertex, Edge> pickSupport = viewer.getPickSupport();
+		PickedState<Vertex> pickedVertexState = viewer.getPickedVertexState();
+		Set<Vertex> picked = new HashSet<Vertex>();
+		if (pickSupport != null && pickedVertexState != null) {
+			picked.addAll(pickedVertexState.getPicked());
+		}
+		return picked;
+	}
+
+	/**
+	 * Get a set of all actual picked edges.
+	 * 
+	 * @return Set<Edge>
+	 */
+	public Set<Edge> getPickedEdges() {
+		GraphElementAccessor<Vertex, Edge> pickSupport = viewer.getPickSupport();
+		PickedState<Edge> pickedEdgeState = viewer.getPickedEdgeState();
+		Set<Edge> picked = new HashSet<Edge>();
+		if (pickSupport != null && pickedEdgeState != null) {
+			picked.addAll(pickedEdgeState.getPicked());
+		}
+		return picked;
 	}
 
 	public void repaint() {
@@ -227,7 +352,7 @@ public class GraphController implements PropertyChangeListener {
 			Vertex toVertex = vertexController.getVertexByModel(toNeuron);
 			if (fromVertex == null || toVertex == null) {
 				// Problem! Both vertices are mandatory for the edge!
-				System.err.println("Synapse " + synapse + " from " + fromVertex + " to " + toVertex + " will be removed!");
+				System.out.println("Synapse " + synapse + " from " + fromVertex + " to " + toVertex + " will be removed!");
 				edgeController.getLostSynapses().add(synapse);
 				continue;
 			}
@@ -291,10 +416,29 @@ public class GraphController implements PropertyChangeListener {
 	/**
 	 * Remove all vertices in the set.
 	 * 
-	 * @param picked
+	 * @param vertices
 	 */
 	public void removeVertices(final Collection<Vertex> vertices) {
-		for (Vertex vertex : vertices) {
+		// Remove vertices in two steps:
+		// 1. Vertices in hidden layers
+		// 2. Vertices in the input and output layer
+		List<Vertex> inOutVerts = new ArrayList<Vertex>();
+		VertexController<Vertex> vertexController = VertexController.getInstance();
+
+		// Sort and reverse vertices
+		List<Vertex> verts = new ArrayList(vertices);
+		Collections.sort(verts);
+		Collections.reverse(verts);
+		for (Vertex vertex : verts) {
+			if (vertexController.isVertexInHiddenLayer(vertex)) {
+				removeVertex(vertex);
+			} else {
+				// add in- and output vertices into a new list to remove them later.
+				inOutVerts.add(vertex);
+			}
+		}
+
+		for (Vertex vertex : inOutVerts) {
 			removeVertex(vertex);
 		}
 	}
@@ -412,6 +556,17 @@ public class GraphController implements PropertyChangeListener {
 		repaint();
 	}
 
+	/**
+	 * Returns whether the layer is a hidden layer.
+	 * 
+	 * @param layer
+	 * @return
+	 */
+	public boolean isLayerHidden(final Layer layer) {
+		int layerSize = Network.getNetwork().getLayers().size();
+		return layerSize > 2 && layer.getIndex() > 0 && layer.getIndex() < layerSize - 1;
+	}
+
 	@Override
 	public void propertyChange(final PropertyChangeEvent evt) {
 		if (evt.getSource() instanceof Network) {
@@ -422,101 +577,50 @@ public class GraphController implements PropertyChangeListener {
 	}
 
 	/**
-	 * Arrange vertices accordingly to their layer and position.
-	 * 
-	 * @return Paintable
+	 * Reset the selected symbol panel in the sidebar.
 	 */
-	private Paintable getViewerPreRenderer() {
-		return new VisualizationViewer.Paintable() {
-			@Override
-			public void paint(final Graphics g) {
-				final int height = viewer.getHeight();
-				final int width = viewer.getWidth();
-
-				// The Position of a vertex depends on the number of vertices that
-				// are in the same layer.
-				// Since new vertices are always added at the last position, get
-				// the number of vertices to compute the position for the new
-				// vertex.
-				// LayerController<Layer> layerController = LayerController.getInstance();
-				// ArrayList<JungLayer> layers = layerController.getLayers();
-
-				List<Layer> layers = Network.getNetwork().getLayers();
-
-				// No layers? -> No need to positionize anything!
-				if (layers.size() == 0) {
-					viewer.repaint();
-					return;
-				}
-
-				// Gap between the layers
-				int gapY = height / layers.size();
-
-				Iterator<Layer> layerIterator = layers.iterator();
-				while (layerIterator.hasNext()) {
-					Layer layer = layerIterator.next();
-					// }
-					//
-					// for (JungLayer jungLayer : layers) {
-					List<Neuron> neurons = layer.getNeurons();
-					int layerIndex = layer.getIndex();
-					int layerSize = neurons.size();
-
-					// System.out.println(layerIndex + ": " + vertices);
-
-					// Skip empty layers
-					if (layerSize == 0) {
-						continue;
-					}
-
-					// Compute the gap between two vertices
-					int gapX = width / layerSize;
-
-					VertexController<Vertex> vertexController = VertexController.getInstance();
-					int neuronIndex = -1;
-					for (Neuron neuron : neurons) {
-						neuronIndex++;
-						Vertex vertex = vertexController.getVertexByModel(neuron);
-
-						// Compute location of the vertex
-						int x = neuronIndex * gapX + gapX / 2;
-						int y = layerIndex * gapY + gapY / 2;
-						Point2D location = new Point2D.Double(x, y);
-
-						// Set vertex location and lock it
-						layout.setLocation(vertex, location);
-						layout.lock(vertex, true);
-					}
-				}
-			}
-
-			@Override
-			public boolean useTransform() {
-				return false;
-			}
-		};
-	}
-
-	private void initGraphMouse() {
-		// Create Graph Mouse (NOTE: Disable zoom by setting "in" and "out" parameter to "1f")
-		graphMouse = new GraphMouse<Vertex, Edge>(viewer.getRenderContext(), VertexController.getInstance().getVertexFactory(),
-				EdgeController.getInstance().getEdgeFactory());
-
-		viewer.setGraphMouse(graphMouse);
-		viewer.addKeyListener(graphMouse.getModeKeyListener());
-
-		graphMouse.setMode(ModalGraphMouse.Mode.PICKING);
-		graphMouse.setZoomAtMouse(false);
+	public void select() {
+		Main.instance.sidebar.selectedSymbolsPanel.reset();
 	}
 
 	/**
-	 * Show vertex details in the sidebar.
+	 * Show a picked vertex in the selected symbol panel in the sidebar.
 	 * 
 	 * @param vertex
 	 */
-	public void showVertex(final Vertex vertex) {
-		// TODO
-		System.out.println(vertex);
+	public void selectVertex(final Vertex vertex) {
+		Set<Vertex> set = new HashSet<Vertex>();
+		set.add(vertex);
+		selectVertex(set);
+	}
+
+	/**
+	 * Show a picked set of vertices in the selected symbol panel in the sidebar.
+	 * 
+	 * @param set
+	 */
+	public void selectVertex(final Set<Vertex> set) {
+		Main.instance.sidebar.selectedSymbolsPanel.updateVertex(set);
+	}
+
+	/**
+	 * Show a picked edge in the selected symbol panel in the sidebar.
+	 * 
+	 * @param vertex
+	 */
+	public void selectEdge(final Edge edge) {
+		Set<Edge> set = new HashSet<Edge>();
+		set.add(edge);
+		selectEdge(set);
+	}
+
+	/**
+	 * Show a picked set of edges in the selected symbol panel in the sidebar.
+	 * 
+	 * @param set
+	 */
+	public void selectEdge(final Set<Edge> set) {
+		Main.instance.sidebar.selectedSymbolsPanel.updateEdge(set);
 	}
 
 }

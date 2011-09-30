@@ -279,7 +279,7 @@ public class GraphMousePopupPlugin<V, E> extends AbstractPopupGraphMousePlugin {
 				@Override
 				public void actionPerformed(final ActionEvent e) {
 					// unpick vertex
-					graphController.showVertex(vertex);
+					graphController.selectVertex(vertex);
 					pickedVertexState.pick(vertex, false);
 				}
 			});

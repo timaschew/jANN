@@ -35,10 +35,8 @@ public class ChartTrainingErrorPanel extends JPanel {
 
 	public ChartTrainingErrorPanel() {
 		setLayout(new BorderLayout());
-		currentSeries = new XYSeries("#" + count++);
 
 		dataset = new XYSeriesCollection();
-		dataset.addSeries(currentSeries);
 
 		JFreeChart chart = ChartFactory.createXYLineChart("Trainingsfehler", // chart title
 				"Iteration", // x axis label
@@ -72,5 +70,8 @@ public class ChartTrainingErrorPanel extends JPanel {
 		dataset.addSeries(currentSeries);
 	}
 
-	// need something to update
+	public void addToCurrentSeries(final Integer iteration, final Double error) {
+		currentSeries.add(iteration, error);
+	}
+
 }

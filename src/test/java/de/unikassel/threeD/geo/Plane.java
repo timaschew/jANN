@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import de.unikassel.ann.threeD.model.Line;
+import de.unikassel.ann.threeD.model.Point3D;
 import de.unikassel.mdda.MDDA;
 
 /**

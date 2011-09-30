@@ -41,6 +41,8 @@ public class ImportFilePanel extends JDialog {
 
 	private JTextField textFieldFileName;
 
+	private JButton btnImport;
+
 	/**
 	 * Create the panel.
 	 */
@@ -80,7 +82,8 @@ public class ImportFilePanel extends JDialog {
 		JLabel lblTrainingData = new JLabel(Settings.i18n.getString("importFilePanel.lblTrainingData"));
 		trainigDataCB = new JCheckBox("");
 		trainigDataCB.setEnabled(false);
-		JButton btnImport = new JButton(Settings.i18n.getString("importFilePanel.btnImport"));
+		btnImport = new JButton(Settings.i18n.getString("importFilePanel.btnImport"));
+		btnImport.setEnabled(false);
 		// TODO Nach Import JungView Aktualisieren
 		JButton btnCancel = new JButton(Settings.i18n.getString("importFilePanel.btnCancel"));
 
@@ -92,12 +95,15 @@ public class ImportFilePanel extends JDialog {
 			public void actionPerformed(final ActionEvent e) {
 				if (topologieCB.isSelected()) {
 					synapseCB.setEnabled(true);
+					trainigDataCB.setEnabled(true);
+					btnImport.setEnabled(true);
 				} else {
-					if (synapseCB.isSelected()) {
-						synapseCB.setSelected(false);
-						synapseCB.setEnabled(false);
-					}
+					trainigDataCB.setEnabled(false);
+					trainigDataCB.setSelected(false);
+					synapseCB.setSelected(false);
 					synapseCB.setEnabled(false);
+					btnImport.setEnabled(false);
+
 				}
 			}
 		});
@@ -228,7 +234,7 @@ public class ImportFilePanel extends JDialog {
 				if (reader.topoBeanList != null) {
 					topologieCB.setEnabled(true);
 					topologieCB.setSelected(true);
-					System.out.println("topo");
+					btnImport.setEnabled(true);
 				}
 				if (reader.synapsesBanList != null) {
 					// Falls in der gelesene Datei keine topology existiert

@@ -28,6 +28,7 @@ import javax.swing.text.StyledDocument;
 
 import de.unikassel.ann.controller.GraphController;
 import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.gui.chart.ChartTrainingDataPanel;
 import de.unikassel.ann.gui.chart.ChartTrainingErrorPanel;
 import de.unikassel.ann.gui.sidebar.Sidebar;
 import de.unikassel.ann.gui.sidebar.SidebarSOM;
@@ -88,7 +89,8 @@ public class Main {
 	public SidebarSOM sidebarSom;
 	public JPanel _3DBoardPane;
 	public JPanel consoleOrChartPanel;
-	public ChartTrainingErrorPanel trainingChartPanel;
+	public ChartTrainingErrorPanel trainingErrorChartPanel;
+	public ChartTrainingDataPanel trainingDataChartPanel;
 
 	/**
 	 * Create the application.
@@ -126,11 +128,12 @@ public class Main {
 			consoleOrChartPanel.add(consolePanel);
 			break;
 		case TRAIN_DATA_CHART:
-
+			consoleOrChartPanel.removeAll();
+			consoleOrChartPanel.add(trainingDataChartPanel);
 			break;
 		case TRAINERROR_CHART:
 			consoleOrChartPanel.removeAll();
-			consoleOrChartPanel.add(trainingChartPanel);
+			consoleOrChartPanel.add(trainingErrorChartPanel);
 			break;
 		}
 		consoleOrChartPanel.revalidate();
@@ -178,7 +181,8 @@ public class Main {
 		jungPanel = new JPanel(new BorderLayout());
 
 		consolePanel = new JPanel(new BorderLayout());
-		trainingChartPanel = new ChartTrainingErrorPanel();
+		trainingErrorChartPanel = new ChartTrainingErrorPanel();
+		trainingDataChartPanel = new ChartTrainingDataPanel();
 
 		textPane.setEditable(false);
 		addStylesToDocument(textPane.getStyledDocument());
