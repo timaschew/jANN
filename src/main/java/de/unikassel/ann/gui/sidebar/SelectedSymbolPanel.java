@@ -158,6 +158,9 @@ public class SelectedSymbolPanel extends JPanel {
 				Set<Vertex> pickedVertices = GraphController.getInstance().getPickedVertices();
 				if (pickedVertices.size() > 0) {
 					for (Vertex vertex : pickedVertices) {
+						if (vertex.getModel().isBias()) {
+							continue;
+						}
 						Network.getNetwork().changeNeuronValue(vertex.getModel(), value);
 					}
 				}

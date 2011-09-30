@@ -24,15 +24,16 @@ public class ColorHelperTest {
 		Assert.assertNotNull(ColorHelper.numberToColor(50));
 		Assert.assertNotNull(ColorHelper.numberToColor(100));
 
-		Assert.assertNull(ColorHelper.numberToColor(-1));
-		Assert.assertNull(ColorHelper.numberToColor(101));
+		Assert.assertEquals(ColorHelper.numberToColor(-1), ColorHelper.numberToColor(0));
+		Assert.assertEquals(ColorHelper.numberToColor(101), ColorHelper.numberToColor(100));
 
 		Assert.assertNotNull(ColorHelper.numberToColorPercentage(0.0));
 		Assert.assertNotNull(ColorHelper.numberToColorPercentage(0.5));
 		Assert.assertNotNull(ColorHelper.numberToColorPercentage(1.0));
 
-		Assert.assertNull(ColorHelper.numberToColorPercentage(-0.01));
-		Assert.assertNull(ColorHelper.numberToColorPercentage(1.01));
+		Assert.assertEquals(ColorHelper.numberToColor(-0.01), ColorHelper.numberToColor(0));
+		Assert.assertEquals(ColorHelper.numberToColor(1.01), ColorHelper.numberToColor(1));
+
 	}
 
 	@Test
