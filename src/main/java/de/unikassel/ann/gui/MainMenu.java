@@ -185,6 +185,9 @@ public class MainMenu extends JMenuBar {
 		JMenuItem mntmUeber = new ActionJMenuItem(Settings.i18n.getString("menu.help.about"), Actions.ABOUT);
 		mnHilfe.add(mntmUeber);
 
+		JMenuItem mntmFunktionUebersicht = new ActionJMenuItem("Funktionen", Actions.jANN_FUNCTION_OVERVIEW);
+		mnHilfe.add(mntmFunktionUebersicht); // Settings.i18n.getString("menu.help.functions")
+
 		return mnHilfe;
 	}
 }
