@@ -27,6 +27,7 @@ import de.unikassel.ann.gui.SOMGui;
 import de.unikassel.ann.io.tasks.SomWorker;
 import de.unikassel.ann.model.SomNetwork;
 import de.unikassel.ann.threeD.model.GridCube;
+import de.unikassel.ann.threeD.model.GridPlane;
 import de.unikassel.ann.threeD.model.RenderGeometry;
 
 /**
@@ -70,7 +71,7 @@ public class SOMTrainingPanel extends JPanel {
 				RenderGeometry geometry = null;
 				switch (dimensions.length) {
 				case 2:
-					// geometry = new GridPlane(outputSize, outputSize, outputSize, patternRange);
+					geometry = new GridPlane(outputSize, outputSize, patternRange);
 					break;
 				case 3:
 					geometry = new GridCube(outputSize, outputSize, outputSize, patternRange);
