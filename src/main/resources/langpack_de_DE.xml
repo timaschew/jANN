@@ -62,6 +62,7 @@
 	<entry key="sidebar.standardOptions.initialWeigth">Initialgewicht</entry>
 	<entry key="sidebar.standardOptions.randomRB">Zufällig</entry>
 	<entry key="sidebar.standardOptions.exactRB">Exakt</entry>
+	<entry key="sidebar.standardOptions.until">bis</entry>
 	<entry key="sidebar.standardOptions.neuron">Neuron</entry>
 	<entry key="sidebar.standardOptions.neurons">Neuronen</entry>
 	<entry key="sidebar.standardOptions.synapse">Synapse</entry>
@@ -72,7 +73,7 @@
 	<entry key="sidebar.selectedSymbol.neuronsInput">Neuronen Input</entry>
 	<entry key="sidebar.selectedSymbol.activatedFunction">Aktivierungsfunktion</entry>
 	<entry key="sidebar.selectedSymbol.applyChanges">Übernehmen</entry>
-	<entry key="sidebar.selectedSymbol.discardChanges">Abbrechen</entry>
+	<entry key="sidebar.selectedSymbol.discardChanges">Verwerfen</entry>
 	<entry key="sidebar.trainControl">Training-Steuerung</entry>
 	<entry key="sidebar.trainControl.btnSteps">Schritte</entry>
 	<entry key="sidebar.trainControl.btnTrainingsPattern">Trainingspattern</entry>
