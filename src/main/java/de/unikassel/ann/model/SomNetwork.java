@@ -8,7 +8,7 @@ import de.unikassel.mdda.MDDA;
 
 public class SomNetwork extends BasicNetwork {
 
-	public static long WAIT = 20;
+	public long delay = 20;
 
 	private Layer inputLayer;
 
@@ -20,7 +20,17 @@ public class SomNetwork extends BasicNetwork {
 
 	private int inputLayerSize;
 
+	public int getInputSize() {
+		return inputLayerSize;
+	}
+
+	private double patternRange;
+
 	// private Board3D listener;
+
+	public SomNetwork(final int inputSize, final int... outputDimension) {
+		this(2, inputSize, outputDimension);
+	}
 
 	/**
 	 * Creates a som with a grid neighborhood relation.<br>
@@ -35,7 +45,7 @@ public class SomNetwork extends BasicNetwork {
 	 * @param inputSize
 	 * @param outputDimension
 	 */
-	public SomNetwork(final int inputSize, final int... outputDimension) {
+	public SomNetwork(final double patternRange, final int inputSize, final int... outputDimension) {
 		super();
 		neuronIdCounter = 0;
 		inputLayerSize = inputSize;
@@ -44,7 +54,7 @@ public class SomNetwork extends BasicNetwork {
 		addLayer(inputLayer);
 		outputLayer = new Layer();
 		addLayer(outputLayer);
-
+		this.patternRange = patternRange;
 		for (int i = 0; i < inputSize; i++) {
 			Neuron neuron = new Neuron(new SigmoidFunction(), false);
 			neuron.setId(neuronIdCounter++);
@@ -52,7 +62,6 @@ public class SomNetwork extends BasicNetwork {
 		}
 
 		Random r = new Random();
-
 		// set and init synapses, add to multi array
 		neuronArrayWrapper = new MDDA<Neuron>(outputDimension);
 		Object[] multiDimArray = neuronArrayWrapper.getArray();
@@ -67,17 +76,25 @@ public class SomNetwork extends BasicNetwork {
 			multiDimArray[i] = n;
 			for (Neuron fromNeuron : inputLayer.getNeurons()) {
 				Synapse s = new Synapse(fromNeuron, n);
-				s.setWeight(r.nextDouble() * 2 - 1);
+				s.setWeight(r.nextDouble() * patternRange - patternRange / 2);
 				// for som DO NOT use glaobel id, only the index of the layer
 				synapseMatrix.addOrUpdateSynapse(s, fromNeuron.getLayerIndex(), n.getLayerIndex());
 			}
 		}
 	}
 
+	/**
+	 * Train withe the default weightRange
+	 */
 	public void train() {
-		trainStep1();
+		double half = patternRange / 2;
+		train(-half, half);
+	}
+
+	public void train(final double min, final double max) {
+		trainStep1(min, max);
 		System.err.println("finished part 1");
-		trainStep2();
+		trainStep2(min, max);
 		System.err.println("finished part 2");
 
 	}
@@ -86,14 +103,14 @@ public class SomNetwork extends BasicNetwork {
 		return neuronArrayWrapper;
 	}
 
-	private void trainStep1() {
+	private void trainStep1(final double min, final double max) {
 		double factorDecrementor = 0.0032; // = 0.0032
 		int neighborRadius = 6;
 		double factor = 0.9D;
 
 		for (int i = 0; i < 250; i++) {
 			for (int k = 0; k < 50; k++) {
-				double[] inputVector = createRandomVector(-1, 1);
+				double[] inputVector = createRandomVector(min, max);
 				run(inputVector, factor, neighborRadius);
 			}
 
@@ -102,7 +119,7 @@ public class SomNetwork extends BasicNetwork {
 			neighborRadius--;
 
 			try {
-				Thread.sleep(WAIT);
+				Thread.sleep(delay);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -110,13 +127,13 @@ public class SomNetwork extends BasicNetwork {
 		}
 	}
 
-	private void trainStep2() {
+	private void trainStep2(final double min, final double max) {
 		double factor = 0.1;
 		double factorDecrementor = 0.001; // 0.08
 
 		for (int i = 0; i < 200; i++) {
 			for (int k = 0; k < 75; k++) {
-				double[] inputVector = createRandomVector(-1, 1);
+				double[] inputVector = createRandomVector(min, max);
 				run(inputVector, factor, 1);
 
 			}
@@ -126,7 +143,7 @@ public class SomNetwork extends BasicNetwork {
 				factor = 0.0000000001;
 			}
 			try {
-				Thread.sleep(WAIT);
+				Thread.sleep(delay);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

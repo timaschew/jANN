@@ -1,6 +1,7 @@
 package de.unikassel.ann.threeD.model;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
 
 import de.unikassel.mdda.MDDA;
@@ -210,5 +211,21 @@ public class GridCube extends RenderGeometry {
 	@Override
 	public int getGridSize() {
 		return xGrids;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.unikassel.ann.threeD.model.RenderGeometry#random()
+	 */
+	@Override
+	public void random() {
+		Random r = new Random();
+		for (Point3D p : points) {
+			p.x = r.nextDouble() * xSize - xSize / 2;
+			p.y = r.nextDouble() * ySize - ySize / 2;
+			p.z = r.nextDouble() * zSize - zSize / 2;
+		}
+
 	}
 }
