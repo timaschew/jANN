@@ -94,7 +94,8 @@ public class ActionJMenuItem extends JMenuItem implements ActionListener {
 			break;
 		case ABOUT:
 			JFrame dialog = new JFrame();
-			JOptionPane.showMessageDialog(dialog, "Anton Wilhelm, \n" + "Alexander Vey, \n" + "Sofia Daskalou, 26201618 \n", "Teilnehmer",
+			JOptionPane.showMessageDialog(dialog,
+					"Anton Wilhelm, 26213101\n" + "Alexander Vey, 26206354\n" + "Sofia Daskalou, 26201618 \n", "Teilnehmer",
 					JOptionPane.INFORMATION_MESSAGE);
 			break;
 		case EXIT:

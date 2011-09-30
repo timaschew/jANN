@@ -109,24 +109,28 @@ public class SOMTrainingPanel extends JPanel {
 		JLabel lblAlgorithmSOM = new JLabel(Settings.i18n.getString("sidebar.trainingSOM.lblAlgorithmSOM"));
 
 		comboAlgorithmSOM = new JComboBox();
-		comboAlgorithmSOM.setModel(new DefaultComboBoxModel(new String[] { "SOM", "LVQ" }));
+		comboAlgorithmSOM.setModel(new DefaultComboBoxModel(new String[] { "SOM" }));
 
 		JLabel lblNeighborhoodRadius = new JLabel(Settings.i18n.getString("sidebar.trainingSOM.lblNeighborhoodRadius"));
 
 		spinnerNeighborhoodRadius = new JSpinner();
+		spinnerNeighborhoodRadius.setEnabled(false);
 
 		JLabel lblLernfunction = new JLabel(Settings.i18n.getString("sidebar.trainingSOM.lblLernfunction"));
 
 		comboLernFunction = new JComboBox();
-		comboLernFunction.setModel(new DefaultComboBoxModel(new String[] { "1+e^(-x)" }));
+		comboLernFunction.setModel(new DefaultComboBoxModel(new String[] { "" }));
+		comboLernFunction.setEnabled(false);
 
 		JLabel lblIterations = new JLabel(Settings.i18n.getString("sidebar.trainingSOM.lblIterations"));
 
 		spinnerIterationsSOM = new JSpinner();
+		spinnerIterationsSOM.setEnabled(false);
 
 		btnStartTraining = new JButton("Training starten");
 
 		btnReset = new JButton("Reset");
+		btnReset.setEnabled(false);
 
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout

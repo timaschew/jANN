@@ -106,7 +106,9 @@ public class FrameRenderer extends JPanel implements MouseMotionListener {
 		int worldXoffset = controller.worldXoffsetModel.getNumber().intValue();
 		int worldYOffset = controller.worldYoffsetModel.getNumber().intValue();
 
-		renderGeometry(worldXoffset, worldYOffset);
+		if (cube != null) {
+			renderGeometry(worldXoffset, worldYOffset);
+		}
 
 		g.drawImage(buffer, 0, 0, this);
 

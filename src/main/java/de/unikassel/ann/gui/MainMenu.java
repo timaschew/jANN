@@ -50,8 +50,8 @@ public class MainMenu extends JMenuBar {
 		JMenu mnTest = getTestMenu();
 		this.add(mnTest);
 
-		JMenu mnLoggingLevel = getLoggingLevelMenu();
-		this.add(mnLoggingLevel);
+		// JMenu mnLoggingLevel = getLoggingLevelMenu();
+		// this.add(mnLoggingLevel);
 
 		JMenu mnHilfe = getHilfeMenu();
 		this.add(mnHilfe);
@@ -108,7 +108,8 @@ public class MainMenu extends JMenuBar {
 		buttonGroup.add(radioTrainDataChart);
 		mnAnsicht.add(radioTrainDataChart);
 
-		JRadioButtonMenuItem rdbtnmntmTrainingsfehlerAnzeigen = new JRadioButtonMenuItem("Training-Chart anzeigen");
+		JRadioButtonMenuItem rdbtnmntmTrainingsfehlerAnzeigen = new JRadioButtonMenuItem("Trainingsfehler anzeigen");
+		rdbtnmntmTrainingsfehlerAnzeigen.setEnabled(false);
 		buttonGroup.add(rdbtnmntmTrainingsfehlerAnzeigen);
 		mnAnsicht.add(rdbtnmntmTrainingsfehlerAnzeigen);
 
@@ -203,8 +204,8 @@ public class MainMenu extends JMenuBar {
 		JMenuItem mntmUeber = new ActionJMenuItem(Settings.i18n.getString("menu.help.about"), Actions.ABOUT);
 		mnHilfe.add(mntmUeber);
 
-		JMenuItem mntmFunktionUebersicht = new ActionJMenuItem("Funktionen", Actions.jANN_FUNCTION_OVERVIEW);
-		mnHilfe.add(mntmFunktionUebersicht); // Settings.i18n.getString("menu.help.functions")
+		// JMenuItem mntmFunktionUebersicht = new ActionJMenuItem("Funktionen", Actions.jANN_FUNCTION_OVERVIEW);
+		// mnHilfe.add(mntmFunktionUebersicht); // Settings.i18n.getString("menu.help.functions")
 
 		return mnHilfe;
 	}

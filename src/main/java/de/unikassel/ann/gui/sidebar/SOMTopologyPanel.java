@@ -69,12 +69,12 @@ public class SOMTopologyPanel extends JPanel {
 
 		JLabel lblInputNeuronSOM = new JLabel(Settings.i18n.getString("sidebar.topologySOM.lblInputNeuronSOM"));
 
-		inputModel = new SpinnerNumberModel(3, 2, 4, 1);
+		inputModel = new SpinnerNumberModel(3, 2, 3, 1);
 		inputSpinner = new JSpinner(inputModel);
 
 		JLabel lblOutputDimesionSOM = new JLabel(Settings.i18n.getString("sidebar.topologySOM.lblOutputDimesionSOM"));
 
-		dimensionModel = new SpinnerNumberModel(3, 2, 4, 1);
+		dimensionModel = new SpinnerNumberModel(3, 2, 3, 1);
 		outputDimensionSpinner = new JSpinner(dimensionModel);
 
 		selectedOutputDimensionCombo = new JComboBox();
@@ -90,11 +90,11 @@ public class SOMTopologyPanel extends JPanel {
 		JLabel lblPatternSOM = new JLabel(Settings.i18n.getString("sidebar.topologySOM.lblPatternSOM"));
 
 		somPatternCombo = new JComboBox();
-		somPatternCombo.setModel(new DefaultComboBoxModel(new String[] { "Eckig", "Rund" }));
+		somPatternCombo.setModel(new DefaultComboBoxModel(new String[] { "Eckig" }));
 
 		lblGre = new JLabel("Größe");
 
-		visualSize = new SpinnerNumberModel(100, 10, 500, 10);
+		visualSize = new SpinnerNumberModel(300, 10, 500, 10);
 		visualisationSizeSpinner = new JSpinner(visualSize);
 
 		dimensionAsStringField = new JTextField();
