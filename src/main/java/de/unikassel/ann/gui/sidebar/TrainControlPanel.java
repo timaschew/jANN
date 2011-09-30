@@ -17,9 +17,9 @@ import javax.swing.border.TitledBorder;
 
 import de.unikassel.ann.algo.BackPropagation;
 import de.unikassel.ann.config.NetConfig;
-import de.unikassel.ann.controller.GraphController;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.gui.Main;
+import de.unikassel.ann.io.tasks.TrainWorker;
 import de.unikassel.ann.model.DataPairSet;
 import de.unikassel.ann.util.Logger;
 
@@ -206,16 +206,15 @@ public class TrainControlPanel extends JPanel {
 					train.setBatchMode(batchMode);
 					train.setLearnRate(learnRate);
 					train.setMomentum(momentum);
-					Logger.info(this.getClass(), "training started");
-					train.train(net.getTrainingData());
-					GraphController.getInstance().repaint();
-					Logger.info(this.getClass(), "training beendet");
-					net.getWorkingModule().work(net.getNetwork(), testData);
-					Logger.info(this.getClass(), testData.toString());
-				}
 
+					// Disable button
+					btnPlay.setEnabled(false);
+
+					// Start worker
+					TrainWorker worker = new TrainWorker(net, train, testData);
+					worker.execute();
+				}
 			}
 		});
 	}
-
 }

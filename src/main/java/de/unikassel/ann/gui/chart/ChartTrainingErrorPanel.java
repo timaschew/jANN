@@ -30,13 +30,16 @@ public class ChartTrainingErrorPanel extends JPanel {
 
 	private static final long serialVersionUID = -8795234383972917391L;
 	private int count = 1;
+	private int iteration = 0;
 	private XYSeries currentSeries;
 	private XYSeriesCollection dataset;
 
 	public ChartTrainingErrorPanel() {
 		setLayout(new BorderLayout());
 
+		currentSeries = new XYSeries("#" + count++);
 		dataset = new XYSeriesCollection();
+		dataset.addSeries(currentSeries);
 
 		JFreeChart chart = ChartFactory.createXYLineChart("Trainingsfehler", // chart title
 				"Iteration", // x axis label
@@ -63,14 +66,15 @@ public class ChartTrainingErrorPanel extends JPanel {
 	}
 
 	public void createNewSeries() {
+		iteration = 0;
 		if (currentSeries.isEmpty()) {
 			return;
 		}
-		currentSeries = new XYSeries("#" + count++);
 		dataset.addSeries(currentSeries);
 	}
 
-	public void addToCurrentSeries(final Integer iteration, final Double error) {
+	public void addToCurrentSeries(final Double error) {
+		iteration++;
 		currentSeries.add(iteration, error);
 	}
 
