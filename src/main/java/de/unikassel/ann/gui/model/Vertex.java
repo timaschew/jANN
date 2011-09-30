@@ -110,23 +110,11 @@ public class Vertex implements Comparable<Vertex> {
 			}
 		}
 		return null;
-		//
-		// List<Synapse> outgoingSynapses = getModel().getOutgoingSynapses();
-		// Neuron toVertexModel = toVertex.getModel();
-		//
-		// // Get the synapse for this -> toVertex
-		// for (Synapse synapse : outgoingSynapses) {
-		// boolean isFromThis = synapse.getFromNeuron().getId() == getModel().getId();
-		// boolean isToVertex = synapse.getToNeuron().getId() == toVertexModel.getId();
-		// boolean isValidSynapse = toVertexModel.getIncomingSynapses().contains(synapse);
-		// if (isFromThis && isToVertex && isValidSynapse) {
-		// return synapse;
-		// }
-		// }
-		// return null;
 	}
 
 	/**
+	 * Returns whether the vertex may have an edge to the target vertex.
+	 * 
 	 * @param toVertex
 	 * @return
 	 */
@@ -137,7 +125,11 @@ public class Vertex implements Comparable<Vertex> {
 
 		// The neurons do not have to be connected already
 		if (hasEdgeTo(toVertex)) {
-			System.out.println(this + " hasEdgeTo " + toVertex);
+			return false;
+		}
+
+		// Avoid incoming synapses to a bias
+		if (toVertex.getModel().isBias()) {
 			return false;
 		}
 
