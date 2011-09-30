@@ -190,4 +190,15 @@ public class SimpleCube extends RenderGeometry {
 		return 2;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.unikassel.ann.threeD.model.RenderGeometry#random()
+	 */
+	@Override
+	public void random() {
+		// TODO Auto-generated method stub
+
+	}
+
 }

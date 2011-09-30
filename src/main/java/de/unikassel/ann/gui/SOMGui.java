@@ -38,6 +38,9 @@ import javax.swing.WindowConstants;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.gui.sidebar.SOMTopologyPanel;
 import de.unikassel.ann.gui.sidebar.SOMTrainingPanel;
+import de.unikassel.ann.io.tasks.SomWorker;
+import de.unikassel.ann.model.SomNetwork;
+import de.unikassel.ann.model.Synapse;
 import de.unikassel.ann.threeD.FrameRenderer;
 import de.unikassel.ann.threeD.model.GridCube;
 import de.unikassel.ann.threeD.model.Point3D;
@@ -89,7 +92,7 @@ public class SOMGui extends JFrame {
 	private JTextField fpsTF;
 	private SpinnerModel rotationStepModel;
 	public JCheckBox chckbxAutoRotation;
-	private RenderGeometry w3d;
+	private RenderGeometry renderModel;
 	protected boolean init = false;
 	private JLabel lbldKoordinateAbsolut;
 	private JLabel lblVertexGewichte;
@@ -117,6 +120,10 @@ public class SOMGui extends JFrame {
 
 	private JPanel visualiationPanel;
 	private JPanel soMSettingsPanel;
+	public SomNetwork somNetwork;
+	private SomWorker worker;
+
+	private static SOMGui instance;
 
 	public static void main(final String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -149,6 +156,10 @@ public class SOMGui extends JFrame {
 		w.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 	}
 
+	public static SOMGui getInstance() {
+		return instance;
+	}
+
 	/**
 	 * 
 	 */
@@ -167,25 +178,61 @@ public class SOMGui extends JFrame {
 		fps = (long) 1e9 / delta;
 
 		fpsTF.setText("" + fps);
-
-		// draw first (corner) point coordinate
-		if (init) {
-			Point3D p = w3d.points.get(0);
-			coordinate3dX.setText(p.x.intValue() + "");
-			coordinate3dY.setText(p.y.intValue() + "");
-			coordinate3dZ.setText(p.z.intValue() + "");
-
+		if (somNetwork != null) {
+			updateRenderFromSom();
 		}
 
 		repaint();
 	}
 
-	public SOMGui() {
+	/**
+	 * 
+	 */
+	private void updateRenderFromSom() {
+		Object[] multiDimArray = somNetwork.getMultiArray().getArray();
+		for (int outputIndex = 0; outputIndex < multiDimArray.length; outputIndex++) {
+			int inputSize = somNetwork.getInputSize();
+			double[] input = new double[inputSize];
+			for (int inputIndex = 0; inputIndex < inputSize; inputIndex++) {
+				Synapse synapse = somNetwork.getSynapseMatrix().getSynapse(inputIndex, outputIndex);
+				input[inputIndex] = synapse.getWeight();
+			}
+			int[] indices = somNetwork.getMultiArray().getMultiDimIndices(outputIndex);
+			Point3D point = renderModel.pointMatrix.get(indices);
+			for (int c = 0; c < inputSize; c++) {
+				switch (c) {
+				case 0:
+					point.x = input[0];
+					break;
+				case 1:
+					point.y = input[1];
+					break;
+				case 2:
+					point.z = input[2];
+					break;
+				default:
+					// System.err.println("could not visualize fourth dimension");
+					break;
+				}
+			}
+		}
 
+	}
+
+	/**
+	 * @param geometry
+	 */
+	public void setRenderModel(final RenderGeometry geometry) {
+		renderModel = geometry;
+		renderer.setModel(renderModel);
+	}
+
+	private SOMGui() {
+		instance = this;
 		renderer = new FrameRenderer(this);
 		// w3d = new SimpleCube();
-		w3d = new GridCube(5, 5, 5, 200);
-		renderer.setModel(w3d);
+		renderModel = new GridCube(5, 5, 5, 200);
+		renderer.setModel(renderModel);
 
 		getContentPane().setLayout(new BorderLayout());
 		initSpinnersAndActions();
@@ -273,24 +320,24 @@ public class SOMGui extends JFrame {
 		});
 
 		sizeSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
-		sizeSpinner.setValue(w3d.getGeometrySize());
+		sizeSpinner.setValue(renderModel.getGeometrySize());
 		DefaultEditor editorSize = (JSpinner.DefaultEditor) sizeSpinner.getEditor();
 		editorSize.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
 				Integer size = (Integer) evt.getNewValue();
-				w3d.setGeometrySize(size, null);
+				renderModel.setGeometrySize(size, null);
 			}
 		});
 
 		gridSpinner = new JSpinner(new SpinnerNumberModel(2, 2, 20, 1));
-		gridSpinner.setValue(w3d.getGridSize());
+		gridSpinner.setValue(renderModel.getGridSize());
 		DefaultEditor editorGrid = (JSpinner.DefaultEditor) gridSpinner.getEditor();
 		editorGrid.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
 				Integer grids = (Integer) evt.getNewValue();
-				w3d.setGeometrySize(null, grids);
+				renderModel.setGeometrySize(null, grids);
 			}
 		});
 
@@ -551,6 +598,14 @@ public class SOMGui extends JFrame {
 		gbc_zRotField.gridy = 7;
 		eastTopPanel.add(zRotField, gbc_zRotField);
 		// zRotField.setColumns(10);
+
+	}
+
+	/**
+	 * @param worker
+	 */
+	public void setWorker(final SomWorker worker) {
+		this.worker = worker;
 
 	}
 

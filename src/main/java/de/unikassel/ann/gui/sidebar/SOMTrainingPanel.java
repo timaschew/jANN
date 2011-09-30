@@ -24,7 +24,10 @@ import javax.swing.border.TitledBorder;
 
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.gui.SOMGui;
+import de.unikassel.ann.io.tasks.SomWorker;
 import de.unikassel.ann.model.SomNetwork;
+import de.unikassel.ann.threeD.model.GridCube;
+import de.unikassel.ann.threeD.model.RenderGeometry;
 
 /**
  * @author Sofia
@@ -52,12 +55,36 @@ public class SOMTrainingPanel extends JPanel {
 				int outputSize = parent.somTopPanel.outputModel.getNumber().intValue();
 				int dimensionSize = parent.somTopPanel.dimensionModel.getNumber().intValue();
 				int dimensions[] = new int[dimensionSize];
+				int patternRange = parent.somTopPanel.visualSize.getNumber().intValue();
+				int iterations = 1000;
 
 				// all dimension have equals size
 				for (int i = 0; i < dimensionSize; i++) {
 					dimensions[i] = outputSize;
 				}
-				SomNetwork somNet = new SomNetwork(inputSize, dimensions);
+
+				SomNetwork somNet = new SomNetwork(patternRange, inputSize, dimensions);
+				parent.somNetwork = somNet;
+				SomWorker worker = new SomWorker(somNet, iterations);
+
+				RenderGeometry geometry = null;
+				switch (dimensions.length) {
+				case 2:
+					// geometry = new GridPlane(outputSize, outputSize, outputSize, patternRange);
+					break;
+				case 3:
+					geometry = new GridCube(outputSize, outputSize, outputSize, patternRange);
+					break;
+				case 4:
+					// geometry = new GridHypercube(outputSize, outputSize, outputSize, patternRange);
+					break;
+				default:
+					return;
+				}
+				geometry.random();
+				parent.setRenderModel(geometry);
+				parent.setWorker(worker);
+				worker.execute();
 
 			}
 		});

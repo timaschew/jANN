@@ -57,4 +57,9 @@ abstract public class RenderGeometry {
 	 */
 	abstract public int getGridSize();
 
+	/**
+	 * 
+	 */
+	abstract public void random();
+
 }

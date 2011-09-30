@@ -37,6 +37,9 @@ public class SOMTopologyPanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	protected static final String DIM_TEXT_2D = "Quadrat (2D)";
+	protected static final String DIM_TEXT_3D = "Würfel (3D)";
+	protected static final String DIM_TEXT_4D = "Tesserakt (4D)";
 	public SpinnerNumberModel inputModel;
 	public SpinnerNumberModel outputModel;
 	public SpinnerNumberModel dimensionModel;
@@ -66,12 +69,12 @@ public class SOMTopologyPanel extends JPanel {
 
 		JLabel lblInputNeuronSOM = new JLabel(Settings.i18n.getString("sidebar.topologySOM.lblInputNeuronSOM"));
 
-		inputModel = new SpinnerNumberModel(2, 2, 4, 1);
+		inputModel = new SpinnerNumberModel(3, 2, 4, 1);
 		inputSpinner = new JSpinner(inputModel);
 
 		JLabel lblOutputDimesionSOM = new JLabel(Settings.i18n.getString("sidebar.topologySOM.lblOutputDimesionSOM"));
 
-		dimensionModel = new SpinnerNumberModel(2, 2, 4, 1);
+		dimensionModel = new SpinnerNumberModel(3, 2, 4, 1);
 		outputDimensionSpinner = new JSpinner(dimensionModel);
 
 		selectedOutputDimensionCombo = new JComboBox();
@@ -96,6 +99,7 @@ public class SOMTopologyPanel extends JPanel {
 
 		dimensionAsStringField = new JTextField();
 		dimensionAsStringField.setColumns(10);
+		dimensionAsStringField.setText(DIM_TEXT_3D);
 
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(
@@ -182,13 +186,13 @@ public class SOMTopologyPanel extends JPanel {
 				int v = value;
 				switch (v) {
 				case 2:
-					dimensionAsStringField.setText("Quadrat (2D)");
+					dimensionAsStringField.setText(DIM_TEXT_2D);
 					break;
 				case 3:
-					dimensionAsStringField.setText("Würfel (3D)");
+					dimensionAsStringField.setText(DIM_TEXT_3D);
 					break;
 				case 4:
-					dimensionAsStringField.setText("Tesserakt (4D)");
+					dimensionAsStringField.setText(DIM_TEXT_4D);
 					break;
 				default:
 					dimensionAsStringField.setText("");
