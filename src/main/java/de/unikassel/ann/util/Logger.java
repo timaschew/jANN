@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import de.unikassel.ann.gui.Main;
+import de.unikassel.ann.gui.Main.Panel;
 
 /**
  * @author anton
@@ -84,6 +85,7 @@ public class Logger {
 			} else if (level == ERROR) {
 				sb.append("Error: ").append(msg).append("\n");
 				Main.instance.updateTextArea(sb.toString(), "error");
+				Main.instance.switchBottomPanel(Panel.CONSOLE);
 			} else if (level == DEBUG) {
 				sb.append("Debug: ").append(msg).append("\n");
 				Main.instance.updateTextArea(sb.toString(), "regular");

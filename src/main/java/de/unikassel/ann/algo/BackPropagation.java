@@ -38,14 +38,14 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 	}
 
 	@Override
-	public boolean validateDataSet(final Network net, final DataPairSet testData) {
-		DataPair pair = testData.getPairs().get(0);
+	public boolean validateDataSet(final Network net, final DataPairSet dataset) {
+		DataPair pair = dataset.getPairs().get(0);
 		int inputSize = net.getInputSizeIgnoringBias();
 		int outputSize = net.getOutputSize();
 		if (pair.getInput().length == inputSize && pair.getIdeal().length == outputSize) {
 			return true;
 		}
-		throw new IllegalArgumentException("test dataset does not match for topology");
+		throw new IllegalArgumentException("dataset does not match for topology");
 	}
 
 	private void forwardStep(final Network net, final DataPair pair) {
@@ -115,7 +115,6 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 			double tmpError = netError.calculateRMS();
 			currentImprovement = currentError - tmpError;
 			currentError = tmpError;
-			config.notifyError(currentError);
 			// currentSingleError = netError.calculateSingleRMS();
 			netError.reset();
 			currentIteration++;

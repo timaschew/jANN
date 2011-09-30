@@ -23,9 +23,9 @@ import de.unikassel.ann.gui.ExportSaveFilePanel;
 import de.unikassel.ann.gui.HelpOverview;
 import de.unikassel.ann.gui.ImportFilePanel;
 import de.unikassel.ann.gui.Main;
-import de.unikassel.ann.gui.SOMGui;
 import de.unikassel.ann.gui.Main.Panel;
 import de.unikassel.ann.gui.MainMenu;
+import de.unikassel.ann.gui.SOMGui;
 import de.unikassel.ann.gui.TrainDataCreateDialog;
 import de.unikassel.ann.gui.TrainNormalizationPanel;
 import de.unikassel.ann.model.UserSession;
@@ -129,15 +129,12 @@ public class ActionJMenuItem extends JMenuItem implements ActionListener {
 			trainData.setVisible(true);
 			break;
 		case SWITCH_CONSOLE:
-			// Logger.switchBottomPanel(Panel.CONSOLE);
 			Main.instance.switchBottomPanel(Panel.CONSOLE);
 			break;
 		case SWITCH_TRAINDATA:
-			// Logger.switchBottomPanel(Panel.TRAIN_DATA_CHART);
 			Main.instance.switchBottomPanel(Panel.TRAIN_DATA_CHART);
 			break;
 		case SWITCH_TRAINERROR:
-			// Logger.switchBottomPanel(Panel.TRAINERROR_CHART);
 			Main.instance.switchBottomPanel(Panel.TRAINERROR_CHART);
 			break;
 		case CLEAR_CONSOLE:
