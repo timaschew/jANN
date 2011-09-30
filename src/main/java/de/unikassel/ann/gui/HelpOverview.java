@@ -1,7 +1,6 @@
 package de.unikassel.ann.gui;
 
-import java.awt.Dimension;
-import java.awt.GridLayout;
+import java.awt.BorderLayout;
 import java.io.IOException;
 import java.net.URL;
 
@@ -16,7 +15,11 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 
-public class FunctionOverviewjANN extends JPanel implements TreeSelectionListener {
+/**
+ * @author anton
+ * 
+ */
+public class HelpOverview extends JPanel implements TreeSelectionListener {
 
 	private static final long serialVersionUID = 1L;
 	private JEditorPane htmlPane;
@@ -24,8 +27,8 @@ public class FunctionOverviewjANN extends JPanel implements TreeSelectionListene
 	private URL helpURL;
 	private static boolean DEBUG = false;
 
-	public FunctionOverviewjANN() {
-		super(new GridLayout(1, 0));
+	public HelpOverview() {
+		super(new BorderLayout());
 
 		// Create the nodes.
 		DefaultMutableTreeNode top = new DefaultMutableTreeNode("jANN-Funktionen");
@@ -48,15 +51,11 @@ public class FunctionOverviewjANN extends JPanel implements TreeSelectionListene
 		JScrollPane htmlView = new JScrollPane(htmlPane);
 
 		// Add the scroll panes to a split pane.
-		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-		splitPane.setTopComponent(treeView);
-		splitPane.setBottomComponent(htmlView);
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		splitPane.setLeftComponent(treeView);
+		splitPane.setRightComponent(htmlView);
 
-		Dimension minimumSize = new Dimension(100, 50);
-		htmlView.setMinimumSize(minimumSize);
-		treeView.setMinimumSize(minimumSize);
-		splitPane.setDividerLocation(100);
-		splitPane.setPreferredSize(new Dimension(500, 300));
+		splitPane.setDividerLocation(0.3);
 
 		// Add the split pane to this panel.
 		add(splitPane);
@@ -172,7 +171,7 @@ public class FunctionOverviewjANN extends JPanel implements TreeSelectionListene
 		// frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// Add content to the window.
-		frame.add(new FunctionOverviewjANN());
+		frame.getContentPane().add(new HelpOverview());
 
 		// Display the window.
 		frame.pack();
@@ -185,7 +184,7 @@ public class FunctionOverviewjANN extends JPanel implements TreeSelectionListene
 
 		public UnderFunctionsInfo(final String function, final String filename) {
 			underFunctionsName = function;
-			underFuntionsURL = this.getClass().getClassLoader().getResource(filename);
+			underFuntionsURL = this.getClass().getClassLoader().getResource("html/" + filename);
 			if (underFuntionsURL == null) {
 				System.err.println("Couldn't find file: " + filename);
 			}
