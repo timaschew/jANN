@@ -127,4 +127,18 @@ public class Logger {
 	public static void error(final Class<?> clazz, final String message) {
 		log(clazz, ERROR, message);
 	}
+
+	public static void setDefaultLevel(final String loggerLevel) {
+		if (loggerLevel.equals("DEBUG")) {
+			DEFAULT_LOG_LEVEL = DEBUG;
+		} else if (loggerLevel.equals("INFO")) {
+			DEFAULT_LOG_LEVEL = INFO;
+		} else if (loggerLevel.equals("WARN")) {
+			DEFAULT_LOG_LEVEL = WARN;
+		}
+	}
+
+	public static int getDefaultLevel() {
+		return DEFAULT_LOG_LEVEL;
+	}
 }

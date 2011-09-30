@@ -57,7 +57,7 @@ public class Settings {
 	 * Catch the missing resource exception if the key does not exist
 	 */
 	public static String getI18n(final String key) {
-		return getI18n(key, null);
+		return getI18n(key, "<i18n>");
 	}
 
 	/**
