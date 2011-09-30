@@ -93,6 +93,8 @@ public class SOMGui extends JFrame {
 	private JLabel lblInput;
 	private JTextField weight4;
 	private FrameRenderer renderer;
+	private JLabel lblGrids;
+	private JSpinner gridSpinner;
 
 	public static void main(final String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -175,14 +177,25 @@ public class SOMGui extends JFrame {
 			}
 		});
 
-		sizeSpinner = new JSpinner();
+		sizeSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
 		sizeSpinner.setValue(w3d.getGeometrySize());
 		DefaultEditor editorSize = (JSpinner.DefaultEditor) sizeSpinner.getEditor();
 		editorSize.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {
 			@Override
 			public void propertyChange(final PropertyChangeEvent evt) {
 				Integer size = (Integer) evt.getNewValue();
-				// w3d.setGeometrySize(size);
+				w3d.setGeometrySize(size, null);
+			}
+		});
+
+		gridSpinner = new JSpinner(new SpinnerNumberModel(2, 2, 20, 1));
+		gridSpinner.setValue(w3d.getGridSize());
+		DefaultEditor editorGrid = (JSpinner.DefaultEditor) gridSpinner.getEditor();
+		editorGrid.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {
+			@Override
+			public void propertyChange(final PropertyChangeEvent evt) {
+				Integer grids = (Integer) evt.getNewValue();
+				w3d.setGeometrySize(null, grids);
 			}
 		});
 
@@ -320,7 +333,7 @@ public class SOMGui extends JFrame {
 		GridBagLayout gbl_panel = new GridBagLayout();
 		gbl_panel.columnWidths = new int[] { 0, 0, 0, 0, 0 };
 		gbl_panel.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-		gbl_panel.columnWeights = new double[] { 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_panel.columnWeights = new double[] { 1.0, 0.0, 0.0, 1.0, Double.MIN_VALUE };
 		gbl_panel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		eastTopPanel.setLayout(gbl_panel);
 
@@ -338,6 +351,21 @@ public class SOMGui extends JFrame {
 		gbc_sizeSpinner.gridx = 3;
 		gbc_sizeSpinner.gridy = 1;
 		eastTopPanel.add(sizeSpinner, gbc_sizeSpinner);
+
+		lblGrids = new JLabel("Grids");
+		GridBagConstraints gbc_lblGrids = new GridBagConstraints();
+		gbc_lblGrids.anchor = GridBagConstraints.EAST;
+		gbc_lblGrids.insets = new Insets(0, 0, 5, 5);
+		gbc_lblGrids.gridx = 1;
+		gbc_lblGrids.gridy = 2;
+		eastTopPanel.add(lblGrids, gbc_lblGrids);
+
+		GridBagConstraints gbc_gridSpinner = new GridBagConstraints();
+		gbc_gridSpinner.fill = GridBagConstraints.HORIZONTAL;
+		gbc_gridSpinner.insets = new Insets(0, 0, 5, 0);
+		gbc_gridSpinner.gridx = 3;
+		gbc_gridSpinner.gridy = 2;
+		eastTopPanel.add(gridSpinner, gbc_gridSpinner);
 		// maxCorner.setColumns(10);
 
 		JLabel lblWorldXOffset = new JLabel("World Position (x,y)");
@@ -345,7 +373,7 @@ public class SOMGui extends JFrame {
 		gbc_lblWorldXOffset.insets = new Insets(0, 0, 5, 5);
 		gbc_lblWorldXOffset.anchor = GridBagConstraints.EAST;
 		gbc_lblWorldXOffset.gridx = 1;
-		gbc_lblWorldXOffset.gridy = 2;
+		gbc_lblWorldXOffset.gridy = 3;
 		eastTopPanel.add(lblWorldXOffset, gbc_lblWorldXOffset);
 
 		worldYoffset = new JSpinner(worldYoffsetModel);
@@ -353,7 +381,7 @@ public class SOMGui extends JFrame {
 		gbc_worldYoffset.fill = GridBagConstraints.HORIZONTAL;
 		gbc_worldYoffset.insets = new Insets(0, 0, 5, 5);
 		gbc_worldYoffset.gridx = 2;
-		gbc_worldYoffset.gridy = 2;
+		gbc_worldYoffset.gridy = 3;
 		eastTopPanel.add(worldYoffset, gbc_worldYoffset);
 
 		worldXoffset = new JSpinner(worldXoffsetModel);
@@ -361,7 +389,7 @@ public class SOMGui extends JFrame {
 		gbc_worldXoffset.fill = GridBagConstraints.HORIZONTAL;
 		gbc_worldXoffset.insets = new Insets(0, 0, 5, 0);
 		gbc_worldXoffset.gridx = 3;
-		gbc_worldXoffset.gridy = 2;
+		gbc_worldXoffset.gridy = 3;
 		eastTopPanel.add(worldXoffset, gbc_worldXoffset);
 
 		lblRotationStep = new JLabel("Rotation step");
@@ -372,12 +400,12 @@ public class SOMGui extends JFrame {
 		gbc_lblRotationStep.gridy = 4;
 		eastTopPanel.add(lblRotationStep, gbc_lblRotationStep);
 
-		GridBagConstraints gbc_spinner = new GridBagConstraints();
-		gbc_spinner.fill = GridBagConstraints.HORIZONTAL;
-		gbc_spinner.insets = new Insets(0, 0, 5, 0);
-		gbc_spinner.gridx = 3;
-		gbc_spinner.gridy = 4;
-		eastTopPanel.add(rotStepSpinner, gbc_spinner);
+		GridBagConstraints gbc_rotStepSpinner = new GridBagConstraints();
+		gbc_rotStepSpinner.fill = GridBagConstraints.HORIZONTAL;
+		gbc_rotStepSpinner.insets = new Insets(0, 0, 5, 0);
+		gbc_rotStepSpinner.gridx = 3;
+		gbc_rotStepSpinner.gridy = 4;
+		eastTopPanel.add(rotStepSpinner, gbc_rotStepSpinner);
 		// worldYoffset.setColumns(10);
 
 		lblXrotation = new JLabel("X-Rotation");

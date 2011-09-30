@@ -129,6 +129,9 @@ public class FrameRenderer extends JPanel implements MouseMotionListener {
 		for (Line l : cube.lines) {
 			Point3D a = l.a;
 			Point3D b = l.b;
+			if (a == null || b == null) {
+				return;
+			}
 			gBuffer.drawLine(a.x.intValue() + worldXoffset, a.y.intValue() + worldYOffset, b.x.intValue() + worldXoffset, b.y.intValue()
 					+ worldYOffset);
 		}

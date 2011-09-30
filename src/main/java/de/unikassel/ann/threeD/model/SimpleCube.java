@@ -175,4 +175,19 @@ public class SimpleCube extends RenderGeometry {
 		return Math.abs(negativeRadius) + Math.abs(positiveRadius);
 	}
 
+	@Override
+	public void setGeometrySize(final Integer size, final Integer grids) {
+		setGeometrySize(size);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.unikassel.ann.threeD.model.RenderGeometry#getGridSize()
+	 */
+	@Override
+	public int getGridSize() {
+		return 2;
+	}
+
 }

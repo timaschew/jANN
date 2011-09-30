@@ -1,6 +1,7 @@
 package de.unikassel.ann.threeD.model;
 
 import java.util.ArrayList;
+import java.util.concurrent.locks.ReentrantLock;
 
 import de.unikassel.mdda.MDDA;
 
@@ -40,6 +41,10 @@ public class GridCube extends RenderGeometry {
 	private int xSize;
 	private int zSize;
 	private int ySize;
+	private int zGrids;
+	private int yGrids;
+	private int xGrids;
+	private ReentrantLock lock = new ReentrantLock();
 
 	/**
 	 * grid count = 3<br>
@@ -74,12 +79,48 @@ public class GridCube extends RenderGeometry {
 	}
 
 	public GridCube(final int xGrids, final int yGrids, final int zGrids, final int xSize, final int ySize, final int zSize) {
-		pointMatrix = new MDDA<Point3D>(xGrids, yGrids, zGrids);
-		lines = new ArrayList<Line>();
-		points = new ArrayList<Point3D>();
 		this.xSize = xSize;
 		this.ySize = ySize;
 		this.zSize = zSize;
+		this.xGrids = xGrids;
+		this.yGrids = yGrids;
+		this.zGrids = zGrids;
+
+		setGeometrySize();
+	}
+
+	@Override
+	public void setGeometrySize(final Integer size, final Integer grids) {
+		// lock.lock();
+		if (grids != null) {
+			xGrids = grids;
+			yGrids = grids;
+			zGrids = grids;
+		}
+		if (size != null) {
+			if (xGrids == 2 && size % 2 != 0) {
+				xSize = size + 1;
+				ySize = size + 1;
+				zSize = size + 1;
+			} else {
+				xSize = size;
+				ySize = size;
+				zSize = size;
+			}
+		}
+		if (size != null || grids != null) {
+			setGeometrySize();
+		}
+		// lock.unlock();
+	}
+
+	/**
+	 * @param zGrids
+	 * @param yGrids
+	 * @param xGrids
+	 * 
+	 */
+	private void setGeometrySize() {
 		// points
 		int zPositive = zSize / 2;
 		int zNegative = -zPositive;
@@ -96,16 +137,30 @@ public class GridCube extends RenderGeometry {
 		int xChunk = xSize / (xGrids - 1);
 		int xCounter = 0;
 
+		MDDA<Point3D> pointMatrixT = new MDDA<Point3D>(xGrids, yGrids, zGrids);
+		ArrayList<Line> linesT = new ArrayList<Line>();
+		ArrayList<Point3D> pointsT = new ArrayList<Point3D>();
+
 		for (int z = zNegative; z <= zPositive; z += zChunk) {
 			xCounter = 0;
 			for (int x = xNegative; x <= xPositive; x += xChunk) {
 				yCounter = 0;
 				for (int y = yNegative; y <= yPositive; y += yChunk) {
-					System.out.println("                     " + xCounter + " " + yCounter + " " + zCounter);
-					System.out.println(x + " " + y + " " + z);
 					Point3D p = new Point3D(x, y, z);
-					pointMatrix.set(p, xCounter, yCounter, zCounter);
-					points.add(p);
+					try {
+						pointMatrixT.set(p, xCounter, yCounter, zCounter);
+					} catch (Exception e) {
+						// System.err.println("try to set " + xCounter + ", " + yCounter + ", " + zCounter);
+						// System.err.print("but array was: ");
+						// for (int i : pointMatrix.getSize()) {
+						// System.err.print(" " + i);
+						// }
+						// System.err.println("");
+						// e.printStackTrace();
+						return;
+					}
+
+					pointsT.add(p);
 					yCounter++;
 				}
 				xCounter++;
@@ -119,26 +174,41 @@ public class GridCube extends RenderGeometry {
 				for (int y = 0; y < yGrids; y++) {
 					if (z > 0) {
 						// connection in z axis
-						Line deep = new Line(pointMatrix.get(x, y, z), pointMatrix.get(x, y, z - 1));
-						lines.add(deep);
+						Line deep = new Line(pointMatrixT.get(x, y, z), pointMatrixT.get(x, y, z - 1));
+						linesT.add(deep);
 					}
 					if (x > 0) {
 						// connection in x axis
-						Line left2 = new Line(pointMatrix.get(x, y, z), pointMatrix.get(x - 1, y, z));
-						lines.add(left2);
+						Line left2 = new Line(pointMatrixT.get(x, y, z), pointMatrixT.get(x - 1, y, z));
+						linesT.add(left2);
 					}
 					if (y > 0) {
 						// connection in y axis
-						Line down = new Line(pointMatrix.get(x, y, z), pointMatrix.get(x, y - 1, z));
-						lines.add(down);
+						Line down = new Line(pointMatrixT.get(x, y, z), pointMatrixT.get(x, y - 1, z));
+						linesT.add(down);
 					}
 				}
 			}
 		}
+
+		pointMatrix = pointMatrixT;
+		lines = linesT;
+		points = pointsT;
+
 	}
 
 	@Override
 	public double getGeometrySize() {
 		return xSize;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.unikassel.ann.threeD.model.RenderGeometry#getGridSize()
+	 */
+	@Override
+	public int getGridSize() {
+		return xGrids;
 	}
 }

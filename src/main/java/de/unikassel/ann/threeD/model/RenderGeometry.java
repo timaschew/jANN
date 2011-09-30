@@ -46,4 +46,15 @@ abstract public class RenderGeometry {
 	 */
 	abstract public double getGeometrySize();
 
+	/**
+	 * @param size
+	 * @param grids
+	 */
+	abstract public void setGeometrySize(Integer size, Integer grids);
+
+	/**
+	 * @return
+	 */
+	abstract public int getGridSize();
+
 }
