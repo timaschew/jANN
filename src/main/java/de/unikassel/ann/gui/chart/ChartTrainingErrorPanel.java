@@ -70,6 +70,7 @@ public class ChartTrainingErrorPanel extends JPanel {
 		if (currentSeries.isEmpty()) {
 			return;
 		}
+		currentSeries = new XYSeries("#" + count++);
 		dataset.addSeries(currentSeries);
 	}
 

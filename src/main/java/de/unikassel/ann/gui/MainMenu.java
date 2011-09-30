@@ -109,7 +109,7 @@ public class MainMenu extends JMenuBar {
 		mnAnsicht.add(radioTrainDataChart);
 
 		JRadioButtonMenuItem rdbtnmntmTrainingsfehlerAnzeigen = new JRadioButtonMenuItem("Trainingsfehler anzeigen");
-		rdbtnmntmTrainingsfehlerAnzeigen.setEnabled(false);
+		// rdbtnmntmTrainingsfehlerAnzeigen.setEnabled(false);
 		buttonGroup.add(rdbtnmntmTrainingsfehlerAnzeigen);
 		mnAnsicht.add(rdbtnmntmTrainingsfehlerAnzeigen);
 
