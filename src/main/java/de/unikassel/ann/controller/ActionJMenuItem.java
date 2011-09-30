@@ -23,11 +23,11 @@ import de.unikassel.ann.gui.ExportSaveFilePanel;
 import de.unikassel.ann.gui.HelpOverview;
 import de.unikassel.ann.gui.ImportFilePanel;
 import de.unikassel.ann.gui.Main;
+import de.unikassel.ann.gui.SOMGui;
 import de.unikassel.ann.gui.Main.Panel;
 import de.unikassel.ann.gui.MainMenu;
 import de.unikassel.ann.gui.TrainDataCreateDialog;
 import de.unikassel.ann.gui.TrainNormalizationPanel;
-import de.unikassel.ann.gui.sidebar.SOMGui;
 import de.unikassel.ann.model.UserSession;
 
 /**
@@ -121,18 +121,13 @@ public class ActionJMenuItem extends JMenuItem implements ActionListener {
 		case LOAD_2_BIT_ADDIERER_NETWORK:
 			loadNetworkFromFile("2-bit-addierer");
 			break;
-		case BACKPROPAGATION_VIEW:
-			// Main.instance.addBackproSidebarPanel();
-			break;
 		case SOM_VIEW:
-			// Main.instance.addSOMSidebarPanel();
 			SOMGui.createAndShowGui();
 			break;
 		case NORMALIZE_TRAIN_DATA:
 			TrainNormalizationPanel trainData = new TrainNormalizationPanel();
 			trainData.setVisible(true);
 			break;
-
 		case SWITCH_CONSOLE:
 			Main.instance.switchBottomPanel(Panel.CONSOLE);
 			break;

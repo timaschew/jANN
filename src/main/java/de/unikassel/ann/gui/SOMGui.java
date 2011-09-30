@@ -5,7 +5,7 @@
  * 
  * anton
  */
-package de.unikassel.ann.gui.sidebar;
+package de.unikassel.ann.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -36,6 +36,8 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
 import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.gui.sidebar.SOMTopologyPanel;
+import de.unikassel.ann.gui.sidebar.SOMTrainingPanel;
 import de.unikassel.ann.threeD.FrameRenderer;
 import de.unikassel.ann.threeD.model.GridCube;
 import de.unikassel.ann.threeD.model.Point3D;
@@ -101,17 +103,20 @@ public class SOMGui extends JFrame {
 	private FrameRenderer renderer;
 	private JLabel lblGrids;
 	private JSpinner gridSpinner;
-	private SOMTopologyPanel somTopPanel;
-	private SOMTrainingPanel somTrainPanel;
+
+	public SOMTopologyPanel somTopPanel;
+	public SOMTrainingPanel somTrainPanel;
 
 	/* fps stuff */
 	long delta = 0;
 	long last = 0;
 	long fps = 0;
-	private JPanel visualiationPanel;
 	private JPanel eastTopPanel;
 	private JPanel easetBottomPanel;
 	private JPanel southPanel;
+
+	private JPanel visualiationPanel;
+	private JPanel soMSettingsPanel;
 
 	public static void main(final String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -196,7 +201,7 @@ public class SOMGui extends JFrame {
 		tabbedPane.setBorder(null);
 		add(tabbedPane);
 
-		JPanel soMSettingsPanel = new JPanel();
+		soMSettingsPanel = new JPanel();
 		GridBagLayout gbl_wrapper = new GridBagLayout();
 		gbl_wrapper.columnWidths = new int[] { 412, 0 };
 		gbl_wrapper.rowHeights = new int[] { 254, 215 };
@@ -205,7 +210,7 @@ public class SOMGui extends JFrame {
 		soMSettingsPanel.setLayout(gbl_wrapper);
 
 		// topology Panel
-		somTopPanel = new SOMTopologyPanel();
+		somTopPanel = new SOMTopologyPanel(this);
 		GridBagConstraints gbc_somTopPanel = new GridBagConstraints();
 		gbc_somTopPanel.anchor = GridBagConstraints.NORTH;
 		gbc_somTopPanel.fill = GridBagConstraints.HORIZONTAL;
@@ -215,7 +220,7 @@ public class SOMGui extends JFrame {
 		soMSettingsPanel.add(somTopPanel, gbc_somTopPanel);
 
 		// Trainstrategy Panel
-		somTrainPanel = new SOMTrainingPanel();
+		somTrainPanel = new SOMTrainingPanel(this);
 		GridBagConstraints gbc_somTrainPanel = new GridBagConstraints();
 		gbc_somTrainPanel.anchor = GridBagConstraints.NORTH;
 		gbc_somTrainPanel.fill = GridBagConstraints.HORIZONTAL;

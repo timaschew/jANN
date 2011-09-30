@@ -8,6 +8,8 @@
 package de.unikassel.ann.gui.sidebar;
 
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
@@ -21,6 +23,8 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.TitledBorder;
 
 import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.gui.SOMGui;
+import de.unikassel.ann.model.SomNetwork;
 
 /**
  * @author Sofia
@@ -32,11 +36,42 @@ public class SOMTrainingPanel extends JPanel {
 	private JSpinner spinnerNeighborhoodRadius;
 	private JComboBox comboLernFunction;
 	private JSpinner spinnerIterationsSOM;
+	private JButton btnStartTraining;
+	private JButton btnReset;
+	private SOMGui parent;
+
+	/**
+	 * 
+	 */
+	private void initActions() {
+		btnStartTraining.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+
+				int inputSize = parent.somTopPanel.inputModel.getNumber().intValue();
+				int outputSize = parent.somTopPanel.outputModel.getNumber().intValue();
+				int dimensionSize = parent.somTopPanel.dimensionModel.getNumber().intValue();
+				int dimensions[] = new int[dimensionSize];
+
+				// all dimension have equals size
+				for (int i = 0; i < dimensionSize; i++) {
+					dimensions[i] = outputSize;
+				}
+				SomNetwork somNet = new SomNetwork(inputSize, dimensions);
+
+			}
+		});
+
+	}
 
 	/**
 	 * Create the panel.
+	 * 
+	 * @param somGui
 	 */
-	public SOMTrainingPanel() {
+	public SOMTrainingPanel(final SOMGui parent) {
+
+		this.parent = parent;
 
 		setBorder(new TitledBorder(null, Settings.i18n.getString("sidebar.trainingSOM"), TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		setPreferredSize(new Dimension(400, 243));
@@ -59,9 +94,9 @@ public class SOMTrainingPanel extends JPanel {
 
 		spinnerIterationsSOM = new JSpinner();
 
-		JButton btnStarttraining = new JButton("Training starten");
+		btnStartTraining = new JButton("Training starten");
 
-		JButton btnReset = new JButton("Reset");
+		btnReset = new JButton("Reset");
 
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout
@@ -103,7 +138,7 @@ public class SOMTrainingPanel extends JPanel {
 																				GroupLayout.PREFERRED_SIZE)))
 										.addContainerGap(126, Short.MAX_VALUE))
 						.addGroup(
-								groupLayout.createSequentialGroup().addComponent(btnStarttraining)
+								groupLayout.createSequentialGroup().addComponent(btnStartTraining)
 										.addPreferredGap(ComponentPlacement.RELATED)
 										.addComponent(btnReset, GroupLayout.PREFERRED_SIZE, 119, GroupLayout.PREFERRED_SIZE).addGap(128)));
 		groupLayout
@@ -140,9 +175,12 @@ public class SOMTrainingPanel extends JPanel {
 														.addComponent(lblIterations))
 										.addPreferredGap(ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
 										.addGroup(
-												groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(btnStarttraining)
+												groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(btnStartTraining)
 														.addComponent(btnReset))));
 		setLayout(groupLayout);
 
+		initActions();
+
 	}
+
 }

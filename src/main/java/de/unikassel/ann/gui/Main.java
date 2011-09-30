@@ -29,7 +29,6 @@ import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.gui.chart.ChartTrainingDataPanel;
 import de.unikassel.ann.gui.chart.ChartTrainingErrorPanel;
 import de.unikassel.ann.gui.sidebar.Sidebar;
-import de.unikassel.ann.gui.sidebar.SidebarSOM;
 import de.unikassel.ann.model.Network;
 import de.unikassel.ann.util.Logger;
 
@@ -83,7 +82,6 @@ public class Main {
 	public MainMenu mainMenu;
 	public Sidebar sidebar;
 	public JSplitPane mainSplitPane;
-	public SidebarSOM sidebarSom;
 	public JPanel consoleOrChartPanel;
 	public ChartTrainingErrorPanel trainingErrorChartPanel;
 	public ChartTrainingDataPanel trainingDataChartPanel;

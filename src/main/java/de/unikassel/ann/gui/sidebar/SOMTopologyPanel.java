@@ -25,6 +25,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.border.TitledBorder;
 
 import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.gui.SOMGui;
 
 /**
  * @author Sofia
@@ -49,11 +50,17 @@ public class SOMTopologyPanel extends JPanel {
 	private JLabel lblGre;
 	private JTextField dimensionAsStringField;
 	private JSpinner visualisationSizeSpinner;
+	private SOMGui parent;
 
 	/**
 	 * Create the panel.
+	 * 
+	 * @param somGui
 	 */
-	public SOMTopologyPanel() {
+	public SOMTopologyPanel(final SOMGui parent) {
+
+		this.parent = parent;
+
 		setBorder(new TitledBorder(null, Settings.i18n.getString("sidebar.topologySOM"), TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		setPreferredSize(new Dimension(400, 278));
 
