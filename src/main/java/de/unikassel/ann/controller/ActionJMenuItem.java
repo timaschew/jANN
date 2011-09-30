@@ -20,9 +20,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import de.unikassel.ann.gui.ExportSaveFilePanel;
-import de.unikassel.ann.gui.FunctionOverviewjANN;
+import de.unikassel.ann.gui.HelpOverview;
 import de.unikassel.ann.gui.ImportFilePanel;
 import de.unikassel.ann.gui.Main;
+import de.unikassel.ann.gui.SOMGui;
 import de.unikassel.ann.gui.Main.Panel;
 import de.unikassel.ann.gui.MainMenu;
 import de.unikassel.ann.gui.TrainDataCreateDialog;
@@ -120,17 +121,13 @@ public class ActionJMenuItem extends JMenuItem implements ActionListener {
 		case LOAD_2_BIT_ADDIERER_NETWORK:
 			loadNetworkFromFile("2-bit-addierer");
 			break;
-		case BACKPROPAGATION_VIEW:
-			Main.instance.addBackproSidebarPanel();
-			break;
 		case SOM_VIEW:
-			Main.instance.addSOMSidebarPanel();
+			SOMGui.createAndShowGui();
 			break;
 		case NORMALIZE_TRAIN_DATA:
 			TrainNormalizationPanel trainData = new TrainNormalizationPanel();
 			trainData.setVisible(true);
 			break;
-
 		case SWITCH_CONSOLE:
 			// Logger.switchBottomPanel(Panel.CONSOLE);
 			Main.instance.switchBottomPanel(Panel.CONSOLE);
@@ -143,13 +140,17 @@ public class ActionJMenuItem extends JMenuItem implements ActionListener {
 			// Logger.switchBottomPanel(Panel.TRAINERROR_CHART);
 			Main.instance.switchBottomPanel(Panel.TRAINERROR_CHART);
 			break;
+		case CLEAR_CONSOLE:
+			Main.instance.clearConsole();
+			break;
 		case NONE:
+			break;
 		case CREATE_TRAIN_DATA:
 			TrainDataCreateDialog trainD = new TrainDataCreateDialog();
 			trainD.setVisible(true);
 			break;
 		case jANN_FUNCTION_OVERVIEW:
-			FunctionOverviewjANN.createAndShowGUI();
+			HelpOverview.createAndShowGUI();
 			break;
 		default:
 			System.out.println("Unknown command: " + action);

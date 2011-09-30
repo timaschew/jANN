@@ -5,7 +5,7 @@
  * 
  * anton
  */
-package de.unikassel.ann.threeD;
+package de.unikassel.ann.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -18,17 +18,27 @@ import java.awt.Insets;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JSpinner.DefaultEditor;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 
+import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.gui.sidebar.SOMTopologyPanel;
+import de.unikassel.ann.gui.sidebar.SOMTrainingPanel;
+import de.unikassel.ann.threeD.FrameRenderer;
 import de.unikassel.ann.threeD.model.GridCube;
 import de.unikassel.ann.threeD.model.Point3D;
 import de.unikassel.ann.threeD.model.RenderGeometry;
@@ -79,8 +89,6 @@ public class SOMGui extends JFrame {
 	private JTextField fpsTF;
 	private SpinnerModel rotationStepModel;
 	public JCheckBox chckbxAutoRotation;
-	private int cunter = 0;
-	private long lastUpdate = System.currentTimeMillis();
 	private RenderGeometry w3d;
 	protected boolean init = false;
 	private JLabel lbldKoordinateAbsolut;
@@ -96,23 +104,49 @@ public class SOMGui extends JFrame {
 	private JLabel lblGrids;
 	private JSpinner gridSpinner;
 
+	public SOMTopologyPanel somTopPanel;
+	public SOMTrainingPanel somTrainPanel;
+
+	/* fps stuff */
+	long delta = 0;
+	long last = 0;
+	long fps = 0;
+	private JPanel eastTopPanel;
+	private JPanel easetBottomPanel;
+	private JPanel southPanel;
+
+	private JPanel visualiationPanel;
+	private JPanel soMSettingsPanel;
+
 	public static void main(final String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 
 			@Override
 			public void run() {
-				try {
-					SOMGui w = new SOMGui();
-					w.init();
-					w.setVisible(true);
-					w.setBounds(100, 100, 1000, 700); // statt 800 1060
-					w.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+				try {
+					// Set look and feel by the properties file
+					String lookAndFeel = Settings.properties.getProperty("gui.lookandfeel");
+					UIManager.setLookAndFeel(lookAndFeel);
 				} catch (Exception e) {
-					e.printStackTrace();
+					System.err.println("look and feel nicht gefeunden");
+					System.out.println("Standard wird verwendet: " + UIManager.getLookAndFeel().getName());
 				}
+				createAndShowGui();
+
 			}
 		});
+	}
+
+	/**
+	 * 
+	 */
+	public static void createAndShowGui() {
+		SOMGui w = new SOMGui();
+		w.init();
+		w.setVisible(true);
+		w.setBounds(100, 100, 1000, 700); // statt 800 1060
+		w.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 	}
 
 	/**
@@ -127,9 +161,14 @@ public class SOMGui extends JFrame {
 	@Override
 	public void paint(final Graphics g) {
 		super.paint(g);
-		long newTime = System.currentTimeMillis();
-		fpsTF.setText("" + (newTime - lastUpdate));
 
+		delta = System.nanoTime() - last;
+		last = System.nanoTime();
+		fps = (long) 1e9 / delta;
+
+		fpsTF.setText("" + fps);
+
+		// draw first (corner) point coordinate
 		if (init) {
 			Point3D p = w3d.points.get(0);
 			coordinate3dX.setText(p.x.intValue() + "");
@@ -139,7 +178,6 @@ public class SOMGui extends JFrame {
 		}
 
 		repaint();
-		lastUpdate = newTime;
 	}
 
 	public SOMGui() {
@@ -150,7 +188,64 @@ public class SOMGui extends JFrame {
 		renderer.setModel(w3d);
 
 		getContentPane().setLayout(new BorderLayout());
+		initSpinnersAndActions();
 
+		visualiationPanel = new JPanel(new GridLayout(0, 1));
+		eastTopPanel = new JPanel();
+		easetBottomPanel = new JPanel();
+
+		visualiationPanel.add(eastTopPanel);
+		visualiationPanel.add(easetBottomPanel);
+
+		JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.TOP);
+		tabbedPane.setBorder(null);
+		add(tabbedPane);
+
+		soMSettingsPanel = new JPanel();
+		GridBagLayout gbl_wrapper = new GridBagLayout();
+		gbl_wrapper.columnWidths = new int[] { 412, 0 };
+		gbl_wrapper.rowHeights = new int[] { 254, 215 };
+		gbl_wrapper.columnWeights = new double[] { 0.0, Double.MIN_VALUE };
+		gbl_wrapper.rowWeights = new double[] { 0.0, 0.0, 0.0 };
+		soMSettingsPanel.setLayout(gbl_wrapper);
+
+		// topology Panel
+		somTopPanel = new SOMTopologyPanel(this);
+		GridBagConstraints gbc_somTopPanel = new GridBagConstraints();
+		gbc_somTopPanel.anchor = GridBagConstraints.NORTH;
+		gbc_somTopPanel.fill = GridBagConstraints.HORIZONTAL;
+		gbc_somTopPanel.insets = new Insets(0, 0, 5, 0);
+		gbc_somTopPanel.gridx = 0;
+		gbc_somTopPanel.gridy = 0;
+		soMSettingsPanel.add(somTopPanel, gbc_somTopPanel);
+
+		// Trainstrategy Panel
+		somTrainPanel = new SOMTrainingPanel(this);
+		GridBagConstraints gbc_somTrainPanel = new GridBagConstraints();
+		gbc_somTrainPanel.anchor = GridBagConstraints.NORTH;
+		gbc_somTrainPanel.fill = GridBagConstraints.HORIZONTAL;
+		gbc_somTrainPanel.insets = new Insets(0, 0, 5, 0);
+		gbc_somTrainPanel.gridx = 0;
+		gbc_somTrainPanel.gridy = 1;
+		soMSettingsPanel.add(somTrainPanel, gbc_somTrainPanel);
+
+		JScrollPane firstTab = new JScrollPane(soMSettingsPanel);
+		JScrollPane secondTab = new JScrollPane(visualiationPanel);
+		firstTab.setBorder(BorderFactory.createEmptyBorder());
+		secondTab.setBorder(BorderFactory.createEmptyBorder());
+
+		tabbedPane.addTab("Konfiguration", null, firstTab, null);
+		tabbedPane.addTab("Visualisierung", null, secondTab, null);
+
+		getContentPane().add(tabbedPane, BorderLayout.EAST);
+
+		createComponents();
+	}
+
+	/**
+	 * 
+	 */
+	private void initSpinnersAndActions() {
 		chckbxAutoRotation = new JCheckBox("Auto-Rotation");
 		chckbxAutoRotation.setSelected(true);
 
@@ -199,16 +294,14 @@ public class SOMGui extends JFrame {
 			}
 		});
 
-		JPanel eastPanel = new JPanel(new GridLayout(0, 1));
-		JPanel eastTopPanel = new JPanel();
-		JPanel easetBottomPanel = new JPanel();
+	}
 
-		eastPanel.add(eastTopPanel);
-		eastPanel.add(easetBottomPanel);
+	/**
+	 * 
+	 */
+	private void createComponents() {
 
-		getContentPane().add(eastPanel, BorderLayout.EAST);
-
-		JPanel southPanel = new JPanel();
+		southPanel = new JPanel();
 		getContentPane().add(southPanel, BorderLayout.SOUTH);
 
 		lblDelayms = new JLabel("Delay [ms]");
@@ -458,6 +551,7 @@ public class SOMGui extends JFrame {
 		gbc_zRotField.gridy = 7;
 		eastTopPanel.add(zRotField, gbc_zRotField);
 		// zRotField.setColumns(10);
+
 	}
 
 }

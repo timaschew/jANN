@@ -112,12 +112,13 @@ public class MainMenu extends JMenuBar {
 		JSeparator separator = new JSeparator();
 		mnAnsicht.add(separator);
 
-		JMenuItem mntmTrainingchartLeeren = new JMenuItem("Konsole/Chart leeren");
+		JMenuItem mntmTrainingchartLeeren = new JMenuItem("Konsole leeren");
 		mnAnsicht.add(mntmTrainingchartLeeren);
 
 		rdbtnmntmKonsoleAnzeigen.addActionListener(new ActionJMenuItem("switch console", Actions.SWITCH_CONSOLE));
 		rdbtnmntmTrainingsfehlerAnzeigen.addActionListener(new ActionJMenuItem("switch train error", Actions.SWITCH_TRAINERROR));
 		radioTrainDataChart.addActionListener(new ActionJMenuItem("switch train data", Actions.SWITCH_TRAINDATA));
+		radioTrainDataChart.addActionListener(new ActionJMenuItem("clear console", Actions.CLEAR_CONSOLE));
 
 		return mnAnsicht;
 	}
@@ -130,10 +131,6 @@ public class MainMenu extends JMenuBar {
 
 	private JMenu getOptionsMenu() {
 		JMenu mnOptions = new JMenu(Settings.i18n.getString("menu.options"));
-
-		JMenuItem mntmBackpropagation = new ActionJMenuItem(Settings.i18n.getString("menu.options.backpropagation"),
-				Actions.BACKPROPAGATION_VIEW);
-		mnOptions.add(mntmBackpropagation);
 
 		JMenuItem mntmSOM = new ActionJMenuItem(Settings.i18n.getString("menu.options.SOM"), Actions.SOM_VIEW);
 		mnOptions.add(mntmSOM);

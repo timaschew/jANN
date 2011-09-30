@@ -18,6 +18,7 @@ import java.awt.event.MouseMotionListener;
 
 import javax.swing.JPanel;
 
+import de.unikassel.ann.gui.SOMGui;
 import de.unikassel.ann.threeD.model.Line;
 import de.unikassel.ann.threeD.model.Point3D;
 import de.unikassel.ann.threeD.model.RenderGeometry;

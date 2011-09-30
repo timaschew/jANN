@@ -15,7 +15,7 @@
 	<entry key="menu.options">Optionen</entry>
 	<entry key="menu.options.createTrainData">Trainingsdaten erzeugen</entry>
 	<entry key="menu.options.backpropagation">Backpropagation</entry>
-	<entry key="menu.options.SOM">Self Organized Network</entry>
+	<entry key="menu.options.SOM">SOM Applikation starten</entry>
 	<entry key="menu.options.trainData">Trainingsdaten normalisieren</entry>
 	<entry key="menu.options.trainData.btnShowTrainingsdata">Trainingsdaten anzeigen</entry>
 	<entry key="menu.options.trainData.lblMin">Von</entry>
@@ -26,7 +26,7 @@
 	<entry key="menu.options.trainData.btnCancel">Abbrechen</entry>
 	<entry key="menu.help">Hilfe</entry>
 	<entry key="menu.help.about">Über</entry>
-	<entry key="menu.network">Netzwerk</entry>
+	<entry key="menu.network">Beispiele</entry>
 	<entry key="menu.network.or">OR-Netzwerk</entry>
 	<entry key="menu.network.xor">XOR-Netzwerk</entry>
 	<entry key="menu.network.and">AND-Netzwerk</entry>
