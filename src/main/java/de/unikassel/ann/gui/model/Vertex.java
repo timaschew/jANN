@@ -61,7 +61,7 @@ public class Vertex implements Comparable<Vertex> {
 	}
 
 	public void setValue(final Double value) {
-		model.setOutputValue(value);
+		model.setValue(value);
 	}
 
 	public Double getValue() {

@@ -8,8 +8,10 @@ import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.JPanel;
 
@@ -23,6 +25,7 @@ import de.unikassel.ann.model.Network.NetworkLayer;
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.Synapse;
 import edu.uci.ics.jung.algorithms.layout.AbstractLayout;
+import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.layout.StaticLayout;
 import edu.uci.ics.jung.graph.DirectedGraph;
@@ -33,6 +36,7 @@ import edu.uci.ics.jung.visualization.VisualizationServer.Paintable;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 import edu.uci.ics.jung.visualization.layout.LayoutTransition;
+import edu.uci.ics.jung.visualization.picking.PickedState;
 import edu.uci.ics.jung.visualization.util.Animator;
 
 public class GraphController implements PropertyChangeListener {
@@ -134,6 +138,36 @@ public class GraphController implements PropertyChangeListener {
 
 	public void setParent(final JPanel parent) {
 		this.parent = parent;
+	}
+
+	/**
+	 * Get a set of all actual picked vertices.
+	 * 
+	 * @return Set<Vertex>
+	 */
+	public Set<Vertex> getPickedVertices() {
+		GraphElementAccessor<Vertex, Edge> pickSupport = viewer.getPickSupport();
+		PickedState<Vertex> pickedVertexState = viewer.getPickedVertexState();
+		Set<Vertex> picked = new HashSet<Vertex>();
+		if (pickSupport != null && pickedVertexState != null) {
+			picked.addAll(pickedVertexState.getPicked());
+		}
+		return picked;
+	}
+
+	/**
+	 * Get a set of all actual picked edges.
+	 * 
+	 * @return Set<Edge>
+	 */
+	public Set<Edge> getPickedEdges() {
+		GraphElementAccessor<Vertex, Edge> pickSupport = viewer.getPickSupport();
+		PickedState<Edge> pickedEdgeState = viewer.getPickedEdgeState();
+		Set<Edge> picked = new HashSet<Edge>();
+		if (pickSupport != null && pickedEdgeState != null) {
+			picked.addAll(pickedEdgeState.getPicked());
+		}
+		return picked;
 	}
 
 	public void repaint() {
@@ -291,7 +325,7 @@ public class GraphController implements PropertyChangeListener {
 	/**
 	 * Remove all vertices in the set.
 	 * 
-	 * @param picked
+	 * @param vertices
 	 */
 	public void removeVertices(final Collection<Vertex> vertices) {
 		for (Vertex vertex : vertices) {

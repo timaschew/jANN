@@ -368,6 +368,42 @@ public class Network extends BasicNetwork {
 		synapseSet.remove(synapse);
 	}
 
+	/**
+	 * Change the value of a neuron.
+	 * 
+	 * @param neuron
+	 * @param value
+	 */
+	public void changeNeuronValue(final Neuron neuron, final Double value) {
+		Double oldValue = neuron.getValue();
+		neuron.setValue(value);
+		pcs.firePropertyChange(PropertyChanges.NEURONS.name(), oldValue, value);
+	}
+
+	/**
+	 * Change the weight of a synapse.
+	 * 
+	 * @param synapse
+	 * @param weight
+	 */
+	public void changeSynapseWeight(final Synapse synapse, final Double weight) {
+		Double oldWeight = synapse.getWeight();
+		synapse.setWeight(weight);
+		pcs.firePropertyChange(PropertyChanges.SYNAPSES.name(), oldWeight, weight);
+	}
+
+	/**
+	 * Change the activation function of a neuron.
+	 * 
+	 * @param neuron
+	 * @param funcName
+	 */
+	public void changeNeuronActivationFunction(final Neuron neuron, final String funcName) {
+		ActivationFunction oldValue = neuron.getActivationFunction();
+		neuron.setActivationFunction(funcName);
+		pcs.firePropertyChange(PropertyChanges.NEURONS.name(), oldValue, neuron.getActivationFunction());
+	}
+
 	private void setLayerSize(final int layerSize, final ActivationFunction function, final Layer layer) {
 		if (layerSize < 0) {
 			return;
@@ -554,7 +590,7 @@ public class Network extends BasicNetwork {
 			throw new IllegalArgumentException("input layer count != input.lenght");
 		}
 		for (int i = biasOffset; i < neuronList.size(); i++) {
-			neuronList.get(i).setOutputValue(input[i - biasOffset]);
+			neuronList.get(i).setValue(input[i - biasOffset]);
 		}
 	}
 
@@ -639,4 +675,5 @@ public class Network extends BasicNetwork {
 	public boolean isTrainable() {
 		return layers.size() >= 2;
 	}
+
 }
