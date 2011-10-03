@@ -154,5 +154,14 @@
 	<entry key="workpanel.normalizeCB">Normalisieren</entry>
 	<entry key="workpanel.btnApplyData">Anwenden</entry>
 	<entry key="workpanel.lblInput">Input Neuron Werte (Trenner " ; ")</entry>
+	
+		<entry key="trainDataCreateDialog.paste">Trainingsdaten einfügen</entry>
+	<entry key="trainDataCreateDialog.copy">Trainingsdaten kopieren</entry>
+		<entry key="trainDataCreateDialog.titel">Titel</entry>
+		<entry key="trainDataCreateDialog.btnSave">Speichern</entry>
+		<entry key="trainDataCreateDialog.btnCancel">Abbrechen</entry>
+			<entry key="trainDataCreateDialog.lblInfo">Info</entry>
+		
+	
 </properties>
 

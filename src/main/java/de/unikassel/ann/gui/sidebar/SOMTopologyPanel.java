@@ -69,12 +69,12 @@ public class SOMTopologyPanel extends JPanel {
 
 		JLabel lblInputNeuronSOM = new JLabel(Settings.i18n.getString("sidebar.topologySOM.lblInputNeuronSOM"));
 
-		inputModel = new SpinnerNumberModel(3, 2, 3, 1);
+		inputModel = new SpinnerNumberModel(3, 2, 4, 1);
 		inputSpinner = new JSpinner(inputModel);
 
 		JLabel lblOutputDimesionSOM = new JLabel(Settings.i18n.getString("sidebar.topologySOM.lblOutputDimesionSOM"));
 
-		dimensionModel = new SpinnerNumberModel(3, 2, 3, 1);
+		dimensionModel = new SpinnerNumberModel(3, 2, 4, 1);
 		outputDimensionSpinner = new JSpinner(dimensionModel);
 
 		selectedOutputDimensionCombo = new JComboBox();

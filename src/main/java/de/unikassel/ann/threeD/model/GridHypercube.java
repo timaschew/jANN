@@ -97,6 +97,7 @@ public class GridHypercube extends RenderGeometry {
 		ArrayList<Point3D> pointsT = new ArrayList<Point3D>();
 
 		// points
+
 		for (int h = 0; h < wGrids; h++) {
 			for (int l = 0; l < zGrids; l++) {
 				for (int r = 0; r < yGrids; r++) {
@@ -105,11 +106,11 @@ public class GridHypercube extends RenderGeometry {
 						// rand.nextDouble()*maxHeight, rand.nextDouble()*maxDepth);
 						Point3D p = new Point3D(r * ySize / yGrids, c * xSize / xGrids, l * zGrids / zGrids);
 						try {
-							pointMatrix.set(p, r, c, l, h);
+							pointMatrixT.set(p, r, c, l, h);
 						} catch (Exception e) {
 							// TODO: handle exception
 						}
-						points.add(p);
+						pointsT.add(p);
 					}
 				}
 			}

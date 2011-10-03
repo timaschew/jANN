@@ -7,7 +7,6 @@
  */
 package de.unikassel.ann.gui;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -20,7 +19,6 @@ import java.io.InputStream;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -48,12 +46,13 @@ public class TrainDataCreateDialog extends JDialog {
 	// private TrainDataCreateDialog
 
 	private String firstLine;
+	private TrainDataCreateDialog dialog;
 
 	public TrainDataCreateDialog() {
 
 		// lh = new ListTransferHandler();
 		setModal(false);
-
+		dialog = this;
 		JPanel trainDataPane = new JPanel();
 		setTitle(Settings.i18n.getString("trainDataCreateDialog.titel"));
 		setModal(true);
@@ -109,28 +108,27 @@ public class TrainDataCreateDialog extends JDialog {
 			public void actionPerformed(final ActionEvent e) {
 				// Falls du die Daten für die aktuelle Session brauchst ;-)
 				NetConfig netconfig = Settings.getInstance().getCurrentSession().getNetworkConfig();
-				if (netconfig.getTrainingData() != null) {
-					Object[] option = { "Ja", "Nein" };
-					Component frameD = new JFrame();
-
-					int pane = JOptionPane.showOptionDialog(frameD, "Trainingsdaten existieren bereits. \n"
-							+ "Möchten Sie diese überschreiben?", "Beenden", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null,
-							option, option[1]);
-
-					if (pane == JOptionPane.YES_OPTION) {
-						InputStream inputStream = writeAreaTextToInputStream(userDataArea);
-						NetIO io = new NetIO();
-						try {
-							io.readTraininData(inputStream);
-							DataPairSet trainData = io.getTrainingSet();
-							netconfig.setTrainingData(trainData);
-							Main.instance.trainingDataChartPanel.updateTrainingData();
-						} catch (Exception e1) {
-
-							Logger.error(this.getClass(), "Trainingsdaten konnten nicht erzeugt werden, Grund: {}", e1.getMessage());
+				InputStream inputStream = writeAreaTextToInputStream(userDataArea);
+				NetIO io = new NetIO();
+				try {
+					io.readTraininData(inputStream);
+					DataPairSet trainData = io.getTrainingSet();
+					if (netconfig.getTrainingData() != null) {
+						Object[] option = { "Ja", "Nein" };
+						int pane = JOptionPane.showOptionDialog(dialog, "Trainingsdaten existieren bereits. \n"
+								+ "Möchten Sie diese überschreiben?", "Beenden", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE,
+								null, option, option[1]);
+						if (pane == JOptionPane.NO_OPTION) {
+							return;
 						}
 					}
+					netconfig.setTrainingData(trainData);
+					Logger.info(this.getClass(), "{} Zeilen Trainingsdateien erfolgreich erzeugt", trainData.getRows());
+					Main.instance.trainingDataChartPanel.updateTrainingData();
+				} catch (Exception e1) {
+					Logger.error(this.getClass(), "Trainingsdaten konnten nicht erzeugt werden, Grund: {}", e1.getMessage());
 				}
+
 			}
 		});
 
