@@ -32,8 +32,7 @@ public class Sidebar extends JPanel {
 	public TrainStrategyPanel trainStrategyPanel;
 	public StandardOptionsPanel standardOptionsPanel;
 	public SelectedSymbolPanel selectedSymbolsPanel;
-	public WorkPanel manualTestPanel;
-	public TrainControlPanel trainControlPanel;
+	public WorkPanel workPanel;
 
 	/**
 	 * Create the panel.
@@ -112,18 +111,18 @@ public class Sidebar extends JPanel {
 		trainControlWrappter.add(trainStrategyPanel, gbc_trainStrategyPanel);
 		trainStrategyPanel.updatePanel();
 
-		manualTestPanel = new WorkPanel();
+		workPanel = new WorkPanel();
 		GridBagConstraints gbc_manualTestPanel = new GridBagConstraints();
 		gbc_manualTestPanel.insets = new Insets(0, 0, 5, 0);
 		gbc_manualTestPanel.fill = GridBagConstraints.HORIZONTAL;
 		gbc_manualTestPanel.anchor = GridBagConstraints.NORTH;
 		gbc_manualTestPanel.gridx = 0;
 		gbc_manualTestPanel.gridy = 1;
-		trainControlWrappter.add(manualTestPanel, gbc_manualTestPanel);
+		trainControlWrappter.add(workPanel, gbc_manualTestPanel);
 
 		// subsribe for changes
-		tabbedPane.addChangeListener(manualTestPanel);
-		network.addPropertyChangeListener(PropertyChanges.INPUT_NEURON.name(), manualTestPanel);
+		tabbedPane.addChangeListener(workPanel);
+		network.addPropertyChangeListener(PropertyChanges.INPUT_NEURON.name(), workPanel);
 		topolgyPanel.update();
 	}
 

@@ -109,10 +109,7 @@ public class Main {
 		consoleOrChartPanel = new JPanel(new BorderLayout());
 		consoleOrChartPanel.add(consolePanel);
 
-		Logger.debug(this.getClass(), "logging debug");
 		Logger.info(this.getClass(), "initializing app...");
-		Logger.warn(this.getClass(), "test");
-		Logger.error(this.getClass(), "BOOOM!");
 
 		initialize();
 		initialized = true;

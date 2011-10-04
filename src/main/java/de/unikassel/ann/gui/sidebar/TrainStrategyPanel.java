@@ -30,6 +30,7 @@ import javax.swing.border.TitledBorder;
 
 import de.unikassel.ann.algo.BackPropagation;
 import de.unikassel.ann.config.NetConfig;
+import de.unikassel.ann.controller.GraphController;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.io.tasks.TrainWorker;
@@ -75,7 +76,7 @@ public class TrainStrategyPanel extends JPanel {
 	private JSpinner spinnerIterationsForRestart;
 	private JSpinner spinnerImprIterationsForRestart;
 	private JSpinner spinnerMinImprovementForRestart;
-	private JButton btnStartTraining;
+	public JButton btnStartTraining;
 
 	final static String MAX_ITERATIONSTRATEGY = "MaxIteration";
 	final static String MIN_ERRORSTRATEGY = "MinError";
@@ -83,6 +84,7 @@ public class TrainStrategyPanel extends JPanel {
 	final static String RESTART_IMPROVEMENTSTRATEGY = "RestartImprovement";
 	private JLabel lblDelay;
 	private JSpinner delaySpinner;
+	private JButton btnReset;
 
 	/**
 	 * Create the panel.
@@ -91,7 +93,7 @@ public class TrainStrategyPanel extends JPanel {
 
 		setBorder(new TitledBorder(null, Settings.i18n.getString("sidebar.trainingsStrategy"), TitledBorder.LEADING, TitledBorder.TOP,
 				null, null));
-		setSize(400, 331);
+		setSize(400, 375);
 
 		lblAlgorithm = new JLabel(Settings.i18n.getString("sidebar.trainingsStrategy.algorithm"));
 		lblLearnrate = new JLabel(Settings.i18n.getString("sidebar.trainingsStrategy.learnRate"));
@@ -399,6 +401,20 @@ public class TrainStrategyPanel extends JPanel {
 			});
 		}
 
+		btnReset.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				NetConfig net = Settings.getInstance().getCurrentSession().getNetworkConfig();
+				StandardOptionsPanel panel = Main.instance.sidebar.standardOptionsPanel;
+				double min = panel.getInitialWeightMin();
+				double max = panel.getInitialWeightMax();
+				net.setInitMaxWeight(max);
+				net.setInitMinWeight(min);
+				net.initWeights();
+				GraphController.getInstance().repaint();
+			}
+		});
+
 		btnStartTraining.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
@@ -409,10 +425,10 @@ public class TrainStrategyPanel extends JPanel {
 					JOptionPane.showMessageDialog(frame, "Es existieren keine Trainingsdaten ", "Warnung", JOptionPane.WARNING_MESSAGE);
 				} else {
 					// copy of train data
-					DataPairSet testData = new DataPairSet(net.getTrainingData());
+					DataPairSet trainingData = new DataPairSet(net.getTrainingData());
 
-					int trainInLenght = testData.getPairs().get(0).getInput().length;
-					int trainOutLenght = testData.getPairs().get(0).getIdeal().length;
+					int trainInLenght = trainingData.getPairs().get(0).getInput().length;
+					int trainOutLenght = trainingData.getPairs().get(0).getIdeal().length;
 					int netInLenght = net.getNetwork().getInputSizeIgnoringBias();
 					int netOutLength = net.getNetwork().getOutputSize();
 					if (trainInLenght != netInLenght || trainOutLenght != netOutLength) {
@@ -430,22 +446,12 @@ public class TrainStrategyPanel extends JPanel {
 					train.setMomentum(momentum);
 
 					// Start worker
-					TrainWorker worker = new TrainWorker(net, train, testData);
+					TrainWorker worker = new TrainWorker(net, train, trainingData);
+					TrainGuiUpdater jungUpdateWorker = new TrainGuiUpdater(worker);
+					jungUpdateWorker.execute();
 					worker.execute();
+					btnStartTraining.setEnabled(false);
 
-					worker.addPropertyChangeListener(new PropertyChangeListener() {
-						@Override
-						public void propertyChange(final PropertyChangeEvent evt) {
-							String newValue = evt.getNewValue().toString();
-							if (newValue.equalsIgnoreCase("STARTED")) {
-								// Disable button
-								btnStartTraining.setEnabled(false);
-							} else if (newValue.equalsIgnoreCase("DONE")) {
-								// EnDisable button
-								btnStartTraining.setEnabled(true);
-							}
-						}
-					});
 				}
 			}
 		});
@@ -456,6 +462,8 @@ public class TrainStrategyPanel extends JPanel {
 	 * @return the grouplayout for this panel
 	 */
 	private LayoutManager getTrainPanelLayout() {
+
+		btnReset = new JButton("Gewichte initialisieren");
 		// Layout TrainStrategy Pane
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING)
@@ -496,39 +504,47 @@ public class TrainStrategyPanel extends JPanel {
 																						GroupLayout.PREFERRED_SIZE))
 																.addGroup(
 																		groupLayout.createSequentialGroup().addComponent(chbBatchMode)
-																				.addGap(1))).addComponent(lblTrainingsmodus)
+																				.addGap(1)))
+												.addComponent(lblTrainingsmodus)
 												.addComponent(strategiePanel, GroupLayout.PREFERRED_SIZE, 358, GroupLayout.PREFERRED_SIZE)
-												.addComponent(btnStartTraining)).addContainerGap(18, Short.MAX_VALUE)));
-		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(
-				groupLayout
-						.createSequentialGroup()
-						.addGroup(
-								groupLayout
-										.createParallelGroup(Alignment.BASELINE)
-										.addComponent(lblAlgorithm)
-										.addComponent(comboBoxAlgorithm, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-												GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(ComponentPlacement.UNRELATED)
-						.addGroup(
-								groupLayout
-										.createParallelGroup(Alignment.BASELINE)
-										.addComponent(lblLearnrate)
-										.addComponent(spinnerLearnRate, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-												GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(ComponentPlacement.UNRELATED)
-						.addGroup(
-								groupLayout
-										.createParallelGroup(Alignment.BASELINE)
-										.addComponent(lblMomentum)
-										.addComponent(spinnerMomentum, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-												GroupLayout.PREFERRED_SIZE))
-						.addPreferredGap(ComponentPlacement.UNRELATED)
-						.addGroup(
-								groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(lblTrainingsmodus)
-										.addComponent(chbBatchMode)).addGap(18)
-						.addComponent(strategiePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED).addComponent(btnStartTraining)
-						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+												.addGroup(
+														groupLayout.createSequentialGroup().addComponent(btnStartTraining).addGap(18)
+																.addComponent(btnReset))).addContainerGap(8, Short.MAX_VALUE)));
+		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(
+						groupLayout
+								.createSequentialGroup()
+								.addGroup(
+										groupLayout
+												.createParallelGroup(Alignment.BASELINE)
+												.addComponent(lblAlgorithm)
+												.addComponent(comboBoxAlgorithm, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+														GroupLayout.PREFERRED_SIZE))
+								.addPreferredGap(ComponentPlacement.UNRELATED)
+								.addGroup(
+										groupLayout
+												.createParallelGroup(Alignment.BASELINE)
+												.addComponent(lblLearnrate)
+												.addComponent(spinnerLearnRate, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+														GroupLayout.PREFERRED_SIZE))
+								.addPreferredGap(ComponentPlacement.UNRELATED)
+								.addGroup(
+										groupLayout
+												.createParallelGroup(Alignment.BASELINE)
+												.addComponent(lblMomentum)
+												.addComponent(spinnerMomentum, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+														GroupLayout.PREFERRED_SIZE))
+								.addPreferredGap(ComponentPlacement.UNRELATED)
+								.addGroup(
+										groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(lblTrainingsmodus)
+												.addComponent(chbBatchMode))
+								.addGap(18)
+								.addComponent(strategiePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addGroup(
+										groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(btnStartTraining)
+												.addComponent(btnReset)).addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 		return groupLayout;
 	}

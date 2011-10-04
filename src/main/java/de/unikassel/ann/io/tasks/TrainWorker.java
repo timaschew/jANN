@@ -35,15 +35,16 @@ public class TrainWorker extends SwingWorker<Void, Void> {
 		Main.instance.switchBottomPanel(Panel.TRAINERROR_CHART);
 		Collections.shuffle(trainingData.getPairs());
 		train.train(new DataPairSet(trainingData));
-		Logger.info(this.getClass(), trainingData.toString());
-		Logger.info(this.getClass(), "training finished");
+		Logger.debug(this.getClass(), trainingData.toString());
+		Logger.info(this.getClass(), "training finished with RMSE of {}", train.getCurrentError());
 		net.getWorkingModule().work(net.getNetwork(), trainingData);
 		return null;
 	}
 
 	@Override
 	public void done() {
-		Main.instance.sidebar.trainControlPanel.btnPlay.setEnabled(true);
+		// Main.instance.sidebar.trainControlPanel.btnPlay.setEnabled(true);
+		Main.instance.sidebar.trainStrategyPanel.btnStartTraining.setEnabled(true);
 	}
 
 }

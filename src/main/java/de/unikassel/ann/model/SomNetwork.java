@@ -92,10 +92,30 @@ public class SomNetwork extends BasicNetwork {
 	}
 
 	public void train(final double min, final double max) {
-		trainStep1(min, max);
-		System.err.println("finished part 1");
-		trainStep2(min, max);
-		System.err.println("finished part 2");
+		trainExp(min, max);
+	}
+
+	/**
+	 * @param min
+	 * @param max
+	 */
+	private void trainExp(final double min, final double max) {
+		double maxIterations = 100000;
+		double initalLearningRate = 0.1;
+		int neighbor = 6;
+		for (int i = 1; i <= maxIterations; i++) {
+			double factor = i / maxIterations;
+			double learningRate = initalLearningRate * Math.exp(-factor);
+			System.out.println(learningRate);
+			double[] inputVector = createRandomVector(min, max);
+			run(inputVector, learningRate, (int) (neighbor * (1 - factor)));
+			try {
+				Thread.sleep(delay);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
 	}
 
@@ -103,62 +123,10 @@ public class SomNetwork extends BasicNetwork {
 		return neuronArrayWrapper;
 	}
 
-	private void trainStep1(final double min, final double max) {
-		double factorDecrementor = 0.0032; // = 0.0032
-		int neighborRadius = 6;
-		double factor = 0.9D;
-
-		for (int i = 0; i < 250; i++) {
-			for (int k = 0; k < 50; k++) {
-				double[] inputVector = createRandomVector(min, max);
-				run(inputVector, factor, neighborRadius);
-			}
-
-			factor -= factorDecrementor;
-
-			neighborRadius--;
-
-			try {
-				Thread.sleep(delay);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
-
-	private void trainStep2(final double min, final double max) {
-		double factor = 0.1;
-		double factorDecrementor = 0.001; // 0.08
-
-		for (int i = 0; i < 200; i++) {
-			for (int k = 0; k < 75; k++) {
-				double[] inputVector = createRandomVector(min, max);
-				run(inputVector, factor, 1);
-
-			}
-			System.out.println("factor: " + factor);
-			factor -= factorDecrementor;
-			if (factor < 0) {
-				factor = 0.0000000001;
-			}
-			try {
-				Thread.sleep(delay);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
-
 	private void run(final double[] inputVector, final double factor, int neighborRadius) {
-		if (neighborRadius > 1) {
-			// System.out.println(neighborRadius);
-		}
 		if (neighborRadius < 1) {
 			neighborRadius = 1;
 		}
-
 		int winnerOneDimIndex = -1;
 		double min = 0.0;
 		double max = Double.MAX_VALUE;
@@ -172,7 +140,6 @@ public class SomNetwork extends BasicNetwork {
 					throw new IllegalArgumentException("synapse is null at [" + j + "]->[" + i + "]");
 				}
 				sum += Math.pow(inputVector[j] - synapse.getWeight(), 2);
-
 			}
 			min = Math.sqrt(sum);
 			if (min < max) {
@@ -181,11 +148,8 @@ public class SomNetwork extends BasicNetwork {
 			}
 			min = 0.0;
 
-			// euclidic distance ?!?
-
 			// für jedes output neuron, ermittele gewinner neuron
 			// und speichere index (pseudo multi dim indizes)
-
 		}
 
 		int[] indices = neuronArrayWrapper.getMultiDimIndices(winnerOneDimIndex);
@@ -203,19 +167,35 @@ public class SomNetwork extends BasicNetwork {
 				synapse.setWeight(oldValue + factor * (inputVector[j] - oldValue));
 			}
 		}
-
-		// if (listener != null) {
-		// listener.update();
-		// }
-
 	}
 
 	private double[] createRandomVector(final double min, final double max) {
 		double[] randomVector = new double[inputLayerSize];
 		Random r = new Random();
-		for (int i = 0; i < inputLayerSize; i++) {
-			randomVector[i] = r.nextDouble() * (max - min) + min;
+		double factor = max - min;
+		if (true) {
+			double q = r.nextDouble() * Math.PI * 2;
+			double q2 = r.nextDouble() * Math.PI * 2;
+			double s = Math.sqrt(r.nextDouble());
+			double x = factor / 2 * s * Math.sin(q) * Math.cos(q2);
+			double y = factor / 2 * s * Math.sin(q) * Math.sin(q2);
+			double z = factor / 2 * s * Math.cos(q);
+			randomVector[0] = x;
+			randomVector[1] = y;
+			randomVector[2] = z;
+		} else if (false) {
+			double q = r.nextDouble() * Math.PI * 2;
+			double s = Math.sqrt(r.nextDouble());
+			double x = factor / 2 * s * Math.cos(q);
+			double y = factor / 2 * s * Math.sin(q);
+			randomVector[0] = x;
+			randomVector[1] = y;
+		} else if (false) {
+			for (int i = 0; i < inputLayerSize; i++) {
+				randomVector[i] = r.nextDouble() * factor + min;
+			}
 		}
+
 		return randomVector;
 	}
 

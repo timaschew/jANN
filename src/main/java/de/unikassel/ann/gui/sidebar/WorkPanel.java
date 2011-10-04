@@ -84,7 +84,7 @@ public class WorkPanel extends JPanel implements PropertyChangeListener, ChangeL
 		repaint();
 
 		JCheckBox normalizeData = new JCheckBox(Settings.i18n.getString("workpanel.normalizeCB"));
-		inputsP.add(normalizeData);
+		// inputsP.add(normalizeData);
 
 		applyData = new JButton(Settings.i18n.getString("workpanel.btnApplyData"));
 		fieldsP.add(applyData);
