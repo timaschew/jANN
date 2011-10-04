@@ -118,6 +118,7 @@ public class NetIOTest {
 
 		DataPairSet copyDataSet = new DataPairSet(originalDataSet);
 		// start training
+		netConfig.initWeights();
 		netConfig.getTrainingModule().train(copyDataSet);
 
 		// reset output

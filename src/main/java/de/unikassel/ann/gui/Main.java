@@ -291,4 +291,11 @@ public class Main {
 
 	}
 
+	/**
+	 * 
+	 */
+	public void clearChart() {
+		trainingErrorChartPanel.reset();
+	}
+
 }

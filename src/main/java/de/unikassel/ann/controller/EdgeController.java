@@ -171,9 +171,9 @@ public class EdgeController<E> {
 
 		@Override
 		public String transform(final Edge e) {
-			// TODO get value of the Edge by its model
-			// e.getModel().getWeight();
-			return "The amazing Tooltip of the Edge #" + e.getIndex();
+			Integer from = e.getModel().getFromNeuron().getId();
+			Integer to = e.getModel().getToNeuron().getId();
+			return "Edge #" + e.getIndex() + " (" + from + " -> " + to + "): " + e.getModel().getWeight();
 		}
 	}
 

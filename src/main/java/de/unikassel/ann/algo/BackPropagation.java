@@ -77,9 +77,11 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 
 	@Override
 	public void train(final DataPairSet trainingData) {
-		config.initWeights(); // TODO: do it in finalyze!!!!
-		netError = new NetError(this, trainingData);
 		Network net = config.getNetwork();
+		if (net.getSynapseSet().isEmpty()) {
+			net.connectFeedForward();
+		}
+		netError = new NetError(this, trainingData);
 		validateDataSet(net, trainingData);
 		while (true) {
 			// try {
@@ -90,12 +92,12 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 			// }
 			trainNow = true;
 			if (config.shouldRestartTraining()) {
-				train(trainingData); // restar training
-				trainNow = false;
+				train(trainingData); // restart training
+				config.reset();
 				return;
 			}
 			if (config.shouldStopTraining()) {
-				trainNow = false;
+				config.reset();
 				return;
 			}
 

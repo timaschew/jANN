@@ -32,6 +32,9 @@ public class NetConfig {
 	private DataPairSet testData;
 	private DataPairSet originalData;
 
+	private double initMinWeight = -2;
+	private double initMaxWeight = 2;
+
 	public NetConfig() {
 		network = new Network();
 		network.setConfig(this);
@@ -44,7 +47,7 @@ public class NetConfig {
 		BackPropagation backProp = new BackPropagation();
 		addTrainingModule(backProp);
 		addWorkModule(backProp);
-		addOrUpdateExisting(new MaxLearnIterationsStrategy(1000));
+		addOrUpdateExisting(new MaxLearnIterationsStrategy(10000));
 	}
 
 	public boolean shouldStopTraining() {
@@ -59,6 +62,9 @@ public class NetConfig {
 	public boolean shouldRestartTraining() {
 		for (Strategy s : strategies) {
 			if (s.shouldRestart()) {
+				if (restartAmount > 3) {
+					return false;
+				}
 				initWeights();
 				restartAmount++;
 				reset();
@@ -68,17 +74,33 @@ public class NetConfig {
 		return false;
 	}
 
-	private void reset() {
+	/**
+	 * Resets the value of the strategies, iteration, error, etc.<br>
+	 * Needed for calling train() a 2nd time.
+	 */
+	public void reset() {
+		restartAmount = 0;
 		for (Strategy s : strategies) {
 			s.reset();
 		}
 		trainingModule.reset();
 	}
 
+	/**
+	 * Randomize the synapse weights with the default values.
+	 */
 	public void initWeights() {
+		randomize(initMinWeight, initMaxWeight);
+	}
+
+	/**
+	 * @param min
+	 * @param max
+	 */
+	private void randomize(final double min, final double max) {
 		Random r = new Random();
 		for (Synapse s : network.getSynapseSet()) {
-			s.setWeight(r.nextDouble() * 2 - 1);
+			s.setWeight(r.nextDouble() * Math.random() * (Math.abs(min) + Math.abs(max)) - Math.abs(min));
 		}
 	}
 
@@ -121,6 +143,36 @@ public class NetConfig {
 		return strategies;
 	}
 
+	/**
+	 * @return the initMinWeight
+	 */
+	public double getInitMinWeight() {
+		return initMinWeight;
+	}
+
+	/**
+	 * @param initMinWeight
+	 *            the initMinWeight to set
+	 */
+	public void setInitMinWeight(final double initMinWeight) {
+		this.initMinWeight = initMinWeight;
+	}
+
+	/**
+	 * @return the initMaxWeight
+	 */
+	public double getInitMaxWeight() {
+		return initMaxWeight;
+	}
+
+	/**
+	 * @param initMaxWeight
+	 *            the initMaxWeight to set
+	 */
+	public void setInitMaxWeight(final double initMaxWeight) {
+		this.initMaxWeight = initMaxWeight;
+	}
+
 	public void printStats() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("error = ");
@@ -141,33 +193,6 @@ public class NetConfig {
 		System.out.println(sb.toString());
 
 	}
-
-	// private class TrainErrorThread extends Thread {
-	// TrainErrorThread() {
-	// start();
-	// }
-	// public void run() {
-	// while (getTrainingModule().isTrainingNow()) {
-	// // trainErrorListener.get(0).addError(getTrainingModule().getCurrentIteration(), getTrainingModule().getCurrentError());
-	// trainErrorListener.get(0).updateUI();
-	// }
-	// }
-	// }
-	//
-	// private class MyWorker extends SwingWorker<Void, Void> {
-	//
-	// public MyWorker() {
-	// execute();
-	// }
-	// @Override
-	// public Void doInBackground() {
-	// while (getTrainingModule().isTrainingNow()) {
-	// // trainErrorListener.get(0).addError(getTrainingModule().getCurrentIteration(), getTrainingModule().getCurrentError());
-	// trainErrorListener.get(0).updateUI();
-	// }
-	// return null;
-	// }
-	// }
 
 	/**
 	 * @return the trainingData

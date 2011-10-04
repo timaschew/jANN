@@ -47,10 +47,19 @@ public class NormUtil {
 	 *            The low value for the normalized data.
 	 */
 	public NormUtil(final double dataLow, final double dataHigh, final double normalizedLow, final double normalizedHigh) {
-		this.dataLow = dataLow;
-		this.dataHigh = dataHigh;
-		this.normalizedLow = normalizedLow;
-		this.normalizedHigh = normalizedHigh;
+		// reverse when there is a negative data range
+		if (Math.abs(dataHigh) > Math.abs(dataLow)) {
+			this.dataLow = dataHigh;
+			this.dataHigh = dataLow;
+			this.normalizedLow = normalizedHigh;
+			this.normalizedHigh = normalizedLow;
+		} else {
+			this.dataLow = dataLow;
+			this.dataHigh = dataHigh;
+			this.normalizedLow = normalizedLow;
+			this.normalizedHigh = normalizedHigh;
+		}
+
 	}
 
 	/**

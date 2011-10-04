@@ -33,6 +33,7 @@ public class Sidebar extends JPanel {
 	public StandardOptionsPanel standardOptionsPanel;
 	public SelectedSymbolPanel selectedSymbolsPanel;
 	public WorkPanel manualTestPanel;
+	public TrainControlPanel trainControlPanel;
 
 	/**
 	 * Create the panel.
@@ -105,7 +106,7 @@ public class Sidebar extends JPanel {
 		gbc_trainStrategyPanel.gridy = 0;
 		trainControlWrappter.add(trainStrategyPanel, gbc_trainStrategyPanel);
 
-		TrainControlPanel trainControlPanel = new TrainControlPanel();
+		trainControlPanel = new TrainControlPanel();
 		GridBagConstraints gbc_trainControlPanel = new GridBagConstraints();
 		gbc_trainControlPanel.anchor = GridBagConstraints.NORTHWEST;
 		gbc_trainControlPanel.insets = new Insets(0, 0, 5, 0);

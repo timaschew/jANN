@@ -119,6 +119,9 @@ public class MainMenu extends JMenuBar {
 		JMenuItem mntmTrainingchartLeeren = new JMenuItem("Konsole leeren");
 		mnAnsicht.add(mntmTrainingchartLeeren);
 
+		JMenuItem mntmChartLeeren = new ActionJMenuItem("Chart leeren", Actions.CLEAR_CHART);
+		mnAnsicht.add(mntmChartLeeren);
+
 		rdbtnmntmKonsoleAnzeigen.addActionListener(new ActionJMenuItem("switch console", Actions.SWITCH_CONSOLE));
 		rdbtnmntmTrainingsfehlerAnzeigen.addActionListener(new ActionJMenuItem("switch train error", Actions.SWITCH_TRAINERROR));
 		radioTrainDataChart.addActionListener(new ActionJMenuItem("switch train data", Actions.SWITCH_TRAINDATA));

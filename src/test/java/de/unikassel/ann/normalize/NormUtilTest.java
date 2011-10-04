@@ -21,13 +21,21 @@ import de.unikassel.ann.model.DataPairSet;
 public class NormUtilTest {
 
 	@Test
+	public void testNegative() {
+		NormUtil norm = new NormUtil(-11, -1, -1, +1);
+		Assert.assertEquals(-1.0, norm.normalize(-11.0));
+		Assert.assertEquals(0.0, norm.normalize(-6.0));
+		Assert.assertEquals(1.0, norm.normalize(-1.0));
+	}
+
+	@Test
 	public void test() {
 		NormUtil norm = new NormUtil(0, 1, -1, +1);
 
 		Assert.assertEquals(-1.0, norm.normalize(0.0));
 		Assert.assertEquals(+1.0, norm.normalize(1.0));
 
-		Assert.assertEquals(0.0, norm.denormalize(-1.0));
+		Assert.assertEquals(0.0, norm.denormalize(-1.0), 0.000001);
 		Assert.assertEquals(1.0, norm.denormalize(+1.0));
 	}
 

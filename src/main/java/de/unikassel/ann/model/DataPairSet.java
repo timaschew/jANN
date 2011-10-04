@@ -50,6 +50,20 @@ public class DataPairSet {
 		}
 	}
 
+	// not tested
+	// public DataPairSet(final List<DataPair> pairs) {
+	// int i = 0;
+	// int rows = pairs.size();
+	// input = new Double[rows][0];
+	// ideal = new Double[rows][0];
+	//
+	// for (DataPair p : pairs) {
+	// input[i] = p.getInput();
+	// ideal[i] = p.getIdeal();
+	// i++;
+	// }
+	// }
+
 	public DataPairSet() {
 	}
 

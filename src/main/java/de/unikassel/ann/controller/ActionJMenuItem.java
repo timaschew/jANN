@@ -142,6 +142,9 @@ public class ActionJMenuItem extends JMenuItem implements ActionListener {
 		case CLEAR_CONSOLE:
 			Main.instance.clearConsole();
 			break;
+		case CLEAR_CHART:
+			Main.instance.clearChart();
+			break;
 		case NONE:
 			break;
 		case CREATE_TRAIN_DATA:

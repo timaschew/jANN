@@ -5,63 +5,45 @@
  */
 package de.unikassel.ann.io.tasks;
 
-import java.util.List;
+import java.util.Collections;
 
 import javax.swing.SwingWorker;
 
 import de.unikassel.ann.algo.TrainingModule;
 import de.unikassel.ann.config.NetConfig;
-import de.unikassel.ann.controller.GraphController;
 import de.unikassel.ann.gui.Main;
-import de.unikassel.ann.model.DataPair;
+import de.unikassel.ann.gui.Main.Panel;
 import de.unikassel.ann.model.DataPairSet;
 import de.unikassel.ann.util.Logger;
 
-public class TrainWorker extends SwingWorker<Void, Double> {
+public class TrainWorker extends SwingWorker<Void, Void> {
 
 	private NetConfig net;
 	private TrainingModule train;
-	private DataPairSet testData;
+	private DataPairSet trainingData;
 
-	public TrainWorker(final NetConfig net, final TrainingModule train, final DataPairSet testData) {
+	public TrainWorker(final NetConfig net, final TrainingModule train, final DataPairSet trainingData) {
 		this.net = net;
 		this.train = train;
-		this.testData = testData;
-
+		this.trainingData = trainingData;
 		Main.instance.trainingErrorChartPanel.createNewSeries();
 	}
 
 	@Override
 	protected Void doInBackground() throws Exception {
 		Logger.info(this.getClass(), "training started");
-		for (DataPair pair : net.getTrainingData().getPairs()) {
-			DataPairSet set = new DataPairSet();
-			set.addPair(pair);
-			train.train(set);
-			Double currentError = train.getCurrentError();
-			publish(currentError);
-		}
-		Logger.info(this.getClass(), testData.toString());
+		Main.instance.switchBottomPanel(Panel.TRAINERROR_CHART);
+		Collections.shuffle(trainingData.getPairs());
+		train.train(new DataPairSet(trainingData));
+		Logger.info(this.getClass(), trainingData.toString());
 		Logger.info(this.getClass(), "training finished");
-		net.getWorkingModule().work(net.getNetwork(), testData);
+		net.getWorkingModule().work(net.getNetwork(), trainingData);
 		return null;
 	}
 
 	@Override
-	protected void process(final List<Double> errorList) {
-		// process is only interested in the last value reported each time, using it to update the GUI
-		for (Double error : errorList) {
-			if (error.isNaN()) {
-				continue;
-			}
-			Main.instance.trainingErrorChartPanel.addToCurrentSeries(error);
-		}
-		GraphController.getInstance().repaint();
-	}
-
-	@Override
-	protected void done() {
-		publish(Double.NaN);
+	public void done() {
+		Main.instance.sidebar.trainControlPanel.btnPlay.setEnabled(true);
 	}
 
 }

@@ -7,14 +7,17 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.Set;
 
 import org.apache.commons.collections15.Transformer;
+import org.apache.commons.collections15.functors.ConstantTransformer;
 
 import de.unikassel.ann.factory.VertexFactory;
 import de.unikassel.ann.gui.model.Edge;
 import de.unikassel.ann.gui.model.Vertex;
+import de.unikassel.ann.model.BasicNetwork;
 import de.unikassel.ann.model.Neuron;
 import de.unikassel.ann.model.func.ActivationFunction;
 import de.unikassel.ann.model.func.SigmoidFunction;
@@ -27,6 +30,7 @@ import edu.uci.ics.jung.visualization.decorators.AbstractVertexShapeTransformer;
 import edu.uci.ics.jung.visualization.picking.PickedInfo;
 import edu.uci.ics.jung.visualization.picking.PickedState;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
+import edu.uci.ics.jung.visualization.util.VertexShapeFactory;
 
 public class VertexController<V> {
 
@@ -53,6 +57,7 @@ public class VertexController<V> {
 	private RenderContext<Vertex, Edge> renderContext;
 	private PickedState<Vertex> vertexPickedState;
 	private VertexFactory vertexFactory;
+	private VertexShapeFactory shapeFactory;
 
 	public void init() {
 		this.viewer = GraphController.getInstance().getViewer();
@@ -60,6 +65,7 @@ public class VertexController<V> {
 		this.renderContext = viewer.getRenderContext();
 		this.vertexPickedState = viewer.getPickedVertexState();
 		this.vertexFactory = new VertexFactory();
+		this.shapeFactory = new VertexShapeFactory<V>(new ConstantTransformer(20), new ConstantTransformer(1.0f));
 
 		setVertexLabel();
 		setVertexBorder();
@@ -153,6 +159,16 @@ public class VertexController<V> {
 	 * Set Vertex Color
 	 */
 	private void setVertexColor() {
+		renderContext.setVertexShapeTransformer(new Transformer<Vertex, Shape>() {
+			@Override
+			public Shape transform(final Vertex vertex) {
+				if (vertex.getModel().isBias()) {
+					// return new Rectangle(-5, -5, 5, 5);
+					return shapeFactory.getRectangle(vertex);
+				}
+				return shapeFactory.getEllipse(vertex);
+			}
+		});
 		renderContext.setVertexFillPaintTransformer(new Transformer<Vertex, Paint>() {
 			@Override
 			public Paint transform(final Vertex vertex) {
@@ -348,9 +364,28 @@ public class VertexController<V> {
 			return instance;
 		}
 
+		private static DecimalFormat df = null;
+
 		@Override
 		public String transform(final Vertex v) {
-			return v.toString();
+
+			BasicNetwork net = v.getModel().getLayer().getNet();
+			String prefix = "";
+			if (v.getModel().isBias()) {
+				prefix = "Bias Neuron";
+			} else if (v.getModel().getLayer().equals(net.getInputLayer())) {
+				prefix = "Input Neuron";
+			} else if (v.getModel().getLayer().equals(net.getOutputLayer())) {
+				prefix = "Output Neuron";
+			} else {
+				prefix = "Hidden Neuron";
+			}
+
+			if (df == null) {
+				df = new DecimalFormat(Settings.properties.getProperty("gui.decimalFormat"), Settings.decimalSymbols);
+			}
+			String value = df.format(v.getModel().getValue());
+			return prefix + " (" + value + ")";
 		}
 	}
 

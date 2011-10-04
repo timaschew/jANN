@@ -146,7 +146,7 @@
 	
 	<entry key="trainDataCreateDialog.titel">Trainingdaten erzeugen</entry>
 	<entry key="trainDataCreateDialog.btnSave">Speichern</entry>
-	<entry key="trainDataCreateDialog.btnCancel">Abbrechen</entry>
+	<entry key="trainDataCreateDialog.btnCancel">Schließen</entry>
 	<entry key="trainDataCreateDialog.lblInfo">Bitte Trainingsdaten eingeben: </entry>
 
 	<entry key="workpanel.titel">Manueller Test</entry>

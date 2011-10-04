@@ -140,7 +140,7 @@ public class StandardOptionsPanel extends JPanel {
 			min = max;
 			max = temp;
 		}
-		double weight = new Double(Math.random()) * Math.abs(min) + Math.abs(max) - Math.abs(min);
+		double weight = new Double(Math.random() * (Math.abs(min) + Math.abs(max))) - Math.abs(min);
 		return weight;
 	}
 

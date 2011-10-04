@@ -71,6 +71,7 @@ public class NetworkFactory {
 		config.addOrUpdateExisting(new MaxLearnIterationsStrategy(1000));
 
 		config.getNetwork().connectFeedForward();
+		config.initWeights();
 
 		return config;
 	}
