@@ -58,6 +58,7 @@
 	<entry key="sidebar.trainingsStrategy.onlineRB">Online</entry>
 	<entry key="sidebar.trainingsStrategy.offlineRB">Offline</entry>
 	<entry key="sidebar.trainingsStrategy.strategy">Strategie</entry>
+	<entry key="sidebar.trainingsStrategy.strategy.start">Training starten</entry>
 	<entry key="sidebar.trainingsStrategy.strategy.type">Typ</entry>
 	<entry key="sidebar.trainingsStrategy.strategy.maxIterations">Max. Iterationen</entry>
 	<entry key="sidebar.trainingsStrategy.strategy.maxIterations2">Max. Iterationen</entry>

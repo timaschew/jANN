@@ -15,9 +15,12 @@ import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JSpinner.DefaultEditor;
@@ -28,11 +31,15 @@ import javax.swing.border.TitledBorder;
 import de.unikassel.ann.algo.BackPropagation;
 import de.unikassel.ann.config.NetConfig;
 import de.unikassel.ann.controller.Settings;
+import de.unikassel.ann.gui.Main;
+import de.unikassel.ann.io.tasks.TrainWorker;
+import de.unikassel.ann.model.DataPairSet;
 import de.unikassel.ann.strategy.MaxLearnIterationsStrategy;
 import de.unikassel.ann.strategy.MinErrorStrategy;
 import de.unikassel.ann.strategy.RestartErrorStrategy;
 import de.unikassel.ann.strategy.RestartImprovementStrategy;
 import de.unikassel.ann.strategy.Strategy;
+import de.unikassel.ann.util.Logger;
 
 public class TrainStrategyPanel extends JPanel {
 
@@ -68,11 +75,14 @@ public class TrainStrategyPanel extends JPanel {
 	private JSpinner spinnerIterationsForRestart;
 	private JSpinner spinnerImprIterationsForRestart;
 	private JSpinner spinnerMinImprovementForRestart;
+	private JButton btnStartTraining;
 
 	final static String MAX_ITERATIONSTRATEGY = "MaxIteration";
 	final static String MIN_ERRORSTRATEGY = "MinError";
 	final static String RESTART_ERRORSTRATEGY = "RestartError";
 	final static String RESTART_IMPROVEMENTSTRATEGY = "RestartImprovement";
+	private JLabel lblDelay;
+	private JSpinner delaySpinner;
 
 	/**
 	 * Create the panel.
@@ -109,6 +119,7 @@ public class TrainStrategyPanel extends JPanel {
 		String comboBoxItems[] = { MAX_ITERATIONSTRATEGY, MIN_ERRORSTRATEGY, RESTART_ERRORSTRATEGY, RESTART_IMPROVEMENTSTRATEGY };
 		comboBoxTypStrategien = new JComboBox(comboBoxItems);
 		chckbxActivateStrategie = new JCheckBox("");
+		btnStartTraining = new JButton(Settings.i18n.getString("sidebar.trainingsStrategy.strategy.start"));
 
 		comboBoxPane = new JPanel();
 		comboBoxPane.setSize(200, 100);
@@ -288,10 +299,32 @@ public class TrainStrategyPanel extends JPanel {
 		/**
 		 * Set the Layout for MaxIterationen Strategy Card
 		 */
+
+		lblDelay = new JLabel(Settings.i18n.getString("sidebar.trainControl.lblVerzoegerung"));
+
+		delaySpinner = new JSpinner();
+		delaySpinner.setEnabled(false);
+
+		JLabel lblMs = new JLabel("ms");
 		GroupLayout gl_maxIter = new GroupLayout(maxIter);
-		gl_maxIter.setHorizontalGroup(gl_maxIter.createParallelGroup(Alignment.LEADING).addGroup(
-				gl_maxIter.createSequentialGroup().addContainerGap().addComponent(lblMaxIterations).addGap(74)
-						.addComponent(spinnerMaxIterations, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE).addGap(77)));
+		gl_maxIter.setHorizontalGroup(gl_maxIter.createParallelGroup(Alignment.LEADING)
+				.addGroup(
+						gl_maxIter
+								.createSequentialGroup()
+								.addContainerGap()
+								.addGroup(
+										gl_maxIter
+												.createParallelGroup(Alignment.LEADING, false)
+												.addComponent(lblMaxIterations, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+														Short.MAX_VALUE)
+												.addComponent(lblDelay, GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE))
+								.addGap(18)
+								.addGroup(
+										gl_maxIter.createParallelGroup(Alignment.LEADING, false).addComponent(delaySpinner)
+												.addComponent(spinnerMaxIterations, GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE))
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addComponent(lblMs, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+								.addContainerGap(47, Short.MAX_VALUE)));
 		gl_maxIter.setVerticalGroup(gl_maxIter.createParallelGroup(Alignment.LEADING).addGroup(
 				gl_maxIter
 						.createSequentialGroup()
@@ -301,7 +334,15 @@ public class TrainStrategyPanel extends JPanel {
 										.createParallelGroup(Alignment.BASELINE)
 										.addComponent(lblMaxIterations)
 										.addComponent(spinnerMaxIterations, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-												GroupLayout.PREFERRED_SIZE))));
+												GroupLayout.PREFERRED_SIZE))
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addGroup(
+								gl_maxIter
+										.createParallelGroup(Alignment.BASELINE)
+										.addComponent(delaySpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+												GroupLayout.PREFERRED_SIZE)
+										.addComponent(lblMs, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
+										.addComponent(lblDelay)).addGap(14)));
 		maxIter.setLayout(gl_maxIter);
 
 		/**
@@ -358,6 +399,57 @@ public class TrainStrategyPanel extends JPanel {
 			});
 		}
 
+		btnStartTraining.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(final ActionEvent e) {
+				NetConfig net = Settings.getInstance().getCurrentSession().getNetworkConfig();
+
+				if (net.getTrainingData() == null || net.getTrainingData().getRows() == 0) {
+					JFrame frame = new JFrame();
+					JOptionPane.showMessageDialog(frame, "Es existieren keine Trainingsdaten ", "Warnung", JOptionPane.WARNING_MESSAGE);
+				} else {
+					// copy of train data
+					DataPairSet testData = new DataPairSet(net.getTrainingData());
+
+					int trainInLenght = testData.getPairs().get(0).getInput().length;
+					int trainOutLenght = testData.getPairs().get(0).getIdeal().length;
+					int netInLenght = net.getNetwork().getInputSizeIgnoringBias();
+					int netOutLength = net.getNetwork().getOutputSize();
+					if (trainInLenght != netInLenght || trainOutLenght != netOutLength) {
+						Logger.warn(this.getClass(), "Trainingsdaten {} Input {} Output passten nicht zur Topology {} Input und {} Output",
+								trainInLenght, trainOutLenght, netInLenght, netOutLength);
+						return;
+					}
+
+					BackPropagation train = (BackPropagation) net.getTrainingModule();
+					Double learnRate = (Double) Main.instance.sidebar.trainStrategyPanel.spinnerLearnRate.getValue();
+					Double momentum = (Double) Main.instance.sidebar.trainStrategyPanel.spinnerMomentum.getValue();
+					Boolean batchMode = Main.instance.sidebar.trainStrategyPanel.chbBatchMode.isSelected();
+					train.setBatchMode(batchMode);
+					train.setLearnRate(learnRate);
+					train.setMomentum(momentum);
+
+					// Start worker
+					TrainWorker worker = new TrainWorker(net, train, testData);
+					worker.execute();
+
+					worker.addPropertyChangeListener(new PropertyChangeListener() {
+						@Override
+						public void propertyChange(final PropertyChangeEvent evt) {
+							String newValue = evt.getNewValue().toString();
+							if (newValue.equalsIgnoreCase("STARTED")) {
+								// Disable button
+								btnStartTraining.setEnabled(false);
+							} else if (newValue.equalsIgnoreCase("DONE")) {
+								// EnDisable button
+								btnStartTraining.setEnabled(true);
+							}
+						}
+					});
+				}
+			}
+		});
+
 	}
 
 	/**
@@ -405,8 +497,8 @@ public class TrainStrategyPanel extends JPanel {
 																.addGroup(
 																		groupLayout.createSequentialGroup().addComponent(chbBatchMode)
 																				.addGap(1))).addComponent(lblTrainingsmodus)
-												.addComponent(strategiePanel, GroupLayout.PREFERRED_SIZE, 358, GroupLayout.PREFERRED_SIZE))
-								.addContainerGap(8, Short.MAX_VALUE)));
+												.addComponent(strategiePanel, GroupLayout.PREFERRED_SIZE, 358, GroupLayout.PREFERRED_SIZE)
+												.addComponent(btnStartTraining)).addContainerGap(18, Short.MAX_VALUE)));
 		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(
 				groupLayout
 						.createSequentialGroup()
@@ -435,7 +527,8 @@ public class TrainStrategyPanel extends JPanel {
 								groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(lblTrainingsmodus)
 										.addComponent(chbBatchMode)).addGap(18)
 						.addComponent(strategiePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addContainerGap(35, Short.MAX_VALUE)));
+						.addPreferredGap(ComponentPlacement.RELATED).addComponent(btnStartTraining)
+						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 		return groupLayout;
 	}
@@ -556,5 +649,4 @@ public class TrainStrategyPanel extends JPanel {
 		}
 		return null;
 	}
-
 }

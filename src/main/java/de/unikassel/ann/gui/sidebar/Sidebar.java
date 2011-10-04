@@ -51,7 +51,7 @@ public class Sidebar extends JPanel {
 		gbl_wrapper.columnWidths = new int[] { 412, 0 };
 		gbl_wrapper.rowHeights = new int[] { 339, 90, 224 };
 		gbl_wrapper.columnWeights = new double[] { 0.0, Double.MIN_VALUE };
-		gbl_wrapper.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0 };
+		gbl_wrapper.rowWeights = new double[] { 0.0, 0.0, 0.0 };
 		wrapper.setLayout(gbl_wrapper);
 
 		// topology Panel
@@ -91,10 +91,15 @@ public class Sidebar extends JPanel {
 		JScrollPane scrollPaneTrain = new JScrollPane(trainControlWrappter);
 		GridBagLayout gbl_trainTabPanel = new GridBagLayout();
 		gbl_trainTabPanel.columnWidths = new int[] { 407, 0 };
-		gbl_trainTabPanel.rowHeights = new int[] { 350, 235, 350 };
+		gbl_trainTabPanel.rowHeights = new int[] { 350, 100 };
 		gbl_trainTabPanel.columnWeights = new double[] { 0.0, Double.MIN_VALUE };
-		gbl_trainTabPanel.rowWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
+		gbl_trainTabPanel.rowWeights = new double[] { 0.0, 0.0 };
 		trainControlWrappter.setLayout(gbl_trainTabPanel);
+		scrollPaneTrain.getVerticalScrollBar().setUnitIncrement(100);
+
+		tabbedPane.addTab("Konfiguration", null, scrollPane, null);
+		tabbedPane.addTab("Training", null, scrollPaneTrain, null);
+		Network network = Settings.getInstance().getCurrentSession().getNetworkConfig().getNetwork();
 
 		// Trainstrategy Panel
 		trainStrategyPanel = new TrainStrategyPanel();
@@ -105,34 +110,21 @@ public class Sidebar extends JPanel {
 		gbc_trainStrategyPanel.gridx = 0;
 		gbc_trainStrategyPanel.gridy = 0;
 		trainControlWrappter.add(trainStrategyPanel, gbc_trainStrategyPanel);
-
-		trainControlPanel = new TrainControlPanel();
-		GridBagConstraints gbc_trainControlPanel = new GridBagConstraints();
-		gbc_trainControlPanel.anchor = GridBagConstraints.NORTHWEST;
-		gbc_trainControlPanel.insets = new Insets(0, 0, 5, 0);
-		gbc_trainControlPanel.gridx = 0;
-		gbc_trainControlPanel.gridy = 1;
-		trainControlWrappter.add(trainControlPanel, gbc_trainControlPanel);
+		trainStrategyPanel.updatePanel();
 
 		manualTestPanel = new WorkPanel();
 		GridBagConstraints gbc_manualTestPanel = new GridBagConstraints();
+		gbc_manualTestPanel.insets = new Insets(0, 0, 5, 0);
 		gbc_manualTestPanel.fill = GridBagConstraints.HORIZONTAL;
 		gbc_manualTestPanel.anchor = GridBagConstraints.NORTH;
-		gbc_manualTestPanel.insets = new Insets(0, 0, 5, 0);
 		gbc_manualTestPanel.gridx = 0;
-		gbc_manualTestPanel.gridy = 2;
+		gbc_manualTestPanel.gridy = 1;
 		trainControlWrappter.add(manualTestPanel, gbc_manualTestPanel);
-		scrollPaneTrain.getVerticalScrollBar().setUnitIncrement(100);
-
-		tabbedPane.addTab("Konfiguration", null, scrollPane, null);
-		tabbedPane.addTab("Training", null, scrollPaneTrain, null);
 
 		// subsribe for changes
 		tabbedPane.addChangeListener(manualTestPanel);
-		Network network = Settings.getInstance().getCurrentSession().getNetworkConfig().getNetwork();
 		network.addPropertyChangeListener(PropertyChanges.INPUT_NEURON.name(), manualTestPanel);
 		topolgyPanel.update();
-		trainStrategyPanel.updatePanel();
 	}
 
 }
