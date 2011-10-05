@@ -2,6 +2,8 @@ package de.unikassel.ann.gui.sidebar;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -145,8 +147,19 @@ public class TrainControlPanel extends JPanel {
 					JungUpdateWorker jungUpdateWorker = new JungUpdateWorker(worker);
 					jungUpdateWorker.execute();
 					worker.execute();
-					btnPlay.setEnabled(false);
-
+					worker.addPropertyChangeListener(new PropertyChangeListener() {
+						@Override
+						public void propertyChange(final PropertyChangeEvent evt) {
+							String newValue = evt.getNewValue().toString();
+							if (newValue.equalsIgnoreCase("STARTED")) {
+								// Disable button
+								btnPlay.setEnabled(false);
+							} else if (newValue.equalsIgnoreCase("DONE")) {
+								// Enable button
+								btnPlay.setEnabled(true);
+							}
+						}
+					});
 				}
 			}
 		});

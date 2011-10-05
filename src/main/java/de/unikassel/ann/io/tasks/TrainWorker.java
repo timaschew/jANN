@@ -6,17 +6,19 @@
 package de.unikassel.ann.io.tasks;
 
 import java.util.Collections;
+import java.util.List;
 
 import javax.swing.SwingWorker;
 
 import de.unikassel.ann.algo.TrainingModule;
 import de.unikassel.ann.config.NetConfig;
+import de.unikassel.ann.controller.GraphController;
 import de.unikassel.ann.gui.Main;
 import de.unikassel.ann.gui.Main.Panel;
 import de.unikassel.ann.model.DataPairSet;
 import de.unikassel.ann.util.Logger;
 
-public class TrainWorker extends SwingWorker<Void, Void> {
+public class TrainWorker extends SwingWorker<Void, Double> {
 
 	private NetConfig net;
 	private TrainingModule train;
@@ -42,8 +44,14 @@ public class TrainWorker extends SwingWorker<Void, Void> {
 	}
 
 	@Override
+	protected void process(final List<Double> errorList) {
+		// process is only interested in the last value reported each time, using it to update the GUI
+		GraphController.getInstance().repaint();
+	}
+
+	@Override
 	public void done() {
-		Main.instance.sidebar.trainControlPanel.btnPlay.setEnabled(true);
+		GraphController.getInstance().repaint();
 	}
 
 }
