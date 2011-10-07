@@ -87,7 +87,6 @@ public class GridPlane extends RenderGeometry {
 		if (size != null || grids != null) {
 			setGeometrySize();
 		}
-		// lock.unlock();
 	}
 
 	/**
@@ -98,41 +97,17 @@ public class GridPlane extends RenderGeometry {
 	 */
 	private void setGeometrySize() {
 
-		int yPositive = ySize / 2;
-		int yNegative = -yPositive;
-		int yChunk = ySize / (yGrids - 1);
-		int yCounter = 0;
-
-		int xPositive = xSize / 2;
-		int xNegative = -xPositive;
-		int xChunk = xSize / (xGrids - 1);
-		int xCounter = 0;
-
 		MDDA<Point3D> pointMatrixT = new MDDA<Point3D>(xGrids, yGrids);
 		ArrayList<Line> linesT = new ArrayList<Line>();
 		ArrayList<Point3D> pointsT = new ArrayList<Point3D>();
 
-		for (int x = xNegative; x <= xPositive; x += xChunk) {
-			yCounter = 0;
-			for (int y = yNegative; y <= yPositive; y += yChunk) {
-				Point3D p = new Point3D(x, y, 1);
-				try {
-					pointMatrixT.set(p, xCounter, yCounter);
-				} catch (Exception e) {
-					// System.err.println("try to set " + xCounter + ", " + yCounter + ", " + zCounter);
-					// System.err.print("but array was: ");
-					// for (int i : pointMatrix.getSize()) {
-					// System.err.print(" " + i);
-					// }
-					// System.err.println("");
-					// e.printStackTrace();
-					return;
-				}
-
-				pointsT.add(p);
-				yCounter++;
-			}
-			xCounter++;
+		// Point3D p = new Point3D(x, y, 1);
+		Random r = new Random();
+		Object[] ar = pointMatrixT.getArray();
+		for (int i = 0; i < ar.length; i++) {
+			Point3D p = new Point3D(-1, 1, r);
+			pointMatrixT.set1D(p, i);
+			pointsT.add(p);
 		}
 
 		// grid cube
@@ -154,7 +129,6 @@ public class GridPlane extends RenderGeometry {
 		pointMatrix = pointMatrixT;
 		lines = linesT;
 		points = pointsT;
-
 	}
 
 	@Override

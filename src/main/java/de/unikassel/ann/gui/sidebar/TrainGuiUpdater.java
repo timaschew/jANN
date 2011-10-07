@@ -43,7 +43,12 @@ public class TrainGuiUpdater extends SwingWorker<Void, Void> {
 			if (iteration != Double.NaN || error != Double.NaN) {
 				chart.addToCurrentSeries(iteration, error);
 			}
-
+		}
+		GraphController.getInstance().repaint();
+		Integer iteration = bp.getCurrentIteration();
+		Double error = bp.getCurrentError();
+		if (iteration != Double.NaN || error != Double.NaN) {
+			chart.addToCurrentSeries(iteration, error);
 		}
 		return null;
 	}

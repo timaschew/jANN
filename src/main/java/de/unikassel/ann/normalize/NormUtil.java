@@ -79,7 +79,7 @@ public class NormUtil {
 		Double[] max = new Double[fieldLenght];
 		for (int j = 0; j < fieldLenght; j++) {
 			min[j] = Double.MAX_VALUE;
-			max[j] = Double.MIN_VALUE;
+			max[j] = -Double.MAX_VALUE;
 		}
 
 		// save min, max

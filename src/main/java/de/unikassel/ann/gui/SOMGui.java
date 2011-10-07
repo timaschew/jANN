@@ -231,7 +231,8 @@ public class SOMGui extends JFrame {
 		instance = this;
 		renderer = new FrameRenderer(this);
 		// w3d = new SimpleCube();
-		renderModel = new GridCube(5, 5, 5, 200);
+		renderModel = new GridCube(2, 2, 2, 200);
+		renderModel.random();
 		renderer.setModel(renderModel);
 
 		getContentPane().setLayout(new BorderLayout());
@@ -246,14 +247,14 @@ public class SOMGui extends JFrame {
 
 		JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.TOP);
 		tabbedPane.setBorder(null);
-		add(tabbedPane);
+		getContentPane().add(tabbedPane);
 
 		soMSettingsPanel = new JPanel();
 		GridBagLayout gbl_wrapper = new GridBagLayout();
 		gbl_wrapper.columnWidths = new int[] { 412, 0 };
 		gbl_wrapper.rowHeights = new int[] { 254, 215 };
 		gbl_wrapper.columnWeights = new double[] { 0.0, Double.MIN_VALUE };
-		gbl_wrapper.rowWeights = new double[] { 0.0, 0.0, 0.0 };
+		gbl_wrapper.rowWeights = new double[] { 0.0, 0.0 };
 		soMSettingsPanel.setLayout(gbl_wrapper);
 
 		// topology Panel
@@ -320,6 +321,7 @@ public class SOMGui extends JFrame {
 		});
 
 		sizeSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
+		sizeSpinner.setEnabled(false);
 		sizeSpinner.setValue(renderModel.getGeometrySize());
 		DefaultEditor editorSize = (JSpinner.DefaultEditor) sizeSpinner.getEditor();
 		editorSize.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {
@@ -331,6 +333,7 @@ public class SOMGui extends JFrame {
 		});
 
 		gridSpinner = new JSpinner(new SpinnerNumberModel(2, 2, 20, 1));
+		gridSpinner.setEnabled(false);
 		gridSpinner.setValue(renderModel.getGridSize());
 		DefaultEditor editorGrid = (JSpinner.DefaultEditor) gridSpinner.getEditor();
 		editorGrid.getTextField().addPropertyChangeListener("value", new PropertyChangeListener() {
@@ -395,18 +398,22 @@ public class SOMGui extends JFrame {
 		easetBottomPanel.add(inputDataPanel, gbc_inputDataPanel);
 
 		inputData1 = new JTextField();
+		inputData1.setEnabled(false);
 		inputData1.setColumns(2);
 		inputDataPanel.add(inputData1);
 
 		inputData2 = new JTextField();
+		inputData2.setEnabled(false);
 		inputData2.setColumns(2);
 		inputDataPanel.add(inputData2);
 
 		inputData3 = new JTextField();
+		inputData3.setEnabled(false);
 		inputData3.setColumns(2);
 		inputDataPanel.add(inputData3);
 
 		inputData4 = new JTextField();
+		inputData4.setEnabled(false);
 		inputData4.setColumns(2);
 		inputDataPanel.add(inputData4);
 
@@ -427,18 +434,22 @@ public class SOMGui extends JFrame {
 		easetBottomPanel.add(panel_2, gbc_panel_2);
 
 		weight1 = new JTextField();
+		weight1.setEnabled(false);
 		weight1.setColumns(2);
 		panel_2.add(weight1);
 
 		weight2 = new JTextField();
+		weight2.setEnabled(false);
 		weight2.setColumns(2);
 		panel_2.add(weight2);
 
 		weight3 = new JTextField();
+		weight3.setEnabled(false);
 		weight3.setColumns(2);
 		panel_2.add(weight3);
 
 		weight4 = new JTextField();
+		weight4.setEnabled(false);
 		weight4.setColumns(2);
 		panel_2.add(weight4);
 
@@ -459,14 +470,17 @@ public class SOMGui extends JFrame {
 		easetBottomPanel.add(coordinate3dPanel, gbc_coordinate3dPanel);
 
 		coordinate3dX = new JTextField();
+		coordinate3dX.setEnabled(false);
 		coordinate3dPanel.add(coordinate3dX);
 		coordinate3dX.setColumns(2);
 
 		coordinate3dY = new JTextField();
+		coordinate3dY.setEnabled(false);
 		coordinate3dPanel.add(coordinate3dY);
 		coordinate3dY.setColumns(2);
 
 		coordinate3dZ = new JTextField();
+		coordinate3dZ.setEnabled(false);
 		coordinate3dPanel.add(coordinate3dZ);
 		coordinate3dZ.setColumns(2);
 
@@ -478,6 +492,7 @@ public class SOMGui extends JFrame {
 		eastTopPanel.setLayout(gbl_panel);
 
 		JLabel lblSize = new JLabel("Größe");
+		lblSize.setEnabled(false);
 		GridBagConstraints gbc_lblSize = new GridBagConstraints();
 		gbc_lblSize.anchor = GridBagConstraints.EAST;
 		gbc_lblSize.insets = new Insets(0, 0, 5, 5);
@@ -493,6 +508,7 @@ public class SOMGui extends JFrame {
 		eastTopPanel.add(sizeSpinner, gbc_sizeSpinner);
 
 		lblGrids = new JLabel("Grids");
+		lblGrids.setEnabled(false);
 		GridBagConstraints gbc_lblGrids = new GridBagConstraints();
 		gbc_lblGrids.anchor = GridBagConstraints.EAST;
 		gbc_lblGrids.insets = new Insets(0, 0, 5, 5);
@@ -606,7 +622,10 @@ public class SOMGui extends JFrame {
 	 */
 	public void setWorker(final SomWorker worker) {
 		this.worker = worker;
+	}
 
+	public SomWorker getWorker() {
+		return worker;
 	}
 
 }

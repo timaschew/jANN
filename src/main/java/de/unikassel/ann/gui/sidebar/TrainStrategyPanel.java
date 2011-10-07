@@ -446,10 +446,10 @@ public class TrainStrategyPanel extends JPanel {
 					train.setMomentum(momentum);
 
 					// Start worker
-					TrainWorker worker = new TrainWorker(net, train, trainingData);
-					TrainGuiUpdater jungUpdateWorker = new TrainGuiUpdater(worker);
+					TrainWorker trainWorker = new TrainWorker(net, train, trainingData);
+					TrainGuiUpdater jungUpdateWorker = new TrainGuiUpdater(trainWorker);
 					jungUpdateWorker.execute();
-					worker.execute();
+					trainWorker.execute();
 					btnStartTraining.setEnabled(false);
 
 				}

@@ -74,17 +74,13 @@ public class ChartTrainingErrorPanel extends JPanel {
 		currentSeries.add(iteration, new Double(100 * error));
 	}
 
-	// @Override
-	// public void paint(final Graphics g) {
-	// super.paint(g);
-	// NetConfig netCfg = Settings.getInstance().getCurrentSession().getNetworkConfig();
-	// BackPropagation bp = (BackPropagation) netCfg.getTrainingModule();
-	// Integer iteration = bp.getCurrentIteration();
-	// Double error = bp.getCurrentError();
-	// if (bp.isTrainingNow()) {
-	// addToCurrentSeries(iteration, error);
+	// /**
+	// * @param errorList
+	// */
+	// public void updateFull(final List<IterationError> errorList) {
+	// for (IterationError ie : new CopyOnWriteArrayList<IterationError>(errorList)) {
+	// currentSeries.add(new Integer(ie.iteration), new Double(100 * ie.error));
 	// }
-	// repaint();
 	// }
 
 	/**

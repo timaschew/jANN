@@ -8,7 +8,7 @@ import de.unikassel.mdda.MDDA;
 
 public class SomNetwork extends BasicNetwork {
 
-	public long delay = 20;
+	public long delay = 0;
 
 	private Layer inputLayer;
 
@@ -26,10 +26,78 @@ public class SomNetwork extends BasicNetwork {
 
 	private double patternRange;
 
+	private double initalLearningRate = 0.1;
+
+	private int maxIterations = 10000;
+
+	private int initialNeighbor = 6;
+
+	private boolean square = true; // or false
+
 	// private Board3D listener;
 
 	public SomNetwork(final int inputSize, final int... outputDimension) {
 		this(2, inputSize, outputDimension);
+	}
+
+	/**
+	 * @return the initalLearningRate
+	 */
+	public double getInitalLearningRate() {
+		return initalLearningRate;
+	}
+
+	/**
+	 * @param initalLearningRate
+	 *            the initalLearningRate to set
+	 */
+	public void setInitalLearningRate(final double initalLearningRate) {
+		this.initalLearningRate = initalLearningRate;
+	}
+
+	/**
+	 * @return the maxIterations
+	 */
+	public int getMaxIterations() {
+		return maxIterations;
+	}
+
+	/**
+	 * @param maxIterations
+	 *            the maxIterations to set
+	 */
+	public void setMaxIterations(final int maxIterations) {
+		this.maxIterations = maxIterations;
+	}
+
+	/**
+	 * @return the initialNeighbor
+	 */
+	public int getInitialNeighbor() {
+		return initialNeighbor;
+	}
+
+	/**
+	 * @param initialNeighbor
+	 *            the initialNeighbor to set
+	 */
+	public void setInitialNeighbor(final int initialNeighbor) {
+		this.initialNeighbor = initialNeighbor;
+	}
+
+	/**
+	 * @return the square
+	 */
+	public boolean isSquare() {
+		return square;
+	}
+
+	/**
+	 * @param square
+	 *            the square to set
+	 */
+	public void setSquare(final boolean square) {
+		this.square = square;
 	}
 
 	/**
@@ -100,15 +168,13 @@ public class SomNetwork extends BasicNetwork {
 	 * @param max
 	 */
 	private void trainExp(final double min, final double max) {
-		double maxIterations = 100000;
-		double initalLearningRate = 0.1;
-		int neighbor = 6;
+
 		for (int i = 1; i <= maxIterations; i++) {
 			double factor = i / maxIterations;
-			double learningRate = initalLearningRate * Math.exp(-factor);
-			System.out.println(learningRate);
+			double learnFactor = initalLearningRate * Math.exp(-factor);
+			System.out.println(learnFactor);
 			double[] inputVector = createRandomVector(min, max);
-			run(inputVector, learningRate, (int) (neighbor * (1 - factor)));
+			run(inputVector, learnFactor, (int) (initialNeighbor * (1 - factor)));
 			try {
 				Thread.sleep(delay);
 			} catch (InterruptedException e) {
@@ -173,29 +239,36 @@ public class SomNetwork extends BasicNetwork {
 		double[] randomVector = new double[inputLayerSize];
 		Random r = new Random();
 		double factor = max - min;
-		if (true) {
-			double q = r.nextDouble() * Math.PI * 2;
-			double q2 = r.nextDouble() * Math.PI * 2;
-			double s = Math.sqrt(r.nextDouble());
-			double x = factor / 2 * s * Math.sin(q) * Math.cos(q2);
-			double y = factor / 2 * s * Math.sin(q) * Math.sin(q2);
-			double z = factor / 2 * s * Math.cos(q);
-			randomVector[0] = x;
-			randomVector[1] = y;
-			randomVector[2] = z;
-		} else if (false) {
-			double q = r.nextDouble() * Math.PI * 2;
-			double s = Math.sqrt(r.nextDouble());
-			double x = factor / 2 * s * Math.cos(q);
-			double y = factor / 2 * s * Math.sin(q);
-			randomVector[0] = x;
-			randomVector[1] = y;
-		} else if (false) {
+		if (square) {
 			for (int i = 0; i < inputLayerSize; i++) {
 				randomVector[i] = r.nextDouble() * factor + min;
 			}
-		}
+		} else {
+			if (inputLayerSize > 2) {
+				// sphere, 3d
+				double q = r.nextDouble() * Math.PI * 2;
+				double q2 = r.nextDouble() * Math.PI * 2;
+				double s = Math.sqrt(r.nextDouble());
+				double x = factor / 2 * s * Math.sin(q) * Math.cos(q2);
+				double y = factor / 2 * s * Math.sin(q) * Math.sin(q2);
+				double z = factor / 2 * s * Math.cos(q);
+				randomVector[0] = x;
+				randomVector[1] = y;
+				randomVector[2] = z;
+				if (inputLayerSize > 3) {
+					randomVector[3] = r.nextDouble() * factor + min;
+				}
 
+			} else {
+				// circle, 2D
+				double q = r.nextDouble() * Math.PI * 2;
+				double s = Math.sqrt(r.nextDouble());
+				double x = factor / 2 * s * Math.cos(q);
+				double y = factor / 2 * s * Math.sin(q);
+				randomVector[0] = x;
+				randomVector[1] = y;
+			}
+		}
 		return randomVector;
 	}
 

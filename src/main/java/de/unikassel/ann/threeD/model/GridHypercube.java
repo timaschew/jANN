@@ -37,7 +37,6 @@ public class GridHypercube extends RenderGeometry {
 
 	@Override
 	public void setGeometrySize(final Integer size, final Integer grids) {
-		// lock.lock();
 		if (grids != null) {
 			xGrids = grids;
 			yGrids = grids;
@@ -72,74 +71,19 @@ public class GridHypercube extends RenderGeometry {
 	private void setGeometrySize() {
 		// points
 
-		int wPositive = wSize / 2;
-		int wNegative = -wPositive;
-		int wChunk = wSize / (wGrids - 1);
-		int wCounter = 0;
-
-		int zPositive = zSize / 2;
-		int zNegative = -zPositive;
-		int zChunk = zSize / (zGrids - 1);
-		int zCounter = 0;
-
-		int yPositive = ySize / 2;
-		int yNegative = -yPositive;
-		int yChunk = ySize / (yGrids - 1);
-		int yCounter = 0;
-
-		int xPositive = xSize / 2;
-		int xNegative = -xPositive;
-		int xChunk = xSize / (xGrids - 1);
-		int xCounter = 0;
-
 		MDDA<Point3D> pointMatrixT = new MDDA<Point3D>(xGrids, yGrids, zGrids, wGrids);
 		ArrayList<Line> linesT = new ArrayList<Line>();
 		ArrayList<Point3D> pointsT = new ArrayList<Point3D>();
-
 		// points
 
-		for (int h = 0; h < wGrids; h++) {
-			for (int l = 0; l < zGrids; l++) {
-				for (int r = 0; r < yGrids; r++) {
-					for (int c = 0; c < xGrids; c++) {
-						// pointMatrix[r][c] = new Point3D(rand.nextDouble()*maxWidth,
-						// rand.nextDouble()*maxHeight, rand.nextDouble()*maxDepth);
-						Point3D p = new Point3D(r * ySize / yGrids, c * xSize / xGrids, l * zGrids / zGrids);
-						try {
-							pointMatrixT.set(p, r, c, l, h);
-						} catch (Exception e) {
-							// TODO: handle exception
-						}
-						pointsT.add(p);
-					}
-				}
-			}
+		// Point3D p = new Point3D(x, y, 1);
+		Random r = new Random();
+		Object[] ar = pointMatrixT.getArray();
+		for (int i = 0; i < ar.length; i++) {
+			Point3D p = new Point3D(-1, 1, r);
+			pointMatrixT.set1D(p, i);
+			pointsT.add(p);
 		}
-
-		// for (int w = wNegative; w <= wPositive; w += wChunk) {
-		// wCounter = 0;
-		// for (int z = zNegative; z <= zPositive; z += zChunk) {
-		// xCounter = 0;
-		// for (int x = xNegative; x <= xPositive; x += xChunk) {
-		// yCounter = 0;
-		// for (int y = yNegative; y <= yPositive; y += yChunk) {
-		// Point3D p = new Point3D(x, y, z);
-		// try {
-		// pointMatrixT.set(p, xCounter, yCounter, zCounter, wCounter);
-		// } catch (Exception e) {
-		// System.out.println(xCounter + "/" + yCounter + "/" + zCounter + "/" + wCounter);
-		// e.printStackTrace();
-		// return;
-		// }
-		// pointsT.add(p);
-		// yCounter++;
-		// }
-		// xCounter++;
-		// }
-		// zCounter++;
-		// }
-		// wCounter++;
-		// }
 
 		// grid cube
 		for (int w = 0; w < zGrids; w++) {
@@ -170,10 +114,10 @@ public class GridHypercube extends RenderGeometry {
 				}
 			}
 		}
+
 		pointMatrix = pointMatrixT;
 		lines = linesT;
 		points = pointsT;
-
 	}
 
 	@Override

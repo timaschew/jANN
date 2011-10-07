@@ -20,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.border.TitledBorder;
 
 import de.unikassel.ann.controller.Settings;
@@ -38,12 +39,11 @@ import de.unikassel.ann.threeD.model.RenderGeometry;
 public class SOMTrainingPanel extends JPanel {
 
 	private JComboBox comboAlgorithmSOM;
-	private JSpinner spinnerNeighborhoodRadius;
-	private JComboBox comboLernFunction;
-	private JSpinner spinnerIterationsSOM;
+	public JSpinner spinnerNeighborhoodRadius;
+	public JSpinner spinnerIterationsSOM;
 	private JButton btnStartTraining;
-	private JButton btnReset;
 	private SOMGui parent;
+	public JSpinner lernRateSpinner;
 
 	/**
 	 * 
@@ -66,7 +66,15 @@ public class SOMTrainingPanel extends JPanel {
 				}
 
 				SomNetwork somNet = new SomNetwork(patternRange, inputSize, dimensions);
+				somNet.setInitalLearningRate((Double) lernRateSpinner.getValue());
+				somNet.setInitialNeighbor((Integer) spinnerNeighborhoodRadius.getValue());
+				somNet.setMaxIterations((Integer) spinnerIterationsSOM.getValue());
+				boolean square = parent.somTopPanel.somPatternCombo.getSelectedIndex() == 0;
+				somNet.setSquare(square);
+
 				parent.somNetwork = somNet;
+				SomWorker oldWorker = parent.getWorker();
+
 				SomWorker worker = new SomWorker(somNet, iterations);
 
 				RenderGeometry geometry = null;
@@ -104,7 +112,7 @@ public class SOMTrainingPanel extends JPanel {
 		this.parent = parent;
 
 		setBorder(new TitledBorder(null, Settings.i18n.getString("sidebar.trainingSOM"), TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		setPreferredSize(new Dimension(400, 243));
+		setPreferredSize(new Dimension(400, 251));
 
 		JLabel lblAlgorithmSOM = new JLabel(Settings.i18n.getString("sidebar.trainingSOM.lblAlgorithmSOM"));
 
@@ -113,68 +121,58 @@ public class SOMTrainingPanel extends JPanel {
 
 		JLabel lblNeighborhoodRadius = new JLabel(Settings.i18n.getString("sidebar.trainingSOM.lblNeighborhoodRadius"));
 
-		spinnerNeighborhoodRadius = new JSpinner();
-		spinnerNeighborhoodRadius.setEnabled(false);
+		spinnerNeighborhoodRadius = new JSpinner(new SpinnerNumberModel(1, 1, 100, 1));
+		spinnerNeighborhoodRadius.setEnabled(true);
 
-		JLabel lblLernfunction = new JLabel(Settings.i18n.getString("sidebar.trainingSOM.lblLernfunction"));
-
-		comboLernFunction = new JComboBox();
-		comboLernFunction.setModel(new DefaultComboBoxModel(new String[] { "" }));
-		comboLernFunction.setEnabled(false);
+		JLabel lblLernfunction = new JLabel("Lernrate");
 
 		JLabel lblIterations = new JLabel(Settings.i18n.getString("sidebar.trainingSOM.lblIterations"));
 
-		spinnerIterationsSOM = new JSpinner();
-		spinnerIterationsSOM.setEnabled(false);
+		spinnerIterationsSOM = new JSpinner(new SpinnerNumberModel(10000, 1, 10000000, 100));
+		spinnerIterationsSOM.setEnabled(true);
 
 		btnStartTraining = new JButton("Training starten");
 
-		btnReset = new JButton("Reset");
-		btnReset.setEnabled(false);
+		lernRateSpinner = new JSpinner(new SpinnerNumberModel(0.01, 0.0001, 1.0, 0.01));
 
 		GroupLayout groupLayout = new GroupLayout(this);
-		groupLayout
-				.setHorizontalGroup(groupLayout
-						.createParallelGroup(Alignment.LEADING)
-						.addGroup(
-								groupLayout
-										.createSequentialGroup()
-										.addGroup(
-												groupLayout
-														.createParallelGroup(Alignment.LEADING)
-														.addGroup(
-																groupLayout
-																		.createSequentialGroup()
-																		.addComponent(lblIterations)
-																		.addPreferredGap(ComponentPlacement.RELATED, 125, Short.MAX_VALUE)
-																		.addComponent(spinnerIterationsSOM, GroupLayout.PREFERRED_SIZE, 60,
-																				GroupLayout.PREFERRED_SIZE))
-														.addGroup(
-																groupLayout
-																		.createSequentialGroup()
-																		.addComponent(lblAlgorithmSOM)
-																		.addPreferredGap(ComponentPlacement.RELATED, 113, Short.MAX_VALUE)
-																		.addComponent(comboAlgorithmSOM, GroupLayout.PREFERRED_SIZE, 65,
-																				GroupLayout.PREFERRED_SIZE))
-														.addGroup(
-																groupLayout
-																		.createSequentialGroup()
-																		.addComponent(lblNeighborhoodRadius)
-																		.addPreferredGap(ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
-																		.addComponent(spinnerNeighborhoodRadius,
-																				GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE))
-														.addGroup(
-																groupLayout
-																		.createSequentialGroup()
-																		.addComponent(lblLernfunction)
-																		.addPreferredGap(ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
-																		.addComponent(comboLernFunction, GroupLayout.PREFERRED_SIZE, 100,
-																				GroupLayout.PREFERRED_SIZE)))
-										.addContainerGap(126, Short.MAX_VALUE))
-						.addGroup(
-								groupLayout.createSequentialGroup().addComponent(btnStartTraining)
-										.addPreferredGap(ComponentPlacement.RELATED)
-										.addComponent(btnReset, GroupLayout.PREFERRED_SIZE, 119, GroupLayout.PREFERRED_SIZE).addGap(128)));
+		groupLayout.setHorizontalGroup(groupLayout
+				.createParallelGroup(Alignment.LEADING)
+				.addGroup(
+						groupLayout
+								.createSequentialGroup()
+								.addGroup(
+										groupLayout
+												.createParallelGroup(Alignment.TRAILING)
+												.addGroup(
+														groupLayout
+																.createSequentialGroup()
+																.addComponent(lblAlgorithmSOM)
+																.addPreferredGap(ComponentPlacement.RELATED, 232, Short.MAX_VALUE)
+																.addComponent(comboAlgorithmSOM, GroupLayout.PREFERRED_SIZE, 65,
+																		GroupLayout.PREFERRED_SIZE))
+												.addGroup(
+														groupLayout
+																.createSequentialGroup()
+																.addComponent(lblNeighborhoodRadius)
+																.addPreferredGap(ComponentPlacement.RELATED, 175, Short.MAX_VALUE)
+																.addComponent(spinnerNeighborhoodRadius, GroupLayout.PREFERRED_SIZE, 60,
+																		GroupLayout.PREFERRED_SIZE))
+												.addGroup(
+														groupLayout
+																.createSequentialGroup()
+																.addGroup(
+																		groupLayout.createParallelGroup(Alignment.LEADING)
+																				.addComponent(lblLernfunction).addComponent(lblIterations))
+																.addGap(62)
+																.addGroup(
+																		groupLayout
+																				.createParallelGroup(Alignment.LEADING)
+																				.addComponent(lernRateSpinner, GroupLayout.DEFAULT_SIZE,
+																						242, Short.MAX_VALUE)
+																				.addComponent(spinnerIterationsSOM, Alignment.TRAILING, 0,
+																						0, Short.MAX_VALUE)))).addGap(103))
+				.addGroup(groupLayout.createSequentialGroup().addComponent(btnStartTraining).addContainerGap()));
 		groupLayout
 				.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(
@@ -198,23 +196,20 @@ public class SOMTrainingPanel extends JPanel {
 										.addGroup(
 												groupLayout
 														.createParallelGroup(Alignment.BASELINE)
-														.addComponent(comboLernFunction, GroupLayout.PREFERRED_SIZE, 29,
-																GroupLayout.PREFERRED_SIZE).addComponent(lblLernfunction))
+														.addComponent(lblLernfunction)
+														.addComponent(lernRateSpinner, GroupLayout.PREFERRED_SIZE,
+																GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 										.addPreferredGap(ComponentPlacement.UNRELATED)
 										.addGroup(
 												groupLayout
 														.createParallelGroup(Alignment.BASELINE)
 														.addComponent(spinnerIterationsSOM, GroupLayout.PREFERRED_SIZE,
 																GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-														.addComponent(lblIterations))
-										.addPreferredGap(ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-										.addGroup(
-												groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(btnStartTraining)
-														.addComponent(btnReset))));
+														.addComponent(lblIterations)).addGap(18).addComponent(btnStartTraining)
+										.addContainerGap(22, Short.MAX_VALUE)));
 		setLayout(groupLayout);
 
 		initActions();
 
 	}
-
 }

@@ -11,10 +11,8 @@ import de.unikassel.ann.algo.TrainingModule;
 import de.unikassel.ann.algo.WorkModule;
 import de.unikassel.ann.controller.Settings;
 import de.unikassel.ann.model.DataPairSet;
-import de.unikassel.ann.model.NetError;
 import de.unikassel.ann.model.Network;
 import de.unikassel.ann.model.Synapse;
-import de.unikassel.ann.rand.Randomizer;
 import de.unikassel.ann.strategy.MaxLearnIterationsStrategy;
 import de.unikassel.ann.strategy.Strategy;
 
@@ -24,8 +22,6 @@ public class NetConfig {
 	private List<Strategy> strategies;
 	private WorkModule workModule;
 	private TrainingModule trainingModule;
-	private Randomizer randomizer;
-	private List<NetError> errorLogs;
 	private int restartAmount = 0;
 
 	private DataPairSet trainingData;
@@ -34,12 +30,13 @@ public class NetConfig {
 
 	private double initMinWeight = -2;
 	private double initMaxWeight = 2;
+	private List<IterationError> iterationErrorList;
 
 	public NetConfig() {
 		network = new Network();
 		network.setConfig(this);
 		strategies = new ArrayList<Strategy>();
-		errorLogs = new ArrayList<NetError>();
+		iterationErrorList = new ArrayList<IterationError>();
 
 		/*
 		 * default algorithm and strategy
@@ -47,7 +44,7 @@ public class NetConfig {
 		BackPropagation backProp = new BackPropagation();
 		addTrainingModule(backProp);
 		addWorkModule(backProp);
-		addOrUpdateExisting(new MaxLearnIterationsStrategy(10000));
+		addOrUpdateExisting(new MaxLearnIterationsStrategy(100000));
 	}
 
 	public boolean shouldStopTraining() {
@@ -237,5 +234,31 @@ public class NetConfig {
 	 */
 	public void setOriginalData(final DataPairSet originalData) {
 		this.originalData = originalData;
+	}
+
+	/**
+	 * @param currentIteration
+	 * @param currentError
+	 */
+	public void addErrorList(final Integer iter, final Double error) {
+		iterationErrorList.add(new IterationError(iter, error));
+	}
+
+	public void resetErrorList() {
+		iterationErrorList = new ArrayList<IterationError>();
+	}
+
+	public List<IterationError> getErrorList() {
+		return iterationErrorList;
+	}
+
+	public class IterationError {
+		public IterationError(final int iteration, final double error) {
+			this.iteration = iteration;
+			this.error = error;
+		}
+
+		public int iteration;
+		public double error;
 	}
 }

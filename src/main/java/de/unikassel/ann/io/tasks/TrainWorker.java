@@ -31,13 +31,14 @@ public class TrainWorker extends SwingWorker<Void, Void> {
 
 	@Override
 	protected Void doInBackground() throws Exception {
-		Logger.info(this.getClass(), "training started");
 		Main.instance.switchBottomPanel(Panel.TRAINERROR_CHART);
+		Thread.sleep(100);
+		Logger.info(this.getClass(), "training started");
 		Collections.shuffle(trainingData.getPairs());
 		train.train(new DataPairSet(trainingData));
 		Logger.debug(this.getClass(), trainingData.toString());
-		Logger.info(this.getClass(), "training finished with RMSE of {}", train.getCurrentError());
 		net.getWorkingModule().work(net.getNetwork(), trainingData);
+
 		return null;
 	}
 

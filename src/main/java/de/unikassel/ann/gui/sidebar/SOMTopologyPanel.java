@@ -90,7 +90,7 @@ public class SOMTopologyPanel extends JPanel {
 		JLabel lblPatternSOM = new JLabel(Settings.i18n.getString("sidebar.topologySOM.lblPatternSOM"));
 
 		somPatternCombo = new JComboBox();
-		somPatternCombo.setModel(new DefaultComboBoxModel(new String[] { "Eckig" }));
+		somPatternCombo.setModel(new DefaultComboBoxModel(new String[] { "Eckig", "Rund" }));
 
 		lblGre = new JLabel("Größe");
 

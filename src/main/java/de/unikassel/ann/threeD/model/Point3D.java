@@ -1,9 +1,17 @@
 package de.unikassel.ann.threeD.model;
 
+import java.util.Random;
+
 public class Point3D {
 	public Double x;
 	public Double y;
 	public Double z;
+
+	public Point3D(final double min, final double max, final Random r) {
+		x = r.nextDouble() * (max - min) - min;
+		y = r.nextDouble() * (max - min) - min;
+		z = r.nextDouble() * (max - min) - min;
+	}
 
 	public Point3D(final double xPos, final double yPos, final double zPos) {
 		x = xPos;

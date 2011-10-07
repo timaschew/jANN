@@ -82,6 +82,7 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 			net.connectFeedForward();
 		}
 		netError = new NetError(this, trainingData);
+		config.resetErrorList();
 		validateDataSet(net, trainingData);
 		while (true) {
 			// try {
@@ -117,6 +118,7 @@ public class BackPropagation extends TrainingModule implements WorkModule {
 			double tmpError = netError.calculateRMS();
 			currentImprovement = currentError - tmpError;
 			currentError = tmpError;
+			config.addErrorList(currentIteration, currentError);
 			// currentSingleError = netError.calculateSingleRMS();
 			netError.reset();
 			currentIteration++;

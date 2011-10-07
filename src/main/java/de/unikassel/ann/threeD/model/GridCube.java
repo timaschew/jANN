@@ -2,7 +2,6 @@ package de.unikassel.ann.threeD.model;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.locks.ReentrantLock;
 
 import de.unikassel.mdda.MDDA;
 
@@ -45,7 +44,6 @@ public class GridCube extends RenderGeometry {
 	private int zGrids;
 	private int yGrids;
 	private int xGrids;
-	private ReentrantLock lock = new ReentrantLock();
 
 	/**
 	 * grid count = 3<br>
@@ -122,51 +120,17 @@ public class GridCube extends RenderGeometry {
 	 * 
 	 */
 	private void setGeometrySize() {
-		// points
-		int zPositive = zSize / 2;
-		int zNegative = -zPositive;
-		int zChunk = zSize / (zGrids - 1);
-		int zCounter = 0;
-
-		int yPositive = ySize / 2;
-		int yNegative = -yPositive;
-		int yChunk = ySize / (yGrids - 1);
-		int yCounter = 0;
-
-		int xPositive = xSize / 2;
-		int xNegative = -xPositive;
-		int xChunk = xSize / (xGrids - 1);
-		int xCounter = 0;
 
 		MDDA<Point3D> pointMatrixT = new MDDA<Point3D>(xGrids, yGrids, zGrids);
 		ArrayList<Line> linesT = new ArrayList<Line>();
 		ArrayList<Point3D> pointsT = new ArrayList<Point3D>();
 
-		for (int z = zNegative; z <= zPositive; z += zChunk) {
-			xCounter = 0;
-			for (int x = xNegative; x <= xPositive; x += xChunk) {
-				yCounter = 0;
-				for (int y = yNegative; y <= yPositive; y += yChunk) {
-					Point3D p = new Point3D(x, y, z);
-					try {
-						pointMatrixT.set(p, xCounter, yCounter, zCounter);
-					} catch (Exception e) {
-						// System.err.println("try to set " + xCounter + ", " + yCounter + ", " + zCounter);
-						// System.err.print("but array was: ");
-						// for (int i : pointMatrix.getSize()) {
-						// System.err.print(" " + i);
-						// }
-						// System.err.println("");
-						// e.printStackTrace();
-						return;
-					}
-
-					pointsT.add(p);
-					yCounter++;
-				}
-				xCounter++;
-			}
-			zCounter++;
+		Random r = new Random();
+		Object[] ar = pointMatrixT.getArray();
+		for (int i = 0; i < ar.length; i++) {
+			Point3D p = new Point3D(-100, 100, r);
+			pointMatrixT.set1D(p, i);
+			pointsT.add(p);
 		}
 
 		// grid cube
