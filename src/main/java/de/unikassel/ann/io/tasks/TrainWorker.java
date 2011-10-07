@@ -16,7 +16,7 @@ import de.unikassel.ann.gui.Main.Panel;
 import de.unikassel.ann.model.DataPairSet;
 import de.unikassel.ann.util.Logger;
 
-public class TrainWorker extends SwingWorker<Void, Void> {
+public class TrainWorker extends SwingWorker<Void, Double> {
 
 	private NetConfig net;
 	private TrainingModule train;
@@ -47,5 +47,4 @@ public class TrainWorker extends SwingWorker<Void, Void> {
 		// Main.instance.sidebar.trainControlPanel.btnPlay.setEnabled(true);
 		Main.instance.sidebar.trainStrategyPanel.btnStartTraining.setEnabled(true);
 	}
-
 }
